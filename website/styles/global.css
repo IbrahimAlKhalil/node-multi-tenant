@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: SolaimanLipi, Amiri, 'Open Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+.fa-icon {
+    height: 1em;
+    fill: currentColor;
+    /*top: 0.125em;*/
+    /*position: relative;*/
+}

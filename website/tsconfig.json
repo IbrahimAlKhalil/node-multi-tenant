@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "es2022",
+    "moduleResolution": "Node",
+    "target": "ES2021",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "@intlify/vite-plugin-vue-i18n/client"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "incremental": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "paths": {
+      "#icons/*": ["./assets/icons/*"],
+      "#images/*": ["./assets/images/*"],
+      "#components/*": ["./components/*"],
+      "#modules/*": ["./modules/*"],
+      "#layouts/*": ["./layouts/*"],
+      "#types/*": ["./types/*"],
+      "#stores/*": ["./stores/*"],
+      "#styles/*": ["./styles/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "prisma"],
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
+}

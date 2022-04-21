@@ -1,0 +1,15 @@
+{
+  "registration": "রেজিস্ট্রেশন",
+  "create-account": "অ্যাকাউন্ট তৈরি করুন",
+  "institute-info": "প্রতিষ্ঠানের তথ্য",
+  "institute-name": "প্রতিষ্ঠানের নাম",
+  "languages": "ভাষা",
+  "default-language": "ডিফল্ট ভাষা",
+  "name": "নাম",
+  "mobile": "মোবাইল নম্বর",
+  "email": "ইমেইল ঠিকানা",
+  "confirm-pass": "পাসওয়ার্ড নিশ্চিত করুন",
+  "code": "কোড",
+  "sign-up": "একাউন্ট তৈরি করুন",
+  "sms": "এসএমএস"
+}

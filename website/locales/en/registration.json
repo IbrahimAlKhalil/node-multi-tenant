@@ -1,0 +1,15 @@
+{
+  "registration": "Registration",
+  "create-account": "Create Account",
+  "institute-info": "Institute Info",
+  "institute-name": "Institute Name",
+  "languages": "Languages",
+  "default-language": "Default Language",
+  "name": "Name",
+  "mobile": "Mobile Number",
+  "email": "Email Address",
+  "confirm-pass": "Confirm Password",
+  "code": "Verification Code",
+  "sign-up": "Sign Up",
+  "sms": "SMS"
+}

@@ -1,0 +1,9 @@
+{
+  "wrong-pass": "Incorrect password",
+  "pass-reset-success": "Your password has been updated successfully",
+  "reg-success": "Your account has been successfully created",
+  "code-alert": "We sent you a verification code via email, please check your inbox",
+  "something-wrong": "Something went wrong please try again later",
+  "session-expired": "Your session has expired, please login again",
+  "reset-no-key": "There was an attempt to reset your password from another device, please wait 30 minutes before trying to reset your password"
+}

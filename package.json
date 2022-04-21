@@ -1,0 +1,31 @@
+{
+  "name": "qmmsoft",
+  "version": "0.0.0",
+  "description": "Qmmsoft monorepo",
+  "license": "UNLICENSED",
+  "author": "SAHARA IT",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./qm.mjs"
+  },
+  "pnpm": {
+    "overrides": {
+      "nth-check@<2.0.1": ">=2.0.1",
+      "postcss@<8.2.13": ">=8.2.13",
+      "glob-parent@<5.1.2": ">=5.1.2"
+    }
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.9",
+    "chalk": "^5.0.1",
+    "cli-progress": "^3.10.0",
+    "commander": "^9.1.0",
+    "dockerode": "^3.3.1",
+    "dotenv": "^16.0.0",
+    "execa": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.3",
+    "pgsql-parser": "^13.2.0"
+  }
+}

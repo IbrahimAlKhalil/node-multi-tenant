@@ -1,0 +1,13 @@
+{
+  "required": "This field is required",
+  "email-invalid": "Invalid email address",
+  "pass-min": "Password must be at least 8 characters long",
+  "pass-max": "Password cannot be more than 16 characters long",
+  "pass-mismatch": "Both passwords must match",
+  "uname-invalid": "User can contain only A - Z, 0 - 9, dash, underscore and dot characters",
+  "uname-no-space": "Username can't contain space",
+  "mobile-invalid": "Invalid mobile number",
+  "max": "More than {length} characters expected",
+  "min": "Less than {length} characters expected",
+  "na": "Sorry, this {type} is not available"
+}

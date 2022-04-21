@@ -1,0 +1,7 @@
+link-workspace-packages: true
+prefer-workspace-packages: true
+packages:
+  - 'api'
+  - 'web'
+  - 'website'
+  - 'website-vite-ssr'
