@@ -1,40 +1,53 @@
 <template>
-  <header
-    class="h-[76px] px-14 py-3 bg-[#ecf5ff] flex shadow sticky top-0 justify-between items-center"
-  >
-    <img
-      :alt="t('common.app-title')"
-      class="h-full md:hidden"
-      :src="LogoIcon"
-    />
+  <header class="flex justify-between items-center container mx-auto py-3">
+    <div class="logo h-[76px]">
+      <img
+        :alt="t('common.app-title')"
+        class="h-full md:hidden"
+        :src="LogoIcon"
+      />
 
-    <img
-      class="h-full hidden md:block"
-      :alt="t('common.app-title')"
-      :src="Logo"
-    />
+      <img
+        class="h-full hidden md:block"
+        :alt="t('common.app-title')"
+        :src="Logo"
+      />
+    </div>
 
-    <nav>
-      <ul class="flex items-center">
-        <li class="m-0 p-0" v-for="item in menu" :key="item.href">
-          <a :href="item.href" class="ml-1 p-2 rounded-sm hover:text-primary">
-            <component class="inline-block mr-1" :is="item.icon" />
+    <nav class="nav flex-grow">
+      <ul class="flex items-center justify-center">
+        <li class="m-0 p-0 group" v-for="item in menu" :key="item.href">
+          <a
+            :href="item.href"
+            class="ml-2 p-2 rounded-sm group-hover:text-primary font-bold text-md text-text transition-all duration-150"
+            :class="{ 'text-primary': item.href === currentPath }"
+          >
+            <component
+              class="inline-block mr-2 text-inherit group-hover:scale-150 transition-all duration-300"
+              :class="{ 'scale-150': item.href === currentPath }"
+              :is="item.icon"
+            />
 
             {{ t(item.text) }}
           </a>
         </li>
       </ul>
     </nav>
+    <div class="action-area">
+      <primary-btn :title="t('common.login')" :icon="LoginWhite" />
+    </div>
   </header>
 </template>
 
 <script lang="ts">
-import IconQuestionCircle from '#icons/duotone/question-circle.svg';
-import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
+import PrimaryBtnVue from '#components/ui/btn/PrimaryBtn.vue';
+import IconBlog from '#icons/duotone/blog.svg';
+import IconBookOpen from '#icons/duotone/book-open.svg';
 import IconInfoCircle from '#icons/duotone/info-circle.svg';
 import IconMoneyCheck from '#icons/duotone/money-check.svg';
-import IconBookOpen from '#icons/duotone/book-open.svg';
-import IconBlog from '#icons/duotone/blog.svg';
+import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
+import IconQuestionCircle from '#icons/duotone/question-circle.svg';
+import LoginWhite from '#icons/others/login-white.svg?url';
 import LogoIcon from '#images/icon.svg?url';
 import Logo from '#images/logo.svg?url';
 import { defineComponent } from 'vue';
@@ -42,6 +55,9 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'the-header',
+  components: {
+    'primary-btn': PrimaryBtnVue,
+  },
   setup() {
     const i18n = useI18n();
     const menu = [
@@ -82,6 +98,7 @@ export default defineComponent({
       LogoIcon,
       Logo,
       menu,
+      LoginWhite,
     };
   },
 });
