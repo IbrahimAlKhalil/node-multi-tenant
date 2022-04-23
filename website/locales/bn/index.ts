@@ -1,10 +1,11 @@
-import registration from './registration.json';
-import validation from './validation.json';
-import passReset from './pass-reset.json';
-import message from './message.json';
 import common from './common.json';
+import homePage from './home-page.json';
 import login from './login.json';
 import menu from './menu.json';
+import message from './message.json';
+import passReset from './pass-reset.json';
+import registration from './registration.json';
+import validation from './validation.json';
 
 export default {
   registration,
@@ -14,4 +15,5 @@ export default {
   common,
   login,
   menu,
+  homePage,
 };

@@ -1,40 +1,48 @@
 <template>
-  <header class="flex justify-between items-center container mx-auto py-3">
-    <div class="logo h-[76px]">
-      <img
-        :alt="t('common.app-title')"
-        class="h-full md:hidden"
-        :src="LogoIcon"
-      />
+  <header
+    class="fixed top-0 left-1/2 w-full z-10 -translate-x-1/2"
+    :class="{ 'bg-white shadow-md': isSticky }"
+  >
+    <p>{{ scrollTop }}</p>
+    <div class="flex justify-between items-center container mx-auto py-3">
+      <div class="logo h-[76px]">
+        <a href="/" class="block h-full">
+          <img
+            :alt="t('common.app-title')"
+            class="h-full md:hidden"
+            :src="LogoIcon"
+          />
 
-      <img
-        class="h-full hidden md:block"
-        :alt="t('common.app-title')"
-        :src="Logo"
-      />
-    </div>
+          <img
+            class="h-full hidden md:block"
+            :alt="t('common.app-title')"
+            :src="Logo"
+          />
+        </a>
+      </div>
 
-    <nav class="nav flex-grow">
-      <ul class="flex items-center justify-center">
-        <li class="m-0 p-0 group" v-for="item in menu" :key="item.href">
-          <a
-            :href="item.href"
-            class="ml-2 p-2 rounded-sm group-hover:text-primary font-bold text-md text-text transition-all duration-150"
-            :class="{ 'text-primary': item.href === currentPath }"
-          >
-            <component
-              class="inline-block mr-2 text-inherit group-hover:scale-150 transition-all duration-300"
-              :class="{ 'scale-150': item.href === currentPath }"
-              :is="item.icon"
-            />
+      <nav class="nav flex-grow">
+        <ul class="flex items-center justify-center">
+          <li class="m-0 p-0 group" v-for="item in menu" :key="item.href">
+            <a
+              :href="item.href"
+              class="ml-2 p-2 rounded-sm group-hover:text-primary font-bold text-md text-text transition-all duration-150"
+              :class="{ 'text-primary': item.href === currentPath }"
+            >
+              <component
+                class="inline-block mr-2 text-inherit group-hover:scale-150 transition-all duration-300"
+                :class="{ 'scale-150': item.href === currentPath }"
+                :is="item.icon"
+              />
 
-            {{ t(item.text) }}
-          </a>
-        </li>
-      </ul>
-    </nav>
-    <div class="action-area">
-      <primary-btn :title="t('common.login')" :icon="LoginWhite" />
+              {{ t(item.text) }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="action-area">
+        <primary-btn :title="t('common.login')" :icon="DoorOpen" />
+      </div>
     </div>
   </header>
 </template>
@@ -43,6 +51,7 @@
 import PrimaryBtnVue from '#components/ui/btn/PrimaryBtn.vue';
 import IconBlog from '#icons/duotone/blog.svg';
 import IconBookOpen from '#icons/duotone/book-open.svg';
+import DoorOpen from '#icons/duotone/door-open.svg';
 import IconInfoCircle from '#icons/duotone/info-circle.svg';
 import IconMoneyCheck from '#icons/duotone/money-check.svg';
 import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
@@ -58,6 +67,12 @@ export default defineComponent({
   components: {
     'primary-btn': PrimaryBtnVue,
   },
+  data() {
+    return {
+      isSticky: false,
+    };
+  },
+
   setup() {
     const i18n = useI18n();
     const menu = [
@@ -99,6 +114,7 @@ export default defineComponent({
       Logo,
       menu,
       LoginWhite,
+      DoorOpen,
     };
   },
 });
