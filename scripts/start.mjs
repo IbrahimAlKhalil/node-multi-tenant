@@ -381,7 +381,7 @@ async function startWebsite() {
 
   const tsNodePath = path.join(__dirname, '../website/node_modules/.bin/ts-node-dev');
 
-  const _process = execa(tsNodePath, ['./server', '--respawn', '--watch'], {
+  const _process = execa(tsNodePath, ['--respawn', '--watch', `--inspect=127.0.0.1:${process.env.WEBSITE_DEBUG_PORT}`, '--', './server'], {
     cwd: path.join(__dirname, '../website'),
     stdio: 'pipe',
     env: {
