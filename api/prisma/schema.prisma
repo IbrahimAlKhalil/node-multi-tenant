@@ -1,0 +1,1165 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AccessToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  ipAddress String
+  userAgent String?
+  expiresAt DateTime @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Activity {
+  id        Int             @id @default(autoincrement())
+  userId    Int
+  action    activity_action
+  table     String          @db.VarChar(100)
+  recordId  String?
+  timestamp DateTime        @default(now()) @db.Timestamptz(6)
+  ip        String          @db.VarChar(50)
+  userAgent String          @db.VarChar(255)
+  User      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Revision  Revision[]
+
+  @@index([action, table, recordId])
+  @@index([userId])
+}
+
+model Address {
+  id            Int           @id @default(autoincrement())
+  userId        Int?
+  addressType   address_type?
+  subDistrictId Int
+  SubDistrict   SubDistrict   @relation(fields: [subDistrictId], references: [id], onUpdate: Restrict)
+  User          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AddressI18n   AddressI18n[]
+
+  @@unique([userId, addressType])
+  @@index([subDistrictId])
+}
+
+model AddressI18n {
+  addressId   Int
+  languageId  Int
+  addressLine String   @db.VarChar(100)
+  Address     Address  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  Language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([languageId, addressId])
+}
+
+model Admission {
+  id         Int         @id @default(autoincrement())
+  classId    Int
+  groupId    Int?
+  sessionId  Int
+  userId     Int
+  roll       Int?
+  closed     Boolean?    @default(false)
+  comment    String?     @db.VarChar(350)
+  Class      Class       @relation(fields: [classId], references: [id], onUpdate: Restrict)
+  ClassGroup ClassGroup? @relation(fields: [groupId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Session    Session     @relation(fields: [sessionId], references: [id], onUpdate: Restrict)
+  User       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roll, classId, groupId])
+  @@unique([userId, sessionId, classId, groupId])
+}
+
+model Archive {
+  table    String @db.VarChar(100)
+  recordId String
+
+  @@id([table, recordId])
+}
+
+model Area {
+  id       Int        @id @default(autoincrement())
+  order    Int?       @unique
+  AreaI18n AreaI18n[]
+  Building Building[]
+}
+
+model AreaI18n {
+  areaId     Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Area       Area     @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([areaId, languageId])
+}
+
+model Bench {
+  id           Int        @id
+  benchGroupId Int
+  order        Int
+  BenchGroup   BenchGroup @relation(fields: [benchGroupId], references: [id], onDelete: Cascade)
+  Seat         Seat[]
+
+  @@unique([benchGroupId, order])
+}
+
+model BenchGroup {
+  id       Int      @id
+  hallId   Int
+  order    Int
+  ExamHall ExamHall @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  Bench    Bench[]
+
+  @@unique([hallId, order])
+}
+
+model Book {
+  id            Int             @id @default(autoincrement())
+  classId       Int
+  groupId       Int?
+  categoryId    Int?
+  Class         Class           @relation(fields: [classId], references: [id], onDelete: Cascade)
+  BookGroup     BookGroup?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  BookI18n      BookI18n[]
+  ExamBook      ExamBook[]
+  ExamRawResult ExamRawResult[]
+  ExamResult    ExamResult[]
+
+  @@index([categoryId])
+  @@index([classId])
+  @@index([groupId])
+}
+
+model BookCategory {
+  id               Int                @id @default(autoincrement())
+  BookCategoryI18n BookCategoryI18n[]
+}
+
+model BookCategoryI18n {
+  categoryId   Int
+  languageId   Int
+  name         String       @db.VarChar(100)
+  BookCategory BookCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  Language     Language     @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([categoryId, languageId])
+}
+
+model BookGroup {
+  id            Int             @id @default(autoincrement())
+  Book          Book[]
+  BookGroupI18n BookGroupI18n[]
+  ExamResult    ExamResult[]
+}
+
+model BookGroupI18n {
+  groupId    Int
+  languageId Int
+  name       String    @db.VarChar(100)
+  BookGroup  BookGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  Language   Language  @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, languageId])
+}
+
+model BookI18n {
+  bookId     Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([languageId, bookId])
+}
+
+model Building {
+  id     Int     @id @default(autoincrement())
+  areaId Int?
+  order  Int?
+  Area   Area?   @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  Floor  Floor[]
+
+  @@unique([areaId, order])
+}
+
+model BuildingI18n {
+  buildingId Int
+  languageId Int
+  name       String @db.VarChar(100)
+
+  @@id([buildingId, languageId])
+}
+
+model Class {
+  id         Int          @id @default(autoincrement())
+  order      Int
+  Admission  Admission[]
+  Book       Book[]
+  ClassGroup ClassGroup[]
+  ClassI18n  ClassI18n[]
+  Exam       Exam[]
+}
+
+model ClassGroup {
+  id             Int              @id @default(autoincrement())
+  classId        Int
+  Class          Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
+  Admission      Admission[]
+  ClassGroupI18n ClassGroupI18n[]
+  ExamClassGroup ExamClassGroup[]
+
+  @@index([classId])
+}
+
+model ClassGroupI18n {
+  groupId    Int
+  languageId Int
+  name       String     @db.VarChar(100)
+  ClassGroup ClassGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  Language   Language   @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, languageId])
+}
+
+model ClassI18n {
+  classId    Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Class      Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([classId, languageId])
+}
+
+model Country {
+  id          Int           @id @default(autoincrement())
+  CountryI18n CountryI18n[]
+  State       State[]
+}
+
+model CountryI18n {
+  countryId  Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id])
+
+  @@id([countryId, languageId])
+}
+
+model Designation {
+  id              Int               @id @default(autoincrement())
+  order           Int?
+  DesignationI18n DesignationI18n[]
+  Staff           Staff[]
+}
+
+model DesignationI18n {
+  designationId Int
+  languageId    Int
+  name          String      @db.VarChar(100)
+  Designation   Designation @relation(fields: [designationId], references: [id], onDelete: Cascade)
+  Language      Language    @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([designationId, languageId])
+}
+
+model District {
+  id           Int            @id @default(autoincrement())
+  divisionId   Int
+  Division     Division       @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  DistrictI18n DistrictI18n[]
+  SubDistrict  SubDistrict[]
+
+  @@index([divisionId])
+}
+
+model DistrictI18n {
+  districtId Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  District   District @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id])
+
+  @@id([districtId, languageId])
+}
+
+model Division {
+  id           Int            @id @default(autoincrement())
+  stateId      Int
+  State        State          @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  District     District[]
+  DivisionI18n DivisionI18n[]
+
+  @@index([stateId])
+}
+
+model DivisionI18n {
+  divisionId Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id])
+
+  @@id([divisionId, languageId])
+}
+
+model Exam {
+  id              Int               @id @default(autoincrement())
+  presetId        Int
+  sessionId       Int
+  classId         Int
+  published       Boolean?          @default(false)
+  Class           Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
+  Session         Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  ExamRawResult   ExamRawResult[]
+  ExamResultGrade ExamResultGrade[]
+  ExamRoutine     ExamRoutine[]
+  ExamRoutineSeat ExamRoutineSeat[]
+}
+
+model ExamBook {
+  id             Int              @id @default(autoincrement())
+  presetId       Int
+  bookId         Int
+  optional       Boolean          @default(false)
+  take           Float?           @db.Real
+  Book           Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  ExamPreset     ExamPreset       @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  ExamBookMethod ExamBookMethod[]
+  ExamRoutine    ExamRoutine[]
+
+  @@unique([presetId, bookId])
+}
+
+model ExamBookGrade {
+  examBookId Int
+  gradeId    Int
+  mark       Float @db.Real
+
+  @@id([examBookId, gradeId])
+}
+
+model ExamBookGroup {
+  presetId    Int
+  bookId      Int
+  groupId     Int
+  cascadeFail Boolean @default(false)
+
+  @@id([presetId, bookId, groupId])
+}
+
+model ExamBookGroupGrade {
+  bookGroupId Int
+  gradeId     Int
+  mark        Float @db.Real
+
+  @@id([bookGroupId, gradeId])
+}
+
+model ExamBookMethod {
+  examBookId Int
+  methodId   Int
+  fullMark   Float      @db.Real
+  failMark   Float?     @db.Real
+  ExamBook   ExamBook   @relation(fields: [examBookId], references: [id], onDelete: Cascade)
+  ExamMethod ExamMethod @relation(fields: [methodId], references: [id], onDelete: Cascade)
+
+  @@id([examBookId, methodId])
+}
+
+model ExamClassGroup {
+  presetId   Int
+  groupId    Int
+  ClassGroup ClassGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  ExamPreset ExamPreset @relation(fields: [presetId], references: [id], onDelete: Cascade)
+
+  @@id([presetId, groupId])
+}
+
+model ExamGrade {
+  presetId   Int
+  gradeId    Int
+  Grade      Grade      @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  ExamPreset ExamPreset @relation(fields: [presetId], references: [id], onDelete: Cascade)
+
+  @@id([presetId, gradeId])
+}
+
+model ExamHall {
+  id            Int          @id
+  columns       Int          @db.SmallInt
+  benches       Int          @db.SmallInt
+  seatsperbench Int          @db.SmallInt
+  Room          Room         @relation(fields: [id], references: [id], onDelete: Cascade)
+  BenchGroup    BenchGroup[]
+}
+
+model ExamMethod {
+  id             Int              @id @default(autoincrement())
+  ExamBookMethod ExamBookMethod[]
+  ExamMethodI18n ExamMethodI18n[]
+  ExamRawResult  ExamRawResult[]
+  ExamRoutine    ExamRoutine[]
+}
+
+model ExamMethodI18n {
+  methodId    Int
+  languageId  Int
+  name        String     @db.VarChar(100)
+  description String?    @db.VarChar(300)
+  Language    Language   @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  ExamMethod  ExamMethod @relation(fields: [methodId], references: [id], onDelete: Cascade)
+
+  @@id([methodId, languageId])
+}
+
+model ExamPreset {
+  id               Int              @id @default(autoincrement())
+  calcMethod       exam_calc_method
+  markFormula      Json             @default(dbgenerated("json_build_object()")) @db.Json
+  gradeFormula     Json             @default(dbgenerated("json_build_object()")) @db.Json
+  customGroups     Json             @default(dbgenerated("json_build_array()")) @db.Json
+  averageCondition Json             @default(dbgenerated("json_build_array()")) @db.Json
+  failGradeId      Int
+  published        Boolean?         @default(false)
+  Grade            Grade            @relation(fields: [failGradeId], references: [id], onDelete: Cascade)
+  ExamBook         ExamBook[]
+  ExamClassGroup   ExamClassGroup[]
+  ExamGrade        ExamGrade[]
+  ExamPresetI18n   ExamPresetI18n[]
+}
+
+model ExamPresetI18n {
+  presetId   Int
+  languageId Int
+  name       String     @db.VarChar(100)
+  Language   Language   @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  ExamPreset ExamPreset @relation(fields: [presetId], references: [id], onDelete: Cascade)
+
+  @@id([presetId, languageId])
+}
+
+model ExamRawResult {
+  id         Int        @id @default(autoincrement())
+  userId     Int
+  examId     Int
+  bookId     Int
+  methodId   Int
+  mark       Decimal    @db.Decimal(6, 2)
+  Book       Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  Exam       Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
+  ExamMethod ExamMethod @relation(fields: [methodId], references: [id], onDelete: Cascade)
+  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, examId, bookId, methodId])
+}
+
+model ExamRelate {
+  mainPresetId    Int
+  relatedPresetId Int
+
+  @@id([mainPresetId, relatedPresetId])
+}
+
+model ExamResult {
+  id              Int             @id @default(autoincrement())
+  bookId          Int?
+  groupId         Int?
+  resultGradeId   Int
+  gradeId         Int
+  mark            Decimal         @db.Decimal(6, 2)
+  Book            Book?           @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  Grade           Grade           @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  BookGroup       BookGroup?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  ExamResultGrade ExamResultGrade @relation(fields: [resultGradeId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, resultGradeId])
+  @@unique([groupId, resultGradeId])
+}
+
+model ExamResultGrade {
+  id         Int          @id @default(autoincrement())
+  examId     Int
+  userId     Int
+  gradeId    Int?
+  point      Decimal?     @db.Decimal(5, 2)
+  position   Int?
+  Exam       Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  Grade      Grade?       @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  User       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ExamResult ExamResult[]
+
+  @@unique([examId, userId])
+  @@index([gradeId])
+}
+
+model ExamRoutine {
+  id              Int               @id
+  examId          Int
+  bookId          Int
+  methodId        Int?
+  start           DateTime          @db.Timestamptz(6)
+  end             DateTime          @db.Timestamptz(6)
+  ExamBook        ExamBook          @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  Exam            Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  ExamMethod      ExamMethod?       @relation(fields: [methodId], references: [id], onDelete: Cascade)
+  ExamRoutineSeat ExamRoutineSeat[]
+
+  @@unique([examId, bookId, methodId])
+}
+
+model ExamRoutineSeat {
+  examId      Int
+  routineId   Int
+  userId      Int
+  seatId      Int
+  Exam        Exam        @relation(fields: [examId], references: [id], onDelete: Cascade)
+  ExamRoutine ExamRoutine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  Seat        Seat        @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([examId, routineId, userId])
+  @@index([seatId])
+}
+
+model File {
+  id               String             @id @db.Uuid
+  folderId         Int?
+  mimeTypeId       Int
+  name             String             @db.VarChar(255)
+  size             BigInt
+  Folder           Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MimeType         MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ChatFile         ChatFile[]
+  InstituteI18n    InstituteI18n[]
+  Notification     Notification[]
+  NotificationBase NotificationBase[]
+  User             User[]
+
+  @@index([folderId])
+  @@index([mimeTypeId])
+}
+
+model Floor {
+  id         Int         @id @default(autoincrement())
+  buildingId Int?
+  order      Int?
+  Building   Building?   @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  FloorI18n  FloorI18n[]
+  Room       Room[]
+
+  @@unique([buildingId, order])
+}
+
+model FloorI18n {
+  floorId    Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Floor      Floor    @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([floorId, languageId])
+}
+
+model Folder {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(255)
+  parentId     Int?
+  Folder       Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  File         File[]
+  other_Folder Folder[] @relation("FolderToFolder_parentId")
+
+  @@index([parentId])
+}
+
+model Grade {
+  id              Int               @id @default(autoincrement())
+  point           Float?            @db.Real
+  ExamGrade       ExamGrade[]
+  ExamPreset      ExamPreset[]
+  ExamResult      ExamResult[]
+  ExamResultGrade ExamResultGrade[]
+  GradeI18n       GradeI18n[]
+}
+
+model GradeI18n {
+  gradeId    Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  comment    String?  @db.VarChar(300)
+  Grade      Grade    @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([gradeId, languageId])
+}
+
+model GroupI18n {
+  groupId    Int
+  languageId Int
+  name       String     @db.VarChar(100)
+  StaffGroup StaffGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  Language   Language   @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, languageId])
+}
+
+model GuardianRole {
+  id               Int                @id @default(autoincrement())
+  GuardianRoleI18n GuardianRoleI18n[]
+}
+
+model GuardianRoleI18n {
+  roleId       Int
+  languageId   Int
+  name         String       @db.VarChar(100)
+  Language     Language     @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  GuardianRole GuardianRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, languageId])
+}
+
+model GuardianRoleUser {
+  guardianUserId                             Int
+  studentUserId                              Int
+  roleId                                     Int
+  User_GuardianRoleUser_guardianUserIdToUser User @relation("GuardianRoleUser_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
+  User_GuardianRoleUser_roleIdToUser         User @relation("GuardianRoleUser_roleIdToUser", fields: [roleId], references: [id], onDelete: Cascade)
+  User_GuardianRoleUser_studentUserIdToUser  User @relation("GuardianRoleUser_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
+
+  @@id([guardianUserId, studentUserId, roleId])
+}
+
+model Institute {
+  id            Int             @id @default(autoincrement())
+  mobile        String          @db.VarChar(16)
+  email         String          @db.VarChar(320)
+  InstituteI18n InstituteI18n[]
+}
+
+model InstituteI18n {
+  instituteId Int
+  languageId  Int
+  logo        String?   @db.Uuid
+  name        String    @db.VarChar(200)
+  address     String?   @db.VarChar(150)
+  slogan      String?   @db.VarChar(300)
+  Institute   Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Language    Language  @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  File        File?     @relation(fields: [logo], references: [id])
+
+  @@id([instituteId, languageId])
+}
+
+model Language {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(100)
+  AddressI18n         AddressI18n[]
+  AreaI18n            AreaI18n[]
+  BookCategoryI18n    BookCategoryI18n[]
+  BookGroupI18n       BookGroupI18n[]
+  BookI18n            BookI18n[]
+  ClassGroupI18n      ClassGroupI18n[]
+  ClassI18n           ClassI18n[]
+  CountryI18n         CountryI18n[]
+  DesignationI18n     DesignationI18n[]
+  DistrictI18n        DistrictI18n[]
+  DivisionI18n        DivisionI18n[]
+  ExamMethodI18n      ExamMethodI18n[]
+  ExamPresetI18n      ExamPresetI18n[]
+  FloorI18n           FloorI18n[]
+  GradeI18n           GradeI18n[]
+  GroupI18n           GroupI18n[]
+  GuardianRoleI18n    GuardianRoleI18n[]
+  InstituteI18n       InstituteI18n[]
+  NotificationContent NotificationContent[]
+  RoleI18n            RoleI18n[]
+  RoomI18n            RoomI18n[]
+  SessionI18n         SessionI18n[]
+  Setting             Setting[]
+  SmsTemplateI18n     SmsTemplateI18n[]
+  StaffI18n           StaffI18n[]
+  StateI18n           StateI18n[]
+  SubDistrictI18n     SubDistrictI18n[]
+  UserI18n            UserI18n[]
+}
+
+model Lock {
+  table    String @db.VarChar(100)
+  column   String @db.VarChar(100)
+  recordId String
+
+  @@id([table, column, recordId])
+}
+
+model MimeType {
+  id        Int    @id @default(autoincrement())
+  name      String @db.VarChar(255)
+  extension String @db.VarChar(255)
+  File      File[]
+
+  @@index([name])
+}
+
+model Notification {
+  id               Int              @id @default(autoincrement())
+  baseId           Int
+  userId           Int
+  picture          String?          @db.Uuid
+  vars             Json?
+  read             Boolean          @default(false)
+  NotificationBase NotificationBase @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  File             File?            @relation(fields: [picture], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([baseId])
+  @@index([userId])
+}
+
+model NotificationBase {
+  id                  Int                     @id @default(autoincrement())
+  picture             String?                 @db.Uuid
+  link                String?                 @db.VarChar(600)
+  linkType            notification_link_type?
+  File                File?                   @relation(fields: [picture], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Notification        Notification[]
+  NotificationContent NotificationContent[]
+}
+
+model NotificationContent {
+  baseId           Int
+  languageId       Int
+  title            String           @db.VarChar(150)
+  description      String           @db.VarChar(350)
+  NotificationBase NotificationBase @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  Language         Language         @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([baseId, languageId])
+  @@unique([baseId, languageId])
+}
+
+model Preset {
+  id    Int
+  table String @db.VarChar(100)
+  value Json
+  User  User   @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@id([id, table])
+}
+
+model Revision {
+  id         Int      @id @default(autoincrement())
+  activityId Int
+  table      String   @db.VarChar(100)
+  recordId   String
+  data       Json     @db.Json
+  delta      Json     @db.Json
+  Activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@index([activityId])
+  @@index([table, recordId])
+}
+
+model Room {
+  id       Int        @id @default(autoincrement())
+  floorId  Int?
+  order    Int?
+  Floor    Floor?     @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  ExamHall ExamHall?
+  RoomI18n RoomI18n[]
+
+  @@unique([floorId, order])
+}
+
+model RoomI18n {
+  roomId     Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  Room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@id([roomId, languageId])
+}
+
+model Seat {
+  id              Int               @id
+  benchId         Int
+  order           Int
+  Bench           Bench             @relation(fields: [benchId], references: [id], onDelete: Cascade)
+  ExamRoutineSeat ExamRoutineSeat[]
+
+  @@unique([benchId, order])
+}
+
+model Session {
+  id          Int           @id @default(autoincrement())
+  active      Boolean?      @default(false)
+  Admission   Admission[]
+  Exam        Exam[]
+  SessionI18n SessionI18n[]
+}
+
+model SessionI18n {
+  sessionId  Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  Session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@id([sessionId, languageId])
+}
+
+model Setting {
+  id          Int      @id @default(autoincrement())
+  languageId  Int
+  smsApiToken String?  @db.VarChar(300)
+  smsSenderId String?  @db.VarChar(100)
+  Language    Language @relation(fields: [languageId], references: [id])
+}
+
+model Sms {
+  id     Int        @id @default(autoincrement())
+  mobile String     @db.VarChar(16)
+  text   String     @db.VarChar(1000)
+  status sms_status @default(PENDING)
+}
+
+model SmsTemplate {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(100)
+  SmsTemplateI18n SmsTemplateI18n[]
+}
+
+model SmsTemplateI18n {
+  templateId  Int
+  languageId  Int
+  text        String      @db.VarChar(1000)
+  Language    Language    @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  SmsTemplate SmsTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@id([templateId, languageId])
+}
+
+model Staff {
+  id            Int         @id @default(autoincrement())
+  designationId Int
+  joiningDate   DateTime?   @db.Date
+  order         Int?
+  Designation   Designation @relation(fields: [designationId], references: [id], onDelete: Cascade)
+  User          User        @relation(fields: [id], references: [id], onDelete: Cascade)
+  StaffI18n     StaffI18n[]
+
+  @@index([designationId])
+}
+
+model StaffGroup {
+  id              Int               @id @default(autoincrement())
+  GroupI18n       GroupI18n[]
+  StaffGroupPivot StaffGroupPivot[]
+}
+
+model StaffGroupPivot {
+  userId     Int
+  groupId    Int
+  StaffGroup StaffGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, groupId])
+}
+
+model StaffI18n {
+  staffId     Int
+  languageId  Int
+  description String?  @db.VarChar(300)
+  Language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  Staff       Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@id([staffId, languageId])
+}
+
+model State {
+  id        Int         @id @default(autoincrement())
+  countryId Int
+  Country   Country     @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  Division  Division[]
+  StateI18n StateI18n[]
+
+  @@index([countryId])
+}
+
+model StateI18n {
+  stateId    Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  Language   Language @relation(fields: [languageId], references: [id])
+  State      State    @relation(fields: [stateId], references: [id], onDelete: Cascade)
+
+  @@id([stateId, languageId])
+}
+
+model StudentGuardian {
+  guardianUserId                            Int
+  studentUserId                             Int
+  relation                                  guardian_relation_type?
+  User_StudentGuardian_guardianUserIdToUser User                    @relation("StudentGuardian_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
+  User_StudentGuardian_studentUserIdToUser  User                    @relation("StudentGuardian_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
+
+  @@id([guardianUserId, studentUserId])
+  @@index([studentUserId, relation])
+}
+
+model SubDistrict {
+  id              Int               @id @default(autoincrement())
+  districtId      Int
+  District        District          @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  Address         Address[]
+  SubDistrictI18n SubDistrictI18n[]
+
+  @@index([districtId])
+}
+
+model SubDistrictI18n {
+  subDistrictId Int
+  languageId    Int
+  name          String      @db.VarChar(100)
+  Language      Language    @relation(fields: [languageId], references: [id])
+  SubDistrict   SubDistrict @relation(fields: [subDistrictId], references: [id], onDelete: Cascade)
+
+  @@id([subDistrictId, languageId])
+}
+
+model Trash {
+  table    String @db.VarChar(100)
+  recordId String
+
+  @@id([table, recordId])
+}
+
+model User {
+  id                                                     Int                  @id @default(autoincrement())
+  type                                                   user_kind
+  mobile                                                 String?              @unique @db.VarChar(16)
+  email                                                  String?              @unique @db.VarChar(320)
+  picture                                                String?              @db.Uuid
+  dateOfBirth                                            DateTime?            @db.Date
+  nid                                                    String?              @db.VarChar(40)
+  gender                                                 gender
+  bloodType                                              blood_type?
+  username                                               String?              @unique @db.VarChar(100)
+  password                                               String?
+  disabled                                               Boolean?             @default(false)
+  File                                                   File?                @relation(fields: [picture], references: [id])
+  AccessToken                                            AccessToken[]
+  Activity                                               Activity[]
+  Address                                                Address[]
+  Admission                                              Admission[]
+  Chat                                                   Chat[]
+  ConversationMember                                     ConversationMember[]
+  ExamRawResult                                          ExamRawResult[]
+  ExamResultGrade                                        ExamResultGrade[]
+  ExamRoutineSeat                                        ExamRoutineSeat[]
+  GuardianRoleUser_GuardianRoleUser_guardianUserIdToUser GuardianRoleUser[]   @relation("GuardianRoleUser_guardianUserIdToUser")
+  GuardianRoleUser_GuardianRoleUser_roleIdToUser         GuardianRoleUser[]   @relation("GuardianRoleUser_roleIdToUser")
+  GuardianRoleUser_GuardianRoleUser_studentUserIdToUser  GuardianRoleUser[]   @relation("GuardianRoleUser_studentUserIdToUser")
+  Notification                                           Notification[]
+  Preset                                                 Preset[]
+  RoleUser                                               RoleUser[]
+  Staff                                                  Staff?
+  StaffGroupPivot                                        StaffGroupPivot[]
+  StudentGuardian_StudentGuardian_guardianUserIdToUser   StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
+  StudentGuardian_StudentGuardian_studentUserIdToUser    StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
+  UserI18n                                               UserI18n[]
+  UserPermission                                         UserPermission[]
+}
+
+model UserI18n {
+  userId     Int
+  languageId Int
+  name       String   @db.VarChar(100)
+  father     String?  @db.VarChar(100)
+  mother     String?  @db.VarChar(100)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, languageId])
+}
+
+model Chat {
+  id             Int          @id @default(autoincrement())
+  conversationId Int
+  userId         Int
+  parentId       Int
+  message        String       @db.VarChar(6000)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(6)
+  deletedAt      DateTime?    @db.Timestamptz(6)
+  Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  Chat           Chat         @relation("ChatToChat_parentId", fields: [parentId], references: [id], onDelete: Cascade)
+  User           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  other_Chat     Chat[]       @relation("ChatToChat_parentId")
+  ChatFile       ChatFile[]
+
+  @@index([conversationId])
+  @@index([parentId])
+  @@index([userId])
+}
+
+model ChatFile {
+  chatId Int
+  fileId String @db.Uuid
+  Chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  File   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, fileId])
+}
+
+model Conversation {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(100)
+  description        String               @db.VarChar(600)
+  inviteOnly         Boolean              @default(true)
+  Chat               Chat[]
+  ConversationMember ConversationMember[]
+}
+
+model ConversationMember {
+  conversationId Int
+  userId         Int
+  lastRead       DateTime     @default(now()) @db.Timestamptz(6)
+  lastSeen       DateTime     @default(now()) @db.Timestamptz(6)
+  Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  User           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+}
+
+model Role {
+  id             Int              @id @default(autoincrement())
+  RoleI18n       RoleI18n[]
+  RolePermission RolePermission[]
+  RoleUser       RoleUser[]
+}
+
+model RoleI18n {
+  roleId      Int
+  languageId  Int
+  name        String   @db.VarChar(100)
+  description String   @db.VarChar(600)
+  Language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  Role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, languageId])
+}
+
+model RolePermission {
+  roleId Int
+  table  String  @db.VarChar(100)
+  create Boolean
+  read   Boolean
+  update Boolean
+  delete Boolean
+  Role   Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, table])
+}
+
+model RoleUser {
+  userId Int
+  roleId Int
+  Role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model UserPermission {
+  userId Int
+  table  String  @db.VarChar(100)
+  create Boolean
+  read   Boolean
+  update Boolean
+  delete Boolean
+  User   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, table])
+}
+
+enum activity_action {
+  CREATE
+  UPDATE
+  DELETE
+  TRASH
+  RESTORE
+  LOCK
+  UNLOCK
+  ARCHIVE
+  REMOVE_ARCHIVE
+}
+
+enum address_type {
+  PRESENT
+  PERMANENT
+}
+
+enum blood_type {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum exam_calc_method {
+  AVERAGE
+  POINT
+}
+
+enum gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum guardian_relation_type {
+  FA
+  MO
+  BRO
+  SIS
+  UN
+  AU
+  GRF
+  GRM
+  SON
+  DAU
+  COU
+}
+
+enum notification_link_type {
+  INTERNAL
+  EXTERNAL
+}
+
+enum sms_status {
+  PENDING
+  FAILED
+  SUCCESS
+}
+
+enum user_kind {
+  STUDENT
+  GUARDIAN
+  STAFF
+  ADMIN
+  VENDOR
+  COMMON
+}

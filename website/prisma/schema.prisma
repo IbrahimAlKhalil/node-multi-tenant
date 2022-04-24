@@ -6,3 +6,25 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Cluster {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  host        String      @unique
+  Institute   Institute[]
+
+  @@index([host])
+}
+
+model Institute {
+  id        String  @id @default(uuid()) @db.Uuid
+  clusterId String  @db.Uuid
+  code      String  @unique
+  name      String
+  slug      String  @unique
+  database  String
+  Cluster   Cluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+
+  @@index([clusterId])
+}
