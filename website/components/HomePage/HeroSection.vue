@@ -1,5 +1,5 @@
 <template>
-  <div class="hero-section relative">
+  <div class="hero-section relative mb-24">
     <div
       class="container mx-auto flex items-center justify-center gap-5 min-h-screen"
     >
@@ -26,7 +26,7 @@
       </div>
     </div>
     <div
-      class="flex justify-center items-center shadow-md absolute bottom-12 left-1/2 -translate-x-1/2"
+      class="flex justify-center items-center shadow-md absolute bottom-12 left-1/2 -translate-x-1/2 hidden"
     >
       <component
         class="text-5xl text-white transition hover:scale-125 hover:text-secondary cursor-pointer"

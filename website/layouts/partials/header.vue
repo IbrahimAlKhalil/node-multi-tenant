@@ -1,6 +1,6 @@
 <template>
   <header
-    class="fixed top-0 left-1/2 w-full z-10 -translate-x-1/2"
+    class="absolute top-0 left-1/2 w-full z-10 -translate-x-1/2"
     :class="{ 'bg-white shadow-md': isSticky }"
   >
     <p>{{ scrollTop }}</p>
