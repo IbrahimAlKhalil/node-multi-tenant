@@ -1,5 +1,5 @@
 <template>
-  <div class="features-section absolute -bottom-20 w-full hidden">
+  <div class="features-section absolute -bottom-20 w-full">
     <div
       class="bg-white rounded-lg shadow-lg w-4/5 mx-auto px-8 py-5 flex justify-between"
     >
