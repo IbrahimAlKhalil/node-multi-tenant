@@ -25,7 +25,6 @@
     "execa": "^6.1.0"
   },
   "devDependencies": {
-    "@types/dockerode": "^3.3.3",
-    "pgsql-parser": "^13.2.0"
+    "@types/dockerode": "^3.3.3"
   }
 }
