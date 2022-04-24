@@ -101,51 +101,6 @@ model AreaI18n {
   @@id([areaId, languageId])
 }
 
-model Asset {
-  id          Int       @id @default(autoincrement())
-  storeId     Int
-  assetTypeId Int
-  unitId      Int
-  amount      Decimal   @default(0) @db.Decimal(18, 8)
-  AssetType   AssetType @relation(fields: [assetTypeId], references: [id])
-  Store       Store     @relation(fields: [storeId], references: [id])
-  Unit        Unit      @relation(fields: [unitId], references: [id])
-
-  @@unique([storeId, assetTypeId])
-}
-
-model AssetType {
-  id                                                     Int                @id @default(autoincrement())
-  measurementId                                          Int
-  useAsCurrency                                          Boolean
-  Measurement                                            Measurement        @relation(fields: [measurementId], references: [id])
-  Asset                                                  Asset[]
-  AssetTypeI18n                                          AssetTypeI18n[]
-  InitialAsset                                           InitialAsset[]
-  Product                                                Product[]
-  ProductAsset                                           ProductAsset[]
-  ProductionAsset_AssetTypeToProductionAsset_creditAsset ProductionAsset[]  @relation("AssetTypeToProductionAsset_creditAsset")
-  ProductionAsset_AssetTypeToProductionAsset_debitAsset  ProductionAsset[]  @relation("AssetTypeToProductionAsset_debitAsset")
-  SubsConsumeAsset                                       SubsConsumeAsset[]
-  SubsOffAsset                                           SubsOffAsset[]
-  SubsProduct                                            SubsProduct[]
-  Subscription                                           Subscription[]
-  SvcConsumeAsset                                        SvcConsumeAsset[]
-  Transaction                                            Transaction[]
-  TrxDetail_AssetTypeToTrxDetail_creditAsset             TrxDetail[]        @relation("AssetTypeToTrxDetail_creditAsset")
-  TrxDetail_AssetTypeToTrxDetail_debitAsset              TrxDetail[]        @relation("AssetTypeToTrxDetail_debitAsset")
-}
-
-model AssetTypeI18n {
-  languageId  Int
-  assetTypeId Int
-  name        String    @db.VarChar(100)
-  AssetType   AssetType @relation(fields: [assetTypeId], references: [id], onDelete: Cascade)
-  Language    Language  @relation(fields: [languageId], references: [id], onDelete: Cascade)
-
-  @@id([assetTypeId, languageId])
-}
-
 model Bench {
   id           Int        @id
   benchGroupId Int
@@ -282,26 +237,6 @@ model ClassI18n {
   Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
 
   @@id([classId, languageId])
-}
-
-model Cost {
-  id        Int         @id @default(autoincrement())
-  serviceId Int
-  Service   Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  CostI18n  CostI18n[]
-  TrxDetail TrxDetail[]
-
-  @@index([serviceId])
-}
-
-model CostI18n {
-  costId     Int
-  languageId Int
-  name       String   @db.VarChar(100)
-  Cost       Cost     @relation(fields: [costId], references: [id], onDelete: Cascade)
-  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-
-  @@id([costId, languageId])
 }
 
 model Country {
@@ -646,23 +581,6 @@ model Folder {
   @@index([parentId])
 }
 
-model Fund {
-  id       Int        @id @default(autoincrement())
-  FundI18n FundI18n[]
-  Ledger   Ledger[]
-  Store    Store[]
-}
-
-model FundI18n {
-  languageId Int
-  fundId     Int
-  name       String   @db.VarChar(100)
-  Fund       Fund     @relation(fields: [fundId], references: [id], onDelete: Cascade)
-  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-
-  @@id([fundId, languageId])
-}
-
 model Grade {
   id              Int               @id @default(autoincrement())
   point           Float?            @db.Real
@@ -720,21 +638,6 @@ model GuardianRoleUser {
   @@id([guardianUserId, studentUserId, roleId])
 }
 
-model InitialAsset {
-  id          Int       @id @default(autoincrement())
-  storeId     Int
-  assetTypeId Int
-  unitId      Int
-  amount      Decimal   @db.Decimal(18, 8)
-  canceled    Boolean   @default(false)
-  AssetType   AssetType @relation(fields: [assetTypeId], references: [id], onUpdate: Restrict)
-  Store       Store     @relation(fields: [storeId], references: [id], onUpdate: Restrict)
-  Unit        Unit      @relation(fields: [unitId], references: [id], onUpdate: Restrict)
-
-  @@index([assetTypeId])
-  @@index([storeId])
-}
-
 model Institute {
   id            Int             @id @default(autoincrement())
   mobile        String          @db.VarChar(16)
@@ -761,13 +664,11 @@ model Language {
   name                String                @db.VarChar(100)
   AddressI18n         AddressI18n[]
   AreaI18n            AreaI18n[]
-  AssetTypeI18n       AssetTypeI18n[]
   BookCategoryI18n    BookCategoryI18n[]
   BookGroupI18n       BookGroupI18n[]
   BookI18n            BookI18n[]
   ClassGroupI18n      ClassGroupI18n[]
   ClassI18n           ClassI18n[]
-  CostI18n            CostI18n[]
   CountryI18n         CountryI18n[]
   DesignationI18n     DesignationI18n[]
   DistrictI18n        DistrictI18n[]
@@ -775,53 +676,20 @@ model Language {
   ExamMethodI18n      ExamMethodI18n[]
   ExamPresetI18n      ExamPresetI18n[]
   FloorI18n           FloorI18n[]
-  FundI18n            FundI18n[]
   GradeI18n           GradeI18n[]
   GroupI18n           GroupI18n[]
   GuardianRoleI18n    GuardianRoleI18n[]
   InstituteI18n       InstituteI18n[]
-  LedgerI18n          LedgerI18n[]
-  MeasurementI18n     MeasurementI18n[]
   NotificationContent NotificationContent[]
-  ProductI18n         ProductI18n[]
   RoleI18n            RoleI18n[]
   RoomI18n            RoomI18n[]
-  ServiceI18n         ServiceI18n[]
   SessionI18n         SessionI18n[]
   Setting             Setting[]
   SmsTemplateI18n     SmsTemplateI18n[]
   StaffI18n           StaffI18n[]
   StateI18n           StateI18n[]
-  StoreI18n           StoreI18n[]
   SubDistrictI18n     SubDistrictI18n[]
-  TrxMethodI18n       TrxMethodI18n[]
-  UnitI18n            UnitI18n[]
   UserI18n            UserI18n[]
-}
-
-model Ledger {
-  id           Int          @id @default(autoincrement())
-  fundId       Int
-  parent       Int?
-  Fund         Fund         @relation(fields: [fundId], references: [id], onDelete: Cascade)
-  Ledger       Ledger?      @relation("LedgerToLedger_parent", fields: [parent], references: [id], onDelete: Cascade)
-  other_Ledger Ledger[]     @relation("LedgerToLedger_parent")
-  LedgerI18n   LedgerI18n[]
-  Production   Production[]
-  Service      Service[]
-
-  @@index([fundId])
-  @@index([parent])
-}
-
-model LedgerI18n {
-  ledgerId   Int
-  languageId Int
-  name       String?  @db.VarChar(100)
-  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  Ledger     Ledger   @relation(fields: [ledgerId], references: [id], onDelete: Cascade)
-
-  @@id([ledgerId, languageId])
 }
 
 model Lock {
@@ -830,36 +698,6 @@ model Lock {
   recordId String
 
   @@id([table, column, recordId])
-}
-
-model Measurement {
-  id              Int               @id
-  AssetType       AssetType[]
-  MeasurementI18n MeasurementI18n[]
-  Unit            Unit[]
-}
-
-model MeasurementI18n {
-  languageId    Int
-  measurementId Int         @default(autoincrement()) @db.SmallInt
-  name          String      @db.VarChar(100)
-  Language      Language    @relation(fields: [languageId], references: [id])
-  Measurement   Measurement @relation(fields: [measurementId], references: [id], onDelete: Cascade)
-
-  @@id([measurementId, languageId])
-}
-
-model MeasurementSystem {
-  id            Int @id @default(autoincrement())
-  measurementId Int
-}
-
-model MeasurementSystemI18n {
-  systemId   Int
-  languageId Int
-  name       String @db.VarChar(100)
-
-  @@id([systemId, languageId])
 }
 
 model MimeType {
@@ -908,16 +746,6 @@ model NotificationContent {
   @@unique([baseId, languageId])
 }
 
-model Payment {
-  id            Int           @id @default(autoincrement())
-  reference     Int?
-  comment       String?       @db.VarChar(350)
-  canceled      Boolean       @default(false)
-  Payment       Payment?      @relation("PaymentToPayment_reference", fields: [reference], references: [id], onDelete: Cascade)
-  other_Payment Payment[]     @relation("PaymentToPayment_reference")
-  Transaction   Transaction[]
-}
-
 model Preset {
   id    Int
   table String @db.VarChar(100)
@@ -925,78 +753,6 @@ model Preset {
   User  User   @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@id([id, table])
-}
-
-model Product {
-  id               Int                @id @default(autoincrement())
-  serviceId        Int
-  anyAsset         Boolean            @default(false)
-  priceAsset       Int
-  priceUnit        Int
-  price            Decimal            @db.Decimal(18, 8)
-  AssetType        AssetType          @relation(fields: [priceAsset], references: [id], onDelete: Cascade)
-  Unit             Unit               @relation(fields: [priceUnit], references: [id])
-  Service          Service            @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  ProductAsset     ProductAsset[]
-  ProductI18n      ProductI18n[]
-  SubsConsumeAsset SubsConsumeAsset[]
-  SubsOffAsset     SubsOffAsset[]
-  SubsProduct      SubsProduct[]
-  SvcConsumeAsset  SvcConsumeAsset[]
-
-  @@index([serviceId])
-}
-
-model ProductAsset {
-  productId   Int
-  assetTypeId Int
-  unitId      Int
-  amount      Decimal   @db.Decimal(18, 8)
-  AssetType   AssetType @relation(fields: [assetTypeId], references: [id], onDelete: Cascade)
-  Product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  Unit        Unit      @relation(fields: [unitId], references: [id])
-
-  @@id([productId, assetTypeId])
-}
-
-model ProductI18n {
-  productId  Int
-  languageId Int
-  name       String   @db.VarChar(100)
-  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  Product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@id([productId, languageId])
-}
-
-model Production {
-  id              Int               @id @default(autoincrement())
-  ledgerId        Int
-  canceled        Boolean           @default(false)
-  Ledger          Ledger            @relation(fields: [ledgerId], references: [id])
-  ProductionAsset ProductionAsset[]
-
-  @@index([ledgerId])
-}
-
-model ProductionAsset {
-  id                                               Int        @id @default(autoincrement())
-  productionId                                     Int
-  storeId                                          Int
-  creditAsset                                      Int?
-  creditUnit                                       Int?
-  credit                                           Decimal?   @db.Decimal(18, 8)
-  debitAsset                                       Int?
-  debitUnit                                        Int?
-  debit                                            Decimal?   @db.Decimal(18, 8)
-  AssetType_AssetTypeToProductionAsset_creditAsset AssetType? @relation("AssetTypeToProductionAsset_creditAsset", fields: [creditAsset], references: [id], onDelete: Restrict)
-  Unit_ProductionAsset_creditUnitToUnit            Unit?      @relation("ProductionAsset_creditUnitToUnit", fields: [creditUnit], references: [id], onDelete: Restrict)
-  AssetType_AssetTypeToProductionAsset_debitAsset  AssetType? @relation("AssetTypeToProductionAsset_debitAsset", fields: [debitAsset], references: [id], onDelete: Restrict)
-  Unit_ProductionAsset_debitUnitToUnit             Unit?      @relation("ProductionAsset_debitUnitToUnit", fields: [debitUnit], references: [id], onDelete: Restrict)
-  Production                                       Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
-  Store                                            Store      @relation(fields: [storeId], references: [id])
-
-  @@index([productionId])
 }
 
 model Revision {
@@ -1041,44 +797,6 @@ model Seat {
   ExamRoutineSeat ExamRoutineSeat[]
 
   @@unique([benchId, order])
-}
-
-model Service {
-  id           Int            @id @default(autoincrement())
-  ledgerId     Int
-  categoryId   Int
-  subscribable Boolean
-  consumable   Boolean
-  Ledger       Ledger         @relation(fields: [ledgerId], references: [id], onDelete: Cascade)
-  Cost         Cost[]
-  Product      Product[]
-  ServiceI18n  ServiceI18n[]
-  Subscription Subscription[]
-  SvcConsume   SvcConsume[]
-
-  @@index([ledgerId])
-}
-
-model ServiceCategory {
-  id Int @id @default(autoincrement())
-}
-
-model ServiceCategoryI18n {
-  serviceCategoryId Int
-  languageId        Int
-  name              String @db.VarChar(100)
-
-  @@id([serviceCategoryId, languageId])
-}
-
-model ServiceI18n {
-  serviceId  Int
-  languageId Int
-  name       String   @db.VarChar(100)
-  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  Service    Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  @@id([serviceId, languageId])
 }
 
 model Session {
@@ -1187,30 +905,6 @@ model StateI18n {
   @@id([stateId, languageId])
 }
 
-model Store {
-  id                                       Int               @id @default(autoincrement())
-  fundId                                   Int
-  Fund                                     Fund              @relation(fields: [fundId], references: [id], onDelete: Cascade)
-  Asset                                    Asset[]
-  InitialAsset                             InitialAsset[]
-  ProductionAsset                          ProductionAsset[]
-  StoreI18n                                StoreI18n[]
-  Transaction_StoreToTransaction_storeFrom Transaction[]     @relation("StoreToTransaction_storeFrom")
-  Transaction_StoreToTransaction_storeTo   Transaction[]     @relation("StoreToTransaction_storeTo")
-
-  @@index([fundId])
-}
-
-model StoreI18n {
-  languageId Int
-  storeId    Int
-  name       String   @db.VarChar(100)
-  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  Store      Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
-
-  @@id([storeId, languageId])
-}
-
 model StudentGuardian {
   guardianUserId                            Int
   studentUserId                             Int
@@ -1242,244 +936,11 @@ model SubDistrictI18n {
   @@id([subDistrictId, languageId])
 }
 
-model SubsConsume {
-  id               Int                @id @default(autoincrement())
-  subscriptionId   Int
-  period           DateTime           @db.Timestamptz(6)
-  consumedAt       DateTime           @db.Timestamptz(6)
-  Subscription     Subscription       @relation(fields: [subscriptionId], references: [id])
-  SubsConsumeAsset SubsConsumeAsset[]
-
-  @@index([subscriptionId, period])
-}
-
-model SubsConsumeAsset {
-  id            Int         @id @default(autoincrement())
-  productId     Int
-  subsConsumeId Int
-  assetTypeId   Int?
-  unitId        Int?
-  amount        Decimal?    @db.Decimal(18, 8)
-  AssetType     AssetType?  @relation(fields: [assetTypeId], references: [id], onDelete: Restrict)
-  Product       Product     @relation(fields: [productId], references: [id])
-  SubsConsume   SubsConsume @relation(fields: [subsConsumeId], references: [id], onDelete: Cascade)
-  Unit          Unit?       @relation(fields: [unitId], references: [id], onDelete: Restrict)
-
-  @@unique([subsConsumeId, assetTypeId])
-}
-
-model SubsOff {
-  id             Int            @id @default(autoincrement())
-  subscriptionId Int
-  since          DateTime       @db.Timestamptz(6)
-  till           DateTime       @db.Timestamptz(6)
-  Subscription   Subscription   @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  SubsOffAsset   SubsOffAsset[]
-
-  @@unique([subscriptionId, since])
-}
-
-model SubsOffAsset {
-  productId   Int
-  subsOffId   Int
-  assetTypeId Int
-  unitId      Int?
-  amount      Decimal?  @db.Decimal(18, 8)
-  AssetType   AssetType @relation(fields: [assetTypeId], references: [id], onDelete: Cascade)
-  Product     Product   @relation(fields: [productId], references: [id])
-  SubsOff     SubsOff   @relation(fields: [subsOffId], references: [id], onDelete: Cascade)
-  Unit        Unit?     @relation(fields: [unitId], references: [id], onDelete: Restrict)
-
-  @@id([productId, subsOffId, assetTypeId])
-}
-
-model SubsProduct {
-  id             Int          @id @default(autoincrement())
-  subscriptionId Int
-  productId      Int
-  amount         Int?
-  consumeCycle   cycle
-  consumeIter    Int
-  priceAsset     Int?
-  priceUnit      Int?
-  price          Decimal?     @db.Decimal(18, 8)
-  AssetType      AssetType?   @relation(fields: [priceAsset], references: [id], onDelete: Cascade)
-  Unit           Unit?        @relation(fields: [priceUnit], references: [id], onDelete: Restrict)
-  Product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  Subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-
-  @@index([subscriptionId])
-}
-
-model Subscription {
-  id           Int           @id @default(autoincrement())
-  serviceId    Int
-  userId       Int
-  payCycle     cycle
-  payCycleIter Int
-  calendar     calendar
-  since        DateTime      @db.Timestamptz(6)
-  till         DateTime?     @db.Timestamptz(6)
-  price        Decimal?      @db.Decimal(18, 8)
-  priceAsset   Int?
-  priceUnit    Int?
-  comment      String?       @db.VarChar(750)
-  canceled     Boolean       @default(false)
-  AssetType    AssetType?    @relation(fields: [priceAsset], references: [id], onDelete: Cascade)
-  Unit         Unit?         @relation(fields: [priceUnit], references: [id], onDelete: Restrict)
-  Service      Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  User         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  SubsConsume  SubsConsume[]
-  SubsOff      SubsOff[]
-  SubsProduct  SubsProduct[]
-  TrxDetail    TrxDetail[]
-
-  @@index([serviceId])
-  @@index([userId])
-}
-
-model SvcConsume {
-  id              Int               @id @default(autoincrement())
-  userId          Int?
-  serviceId       Int
-  Service         Service           @relation(fields: [serviceId], references: [id])
-  User            User?             @relation(fields: [userId], references: [id], onDelete: Restrict)
-  SvcConsumeAsset SvcConsumeAsset[]
-  TrxDetail       TrxDetail[]
-
-  @@index([serviceId])
-  @@index([userId])
-}
-
-model SvcConsumeAsset {
-  id           Int        @id @default(autoincrement())
-  productId    Int
-  svcConsumeId Int
-  assetTypeId  Int?
-  unitId       Int?
-  amount       Decimal?   @db.Decimal(18, 8)
-  AssetType    AssetType? @relation(fields: [assetTypeId], references: [id], onDelete: Restrict)
-  Product      Product    @relation(fields: [productId], references: [id])
-  SvcConsume   SvcConsume @relation(fields: [svcConsumeId], references: [id], onDelete: Cascade)
-  Unit         Unit?      @relation(fields: [unitId], references: [id], onDelete: Restrict)
-
-  @@unique([svcConsumeId, productId, assetTypeId])
-}
-
-model SystemAnchor {
-  systemFrom Int
-  systemTo   Int
-  ratio      Decimal @db.Decimal(18, 8)
-
-  @@id([systemFrom, systemTo])
-}
-
-model Transaction {
-  id                                 Int         @id @default(autoincrement())
-  externalTrxId                      String?     @db.VarChar(200)
-  paymentId                          Int
-  storeTo                            Int?
-  storeFrom                          Int?
-  methodId                           Int
-  type                               String
-  amount                             Decimal     @db.Decimal(18, 8)
-  assetTypeId                        Int
-  AssetType                          AssetType   @relation(fields: [assetTypeId], references: [id], onDelete: Cascade)
-  TrxMethod                          TrxMethod   @relation(fields: [methodId], references: [id])
-  Payment                            Payment     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  Store_StoreToTransaction_storeFrom Store?      @relation("StoreToTransaction_storeFrom", fields: [storeFrom], references: [id], onDelete: Restrict)
-  Store_StoreToTransaction_storeTo   Store?      @relation("StoreToTransaction_storeTo", fields: [storeTo], references: [id], onDelete: Restrict)
-  TrxDetail                          TrxDetail[]
-
-  @@index([paymentId])
-  @@index([storeFrom])
-  @@index([storeTo])
-}
-
 model Trash {
   table    String @db.VarChar(100)
   recordId String
 
   @@id([table, recordId])
-}
-
-model TrxDetail {
-  id                                         Int           @id @default(autoincrement())
-  transactionId                              Int
-  serviceConsumeId                           Int?
-  costId                                     Int?
-  subscriptionId                             Int?
-  period                                     DateTime?     @db.Timestamptz(6)
-  creditAsset                                Int?
-  debitAsset                                 Int?
-  creditUnit                                 Int?
-  debitUnit                                  Int?
-  creditAmount                               Decimal?      @db.Decimal(18, 8)
-  debitAmount                                Decimal?      @db.Decimal(18, 8)
-  credit                                     Decimal?      @db.Decimal(18, 8)
-  debit                                      Decimal?      @db.Decimal(18, 8)
-  discount                                   Decimal?      @db.Decimal(18, 8)
-  Cost                                       Cost?         @relation(fields: [costId], references: [id], onDelete: Restrict)
-  AssetType_AssetTypeToTrxDetail_creditAsset AssetType?    @relation("AssetTypeToTrxDetail_creditAsset", fields: [creditAsset], references: [id], onDelete: Restrict)
-  Unit_TrxDetail_creditUnitToUnit            Unit?         @relation("TrxDetail_creditUnitToUnit", fields: [creditUnit], references: [id], onDelete: Restrict)
-  AssetType_AssetTypeToTrxDetail_debitAsset  AssetType?    @relation("AssetTypeToTrxDetail_debitAsset", fields: [debitAsset], references: [id], onDelete: Restrict)
-  Unit_TrxDetail_debitUnitToUnit             Unit?         @relation("TrxDetail_debitUnitToUnit", fields: [debitUnit], references: [id], onDelete: Restrict)
-  SvcConsume                                 SvcConsume?   @relation(fields: [serviceConsumeId], references: [id], onDelete: Restrict)
-  Subscription                               Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: Restrict)
-  Transaction                                Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-
-  @@index([costId])
-  @@index([subscriptionId])
-  @@index([transactionId])
-}
-
-model TrxMethod {
-  id            Int             @id @default(autoincrement())
-  Transaction   Transaction[]
-  TrxMethodI18n TrxMethodI18n[]
-}
-
-model TrxMethodI18n {
-  id          Int       @id @default(autoincrement())
-  trxMethodId Int
-  languageId  Int
-  name        String    @db.VarChar(100)
-  Language    Language  @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  TrxMethod   TrxMethod @relation(fields: [trxMethodId], references: [id], onDelete: Cascade)
-
-  @@unique([trxMethodId, languageId])
-}
-
-model Unit {
-  id                                               Int                @id
-  systemId                                         Int
-  anchor                                           Decimal?           @db.Decimal(18, 8)
-  anchorShift                                      Decimal?           @db.Decimal(18, 8)
-  Measurement                                      Measurement        @relation(fields: [systemId], references: [id], onDelete: Cascade)
-  Asset                                            Asset[]
-  InitialAsset                                     InitialAsset[]
-  Product                                          Product[]
-  ProductAsset                                     ProductAsset[]
-  ProductionAsset_ProductionAsset_creditUnitToUnit ProductionAsset[]  @relation("ProductionAsset_creditUnitToUnit")
-  ProductionAsset_ProductionAsset_debitUnitToUnit  ProductionAsset[]  @relation("ProductionAsset_debitUnitToUnit")
-  SubsConsumeAsset                                 SubsConsumeAsset[]
-  SubsOffAsset                                     SubsOffAsset[]
-  SubsProduct                                      SubsProduct[]
-  Subscription                                     Subscription[]
-  SvcConsumeAsset                                  SvcConsumeAsset[]
-  TrxDetail_TrxDetail_creditUnitToUnit             TrxDetail[]        @relation("TrxDetail_creditUnitToUnit")
-  TrxDetail_TrxDetail_debitUnitToUnit              TrxDetail[]        @relation("TrxDetail_debitUnitToUnit")
-  UnitI18n                                         UnitI18n[]
-}
-
-model UnitI18n {
-  languageId Int
-  unitId     Int      @default(autoincrement()) @db.SmallInt
-  name       String   @db.VarChar(100)
-  Language   Language @relation(fields: [languageId], references: [id])
-  Unit       Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
-
-  @@id([languageId, unitId])
 }
 
 model User {
@@ -1515,8 +976,6 @@ model User {
   StaffGroupPivot                                        StaffGroupPivot[]
   StudentGuardian_StudentGuardian_guardianUserIdToUser   StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
   StudentGuardian_StudentGuardian_studentUserIdToUser    StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
-  Subscription                                           Subscription[]
-  SvcConsume                                             SvcConsume[]
   UserI18n                                               UserI18n[]
   UserPermission                                         UserPermission[]
 }
@@ -1658,19 +1117,6 @@ enum blood_type {
   AB_NEGATIVE
   O_POSITIVE
   O_NEGATIVE
-}
-
-enum calendar {
-  HIJ
-  GRE
-  BEN
-}
-
-enum cycle {
-  D
-  W
-  M
-  Y
 }
 
 enum exam_calc_method {
