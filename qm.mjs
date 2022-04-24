@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { run as formatSql } from './scripts/format-sql.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -7,6 +8,7 @@ import { execa, execaSync } from 'execa';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import chalk from 'chalk';
 import fs from 'fs';
 
 // Load environment variables from .env file
@@ -17,6 +19,25 @@ const __dirname = dirname(__filename);
 
 // Load the package.json file
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './package.json'), { encoding: 'utf-8' }));
+
+function getEnv(key, prefix = '') {
+  // Get the environment variable
+  const env = process.env[`${prefix}${key}`];
+
+  // If prefix is an empty string the environment variable must exist
+  if (prefix === '' && !env) {
+    console.error(chalk.red(`Environment variable ${key} is not set`));
+    process.exit(1);
+  }
+
+  // If environment variable is not set, use the default value
+  if (!env) {
+    return process.env[`${key}`];
+  }
+
+  // Return the environment variable
+  return env;
+}
 
 function runInsideProjects(binPath, projectsToUse, env, extraArgs, excludedArgs = []) {
   const args = process.argv.slice(3).filter(arg => !excludedArgs.includes(arg));
@@ -66,6 +87,16 @@ program.addCommand(
   },
 );
 
+program.addCommand(
+  new Command('format-sql')
+    .option('-a, --api', 'Format the migration files for the API')
+    .option('-w, --website', 'Format the migration files for the website')
+    .action((_, p) => formatSql(
+      p.getOptionValue('api'),
+      p.getOptionValue('website'),
+    )),
+);
+
 // Create the build command
 // This command is only for development environments
 if (process.env.NODE_ENV === 'development') {
@@ -83,6 +114,46 @@ if (process.env.NODE_ENV === 'development') {
       )),
   );
 }
+
+
+// Create a wrapper for prisma CLI
+const prisma = new Command('prisma');
+prisma.action((_, _program) => {
+  runInsideProjects(
+    (project) => path.resolve(__dirname, `./${project}/node_modules/.bin/prisma`),
+    ['api', 'website'],
+    (project) => {
+      const prefix = project === 'api' ? '' : 'WEBSITE_';
+
+      return {
+        ...process.env,
+        DATABASE_URL: `postgres://${getEnv('POSTGRES_USER', prefix)}:${getEnv('POSTGRES_PASSWORD', prefix)}@${getEnv('POSTGRES_HOST', prefix)}:${getEnv('POSTGRES_PORT', prefix)}/${getEnv('POSTGRES_DATABASE', prefix)}`,
+      };
+    },
+  );
+});
+['W', 'a'].forEach(cmd => {
+  const prefix = cmd === 'W' ? 'WEBSITE_' : '';
+  const project = cmd === 'W' ? 'website' : 'api';
+
+  prisma.addCommand(
+    new Command(cmd)
+      .description(`Run prisma in the ${project} app`)
+      .option('-h, --help', 'Output usage information')
+      .action((_, _program) => {
+        runInsideProjects(
+          path.resolve(__dirname, `./${project}/node_modules/.bin/prisma`),
+          [project],
+          {
+            ...process.env,
+            DATABASE_URL: `postgres://${getEnv('POSTGRES_USER', prefix)}:${getEnv('POSTGRES_PASSWORD', prefix)}@${getEnv('POSTGRES_HOST', prefix)}:${getEnv('POSTGRES_PORT', prefix)}/${getEnv('POSTGRES_DATABASE', prefix)}`,
+          },
+          [],
+          ['W', 'a'],
+        );
+      }),
+  );
+});
 
 // Create a wrapper for NestJS CLI
 const nest = new Command('nest');
@@ -182,6 +253,7 @@ const test = new Command('test');
 
 program.addCommand(lint);
 program.addCommand(nest);
+program.addCommand(prisma);
 program.addCommand(test);
 
 // Create a wrapper for Vite CLI

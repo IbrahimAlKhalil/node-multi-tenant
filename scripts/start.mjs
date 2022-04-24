@@ -82,30 +82,28 @@ function pullImage(tag) {
   });
 }
 
-function pullImages() {
-  return new Promise(async (resolve) => {
-    const required = [];
-    const availableImages = (await docker.listImages())
-      .filter((image) => image.RepoTags)
-      .map((image) => image.RepoTags[0]);
+async function pullImages() {
+  const required = [];
+  const availableImages = (await docker.listImages())
+    .filter((image) => image.RepoTags)
+    .map((image) => image.RepoTags[0]);
 
-    for (const k in images) {
-      required.push(images[k]);
-    }
+  for (const k in images) {
+    required.push(images[k]);
+  }
 
-    // Pull images if not available
-    for (const [index, value] of required.entries()) {
-      if (availableImages.includes(value)) {
-        if (index + 1 === required.length) {
-          resolve();
-        }
-
-        continue;
+  // Pull images if not available
+  for (const [index, value] of required.entries()) {
+    if (availableImages.includes(value)) {
+      if (index + 1 === required.length) {
+        return;
       }
 
-      await pullImage(value);
+      continue;
     }
-  });
+
+    await pullImage(value);
+  }
 }
 
 function logContainer(container, prefix) {
@@ -209,6 +207,10 @@ async function startPostgres() {
       },
       Binds: [`${containerNames.postgres}:/var/lib/postgresql/data`],
     },
+  });
+
+  await docker.getNetwork(prefix).connect({
+    Container: postgres.id,
   });
 
   await postgres.start();
@@ -400,6 +402,13 @@ async function stop() {
   await removeContainer(containerNames.postgres);
   await removeContainer(containerNames.redis);
   await removeContainer(containerNames.minio);
+
+  try {
+    await docker.getNetwork(prefix).remove();
+  } catch (e) {
+    //
+  }
+
   console.log(chalk.redBright.bold('Stopped ✓'));
 }
 
@@ -423,6 +432,11 @@ export async function start(postgres, minio, redis, api, web, website) {
   await stop();
 
   console.log(chalk.whiteBright.bold('Creating network:'), chalk.cyan(prefix));
+
+  await docker.createNetwork({
+    Name: prefix,
+    checkDuplicate: true,
+  });
 
   if (postgres) {
     await startPostgres();
