@@ -1,9 +1,11 @@
 <template>
   <div>
     <div class="container mx-auto flex justify-between items-center gap-20">
-      <div class="text" style='flex: 1 1 40%'>
+      <div class="text" style="flex: 1 1 40%">
         <p class="text__subtitle font-bold text-text">SAHARA IT</p>
-        <h3 class="text__heading text-5xl leading-[4rem] font-bold text-primary my-5">
+        <h3
+          class="text__heading text-5xl leading-[4rem] font-bold text-primary my-5"
+        >
           We Offering The Best Services For You
         </h3>
         <p class="text__para text-text text-sm text-justify mb-5">
@@ -14,7 +16,10 @@
         </p>
         <secondary-btn title="SEE ALL SERVICES" />
       </div>
-      <ul class="info-boxes grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-x-10 gap-y-24 py-20" style='flex: 1 1 60%'>
+      <ul
+        class="info-boxes grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-x-10 gap-y-24 py-20"
+        style="flex: 1 1 60%"
+      >
         <!-- ================= start Item =============== -->
         <li
           v-for="item in items"
@@ -27,7 +32,7 @@
             <img src="/assets/images/quran.svg" alt="blog" />
           </div>
           <div class="info-box__content">
-            <h3 class="info-box__title text-xl font-bold mb-2 text-primary ">
+            <h3 class="info-box__title text-xl font-bold mb-2 text-primary">
               {{ item.title }}
             </h3>
             <p class="info-box__para text-sm text-text text-justify">
@@ -48,8 +53,8 @@
 </template>
 
 <script lang="ts">
-import PrimaryBtnVue from '#components/ui/btn/PrimaryBtn.vue';
-import SecondaryBtnVue from '#components/ui/btn/SecondaryBtn.vue';
+import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
+import SecondaryBtnVue from '#components/ui/btn/secondary-btn.vue';
 import ArrowRight from '#icons/solid/arrow-right.svg';
 export default {
   name: 'services-section',
@@ -63,38 +68,42 @@ export default {
         {
           id: '1',
           title: 'Computerized Accounting',
-          description: 'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
-            '              industry. Lorem Ipsum has been the industry\'s standard dummy text\n' +
+          description:
+            'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
+            "              industry. Lorem Ipsum has been the industry's standard dummy text\n" +
             '              ever since the 1500s, when an unknown printer took a galley of\n' +
             '              type and scrambled it to make a type specimen book.',
-          icon: ArrowRight
+          icon: ArrowRight,
         },
         {
           id: '1',
           title: 'Computerized Accounting',
-          description: 'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
-            '              industry. Lorem Ipsum has been the industry\'s standard dummy text\n' +
+          description:
+            'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
+            "              industry. Lorem Ipsum has been the industry's standard dummy text\n" +
             '              ever since the 1500s, when an unknown printer took a galley of\n' +
             '              type and scrambled it to make a type specimen book.',
-          icon: ArrowRight
+          icon: ArrowRight,
         },
         {
           id: '1',
           title: 'Computerized Accounting',
-          description: 'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
-            '              industry. Lorem Ipsum has been the industry\'s standard dummy text\n' +
+          description:
+            'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
+            "              industry. Lorem Ipsum has been the industry's standard dummy text\n" +
             '              ever since the 1500s, when an unknown printer took a galley of\n' +
             '              type and scrambled it to make a type specimen book.',
-          icon: ArrowRight
+          icon: ArrowRight,
         },
         {
           id: '1',
           title: 'Computerized Accounting',
-          description: 'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
-            '              industry. Lorem Ipsum has been the industry\'s standard dummy text\n' +
+          description:
+            'Lorem Ipsum is simply dummy text of the printing and typesetting\n' +
+            "              industry. Lorem Ipsum has been the industry's standard dummy text\n" +
             '              ever since the 1500s, when an unknown printer took a galley of\n' +
             '              type and scrambled it to make a type specimen book.',
-          icon: ArrowRight
+          icon: ArrowRight,
         },
       ],
     };

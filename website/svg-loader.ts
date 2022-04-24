@@ -13,7 +13,7 @@ export function svgLoader() {
       if (id.match(svgRegex)) {
         return id;
       }
-  },
+    },
 
     async load(id: string) {
       if (!id.match(svgRegex)) {

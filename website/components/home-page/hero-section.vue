@@ -38,9 +38,9 @@
 </template>
 
 <script lang="ts">
-import FeaturesSection from '#components/HomePage/FeaturesSection.vue';
-import PrimaryBtnVue from '#components/ui/btn/PrimaryBtn.vue';
-import SecondaryBtnVue from '#components/ui/btn/SecondaryBtn.vue';
+import FeaturesSection from '#components/home-page/features-section.vue';
+import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
+import SecondaryBtnVue from '#components/ui/btn/secondary-btn.vue';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import PhonePlus from '#icons/duotone/phone-plus.svg';
 import LoginWhite from '#icons/others/login-white.svg?url';

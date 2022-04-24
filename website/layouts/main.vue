@@ -12,7 +12,6 @@
       <template v-slot:widget3>
         <widget-3 />
       </template>
-
     </the-footer>
   </div>
 </template>

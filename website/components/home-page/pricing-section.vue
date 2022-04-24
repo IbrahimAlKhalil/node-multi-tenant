@@ -68,8 +68,8 @@
 </template>
 
 <script lang="ts">
-import SecondaryBtn from '#components/ui/btn/SecondaryBtn.vue';
-import PrimaryBtn from '#components/ui/btn/PrimaryBtn.vue';
+import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
+import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import Check from '#icons/solid/check-circle.svg';
 import { defineComponent } from 'vue';
 

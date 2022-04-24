@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import PrimaryBtnVue from '#components/ui/btn/PrimaryBtn.vue';
+import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
 import IconBlog from '#icons/duotone/blog.svg';
 import IconBookOpen from '#icons/duotone/book-open.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
