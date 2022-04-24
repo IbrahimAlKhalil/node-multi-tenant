@@ -18,6 +18,7 @@ module.exports = {
         'secondary-light': '#FFC864',
         'secondary-dark': '#C68000',
         text: '#333333',
+        light: '#F5F5F5',
       },
     },
   },
