@@ -19,9 +19,9 @@
 <script lang="ts">
 import TheHeader from '#layouts/partials/header.vue';
 import TheFooter from '#layouts/partials/footer.vue';
-import Widget1 from '#components/Footer/Widget1.vue';
-import Widget2 from '#components/Footer/Widget2.vue';
-import Widget3 from '#components/Footer/Widget3.vue';
+import Widget1 from '#components/footer/widget-1.vue';
+import Widget2 from '#components/footer/widget-2.vue';
+import Widget3 from '#components/footer/widget-3.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

@@ -16,10 +16,11 @@
 </template>
 
 <script lang="ts">
+import PreFooter from '#components/footer/pre-footer.vue';
 import { defineComponent } from 'vue';
-import PreFooter from '#components/Footer/PreFooter.vue';
 
 export default defineComponent({
+  name: 'the-footer',
   components: {
     'pre-footer': PreFooter,
   },

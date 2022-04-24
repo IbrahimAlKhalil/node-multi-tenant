@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import PreFooter from '#components/Footer/PreFooter.vue';
+import PreFooter from '#components/footer/pre-footer.vue';
 import LogoWhite from '#images/logo white.svg?url';
 import Facebook from '#icons/brands/facebook.svg';
 import Twitter from '#icons/brands/twitter.svg';

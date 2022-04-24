@@ -3,7 +3,7 @@
     <div class="container mx-auto flex justify-between gap-5 py-8">
       <div class="widget1 flex-1">
         <div class="logo mb-5">
-          <img src="/assets/images/logo white.svg" alt="Logo" />
+          <img src="" alt="Logo" />
         </div>
         <p class="mb-5 text-justify">
           In publishing and graphic design, Lorem ipsum is a placeholder text
@@ -37,9 +37,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import PreFooter from '#components/Footer/PreFooter.vue';
+import PreFooter from '#components/footer/pre-footer.vue';
 import Facebook from '#icons/brands/facebook.svg';
 import Twitter from '#icons/brands/twitter.svg';
+import LogoWhite from '#images/logo white.svg';
 import Web from '#icons/solid/globe.svg';
 
 export default defineComponent({
@@ -49,6 +50,7 @@ export default defineComponent({
   setup() {
     return {
       year: new Date().getFullYear(),
+      LogoWhite,
       Facebook,
       Twitter,
       Web,
