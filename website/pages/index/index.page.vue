@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import HeroSection from '#components/HomePage/HeroSection.vue';
 import ServicesSection from '#components/HomePage/ServicesSection.vue';
+import HeroSection from '#components/HomePage/HeroSection.vue';
 import LayoutMain from '#layouts/main.vue';
 import { defineComponent } from 'vue';
 
