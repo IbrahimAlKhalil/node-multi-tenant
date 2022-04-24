@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { run as formatSql } from './scripts/format-sql.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -8,7 +7,6 @@ import { execa, execaSync } from 'execa';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import chalk from 'chalk';
 import fs from 'fs';
 
 // Load environment variables from .env file
@@ -19,25 +17,6 @@ const __dirname = dirname(__filename);
 
 // Load the package.json file
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './package.json'), { encoding: 'utf-8' }));
-
-function getEnv(key, prefix = '') {
-  // Get the environment variable
-  const env = process.env[`${prefix}${key}`];
-
-  // If prefix is an empty string the environment variable must exist
-  if (prefix === '' && !env) {
-    console.error(chalk.red(`Environment variable ${key} is not set`));
-    process.exit(1);
-  }
-
-  // If environment variable is not set, use the default value
-  if (!env) {
-    return process.env[`${key}`];
-  }
-
-  // Return the environment variable
-  return env;
-}
 
 function runInsideProjects(binPath, projectsToUse, env, extraArgs, excludedArgs = []) {
   const args = process.argv.slice(3).filter(arg => !excludedArgs.includes(arg));
@@ -85,16 +64,6 @@ program.addCommand(
   {
     isDefault: true,
   },
-);
-
-program.addCommand(
-  new Command('format-sql')
-    .option('-a, --api', 'Format the migration files for the API')
-    .option('-w, --website', 'Format the migration files for the website')
-    .action((_, p) => formatSql(
-      p.getOptionValue('api'),
-      p.getOptionValue('website'),
-    )),
 );
 
 // Create the build command
