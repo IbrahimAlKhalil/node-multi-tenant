@@ -17,5 +17,33 @@
             "title": "নমনীয় সমাধান",
             "description": "কম্পিউটার মোবাইলের মাধ্যমে এক্সেস করা যায়"
         }
+    },
+    "services-section": {
+        "sub-title": "সাহারা আইটির সমাধান সমূহ",
+        "title": "আমরা আপনার জন্য যে সকল সেবা পরিসেবা অফার করি",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "button": "সকল সেবা সমূহ",
+        "items": {
+            "item-1": {
+                "title": "সাইন-আপ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button": "আরো পড়ুন"
+            },
+            "item-2": {
+                "title": "সাইন-আপ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button":  "আরো পড়ুন"
+            },
+            "item-3": {
+                "title": "সাইন-আপ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button":  "আরো পড়ুন"
+            },
+            "item-4": {
+                "title": "সাইন-আপ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button":  "আরো পড়ুন"
+            }
+        }
     }
 }

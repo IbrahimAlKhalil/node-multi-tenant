@@ -17,5 +17,34 @@
             "title": "Flexible",
             "description": "You can easily access by mobile or computer"
         }
+    },
+
+    "services-section": {
+        "sub-title": "SAHARA IT SOLUTIONS",
+        "title": "We Offering The Best Services For You",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "button": "SEE ALL SERVICES",
+        "items": {
+            "item-1": {
+                "title": "We Offering Best ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button": "Read More"
+            },
+            "item-2": {
+                "title": "We Offering Best ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button":  "Read More"
+            },
+            "item-3": {
+                "title": "We Offering Best ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button":  "Read More"
+            },
+            "item-4": {
+                "title": "We Offering Best ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button":  "Read More"
+            }
+        }
     }
 }
