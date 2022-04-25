@@ -18,6 +18,7 @@
             "description": "কম্পিউটার মোবাইলের মাধ্যমে এক্সেস করা যায়"
         }
     },
+
     "services-section": {
         "sub-title": "সাহারা আইটির সমাধান সমূহ",
         "title": "আমরা আপনার জন্য যে সকল সেবা পরিসেবা অফার করি",
@@ -43,6 +44,23 @@
                 "title": "সাইন-আপ",
                 "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
                 "button":  "আরো পড়ুন"
+            }
+        }
+    },
+
+    "best-services-section": {
+        "items": {
+            "item-1": {
+                "sub-title": "SAHARA IT SOLUTIONS",
+                "title": "We Offering Best ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button": "Read More"
+            },
+            "item-2": {
+                "sub-title": "SAHARA IT SOLUTIONS",
+                "title": "We Offering Best ",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+                "button": "Read More"
             }
         }
     }
