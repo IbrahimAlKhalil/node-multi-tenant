@@ -6,12 +6,14 @@
     <key-features-section />
     <pricing-section />
     <our-clients-section />
+    <news-letter-section />
   </layout-main>
 </template>
 
 <script lang="ts">
 import BestServicesSection from '#components/home-page/best-services-section.vue';
 import OurClientsSection from '#components/home-page/our-clients-section.vue';
+import NewsLetterSection from '#components/home-page/news-letter-section.vue';
 import ServicesSection from '#components/home-page/services-section.vue';
 import KeyFeaturesSection from '#components/home-page/key-features.vue';
 import PricingSection from '#components/home-page/pricing-section.vue';
@@ -24,12 +26,13 @@ export default defineComponent({
   name: 'our-client-section',
   components: {
     BestServicesSection,
-    PricingSection,
-    LayoutMain,
-    HeroSection,
-    ServicesSection,
     KeyFeaturesSection,
+    NewsLetterSection,
     OurClientsSection,
+    ServicesSection,
+    PricingSection,
+    HeroSection,
+    LayoutMain,
   },
   setup() {
     return {};

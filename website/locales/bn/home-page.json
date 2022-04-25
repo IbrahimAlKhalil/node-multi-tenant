@@ -75,5 +75,13 @@
         "sub-title": "সাহারা আইটি",
         "title": "আমাদের খুশি গ্রাহক",
         "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+    },
+
+    "news-letter-section": {
+        "sub-title": "SAHARA IT",
+        "title": "Subscribe Our Newsletter",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "placeholder": "Enter Your Email Address",
+        "button": "Subscribe Now"
     }
 }
