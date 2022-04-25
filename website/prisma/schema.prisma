@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -24,7 +25,12 @@ model Institute {
   name      String
   slug      String  @unique
   database  String
+  email     String
+  mobile    String
+  disabled  Boolean @default(false)
   Cluster   Cluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
 
   @@index([clusterId])
+  @@index([email])
+  @@index([mobile])
 }

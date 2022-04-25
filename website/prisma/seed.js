@@ -29,6 +29,8 @@ async function run() {
             code: "1000",
             slug: 'madrasa',
             database: process.env.POSTGRES_DATABASE,
+            email: 'jamiaarabia@gmail.com',
+            mobile: '+8801755555555',
           },
         },
       },

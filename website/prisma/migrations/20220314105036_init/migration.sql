@@ -15,6 +15,9 @@ CREATE TABLE "Institute"
     name        text NOT NULL,
     slug        text NOT NULL,
     "database"  text NOT NULL,
+    "email"     text NOT NULL,
+    "mobile"    text NOT NULL,
+    "disabled"  boolean NOT NULL DEFAULT false,
     CONSTRAINT "Institute_pkey" PRIMARY KEY (id),
     CONSTRAINT "Institute_clusterId_fkey" FOREIGN KEY ("clusterId") REFERENCES "Cluster" (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -28,3 +31,7 @@ CREATE UNIQUE INDEX "Institute_slug_key" ON "Institute" ("slug");
 CREATE UNIQUE INDEX "Institute_code_key" ON "Institute" ("code");
 
 CREATE INDEX "Institute_clusterId_idx" ON "Institute" ("clusterId");
+
+CREATE INDEX "Institute_email_idx" ON "Institute" ("email");
+
+CREATE INDEX "Institute_mobile_idx" ON "Institute" ("mobile");
