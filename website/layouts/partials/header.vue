@@ -48,15 +48,15 @@
 </template>
 
 <script lang="ts">
+import IconQuestionCircle from '#icons/duotone/question-circle.svg';
 import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
-import IconBlog from '#icons/duotone/blog.svg';
-import IconBookOpen from '#icons/duotone/book-open.svg';
-import DoorOpen from '#icons/duotone/door-open.svg';
+import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
 import IconInfoCircle from '#icons/duotone/info-circle.svg';
 import IconMoneyCheck from '#icons/duotone/money-check.svg';
-import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
-import IconQuestionCircle from '#icons/duotone/question-circle.svg';
 import LoginWhite from '#icons/others/login-white.svg?url';
+import IconBookOpen from '#icons/duotone/book-open.svg';
+import DoorOpen from '#icons/duotone/door-open.svg';
+import IconBlog from '#icons/duotone/blog.svg';
 import LogoIcon from '#images/icon.svg?url';
 import Logo from '#images/logo.svg?url';
 import { defineComponent } from 'vue';
