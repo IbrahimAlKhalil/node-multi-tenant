@@ -81,6 +81,7 @@ export class AuthService {
       iid: jwtPayload.iid,
       uid: jwtPayload.uid,
       knd: jwtPayload.knd,
+      rol: jwtPayload.rol,
       jti: jwtPayload.jti,
     };
   }
