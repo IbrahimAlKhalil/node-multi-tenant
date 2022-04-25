@@ -53,7 +53,7 @@ importers:
       eslint-plugin-prettier: ^4.0.0
       google-libphonenumber: ^3.2.27
       got: ^12.0.2
-      ioredis: ^4.28.5
+      ioredis: ^5.0.4
       jest: ^27.5.1
       joi: ^17.6.0
       lodash: ^4.17.21
@@ -79,7 +79,7 @@ importers:
       dotenv: 16.0.0
       google-libphonenumber: 3.2.27
       got: 12.0.2
-      ioredis: 4.28.5
+      ioredis: 5.0.4
       joi: 17.6.0
       lodash: 4.17.21
       minio: 7.0.26
@@ -940,6 +940,10 @@ packages:
       '@intlify/message-resolver': 9.1.9
       '@intlify/runtime': 9.1.9
       '@intlify/shared': 9.1.9
+    dev: false
+
+  /@ioredis/commands/1.1.1:
+    resolution: {integrity: sha512-fsR4P/ROllzf/7lXYyElUJCheWdTJVJvOTps8v9IWKFATxR61ANOlnoPqhH099xYLrJGpc2ZQ28B3rMeUt5VQg==}
     dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:
@@ -3613,6 +3617,18 @@ packages:
       supports-color: 8.1.1
     dev: true
 
+  /debug/4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+    dev: false
+
   /decimal.js/10.3.1:
     resolution: {integrity: sha512-V0pfhfr8suzyPGOx3nmq4aHqabehUZn6Ch9kyFpV79TGDTWFmHqUqXdabR7QHqxzrYolF4+tVmJhUG4OURg5dQ==}
     dev: true
@@ -3675,8 +3691,8 @@ packages:
     resolution: {integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=}
     dev: false
 
-  /denque/1.5.1:
-    resolution: {integrity: sha512-XwE+iZ4D6ZUB7mfYRMb5wByE8L74HCn30FBN7sWnXksWc1LO1bPDl67pBR9o/kC4z/xSNAwkMYcGgqDV3BE3Hw==}
+  /denque/2.0.1:
+    resolution: {integrity: sha512-tfiWc6BQLXNLpNiR5iGd0Ocu3P3VpxfzFiqubLgMfhfOw9WyvgJBd46CClNn9k3qfbjvT//0cf7AlYRX/OslMQ==}
     engines: {node: '>=0.10'}
     dev: false
 
@@ -5294,18 +5310,16 @@ packages:
     engines: {node: '>= 0.10'}
     dev: true
 
-  /ioredis/4.28.5:
-    resolution: {integrity: sha512-3GYo0GJtLqgNXj4YhrisLaNNvWSNwSS2wS4OELGfGxH8I69+XfNdnmV1AyN+ZqMh0i7eX+SWjrwFKDBDgfBC1A==}
-    engines: {node: '>=6'}
+  /ioredis/5.0.4:
+    resolution: {integrity: sha512-qFJw3MnPNsJF1lcIOP3vztbsasOXK3nDdNAgjQj7t7/Bn/w10PGchTOpqylQNxjzPbLoYDu34LjeJtSWiKBntQ==}
+    engines: {node: '>=12.22.0'}
     dependencies:
+      '@ioredis/commands': 1.1.1
       cluster-key-slot: 1.1.0
-      debug: 4.3.3
-      denque: 1.5.1
+      debug: 4.3.4
+      denque: 2.0.1
       lodash.defaults: 4.2.0
-      lodash.flatten: 4.4.0
       lodash.isarguments: 3.1.0
-      p-map: 2.1.0
-      redis-commands: 1.7.0
       redis-errors: 1.2.0
       redis-parser: 3.0.0
       standard-as-callback: 2.1.0
@@ -6403,10 +6417,6 @@ packages:
     resolution: {integrity: sha1-0JF4cW/+pN3p5ft7N/bwgCJ0WAw=}
     dev: false
 
-  /lodash.flatten/4.4.0:
-    resolution: {integrity: sha1-8xwiIlqWMtK7+OSt2+8kCqdlph8=}
-    dev: false
-
   /lodash.includes/4.3.0:
     resolution: {integrity: sha1-YLuYqHy5I8aMoeUTJUgzFISfVT8=}
     dev: false
@@ -7058,11 +7068,6 @@ packages:
       p-limit: 2.3.0
     dev: true
 
-  /p-map/2.1.0:
-    resolution: {integrity: sha512-y3b8Kpd8OAN444hxfBbFfj1FY/RjtTd8tzYwhUqNYXx0fXx2iX4maP4Qr6qhIKbQXI02wTLAda4fYUbDagTUFw==}
-    engines: {node: '>=6'}
-    dev: false
-
   /p-map/4.0.0:
     resolution: {integrity: sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==}
     engines: {node: '>=10'}
@@ -7587,10 +7592,6 @@ packages:
     dependencies:
       resolve: 1.22.0
     dev: true
-
-  /redis-commands/1.7.0:
-    resolution: {integrity: sha512-nJWqw3bTFy21hX/CPKHth6sfhZbdiHP6bTawSgQBlKOVRG7EZkfHbbHwQJnrE4vsQf0CMNE+3gJ4Fmm16vdVlQ==}
-    dev: false
 
   /redis-errors/1.2.0:
     resolution: {integrity: sha1-62LSrbFeTq9GEMBK/hUpOEJQq60=}
