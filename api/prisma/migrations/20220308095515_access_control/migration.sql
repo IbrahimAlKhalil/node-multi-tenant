@@ -35,15 +35,3 @@ CREATE TABLE "RoleUser"
     CONSTRAINT "RoleUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "RoleUser_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role" (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-CREATE TABLE "UserPermission"
-(
-    "userId" int          NOT NULL,
-    "table"  varchar(100) NOT NULL,
-    "create" boolean      NOT NULL,
-    read     boolean      NOT NULL,
-    update   boolean      NOT NULL,
-    delete   boolean      NOT NULL,
-    CONSTRAINT "UserPermission_pkey" PRIMARY KEY ("userId", "table"),
-    CONSTRAINT "UserPermission_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
