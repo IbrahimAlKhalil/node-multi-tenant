@@ -51,7 +51,7 @@ export class AppService {
 
     // Authenticate the client
 
-    const sessionVars = await this.authService.authorize(cookie, csrfToken);
+    const sessionVars = await this.authService.authenticate(cookie, csrfToken);
 
     // Request could be aborted while authenticating
     if (aborted) {
@@ -59,7 +59,7 @@ export class AppService {
     }
 
     if (sessionVars) {
-      // Authorized and not aborted, upgrade the connection
+      // Authenticated and not aborted, upgrade the connection
 
       return res.upgrade(sessionVars, key, protocol, extensions, ctx);
     }

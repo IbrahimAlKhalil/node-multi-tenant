@@ -13,7 +13,7 @@ export class AuthService {
     private readonly config: Config,
   ) {}
 
-  async authorize(
+  async authenticate(
     cookie: string,
     csrfToken: string,
   ): Promise<SessionVars | null> {
