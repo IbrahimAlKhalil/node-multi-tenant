@@ -4,6 +4,9 @@ import { ConfigModule } from './config/config.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { LibPnModule } from './lib-pn/lib-pn.module.js';
 import { RedisModule } from './redis/redis.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { UwsModule } from './uws/uws.module.js';
+import { AppService } from './app.service.js';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -12,8 +15,11 @@ import { Module } from '@nestjs/common';
     PrismaModule,
     LibPnModule,
     HelperModule,
+    AuthModule,
+    UwsModule,
     RedisModule,
     InstituteModule,
   ],
+  providers: [AppService],
 })
 export class AppModule {}

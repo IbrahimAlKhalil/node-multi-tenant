@@ -1,21 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { AuthService } from './auth/auth.service.js';
 import { Config } from './config/config.js';
-import { Uws } from './uws/uws';
+import { Injectable } from '@nestjs/common';
+import { Uws } from './uws/uws.js';
 
 import {
-  HttpRequest,
-  HttpResponse,
   us_socket_context_t,
+  HttpResponse,
+  HttpRequest,
   WebSocket,
 } from 'uWebSockets.js';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly config: Config, private readonly uws: Uws) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly config: Config,
+    private readonly uws: Uws,
+  ) {
     const { websocket } = config;
 
     import('uWebSockets.js').then(({ default: uwjs }) => {
-      uws.ws('/*', {
+      uws.ws('/api/:csrfToken', {
         /* Configurations */
 
         compression: uwjs.SHARED_COMPRESSOR,
@@ -36,6 +41,7 @@ export class AppService {
     const protocol = req.getHeader('sec-websocket-protocol');
     const extensions = req.getHeader('sec-websocket-extensions');
     const cookie = req.getHeader('cookie');
+    const csrfToken = req.getParameter(0);
 
     // Handle aborting by the user
     let aborted = false;
@@ -45,11 +51,29 @@ export class AppService {
 
     // Authenticate the client
 
-    if (!aborted) {
-      // Authenticated and not aborted, upgrade the connection
+    const sessionVars = await this.authService.authorize(cookie, csrfToken);
 
-      res.upgrade({}, key, protocol, extensions, ctx);
+    // Request could be aborted while authenticating
+    if (aborted) {
+      return;
     }
+
+    if (sessionVars) {
+      // Authorized and not aborted, upgrade the connection
+
+      return res.upgrade(sessionVars, key, protocol, extensions, ctx);
+    }
+
+    // Not authorized and not aborted, close the connection
+    res.writeStatus('401');
+    res.writeHeader('Content-Type', 'application/json');
+    res.end(
+      JSON.stringify({
+        code: 'UNAUTHORIZED',
+        message: 'Unauthorized',
+      }),
+      true,
+    );
   }
 
   async message(ws: WebSocket, message: ArrayBuffer, isBinary: boolean) {
