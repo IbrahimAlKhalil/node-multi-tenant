@@ -20,7 +20,7 @@ export class AppService {
     const { websocket } = config;
 
     import('uWebSockets.js').then(({ default: uwjs }) => {
-      uws.ws('/api/:csrfToken', {
+      uws.ws('/ws/:csrfToken', {
         /* Configurations */
 
         compression: uwjs.SHARED_COMPRESSOR,
