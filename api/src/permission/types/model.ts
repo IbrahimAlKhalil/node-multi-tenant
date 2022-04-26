@@ -10,7 +10,7 @@ interface Actions<M, N extends ModelNames> {
   read?: ReadPermission<M, N>;
   create?: CreatePermission<M, N>;
   update?: UpdatePermission<M, N>;
-  delete?: DeletePermission<M, N>;
+  delete?: DeletePermission<N>;
 }
 
 export interface Model<M, N extends ModelNames> {
