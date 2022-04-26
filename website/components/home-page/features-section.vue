@@ -1,21 +1,19 @@
 <template>
-  <div class="features-section absolute -bottom-16 w-full">
+  <div class="features-section lg:absolute lg:-bottom-16 w-full">
     <div
-      class="bg-white rounded-lg shadow-lg w-4/5 mx-auto flex justify-between py-5"
+      class="lg:bg-white lg:rounded-lg lg:shadow-lg lg:w-4/5 lg:gap-0 lg:flex-nowrap md:flex-row md:flex-wrap md:basis-1/2 md:justify-evenly mx-auto flex flex-col justify-between gap-10 py-5"
     >
       <!-- ================== Item Start ===================== -->
       <div
         v-for="(item, index) in items"
         :key="item.id"
-        class="item px-8 flex items-center gap-5 group"
-        :class="{ 'border-l border-gray-400': index !== 0 }"
+        class="item px-8 flex flex-col lg:flex-row text-center lg:text-left items-center gap-5 group"
+        :class="{
+          'border-l md:last:border-l-0 lg:last:border-l border-gray-400':
+            index !== 0,
+        }"
       >
-        <img
-          :src="item.icon"
-          :alt="t(item.title)"
-          width="90px"
-          class="transition duration-500 group-hover:scale-125"
-        />
+        <img :src="item.icon" :alt="t(item.title)" width="90px" />
         <div class="text">
           <h3 class="font-bold text-primary text-xl mb-2">
             {{ t(item.title) }}
