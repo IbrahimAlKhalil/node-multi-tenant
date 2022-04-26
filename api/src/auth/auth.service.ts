@@ -1,8 +1,8 @@
 import { PrismaService } from '../prisma/prisma.service.js';
-import { SessionVars } from '../types/session-vars';
 import { JwtPayload } from '../types/jwt-payload';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
+import { Session } from '../types/session';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -13,10 +13,10 @@ export class AuthService {
     private readonly config: Config,
   ) {}
 
-  async authorize(
+  async authenticate(
     cookie: string,
     csrfToken: string,
-  ): Promise<SessionVars | null> {
+  ): Promise<Session | null> {
     if (!csrfToken) {
       // csrf token is not provided
       return null;
@@ -81,6 +81,7 @@ export class AuthService {
       iid: jwtPayload.iid,
       uid: jwtPayload.uid,
       knd: jwtPayload.knd,
+      rol: jwtPayload.rol,
       jti: jwtPayload.jti,
     };
   }

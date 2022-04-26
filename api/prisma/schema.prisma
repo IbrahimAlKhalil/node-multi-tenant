@@ -1148,6 +1148,6 @@ enum user_kind {
   GUARDIAN
   STAFF
   ADMIN
-  VENDOR
-  COMMON
+  SUPPORTER
+  GENERAL
 }

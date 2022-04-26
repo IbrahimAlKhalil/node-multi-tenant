@@ -165,10 +165,20 @@ export class AuthController {
       },
     });
 
+    const roles = await prisma.roleUser.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        roleId: true,
+      },
+    });
+
     const jwtPayload: JwtPayload = {
       uid: user.id,
       iid: instituteId,
       knd: user.type,
+      rol: roles.map((role) => role.roleId),
       cst: csrfToken,
       jti: accessToken.id,
       exp: Math.round(expiresAt.getTime() / 1000),

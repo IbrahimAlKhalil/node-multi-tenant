@@ -1,4 +1,6 @@
+import { PermissionModule } from './permission/permission.module.js';
 import { InstituteModule } from './institute/institute.module.js';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HelperModule } from './helper/helper.module.js';
 import { ConfigModule } from './config/config.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
@@ -19,6 +21,8 @@ import { Module } from '@nestjs/common';
     UwsModule,
     RedisModule,
     InstituteModule,
+    EventEmitterModule.forRoot(),
+    PermissionModule,
   ],
   providers: [AppService],
 })
