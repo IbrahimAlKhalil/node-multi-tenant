@@ -13,11 +13,9 @@ export interface PermissionDefinition<
   >,
 > {
   fields: true | Set<keyof M>;
-  permissions?: (
-    session: Session,
-    query: P,
-    ioc: ModuleRef,
-  ) => PermissionReturn<P>;
+  permissions?:
+    | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
+    | P;
   presets?: (session: Session, query: P, ioc: ModuleRef) => M | Promise<M>;
   validation?: (
     session: Session,

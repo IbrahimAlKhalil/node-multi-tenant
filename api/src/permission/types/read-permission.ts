@@ -14,12 +14,14 @@ export interface PermissionDefinition<
   >,
 > {
   fields: true | Set<keyof M>;
-  permissions?: (
-    session: Session,
-    query: P,
-    subscribe: boolean,
-    ioc: ModuleRef,
-  ) => PermissionReturn<P>;
+  permissions?:
+    | ((
+        session: Session,
+        query: P,
+        subscribe: boolean,
+        ioc: ModuleRef,
+      ) => PermissionReturn<P>)
+    | P;
 }
 
 export type ReadPermission<M, N extends ModelNames> =
