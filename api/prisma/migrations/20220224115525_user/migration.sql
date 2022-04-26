@@ -20,8 +20,8 @@ CREATE TYPE user_kind AS ENUM (
     'GUARDIAN',
     'STAFF',
     'ADMIN',
-    'VENDOR',
-    'COMMON'
+    'SUPPORTER',
+    'GENERAL'
     );
 
 CREATE TYPE address_type AS ENUM (
