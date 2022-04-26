@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <the-header />
-    <slot />
-    <the-footer>
-      <template v-slot:widget1>
-        <widget-1 />
-      </template>
-      <template v-slot:widget2>
-        <widget-2 />
-      </template>
-      <template v-slot:widget3>
-        <widget-3 />
-      </template>
-    </the-footer>
-  </div>
+  <the-header />
+  <slot />
+  <the-footer>
+    <template v-slot:widget1>
+      <widget-1 />
+    </template>
+    <template v-slot:widget2>
+      <widget-2 />
+    </template>
+    <template v-slot:widget3>
+      <widget-3 />
+    </template>
+  </the-footer>
 </template>
 
 <script lang="ts">

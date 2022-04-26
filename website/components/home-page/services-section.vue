@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <div class="container mx-auto flex justify-between items-center gap-20">
-      <div class="text" style="flex: 1 1 40%">
+  <div class="my-10">
+    <div
+      class="container mx-auto flex flex-col lg:flex-row lg:justify-between items-center gap-20"
+    >
+      <div
+        class="text text-center lg:text-left flex lg:block flex-col items-center"
+        style="flex: 1 1 40%"
+      >
         <p class="text__subtitle font-bold text-text">
           {{ t("homePage['services-section']['sub-title']") }}
         </p>
         <h3
-          class="text__heading text-5xl leading-[4rem] font-bold text-primary my-5"
+          class="text__heading text-5xl leading-[1.5] font-bold text-primary my-5"
         >
           {{ t("homePage['services-section']['title']") }}
         </h3>
-        <p class="text__para text-text text-sm text-justify mb-5">
+        <p class="text__para text-text text-sm lg:text-justify mb-5">
           {{ t("homePage['services-section']['description']") }}
         </p>
         <secondary-btn :title="t(buttonText)" />
       </div>
       <ul
-        class="info-boxes grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-x-10 gap-y-24 py-20"
+        class="info-boxes grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-x-10 gap-y-24 py-20"
         style="flex: 1 1 60%"
       >
         <!-- ================= start Item =============== -->

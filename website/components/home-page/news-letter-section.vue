@@ -2,7 +2,7 @@
   <div class="my-10 bg-text text-white py-14">
     <div class="container mx-auto text-center">
       <h3 class="font-bold text-4xl mb-3">{{ t(title) }}</h3>
-      <p class="w-4/5 mx-auto text-gray-400 mb-5">{{ t(description) }}</p>
+      <p class="md:w-4/5 mx-auto text-gray-400 mb-5">{{ t(description) }}</p>
       <form class="flex justify-center items-center w-1/2 mx-auto">
         <input
           type="text"

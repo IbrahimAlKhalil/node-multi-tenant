@@ -15,10 +15,11 @@ export const useStyleStore = defineStore('style', {
     }
 
     const sizes = {
-      sm: 768,
-      md: 992,
-      lg: 1200,
-      xl: 1920,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      '2xl': 1536,
     };
 
     const queries: {

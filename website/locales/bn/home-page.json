@@ -83,5 +83,31 @@
         "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
         "placeholder": "Enter Your Email Address",
         "button": "Subscribe Now"
+    },
+
+    "testimonial-section": {
+        "sub-title": "SAHARA IT",
+        "title": "What Our Client Say",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "items": {
+            "item-1": {
+                "title": "What Our Client Say",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                "author": "John Doe",
+                "company": "XYZ Inc"
+            },
+            "item-2": {
+                "title": "What Our Client Say",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                "author": "John Doe",
+                "company": "XYZ Inc"
+            },
+            "item-3": {
+                "title": "What Our Client Say",
+                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                "author": "John Doe",
+                "company": "XYZ Inc"
+            }
+        }
     }
 }

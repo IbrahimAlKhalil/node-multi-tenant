@@ -2,7 +2,7 @@
   <div class="our-clients-section my-10">
     <div class="container mx-auto">
       <!--   ===================== Start Text Content ======================    -->
-      <div class="text-content text-center w-4/5 mx-auto mb-5">
+      <div class="text-content text-center md:w-4/5 mx-auto mb-5">
         <p class="font-bold text-xl text-text">{{ t(subTitle) }}</p>
         <h3 class="font-bold text-4xl text-primary my-3">{{ t(title) }}</h3>
         <p>{{ t(description) }}</p>
@@ -45,8 +45,8 @@
 </template>
 
 <script lang="ts">
-import LeftArrow from '#icons/solid/angle-left.svg';
 import RightArrow from '#icons/solid/angle-right.svg';
+import LeftArrow from '#icons/solid/angle-left.svg';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
