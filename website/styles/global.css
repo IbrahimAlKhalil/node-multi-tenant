@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+    --header-height: 100px;
+}
+
 * {
     font-family: SolaimanLipi, Amiri, 'Open Sans', sans-serif;
     -webkit-tap-highlight-color: transparent;
@@ -11,6 +15,6 @@
 .fa-icon {
     height: 1em;
     fill: currentColor;
-    /*top: 0.125em;*/
-    /*position: relative;*/
+    bottom: 0.125em;
+    position: relative;
 }
