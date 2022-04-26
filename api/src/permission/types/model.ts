@@ -16,5 +16,5 @@ interface Actions<M, N extends ModelNames> {
 export interface Model<M, N extends ModelNames> {
   i18n?: boolean;
   schema?: ObjectSchema<M>;
-  roles: Partial<Record<user_kind | 'COMMON', boolean | Actions<M, N>>>;
+  roles: Partial<Record<user_kind | 'ALL', boolean | Actions<M, N>>>;
 }
