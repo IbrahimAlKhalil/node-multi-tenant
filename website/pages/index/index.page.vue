@@ -1,6 +1,10 @@
 <template>
   <layout-main>
-    <hero-section />
+    <div class="relative">
+      <hero-section />
+      <div id="observer"></div>
+      <features-section />
+    </div>
     <services-section />
     <best-services-section />
     <key-features-section />
@@ -13,20 +17,21 @@
 
 <script lang="ts">
 import BestServicesSection from '#components/home-page/best-services-section.vue';
+import TestimonialSection from '#components/home-page/testimonial-section.vue';
 import OurClientsSection from '#components/home-page/our-clients-section.vue';
 import NewsLetterSection from '#components/home-page/news-letter-section.vue';
+import FeaturesSection from '#components/home-page/features-section.vue';
 import ServicesSection from '#components/home-page/services-section.vue';
 import KeyFeaturesSection from '#components/home-page/key-features.vue';
 import PricingSection from '#components/home-page/pricing-section.vue';
 import HeroSection from '#components/home-page/hero-section.vue';
-import TestimonialSection from '#components/home-page/testimonial-section.vue';
 import LayoutMain from '#layouts/main.vue';
-
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'our-client-section',
   components: {
+    FeaturesSection,
     BestServicesSection,
     TestimonialSection,
     KeyFeaturesSection,
@@ -37,6 +42,7 @@ export default defineComponent({
     HeroSection,
     LayoutMain,
   },
+
   setup() {
     return {};
   },

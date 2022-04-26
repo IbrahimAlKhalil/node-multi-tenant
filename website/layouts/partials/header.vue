@@ -1,11 +1,13 @@
 <template>
   <header
-    class="absolute top-0 left-1/2 w-full z-10 -translate-x-1/2"
+    class="sticky top-0 w-full z-10"
     :class="{ 'bg-white shadow-md': isSticky }"
+    :style="{ height: headerHeight + 'px' }"
   >
-    <p>{{ scrollTop }}</p>
-    <div class="flex justify-between items-center container mx-auto py-3">
-      <div class="logo h-[76px]">
+    <div
+      class="flex justify-between items-center container mx-auto py-3 h-full"
+    >
+      <div class="logo h-full">
         <a href="/" class="block h-full">
           <img
             :alt="t('common.app-title')"
@@ -21,7 +23,7 @@
         </a>
       </div>
 
-      <nav class="nav flex-grow">
+      <nav class="nav flex-grow hidden lg:block">
         <ul class="flex items-center justify-center">
           <li class="m-0 p-0 group" v-for="item in menu" :key="item.href">
             <a
@@ -30,7 +32,7 @@
               :class="{ 'text-primary': item.href === currentPath }"
             >
               <component
-                class="inline-block mr-2 text-inherit group-hover:scale-150 transition-all duration-300"
+                class="mr-1 text-inherit group-hover:scale-110 transition-all duration-300 hidden xl:inline-block"
                 :class="{ 'scale-150': item.href === currentPath }"
                 :is="item.icon"
               />
@@ -41,7 +43,20 @@
         </ul>
       </nav>
       <div class="action-area">
-        <primary-btn :title="t('common.login')" :icon="DoorOpen" />
+        <div
+          class="lg:hidden rounded-md p-2 border border-primary flex justify-center items-center group hover:bg-primary transition duration-150"
+        >
+          <component
+            class="text-primary transition duration-150 group-hover:text-white text-4xl"
+            style="bottom: 0"
+            :is="MenuBar"
+          />
+        </div>
+        <primary-btn
+          :title="t('common.login')"
+          :icon="DoorOpen"
+          class="hidden lg:block"
+        />
       </div>
     </div>
   </header>
@@ -53,9 +68,11 @@ import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
 import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
 import IconInfoCircle from '#icons/duotone/info-circle.svg';
 import IconMoneyCheck from '#icons/duotone/money-check.svg';
+import { usePageContext } from '#modules/use-page-context';
 import LoginWhite from '#icons/others/login-white.svg?url';
 import IconBookOpen from '#icons/duotone/book-open.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
+import MenuBar from '#icons/light/bars.svg';
 import IconBlog from '#icons/duotone/blog.svg';
 import LogoIcon from '#images/icon.svg?url';
 import Logo from '#images/logo.svg?url';
@@ -75,6 +92,8 @@ export default defineComponent({
 
   setup() {
     const i18n = useI18n();
+    const { urlPathname } = usePageContext();
+    const headerHeight = 100;
     const menu = [
       {
         text: 'menu.about',
@@ -109,12 +128,15 @@ export default defineComponent({
     ];
 
     return {
+      currentPath: urlPathname,
+      headerHeight,
+      LoginWhite,
       t: i18n.t,
       LogoIcon,
+      DoorOpen,
+      MenuBar,
       Logo,
       menu,
-      LoginWhite,
-      DoorOpen,
     };
   },
 });
