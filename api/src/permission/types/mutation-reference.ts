@@ -1,4 +1,4 @@
-type ALL = 'ALl.create' | 'ALL.update';
+type ALL = 'ALL.create' | 'ALL.update';
 type STUDENT = 'STUDENT.create' | 'STUDENT.update';
 type GUARDIAN = 'GUARDIAN.create' | 'GUARDIAN.update';
 type STAFF = 'STAFF.create' | 'STAFF.update';

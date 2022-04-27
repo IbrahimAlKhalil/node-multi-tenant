@@ -1,4 +1,4 @@
-type ALL = 'ALL.read' | 'ALl.create' | 'ALL.update' | 'ALL.delete';
+type ALL = 'ALL.read' | 'ALL.create' | 'ALL.update' | 'ALL.delete';
 type STUDENT =
   | 'STUDENT.read'
   | 'STUDENT.create'
