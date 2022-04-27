@@ -34,7 +34,7 @@ export default defineComponent({
         description: i18n.t('blogs.blog1.description'),
         image:
           'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
-        date: '2020-01-01',
+        date: `${i18n.t("blogs['date-label']")}: ${i18n.t('blogs.blog1.date')}`,
         link: '#',
         linkText: i18n.t('blogs.blog1.linkText'),
       },
@@ -44,7 +44,7 @@ export default defineComponent({
         description: i18n.t('blogs.blog2.description'),
         image:
           'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
-        date: '2020-01-01',
+        date: `${i18n.t("blogs['date-label']")}: ${i18n.t('blogs.blog2.date')}`,
         link: '#',
         linkText: i18n.t('blogs.blog2.linkText'),
       },
@@ -54,7 +54,7 @@ export default defineComponent({
         description: i18n.t('blogs.blog3.description'),
         image:
           'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
-        date: '2020-01-01',
+        date: `${i18n.t("blogs['date-label']")}: ${i18n.t('blogs.blog3.date')}`,
         link: '#',
         linkText: i18n.t('blogs.blog3.linkText'),
       },

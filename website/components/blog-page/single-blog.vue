@@ -9,22 +9,28 @@
     </div>
     <div style="flex: 1">
       <div class="single-blog__content">
-        <h3 class="single-blog__title font-bold text-3xl text-primary mb-3">
+        <h3 class="single-blog__title font-bold text-3xl text-primary mb-2">
           {{ title }}
         </h3>
-        <div class="single-blog__date text-gray-500 italic mb-3">
+        <div class="single-blog__date text-sm text-gray-500 italic mb-4">
           {{ date }}
         </div>
         <p class="single-blog__text text-md text-text mb-5">
           {{ text }}
         </p>
-        <div class="single-blog__action-btn">
-          <a :href="link">
-            <button
-              class="border border-secondary hover:bg-secondary rounded-md font-bold text-xl text-secondary hover:bg-secondary-dark hover:text-white px-4 py-1 rounded-md"
-            >
+        <div class="single-blog__action-btn group">
+          <a
+            :href="link"
+            class="flex items-center gap-2 text-secondary transition group-hover:text-secondary-dark"
+          >
+            <span class="block font-bold text-lg">
               {{ linkText }}
-            </button>
+            </span>
+            <component
+              :is="RightArrow"
+              class="text-xl"
+              style="bottom: 0"
+            ></component>
           </a>
         </div>
       </div>
@@ -33,8 +39,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineProps } from 'vue';
-
+import { defineComponent } from 'vue';
+import RightArrow from '#icons/solid/long-arrow-right.svg';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -73,6 +79,7 @@ export default defineComponent({
     const i18n = useI18n();
     return {
       t: i18n.t,
+      RightArrow,
     };
   },
 });
