@@ -1,3 +1,4 @@
+import { PermissionReference } from './permission-reference';
 import { PermissionReturn } from './permission-return';
 import { PrismaClient } from '../../../prisma/client';
 import { Session } from '../../types/session';
@@ -21,7 +22,8 @@ export interface PermissionDefinition<
         subscribe: boolean,
         ioc: ModuleRef,
       ) => PermissionReturn<P>)
-    | P;
+    | P
+    | PermissionReference;
 }
 
 export type ReadPermission<M, N extends ModelNames> =

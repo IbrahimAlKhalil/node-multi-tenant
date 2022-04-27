@@ -1,3 +1,5 @@
+import { PermissionReference } from './permission-reference';
+import { MutationReference } from './mutation-reference';
 import { PermissionReturn } from './permission-return';
 import { PrismaClient } from '../../../prisma/client';
 import { Session } from '../../types/session';
@@ -15,13 +17,18 @@ export interface PermissionDefinition<
   fields: true | Set<keyof M>;
   permissions?:
     | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
-    | P;
-  presets?: (session: Session, query: P, ioc: ModuleRef) => M | Promise<M>;
-  validation?: (
-    session: Session,
-    query: P,
-    ioc: ModuleRef,
-  ) => boolean | Promise<boolean>;
+    | P
+    | PermissionReference;
+  presets?:
+    | ((session: Session, query: P, ioc: ModuleRef) => M | Promise<M>)
+    | MutationReference;
+  validation?:
+    | ((
+        session: Session,
+        query: P,
+        ioc: ModuleRef,
+      ) => boolean | Promise<boolean>)
+    | MutationReference;
 }
 
 export type UpdatePermission<M, N extends ModelNames> =

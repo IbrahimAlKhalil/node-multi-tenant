@@ -1,3 +1,4 @@
+import { PermissionReference } from './permission-reference';
 import { PermissionReturn } from './permission-return';
 import { PrismaClient } from '../../../prisma/client';
 import { Session } from '../../types/session';
@@ -13,7 +14,8 @@ export interface PermissionDefinition<
 > {
   permissions?:
     | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
-    | P;
+    | P
+    | PermissionReference;
 }
 
 export type DeletePermission<N extends ModelNames> =
