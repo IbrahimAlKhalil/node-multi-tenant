@@ -6,7 +6,7 @@ import { user_kind } from '../../../prisma/client';
 import { ModelNames } from './model-names';
 import { ObjectSchema } from 'joi';
 
-interface Actions<M, N extends ModelNames> {
+export interface Actions<M, N extends ModelNames> {
   read?: ReadPermission<M, N>;
   create?: CreatePermission<M, N>;
   update?: UpdatePermission<M, N>;
