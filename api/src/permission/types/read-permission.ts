@@ -17,12 +17,7 @@ export interface PermissionDefinition<
 > {
   fields: true | Set<keyof M> | FieldReference;
   permissions?:
-    | ((
-        session: Session,
-        query: P,
-        ioc: ModuleRef,
-        subscription: boolean,
-      ) => PermissionReturn<P>)
+    | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
     | P
     | PermissionReference;
 }
