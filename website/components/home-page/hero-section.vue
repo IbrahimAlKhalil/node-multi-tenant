@@ -65,8 +65,8 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
-    'primary-btn': PrimaryBtnVue,
     'secondary-btn': SecondaryBtnVue,
+    'primary-btn': PrimaryBtnVue,
   },
   data() {
     return {
@@ -76,12 +76,12 @@ export default defineComponent({
   setup() {
     const i18n = useI18n();
     return {
-      t: i18n.t,
-      LoginWhite,
-      PhonePlus,
-      DoorOpen,
       HeroBackground,
       VideoImage,
+      LoginWhite,
+      t: i18n.t,
+      PhonePlus,
+      DoorOpen,
       Down,
     };
   },
@@ -90,8 +90,7 @@ export default defineComponent({
 
 <style scoped>
 .hero-section {
-  background: url('/assets/images/HeroBackground.svg') no-repeat;
   background-size: cover;
-  background-position: center center;
+  background: url('assets/images/HeroBackground.svg') no-repeat center center;
 }
 </style>
