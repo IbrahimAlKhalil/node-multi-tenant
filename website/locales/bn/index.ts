@@ -6,6 +6,7 @@ import message from './message.json';
 import passReset from './pass-reset.json';
 import registration from './registration.json';
 import validation from './validation.json';
+import blogs from './blogs.json';
 
 export default {
   registration,
@@ -16,4 +17,5 @@ export default {
   login,
   menu,
   homePage,
+  blogs,
 };
