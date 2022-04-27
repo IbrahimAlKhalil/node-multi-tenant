@@ -21,6 +21,12 @@ type GENERAL =
   | 'GENERAL.create'
   | 'GENERAL.update'
   | 'GENERAL.delete';
+type POWER = 'POWER.read' | 'POWER.create' | 'POWER.update' | 'POWER.delete';
+type NON_POWER =
+  | 'NON_POWER.read'
+  | 'NON_POWER.create'
+  | 'NON_POWER.update'
+  | 'NON_POWER.delete';
 
 export type PermissionReference =
   | ALL
@@ -29,4 +35,6 @@ export type PermissionReference =
   | STAFF
   | ADMIN
   | SUPPORTER
-  | GENERAL;
+  | GENERAL
+  | POWER
+  | NON_POWER;

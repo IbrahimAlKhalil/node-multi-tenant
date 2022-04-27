@@ -5,6 +5,8 @@ type STAFF = 'STAFF.read' | 'STAFF.create' | 'STAFF.update';
 type ADMIN = 'ADMIN.read' | 'ADMIN.create' | 'ADMIN.update';
 type SUPPORTER = 'SUPPORTER.read' | 'SUPPORTER.create' | 'SUPPORTER.update';
 type GENERAL = 'GENERAL.read' | 'GENERAL.create' | 'GENERAL.update';
+type POWER = 'POWER.read' | 'POWER.create' | 'POWER.update';
+type NON_POWER = 'NON_POWER.read' | 'NON_POWER.create' | 'NON_POWER.update';
 
 export type FieldReference =
   | ALL
@@ -13,4 +15,6 @@ export type FieldReference =
   | STAFF
   | ADMIN
   | SUPPORTER
-  | GENERAL;
+  | GENERAL
+  | POWER
+  | NON_POWER;
