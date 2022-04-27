@@ -11,6 +11,7 @@ interface Actions<M, N extends ModelNames> {
   create?: CreatePermission<M, N>;
   update?: UpdatePermission<M, N>;
   delete?: DeletePermission<N>;
+  subscribe?: boolean;
 }
 
 export interface Model<M, N extends ModelNames> {
