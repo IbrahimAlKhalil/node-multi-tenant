@@ -19,8 +19,8 @@ export interface PermissionDefinition<
     | ((
         session: Session,
         query: P,
-        subscribe: boolean,
         ioc: ModuleRef,
+        subscription: boolean,
       ) => PermissionReturn<P>)
     | P
     | PermissionReference;
