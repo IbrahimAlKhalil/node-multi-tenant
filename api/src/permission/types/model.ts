@@ -6,15 +6,18 @@ import { user_kind } from '../../../prisma/client';
 import { ModelNames } from './model-names';
 import { ObjectSchema } from 'joi';
 
-interface Actions<M, N extends ModelNames> {
+export interface Actions<M, N extends ModelNames> {
   read?: ReadPermission<M, N>;
   create?: CreatePermission<M, N>;
   update?: UpdatePermission<M, N>;
-  delete?: DeletePermission<M, N>;
+  delete?: DeletePermission<N>;
+  subscribe?: boolean;
 }
 
 export interface Model<M, N extends ModelNames> {
-  i18n?: boolean;
+  parent?: Model<any, N>;
   schema?: ObjectSchema<M>;
-  roles: Partial<Record<user_kind | 'COMMON', boolean | Actions<M, N>>>;
+  roles: Partial<
+    Record<user_kind | 'ALL' | 'POWER' | 'NON_POWER', boolean | Actions<M, N>>
+  >;
 }
