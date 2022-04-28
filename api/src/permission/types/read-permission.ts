@@ -9,11 +9,7 @@ import { ModuleRef } from '@nestjs/core';
 export interface PermissionDefinition<
   M,
   N extends ModelNames,
-  P = Partial<
-    Parameters<PrismaClient[N]['findMany']>[0] &
-      Parameters<PrismaClient[N]['findFirst']>[0] &
-      Parameters<PrismaClient[N]['findUnique']>[0]
-  >,
+  P = Partial<Parameters<PrismaClient[N]['findMany']>[0]>,
 > {
   fields: true | Set<keyof M> | FieldReference;
   permissions?:
