@@ -3,15 +3,22 @@ import { createSSRApp, defineComponent, h } from 'vue';
 import { PageContext } from '#types/page-context';
 import PageShell from './page-shell.vue';
 import { createI18n } from 'vue-i18n';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
 import { createPinia } from 'pinia';
 import en from '../locales/en';
 import bn from '../locales/bn';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export { createApp };
 
 function createApp(pageContext: PageContext) {
   const { Page, pageProps } = pageContext;
   const PageWithLayout = defineComponent({
+    mounted() {
+      AOS.init();
+    },
     render() {
       return h(
         PageShell,
@@ -36,6 +43,7 @@ function createApp(pageContext: PageContext) {
 
   app.use(i18n);
   app.use(pinia);
+  app.use(ElementPlus);
 
   pinia.use((ctx) => {
     if (typeof ctx.options.hydrate === 'function') {
