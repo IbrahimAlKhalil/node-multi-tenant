@@ -126,7 +126,12 @@ export class AppService {
       binary: isBinary,
     });
 
-    const data = response.length === 1 ? response[0] : response;
+    const data =
+      response.length === 0
+        ? null
+        : response.length === 1
+        ? response[0]
+        : response;
 
     // Send the response
     ws.send(
