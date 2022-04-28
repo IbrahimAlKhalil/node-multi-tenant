@@ -1,6 +1,6 @@
 <template>
   <layout-main>
-    <blog-hero v-model:search="heroSearch" />
+    <blog-hero v-model:search="heroSearch" :categories='categories' :category='heroSearchCategory' />
     <blog-layout>
       <template #sidebar>
         <blog-sidebar
@@ -34,6 +34,7 @@ const activeCategory = ref('all');
 const activeTag = ref('all');
 const sidebarSearch = ref('');
 const heroSearch = ref('');
+const heroSearchCategory = ref('');
 
 const categories = ref([
   {

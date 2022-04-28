@@ -1,6 +1,7 @@
 <template>
   <div
-    class="single-blog flex items-center gap-10 border-t border-gray-100 rounded-lg p-5 bg-white shadow-lg"
+    data-aos="zoom-in"
+    class="single-blog displayBox flex items-center gap-10 border-t border-gray-100 rounded-lg p-5 bg-white shadow-lg"
   >
     <div :class="{ 'order-2': !isOdd }" style="flex: 1">
       <div class="single-blog__image">

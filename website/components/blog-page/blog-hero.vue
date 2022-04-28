@@ -6,7 +6,29 @@
       <div class="backdrop w-full h-full p-5 rounded-xl text-white h-full">
         <h1 class="font-bold text-7xl text-center uppercase mb-5">Blog</h1>
         <h2 class="font-bold text-3xl text-center">Your Query Search Here</h2>
-        <div class="search-box my-2 w-1/2 mx-auto relative">
+        <div class="search-box my-2 w-1/2 mx-auto">
+          <el-input
+            v-model="search"
+            @input="$emit('update:search', $event.target.value)"
+            placeholder="Search Here..."
+            class="input-with-select"
+          >
+            <template #prepend>
+              <el-select
+                v-model="category"
+                @input="$emit('update:category', $event.target.value)"
+                placeholder="Select"
+                style="width: 115px"
+              >
+                <el-option v-for='item of categories' :key='item.id' :label="item.name" :value="item.slug" />
+              </el-select>
+            </template>
+            <template #append>
+              <el-button :icon="Search" />
+            </template>
+          </el-input>
+        </div>
+        <div class="hidden search-box my-2 w-1/2 mx-auto relative">
           <input
             type="text"
             :value="search"
@@ -20,7 +42,7 @@
             <component :is="Search"></component>
           </div>
         </div>
-        <div class="featured-blogs">
+        <div :class=" { 'visibility-hidden opacity-0 ': search} " class="featured-blogs transition duration-500">
           <div class="intro flex items-center gap-5 mb-5">
             <h3 class="font-bold text-xl uppercase">Most Popular</h3>
             <div
@@ -69,9 +91,9 @@ import RightArrow from '#icons/solid/long-arrow-right.svg';
 import Search from '#icons/solid/search.svg';
 import { ref } from 'vue';
 
-defineProps(['search']);
+defineProps(['search', 'category', 'categories']);
 
-defineEmits(['update:search']);
+defineEmits(['update:search', 'update:category']);
 
 const featuresBlogs = ref([
   {
