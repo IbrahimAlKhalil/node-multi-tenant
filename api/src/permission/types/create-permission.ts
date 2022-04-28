@@ -21,7 +21,11 @@ export interface PermissionDefinition<
     | P
     | PermissionReference;
   presets?:
-    | ((session: Session, query: P, ioc: ModuleRef) => M | Promise<M>)
+    | ((
+        session: Session,
+        query: P,
+        ioc: ModuleRef,
+      ) => Partial<M> | Promise<Partial<M>>)
     | MutationReference;
   validation?:
     | ((
