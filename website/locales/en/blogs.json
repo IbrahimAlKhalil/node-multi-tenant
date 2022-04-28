@@ -1,0 +1,23 @@
+{
+  "date-label": "Date",
+
+ "blog1": {
+   "title": "Blog 1",
+   "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, urna eget aliquam consectetur, nisi erat euismod nunc, eu tincidunt nunc nisi euismod nunc. Sed euismod, urna eget aliquam consectetur",
+   "linkText": "Read More",
+   "date": "01/01/2017"
+ },
+  "blog2": {
+    "title": "Blog 2",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, urna eget aliquam consectetur, nisi erat euismod nunc, eu tincidunt nunc nisi euismod nunc. Sed euismod, urna eget aliquam consectetur",
+    "linkText": "Read More",
+    "date": "01/01/2017"
+  },
+  "blog3": {
+    "title": "Blog 3",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, urna eget aliquam consectetur, nisi erat euismod nunc, eu tincidunt nunc nisi euismod nunc. Sed euismod, urna eget aliquam consectetur",
+    "linkText": "Read More",
+    "date": "01/01/2017"
+
+  }
+}

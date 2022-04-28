@@ -1,7 +1,9 @@
 <template>
   <div class="footer bg-primary-darker text-white">
-    <div class="container mx-auto flex justify-between gap-10 py-8">
-      <div class="widget1 flex-1">
+    <div
+      class="container mx-auto flex flex-col lg:flex-row justify-between gap-10 py-8 text-center lg:text-left"
+    >
+      <div class="widget1 flex-1 flex flex-col items-center md:items-start">
         <slot name="widget1"></slot>
       </div>
       <div class="widget2 flex-1">

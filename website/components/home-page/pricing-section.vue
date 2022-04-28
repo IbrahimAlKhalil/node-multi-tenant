@@ -1,7 +1,7 @@
 <template>
   <div class="bg-light py-16">
     <div class="container mx-auto">
-      <div class="text-content text-center w-1/2 mx-auto mb-10">
+      <div class="text-content text-center md:w-1/2 mx-auto mb-10">
         <p class="sub-heading font-bold text-text">SAHARA IT</p>
         <h3 class="heading text-5xl font-bold text-primary my-5">
           We offering some awesome plans for you
@@ -13,12 +13,14 @@
           scrambled it to make a type specimen book.
         </p>
       </div>
-      <div class="tables flex justify-evenly">
+      <div
+        class="tables flex flex-col lg:flex-row justify-evenly gap-10 lg:gap-0"
+      >
         <!--      ==================== Table Start ========================= -->
         <div
           v-for="item in pricingData"
           :key="item.id"
-          class="tables__table border-t-4 border-secondary bg-white px-8 py-5 text-xl rounded-b-lg"
+          class="tables__table border-t-4 border-secondary bg-white px-8 py-10 md:py-5 text-xl rounded-b-lg flex flex-col items-center"
           :class="{ 'border-primary shadow-xl': item.isFeatured }"
         >
           <h3

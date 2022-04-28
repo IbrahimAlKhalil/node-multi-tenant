@@ -2,97 +2,156 @@
   <div class="testimonial-section my-10">
     <div class="container mx-auto">
       <div class="intro text-center mb-5">
-        <p class="font-bold text-xl text-text">{{ t(subTitle) }}</p>
-        <h3 class="font-bold text-5xl text-primary my-3">{{ t(title) }}</h3>
-        <p class="w-4/5 mx-auto text-text">{{ t(description) }}</p>
+        <p class="font-bold text-xl text-text">{{ t(textContent.subTitle) }}</p>
+        <h3 class="font-bold text-5xl text-primary my-3">
+          {{ t(textContent.title) }}
+        </h3>
+        <p class="md:w-4/5 mx-auto text-text">
+          {{ t(textContent.description) }}
+        </p>
       </div>
-
-      <div class="testimonials mt-20 w-4/5 mx-auto flex text-center gap-10">
-        <!--   ============ Start Item     -->
-        <div
-          class="testimonials__item relative border border-gray-500 p-5 rounded-lg"
-        >
+      <div class="content-area flex items-center gap-5">
+        <div class="prev-btn cursor-pointer" @click="slider.prev()">
+          <component
+            :is="LeftArrow"
+            class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
+          ></component>
+        </div>
+        <div class="testimonial-slider testimonials">
           <div
-            class="testimonials__item__icon w-[100px] border rounded-full p-3 border-gray-500 bg-white absolute -top-[50px] left-1/2 -translate-x-1/2"
+            class="testimonials__slider-1 border-2 border-gray-200 rounded-lg p-4 flex items-center gap-5"
+            v-for="(testimonial, index) in testimonials"
+            :key="index"
           >
-            <img :src="Icon" alt="testimonial-1" width="100%" />
-          </div>
-          <div class="testimonials__item__content mt-[50px]">
-            <h4 class="font-bold text-2xl text-primary mb-3">
-              Lorem ipsum dolor sit amet.
-            </h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Accusantium commodi dicta dolore eveniet expedita labore odio
-              perferendis porro quas rem.
-            </p>
+            <div class="media" style="flex: 1 0 40%">
+              <img
+                src="https://via.placeholder.com/450x250"
+                :alt="t(testimonial.company)"
+                width="100%"
+                class="object-cover rounded-lg"
+              />
+            </div>
+            <div class="text" style="flex: 2 1 60%">
+              <h3 class="font-bold text-4xl text-primary mb-3">
+                {{ t(testimonial.company) }}
+              </h3>
+              <p class="text-text text-md">{{ t(testimonial.description) }}</p>
+              <div class="flex items-center justify-between mt-4">
+                <div class="author">
+                  <h4 class="font-bold text-xl">{{ t(testimonial.author) }}</h4>
+                  <p class="text-gray-500">
+                    {{ t(testimonial.author_position) }}
+                  </p>
+                </div>
+                <div class="rating flex items-center gap-1">
+                  <component
+                    v-for="n in 5"
+                    :key="n"
+                    :is="testimonial.rating <= n ? StarRegular : StarSolid"
+                    class="text-secondary"
+                  ></component>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <!--   ============ End Item     -->
-        <!--   ============ Start Item     -->
-        <div
-          class="testimonials__item relative border border-gray-500 p-5 rounded-lg"
-        >
-          <div
-            class="testimonials__item__icon w-[100px] border rounded-full p-3 border-gray-500 bg-white absolute -top-[50px] left-1/2 -translate-x-1/2"
-          >
-            <img :src="Icon" alt="testimonial-1" width="100%" />
-          </div>
-          <div class="testimonials__item__content mt-[50px]">
-            <h4 class="font-bold text-2xl text-primary mb-3">
-              Lorem ipsum dolor sit amet.
-            </h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Accusantium commodi dicta dolore eveniet expedita labore odio
-              perferendis porro quas rem.
-            </p>
-          </div>
+        <div class="next-btn cursor-pointer" @click="slider.next()">
+          <component
+            :is="RightArrow"
+            class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
+          ></component>
         </div>
-        <!--   ============ End Item     -->
-        <!--   ============ Start Item     -->
-        <div
-          class="testimonials__item relative border border-gray-500 p-5 rounded-lg"
-        >
-          <div
-            class="testimonials__item__icon w-[100px] border rounded-full p-3 border-gray-500 bg-white absolute -top-[50px] left-1/2 -translate-x-1/2"
-          >
-            <img :src="Icon" alt="testimonial-1" width="100%" />
-          </div>
-          <div class="testimonials__item__content mt-[50px]">
-            <h4 class="font-bold text-2xl text-primary mb-3">
-              Lorem ipsum dolor sit amet.
-            </h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Accusantium commodi dicta dolore eveniet expedita labore odio
-              perferendis porro quas rem.
-            </p>
-          </div>
-        </div>
-        <!--   ============ End Item     -->
       </div>
+      <div class="handler"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import RightArrow from '#icons/solid/angle-right.svg';
+import LeftArrow from '#icons/solid/angle-left.svg';
+import StarRegular from '#icons/regular/star.svg';
+import StarSolid from '#icons/solid/star.svg';
 import Icon from '#images/quran.svg?url';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Siema from 'siema';
 
 export default defineComponent({
   name: 'testimonial-section',
+  data() {
+    return {
+      slider: {},
+    };
+  },
+  //mounted
+  mounted() {
+    const slider = new Siema({
+      selector: '.testimonials',
+      duration: 200,
+      easing: 'ease-out',
+      perPage: 1,
+      startIndex: 0,
+      draggable: true,
+      multipleDrag: false,
+      threshold: 20,
+      loop: true,
+      rtl: false,
+    });
+    this.slider = slider;
+  },
   setup() {
     const i18n = useI18n();
+    const textContent = {
+      title: "homePage['testimonial-section'].title",
+      subTitle: "homePage['testimonial-section']['sub-title']",
+      description: "homePage['testimonial-section'].description",
+    };
+
+    const items = [
+      {
+        id: 1,
+        company:
+          "homePage['testimonial-section']['items']['item-1']['company']",
+        description:
+          "homePage['testimonial-section']['items']['item-1']['description']",
+        author: "homePage['testimonial-section']['items']['item-1']['author']",
+        author_position:
+          "homePage['testimonial-section']['items']['item-1']['author_position']",
+        rating: 4,
+      },
+      {
+        id: 2,
+        company:
+          "homePage['testimonial-section']['items']['item-2']['company']",
+        description:
+          "homePage['testimonial-section']['items']['item-2']['description']",
+        author: "homePage['testimonial-section']['items']['item-2']['author']",
+        author_position:
+          "homePage['testimonial-section']['items']['item-2']['author_position']",
+        rating: 5,
+      },
+      {
+        id: 3,
+        company:
+          "homePage['testimonial-section']['items']['item-3']['company']",
+        description:
+          "homePage['testimonial-section']['items']['item-3']['description']",
+        author: "homePage['testimonial-section']['items']['item-3']['author']",
+        author_position:
+          "homePage['testimonial-section']['items']['item-3']['author_position']",
+        rating: 3,
+      },
+    ];
 
     return {
-      description: "homePage['news-letter-section']['description']",
-      subTitle: "homePage['news-letter-section']['sub-title']",
-      title: "homePage['news-letter-section']['title']",
-      button: "homePage['news-letter-section']['button']",
-      placeholder: "homePage['news-letter-section']['placeholder']",
+      testimonials: items,
+      textContent,
+      StarRegular,
+      RightArrow,
       t: i18n.t,
+      LeftArrow,
+      StarSolid,
       Icon,
     };
   },

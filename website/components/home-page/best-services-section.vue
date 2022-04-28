@@ -5,12 +5,15 @@
     <div
       v-for="(item, index) in items"
       :key="item.id"
-      class="container mx-auto my-16 flex justify-between items-center gap-10"
+      class="container mx-auto my-16 flex flex-col md:flex-row justify-between items-center gap-10"
     >
       <div
         class="text-container"
         style="flex: 1 0 30%"
-        :class="{ 'text-right': index % 2 !== 0, 'text-left': index % 2 === 0 }"
+        :class="{
+          'text-center md:text-right': index % 2 !== 0,
+          'text-center md:text-left': index % 2 === 0,
+        }"
       >
         <p class="font-bold text-lg text-text">{{ t(item.subTitle) }}</p>
         <h3 class="font-bold text-5xl text-primary my-5">
@@ -23,8 +26,8 @@
       <div
         class="media-container flex"
         :class="{
-          '-order-1 justify-start items-start': index % 2 !== 0,
-          'order-0 justify-end items-end': index % 2 === 0,
+          '-order-2 md:-order-1 justify-start items-start': index % 2 !== 0,
+          '-order-2 md:order-0 justify-end items-end': index % 2 === 0,
         }"
         style="flex: 1 0 50%"
       >

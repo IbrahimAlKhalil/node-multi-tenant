@@ -3,6 +3,10 @@
     class="sticky top-0 w-full z-10"
     :class="{ 'bg-white shadow-md': isSticky }"
     :style="{ height: headerHeight + 'px' }"
+    style="
+      background: rgba(255, 255, 255, 0.75);
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+    "
   >
     <div
       class="flex justify-between items-center container mx-auto py-3 h-full"
