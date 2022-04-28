@@ -1,5 +1,5 @@
 <template>
-  <div class="container flex gap-5">
+  <div class="container flex gap-5 mb-10">
     <main class="main-area" style="flex: 2 1 75%">
       <slot name="main" />
     </main>

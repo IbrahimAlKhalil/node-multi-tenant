@@ -1,23 +1,28 @@
 <template>
-  <layout-main>
-    <blog-hero v-model:search="heroSearch" :categories='categories' :category='heroSearchCategory' />
-    <blog-layout>
-      <template #sidebar>
-        <blog-sidebar
-          :categories="categories"
-          :active-category="activeCategory"
-          :tags="tags"
-          :active-tag="activeTag"
-          v-model:search="sidebarSearch"
-        />
-      </template>
-      <template #main>
-        <blogs />
-      </template>
-    </blog-layout>
-    <news-letter-section />
-    <testimonial-section />
-  </layout-main>
+  <div>
+    <layout-main>
+      <blog-hero
+        v-model:search="heroSearch"
+        :categories="categories"
+        :category="heroSearchCategory"
+      />
+      <blog-layout>
+        <template #sidebar>
+          <p>{{ scroll }}</p>
+          <blog-sidebar
+            :categories="categories"
+            :active-category="activeCategory"
+            :tags="tags"
+            :active-tag="activeTag"
+            v-model:search="sidebarSearch"
+          />
+        </template>
+        <template #main>
+          <blogs />
+        </template>
+      </blog-layout>
+    </layout-main>
+  </div>
 </template>
 
 <script setup>

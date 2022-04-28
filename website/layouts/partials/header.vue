@@ -1,12 +1,8 @@
 <template>
   <header
-    class="sticky top-0 w-full z-10"
+    class="fixed top-0 w-full z-10 transition duration-300 ease-in-out "
     :class="{ 'bg-white shadow-md': isSticky }"
-    :style="{ height: headerHeight + 'px' }"
-    style="
-      background: rgba(255, 255, 255, 0.75);
-      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
-    "
+    style="height: var(--header-height)"
   >
     <div
       class="flex justify-between items-center container mx-auto py-3 h-full"
@@ -66,9 +62,9 @@
   </header>
 </template>
 
-<script lang="ts">
+<script setup>
 import IconQuestionCircle from '#icons/duotone/question-circle.svg';
-import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
+import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
 import IconInfoCircle from '#icons/duotone/info-circle.svg';
 import IconMoneyCheck from '#icons/duotone/money-check.svg';
@@ -80,68 +76,59 @@ import MenuBar from '#icons/light/bars.svg';
 import IconBlog from '#icons/duotone/blog.svg';
 import LogoIcon from '#images/icon.svg?url';
 import Logo from '#images/logo.svg?url';
-import { defineComponent } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-  name: 'the-header',
-  components: {
-    'primary-btn': PrimaryBtnVue,
-  },
-  data() {
-    return {
-      isSticky: false,
-    };
-  },
-
-  setup() {
-    const i18n = useI18n();
-    const { urlPathname } = usePageContext();
-    const headerHeight = 100;
-    const menu = [
-      {
-        text: 'menu.about',
-        href: '/about',
-        icon: IconInfoCircle,
-      },
-      {
-        text: 'menu.features',
-        href: '/features',
-        icon: IconPhoneLaptop,
-      },
-      {
-        text: 'menu.pricing',
-        href: '/pricing',
-        icon: IconMoneyCheck,
-      },
-      {
-        text: 'menu.tutorials',
-        href: '/tutorials',
-        icon: IconBookOpen,
-      },
-      {
-        text: 'menu.blog',
-        href: '/blog',
-        icon: IconBlog,
-      },
-      {
-        text: 'menu.faq',
-        href: '/faq',
-        icon: IconQuestionCircle,
-      },
-    ];
-
-    return {
-      currentPath: urlPathname,
-      headerHeight,
-      LoginWhite,
-      t: i18n.t,
-      LogoIcon,
-      DoorOpen,
-      MenuBar,
-      Logo,
-      menu,
-    };
-  },
+onMounted(() => {
+  window.addEventListener('scroll', (e) => updateScroll(window.scrollY));
 });
+
+const updateScroll = (value) => {
+  if (value > headerHeight.value) {
+    isSticky.value = true;
+  }
+  if (value < headerHeight.value) {
+    isSticky.value = false;
+  }
+};
+
+const isSticky = ref(false);
+
+const i18n = useI18n();
+const { urlPathname } = usePageContext();
+
+const t = ref(i18n.t);
+const headerHeight = ref(70);
+const menu = ref([
+  {
+    text: 'menu.about',
+    href: '/about',
+    icon: IconInfoCircle,
+  },
+  {
+    text: 'menu.features',
+    href: '/features',
+    icon: IconPhoneLaptop,
+  },
+  {
+    text: 'menu.pricing',
+    href: '/pricing',
+    icon: IconMoneyCheck,
+  },
+  {
+    text: 'menu.tutorials',
+    href: '/tutorials',
+    icon: IconBookOpen,
+  },
+  {
+    text: 'menu.blog',
+    href: '/blog',
+    icon: IconBlog,
+  },
+  {
+    text: 'menu.faq',
+    href: '/faq',
+    icon: IconQuestionCircle,
+  },
+]);
 </script>
