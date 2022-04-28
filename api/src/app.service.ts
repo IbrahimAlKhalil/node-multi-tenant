@@ -1,6 +1,8 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from './auth/auth.service.js';
+import { BaseWsEvent } from './types/base-ws-event';
+import { Injectable, Logger } from '@nestjs/common';
 import { Config } from './config/config.js';
-import { Injectable } from '@nestjs/common';
 import { Uws } from './uws/uws.js';
 
 import {
@@ -9,10 +11,12 @@ import {
   HttpRequest,
   WebSocket,
 } from 'uWebSockets.js';
+import Joi from 'joi';
 
 @Injectable()
 export class AppService {
   constructor(
+    private readonly eventEmitter: EventEmitter2,
     private readonly authService: AuthService,
     private readonly config: Config,
     private readonly uws: Uws,
@@ -34,6 +38,13 @@ export class AppService {
       });
     });
   }
+
+  private logger = new Logger(AppService.name);
+  private schema = Joi.object<BaseWsEvent>({
+    id: Joi.number().min(1),
+    type: Joi.string().min(1).max(60).required(),
+    data: Joi.any(),
+  });
 
   async upgrade(res: HttpResponse, req: HttpRequest, ctx: us_socket_context_t) {
     // Keep the headers before the request object is gone
@@ -76,11 +87,53 @@ export class AppService {
     );
   }
 
-  async message(ws: WebSocket, message: ArrayBuffer, isBinary: boolean) {
+  async message(ws: WebSocket, msg: ArrayBuffer, isBinary: boolean) {
     // Convert ArrayBuffer to string
-    const msg = Buffer.from(message).toString();
+    const msgTxt = Buffer.from(msg).toString('utf-8');
 
-    // Log message
-    console.log(`Received message: ${msg}`);
+    // Try to parse the message as JSON
+    let msgObj: Record<string, any>;
+
+    try {
+      msgObj = JSON.parse(msgTxt);
+    } catch (e) {
+      this.logger.error(`Failed to parse message as JSON: ${msgTxt}`);
+      return;
+    }
+
+    // Validate the message
+    const { error, value } = this.schema.validate(msgObj);
+
+    if (error) {
+      this.logger.error(`Failed to validate message: ${msgTxt}`);
+      return;
+    }
+
+    if (!value.id) {
+      // Emit the event without listening for response
+      this.eventEmitter.emit(value.type, {
+        ws,
+        data: value.data,
+        binary: isBinary,
+      });
+      return;
+    }
+
+    // Emit the message
+    const response = await this.eventEmitter.emitAsync(value.type, {
+      ws,
+      data: value.data,
+      binary: isBinary,
+    });
+
+    const data = response.length === 1 ? response[0] : response;
+
+    // Send the response
+    ws.send(
+      JSON.stringify({
+        id: value.id,
+        data: data ?? null,
+      }),
+    );
   }
 }
