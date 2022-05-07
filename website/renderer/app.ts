@@ -3,7 +3,6 @@ import { createSSRApp, defineComponent, h } from 'vue';
 import { PageContext } from '#types/page-context';
 import PageShell from './page-shell.vue';
 import { createI18n } from 'vue-i18n';
-import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import { createPinia } from 'pinia';
 import en from '../locales/en';
@@ -43,7 +42,6 @@ function createApp(pageContext: PageContext) {
 
   app.use(i18n);
   app.use(pinia);
-  app.use(ElementPlus);
 
   pinia.use((ctx) => {
     if (typeof ctx.options.hydrate === 'function') {
