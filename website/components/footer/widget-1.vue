@@ -2,7 +2,7 @@
   <div class="logo mb-5">
     <img :src="LogoWhite" alt="Logo" />
   </div>
-  <p class="mb-5 text-justify">
+  <p class="mb-5 text-justify text-gray-400 text-sm">
     In publishing and graphic design, Lorem ipsum is a placeholder text commonly
     used to demonstrate the visual form of a document or a typeface without
   </p>
