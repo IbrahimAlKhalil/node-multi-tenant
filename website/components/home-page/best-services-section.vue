@@ -8,11 +8,11 @@
       class="container mx-auto my-16 flex flex-col md:flex-row justify-between items-center gap-10"
     >
       <div
-        class="text-container"
+        class="text-container text-center"
         style="flex: 1 0 30%"
         :class="{
-          'text-center md:text-right': index % 2 !== 0,
-          'text-center md:text-left': index % 2 === 0,
+          'md:text-right': index % 2 !== 0,
+          'md:text-left': index % 2 === 0,
         }"
       >
         <p class="font-bold text-lg text-text">{{ t(item.subTitle) }}</p>
@@ -26,10 +26,13 @@
       <div
         class="media-container flex"
         :class="{
-          '-order-2 md:-order-1 justify-start items-start': index % 2 !== 0,
-          '-order-2 md:order-0 justify-end items-end': index % 2 === 0,
+          '-order-2 md:order-0 justify-start items-start': index % 2 !== 0,
+          '-order-2 md:order-2 justify-end items-end': index % 2 === 0,
         }"
         style="flex: 1 0 50%"
+        data-aos="fade-up"
+        data-aos-delay="100"
+        data-aos-duration="1000"
       >
         <img :src="item.image" :alt="item.title" />
       </div>
@@ -74,5 +77,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>

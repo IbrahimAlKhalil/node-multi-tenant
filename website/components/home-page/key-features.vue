@@ -12,7 +12,12 @@
       <!--  End  Text Content   -->
 
       <!--   ============== Start Media =================   -->
-      <img :src="KeyFeaturesImage" :alt="t(title)" width="75%" />
+      <img
+        :src="KeyFeaturesImage"
+        :alt="t(title)"
+        width="75%"
+        data-aos="flip-left"
+      />
       <!--  End  Media   -->
     </div>
   </div>

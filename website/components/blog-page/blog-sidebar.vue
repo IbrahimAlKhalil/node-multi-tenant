@@ -68,7 +68,6 @@
 <script setup>
 import CircleCheck from '#icons/solid/check-circle.svg';
 import Circle from '#icons/light/circle.svg';
-import { defineComponent } from 'vue';
 
 defineProps({
   categories: {
