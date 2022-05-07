@@ -1,5 +1,9 @@
 <template>
-  <div class="features-section lg:absolute lg:-bottom-16 w-full">
+  <div
+    class="features-section lg:absolute lg:-bottom-16 w-full"
+    data-aos="fade-up"
+    data-aos-delay="200"
+  >
     <div
       class="lg:bg-white lg:rounded-lg lg:shadow-lg lg:w-4/5 lg:gap-0 lg:flex-nowrap md:flex-row md:flex-wrap md:basis-1/2 md:justify-evenly mx-auto flex flex-col justify-between gap-10 py-5"
     >

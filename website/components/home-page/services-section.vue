@@ -26,9 +26,11 @@
       >
         <!-- ================= start Item =============== -->
         <li
-          v-for="item in items"
+          v-for="(item, index) in items"
           :key="item.id"
           class="info-box__item rounded-xl border border-primary px-5 pt-[60px] pb-[30px] text-center relative"
+          data-aos="zoom-in"
+          :data-aos-delay="100 * index"
         >
           <div
             class="info-box__icon w-[100px] h-[100px] rounded-full p-5 border bg-white border-primary absolute -top-[50px] left-1/2 -translate-x-1/2"

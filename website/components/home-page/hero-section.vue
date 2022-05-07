@@ -32,6 +32,9 @@
       </div>
       <div
         class="media flex-1 -order-1 lg:order-1 w-full h-full flex justify-center lg:justify-end items-center"
+        data-aos="zoom-in"
+        data-aos-delay="200"
+        data-aos-duration="1000"
       >
         <img
           :src="VideoImage"
@@ -41,7 +44,8 @@
       </div>
     </div>
     <div
-      class="flex justify-center items-center shadow-md absolute bottom-12 left-1/2 -translate-x-1/2 hidden"
+      class="flex justify-center items-center shadow-md absolute bottom-12 left-1/2 -translate-x-1/2 visible opacity-100 transition duration-500"
+      :class="{ 'invisible opacity-0': isVisible }"
     >
       <component
         class="text-5xl text-white transition hover:scale-125 hover:text-secondary cursor-pointer"
@@ -72,6 +76,12 @@ export default defineComponent({
     return {
       title: 'homePage.hero-title',
     };
+  },
+  props: {
+    isVisible: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const i18n = useI18n();
