@@ -120,11 +120,25 @@ export class AppService {
     }
 
     // Emit the message
-    const response = await this.eventEmitter.emitAsync(value.type, {
-      ws,
-      data: value.data,
-      binary: isBinary,
-    });
+    let response: any[] = [];
+
+    try {
+      response = await this.eventEmitter.emitAsync(value.type, {
+        ws,
+        data: value.data,
+        binary: isBinary,
+      });
+    } catch (e) {
+      ws.send(
+        JSON.stringify({
+          id: value.id,
+          error: {
+            message: e.message,
+            code: e.code,
+          },
+        }),
+      );
+    }
 
     const data =
       response.length === 0
