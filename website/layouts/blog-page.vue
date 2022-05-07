@@ -3,7 +3,7 @@
     <main class="main-area" style="flex: 2 1 75%">
       <slot name="main" />
     </main>
-    <aside class="sidebar" style="flex: 1 0 25%">
+    <aside class="sidebar hidden md:block" style="flex: 1 0 25%">
       <slot name="sidebar" />
     </aside>
   </div>
