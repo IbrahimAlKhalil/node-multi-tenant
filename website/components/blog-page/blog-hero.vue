@@ -26,11 +26,54 @@
           </div>
         </div>
         <div
-          :class="{ 'visibility-hidden opacity-0 ': search }"
+          :class="{ 'hidden ': search }"
           class="featured-blogs transition duration-500"
         >
           <div class="intro flex items-center gap-5 mb-5">
             <h3 class="font-bold text-xl uppercase">Most Popular</h3>
+            <div
+              class="flex-grow h-[2px] bg-white rounded relative before:w-2 before:h-2 before:absolute before:-left-2 before:top-1/2 before:-translate-y-1/2 before:bg-white before:rounded-full"
+            ></div>
+          </div>
+          <div class="blogs flex justify-between flex-wrap gap-8 text-xs">
+            <article
+              v-for="blog in featuresBlogs"
+              :key="blog.id"
+              class="blog flex flex-col lg:flex-row text-center lg:text-left items-center gap-3 border border-secondary rounded-md p-2"
+              style="flex: 1 1 300px"
+            >
+              <div class="media" style="flex: 1 1 40%">
+                <img :src="blog.image" class="rounded-md" :alt="blog.title" />
+              </div>
+              <div class="content" style="flex: 1 1 60%">
+                <h3 class="font-bold text-lg text-secondary">
+                  {{ blog.title }}
+                </h3>
+                <p class="italic text-gray-500">Date: {{ blog.date }}</p>
+                <p class="description my-2 text-center lg:text-justify">
+                  {{ blog.description }}
+                </p>
+                <a
+                  href="#"
+                  class="font-bold text-secondary flex items-center justify-center lg:justify-start gap-2 uppercase transition hover:text-secondary-dark"
+                  >Read More
+                  <component
+                    :is="RightArrow"
+                    class="text-xl"
+                    style="bottom: 0"
+                  ></component>
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+        <!--        Search Result -->
+        <div
+          :class="{ hidden: !search }"
+          class="featured-blogs transition duration-500 block"
+        >
+          <div class="intro flex items-center gap-5 mb-5">
+            <h3 class="font-bold text-xl uppercase">Search Result</h3>
             <div
               class="flex-grow h-[2px] bg-white rounded relative before:w-2 before:h-2 before:absolute before:-left-2 before:top-1/2 before:-translate-y-1/2 before:bg-white before:rounded-full"
             ></div>
