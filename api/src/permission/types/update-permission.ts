@@ -15,13 +15,17 @@ export interface PermissionDefinition<
       Parameters<PrismaClient[N]['updateMany']>[0]
   >,
 > {
-  fields: true | Set<keyof M> | FieldReference;
+  fields: boolean | Set<keyof M> | FieldReference;
   permissions?:
     | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
     | P
     | PermissionReference;
   presets?:
-    | ((session: Session, query: P, ioc: ModuleRef) => M | Promise<M>)
+    | ((
+        session: Session,
+        query: P,
+        ioc: ModuleRef,
+      ) => Partial<M> | Promise<Partial<M>>)
     | MutationReference;
   validation?:
     | ((

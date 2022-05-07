@@ -14,6 +14,9 @@ export class PermissionService {
   }
 
   public models: Partial<Record<ModelNames, Model<any, ModelNames>>> = {};
+  public i18nModels: Partial<
+    Record<ModelNames, { name: ModelNames; model: Model<any, ModelNames> }>
+  > = {};
 
   private async loadModels() {
     const files = (
@@ -28,6 +31,17 @@ export class PermissionService {
         .replace(regex, (match, letter) => letter.toUpperCase());
 
       this.models[name as ModelNames] = model.default;
+    }
+
+    for (const [name, model] of Object.entries(this.models)) {
+      if (!name.endsWith('I18n')) {
+        continue;
+      }
+
+      this.i18nModels[name.replace('I18n', '') as ModelNames] = {
+        name: name as ModelNames,
+        model,
+      };
     }
   }
 }
