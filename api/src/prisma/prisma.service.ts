@@ -3,6 +3,11 @@ import { PrismaInstance } from '../types/prisma-instance';
 import { PrismaClient } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
+import { fileURLToPath } from 'url';
+import sdk from '@prisma/sdk';
+import path from 'path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 @Injectable()
 export class PrismaService {
@@ -24,9 +29,16 @@ export class PrismaService {
         }
       }
     }, 5 * 60 * 1000);
+
+    sdk.getDMMF({
+      datamodelPath: path.join(__dirname, '../../prisma/schema.prisma'),
+    }).then(schema => {
+      this.schema = schema;
+    });
   }
 
   private instances: { [instituteId: string]: PrismaInstance } = {};
+  public schema: Awaited<ReturnType<typeof sdk.getDMMF>>;
 
   public async getPrisma(instituteId: string): Promise<PrismaClient | null> {
     // Check if the institute exists
