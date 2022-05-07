@@ -1,6 +1,6 @@
 <template>
   <header
-    class="fixed top-0 w-full z-10 transition duration-300 ease-in-out "
+    class="fixed top-0 w-full z-10 transition duration-300 ease-in-out"
     :class="{ 'bg-white shadow-md': isSticky }"
     style="height: var(--header-height)"
   >
@@ -76,11 +76,14 @@ import MenuBar from '#icons/light/bars.svg';
 import IconBlog from '#icons/duotone/blog.svg';
 import LogoIcon from '#images/icon.svg?url';
 import Logo from '#images/logo.svg?url';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 onMounted(() => {
   window.addEventListener('scroll', (e) => updateScroll(window.scrollY));
+});
+onUnmounted(() => {
+  window.removeEventListener('scroll', (e) => updateScroll(window.scrollY));
 });
 
 const updateScroll = (value) => {

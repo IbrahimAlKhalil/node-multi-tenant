@@ -14,17 +14,18 @@
           class="leading-[1.5] font-bold text-inherit mb-5"
           style="font-size: calc(2.5rem + 1.5vw)"
         >
-          {{ t(title) }}
+          {{ t('homePage.hero-title') }}
         </h1>
         <p class="text-2xl text-inherit mb-5">
           {{ t('homePage.hero-description') }}
         </p>
         <div class="flex justify-center lg:justify-start gap-3">
-          <primary-btn
+          <PrimaryBtn
             :title="t('homePage.hero-btn-primary')"
             :icon="DoorOpen"
+            @dialog-open="dialogVisible = true"
           />
-          <secondary-btn
+          <SecondaryBtn
             :title="t('homePage.hero-btn-primary')"
             :icon="PhonePlus"
           />
@@ -38,7 +39,7 @@
       >
         <img
           :src="VideoImage"
-          :alt="t('homePage.hero-image-alt')"
+          :alt="t('homePage.hero-title')"
           class="w-3/5 lg:w-4/5"
         />
       </div>
@@ -46,6 +47,7 @@
     <div
       class="flex justify-center items-center shadow-md absolute bottom-12 left-1/2 -translate-x-1/2 visible opacity-100 transition duration-500"
       :class="{ 'invisible opacity-0': isVisible }"
+      @click="handleScroll"
     >
       <component
         class="text-5xl text-white transition hover:scale-125 hover:text-secondary cursor-pointer"
@@ -55,52 +57,36 @@
   </div>
 </template>
 
-<script lang="ts">
-import SecondaryBtnVue from '#components/ui/btn/secondary-btn.vue';
-import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
-import HeroBackground from '#images/HeroBackground.svg?url';
-import LoginWhite from '#icons/others/login-white.svg?url';
+<script lang="ts" setup>
+import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
+import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import Down from '#icons/solid/chevron-circle-down.svg';
 import PhonePlus from '#icons/duotone/phone-plus.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import VideoImage from '#images/Video.svg?url';
-import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { onMounted } from 'vue';
 
-export default defineComponent({
-  components: {
-    'secondary-btn': SecondaryBtnVue,
-    'primary-btn': PrimaryBtnVue,
-  },
-  data() {
-    return {
-      title: 'homePage.hero-title',
-    };
-  },
-  props: {
-    isVisible: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup() {
-    const i18n = useI18n();
-    return {
-      HeroBackground,
-      VideoImage,
-      LoginWhite,
-      t: i18n.t,
-      PhonePlus,
-      DoorOpen,
-      Down,
-    };
+const i18n = useI18n();
+const t = i18n.t;
+
+defineProps({
+  isVisible: {
+    type: Boolean,
+    default: false,
   },
 });
+const handleScroll = () => {
+  window.scrollTo({
+    top: 350,
+    behavior: 'smooth',
+  });
+};
 </script>
 
 <style scoped>
 .hero-section {
+  background: url('assets/images/HeroBackground.svg') no-repeat center;
   background-size: cover;
-  background: url('assets/images/HeroBackground.svg') no-repeat center center;
 }
 </style>

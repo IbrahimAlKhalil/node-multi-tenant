@@ -18,10 +18,12 @@
       >
         <!--      ==================== Table Start ========================= -->
         <div
-          v-for="item in pricingData"
+          v-for="(item, index) in pricingData"
           :key="item.id"
           class="tables__table border-t-4 border-secondary bg-white px-8 py-10 md:py-5 text-xl rounded-b-lg flex flex-col items-center"
           :class="{ 'border-primary shadow-xl': item.isFeatured }"
+          data-aos="fade-up"
+          :data-aos-delay="100 * index"
         >
           <h3
             class="font-bold text-2xl text-center mt-5 mb-8 leading-10 text-text uppercase"

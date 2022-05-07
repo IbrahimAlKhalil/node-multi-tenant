@@ -108,11 +108,17 @@ export default defineComponent({
     let slider: Siema;
 
     const renderSlider = (value: typeof styles.breakpoints) => {
+      console.log(value);
       slider = new Siema({
         selector: '.clients',
         duration: 200,
         easing: 'ease-out',
-        perPage: value['md-and-down'] && !value['lg-and-up'] ? 3 : 5,
+        perPage:
+          !value['sm-and-down'] && !value['lg-and-up']
+            ? 3
+            : value['md-and-down'] && !value['md-and-up']
+            ? 2
+            : 5,
         startIndex: 0,
         draggable: true,
         multipleDrag: false,
