@@ -13,18 +13,18 @@ const referableFields = [
 
 type Reference = PermissionReference | MutationReference | FieldReference;
 type ReferableField = typeof referableFields[number];
-type Role = keyof Model<any, any>['roles'];
+type Kind = keyof Model<any, any>['kinds'];
 type Permission = Exclude<keyof Actions<any, any>, 'subscribe'>;
 
 export function defineModel<M, N extends ModelNames>(
   model: Model<M, N>,
 ): Model<M, N> {
-  for (const [role, roleValue] of Object.entries(model.roles)) {
-    if (typeof roleValue === 'boolean') {
+  for (const [kind, kindValue] of Object.entries(model.kinds)) {
+    if (typeof kindValue === 'boolean') {
       continue;
     }
 
-    for (const [permission, permissionValue] of Object.entries(roleValue)) {
+    for (const [permission, permissionValue] of Object.entries(kindValue)) {
       if (typeof permissionValue === 'boolean') {
         continue;
       }
@@ -40,10 +40,10 @@ export function defineModel<M, N extends ModelNames>(
           model,
           split[0],
           split[1],
-          role as Role,
+          kind as Kind,
           permission as Permission,
           field,
-          [`${role}.${permission}` as Reference],
+          [`${kind}.${permission}` as Reference],
         );
       }
     }
@@ -54,9 +54,9 @@ export function defineModel<M, N extends ModelNames>(
 
 function resolveReference(
   model: Model<any, any>,
-  referenceRole: Role,
+  referenceRole: Kind,
   referencePermission: Permission,
-  refererRole: Role,
+  refererRole: Kind,
   refererPermission: Permission,
   field: ReferableField,
   stack: Reference[] = [],
@@ -73,8 +73,8 @@ function resolveReference(
 
   stack.push(reference);
 
-  const referenceRoleValue = model.roles[referenceRole];
-  const refererRoleValue = model.roles[refererRole] as Actions<any, any>;
+  const referenceRoleValue = model.kinds[referenceRole];
+  const refererRoleValue = model.kinds[refererRole] as Actions<any, any>;
 
   if (referenceRoleValue === undefined) {
     throw new Error(`Role "${refererRole}" is not defined`);
@@ -87,7 +87,7 @@ function resolveReference(
 
   if (referenceRoleValue[referencePermission] === undefined) {
     throw new Error(
-      `Permission "${referencePermission}" is not defined for role "${referenceRole}"`,
+      `Permission "${referencePermission}" is not defined for kind "${referenceRole}"`,
     );
   }
 
@@ -106,7 +106,7 @@ function resolveReference(
 
     return resolveReference(
       model,
-      split[0] as Role,
+      split[0] as Kind,
       split[1] as Permission,
       referenceRole,
       referencePermission,

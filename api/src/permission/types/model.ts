@@ -17,7 +17,7 @@ export interface Actions<M, N extends ModelNames> {
 export interface Model<M, N extends ModelNames> {
   parent?: Model<any, N>;
   schema?: ObjectSchema<M>;
-  roles: Partial<
+  kinds: Partial<
     Record<user_kind | 'ALL' | 'POWER' | 'NON_POWER', boolean | Actions<M, N>>
   >;
 }

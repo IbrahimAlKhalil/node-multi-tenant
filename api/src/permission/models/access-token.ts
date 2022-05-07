@@ -2,7 +2,7 @@ import { AccessToken } from '../../../prisma/client';
 import { defineModel } from '../define-model.js';
 
 export default defineModel<AccessToken, 'accessToken'>({
-  roles: {
+  kinds: {
     ALL: {
       read: {
         fields: true,

@@ -2,7 +2,7 @@ import { defineModel } from '../define-model.js';
 import { Chat } from '../../../prisma/client';
 
 export default defineModel<Chat, 'chat'>({
-  roles: {
+  kinds: {
     POWER: {
       read: {
         fields: true,
