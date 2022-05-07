@@ -20,6 +20,7 @@ export interface BaseQuery {
     | 'deleteMany';
   query: Record<string, any>;
   model: ModelNames;
+  subscribe?: boolean;
 }
 
 export const baseQuery = Joi.object<BaseQuery>({
@@ -57,4 +58,5 @@ export const baseQuery = Joi.object<BaseQuery>({
     ],
   }),
   model: Joi.string().required(),
+  subscribe: Joi.boolean(),
 });
