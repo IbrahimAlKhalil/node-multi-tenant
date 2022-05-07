@@ -1,10 +1,13 @@
 import { InstituteService } from '../institute/institute.service.js';
+import { ModelNames } from '../permission/types/model-names';
 import { PrismaInstance } from '../types/prisma-instance';
+import { DMMF } from '../../prisma/client/runtime';
 import { PrismaClient } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { fileURLToPath } from 'url';
 import sdk from '@prisma/sdk';
+import Model = DMMF.Model;
 import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,11 +37,19 @@ export class PrismaService {
       datamodelPath: path.join(__dirname, '../../prisma/schema.prisma'),
     }).then(schema => {
       this.schema = schema;
+
+      for (const model of schema.datamodel.models) {
+        const camelCaseModelName = (model.name.charAt(0).toLowerCase() + model.name.slice(1)) as ModelNames;
+        this.modelsCamelCased[camelCaseModelName] = model;
+        this.models[model.name] = model;
+      }
     });
   }
 
   private instances: { [instituteId: string]: PrismaInstance } = {};
   public schema: Awaited<ReturnType<typeof sdk.getDMMF>>;
+  public modelsCamelCased: Partial<Record<ModelNames, Model>> = {};
+  public models: Record<string, Model> = {};
 
   public async getPrisma(instituteId: string): Promise<PrismaClient | null> {
     // Check if the institute exists
