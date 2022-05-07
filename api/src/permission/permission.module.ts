@@ -3,5 +3,6 @@ import { Module } from '@nestjs/common';
 
 @Module({
   providers: [PermissionService],
+  exports: [PermissionService],
 })
 export class PermissionModule {}
