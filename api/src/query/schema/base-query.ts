@@ -1,23 +1,25 @@
+import { ModelNames } from '../../permission/types/model-names';
 import { findUnique } from './find-unique.js';
 import { findMany } from './find-many.js';
 import Joi from 'joi';
 
-interface BaseQuery {
+export interface BaseQuery {
   type:
     | 'findMany'
     | 'findFirst'
     | 'findUnique'
-    | 'create'
-    | 'update'
-    | 'upsert'
-    | 'delete'
     | 'count'
     | 'aggregate'
     | 'groupBy'
+    | 'create'
     | 'createMany'
+    | 'update'
     | 'updateMany'
+    | 'upsert'
+    | 'delete'
     | 'deleteMany';
   query: Record<string, any>;
+  model: ModelNames;
 }
 
 export const baseQuery = Joi.object<BaseQuery>({
@@ -27,15 +29,15 @@ export const baseQuery = Joi.object<BaseQuery>({
       'findMany',
       'findFirst',
       'findUnique',
-      'create',
-      'update',
-      'upsert',
-      'delete',
       'count',
       'aggregate',
       'groupBy',
+      'create',
       'createMany',
+      'update',
       'updateMany',
+      'upsert',
+      'delete',
       'deleteMany',
     ),
   query: Joi.when('type', {
@@ -54,4 +56,5 @@ export const baseQuery = Joi.object<BaseQuery>({
       },
     ],
   }),
+  model: Joi.string().required(),
 });
