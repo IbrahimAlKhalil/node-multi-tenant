@@ -43,6 +43,7 @@ importers:
       '@prisma/sdk': ^3.13.0
       '@types/google-libphonenumber': ^7.4.23
       '@types/jest': 27.4.0
+      '@types/lodash': ^4.14.182
       '@types/minio': ^7.0.12
       '@types/node': ^16.11.26
       '@typescript-eslint/eslint-plugin': ^5.14.0
@@ -98,6 +99,7 @@ importers:
       '@nestjs/testing': 8.4.0_44cf05fcc0e49f3653826a45aec0eb54
       '@types/google-libphonenumber': 7.4.23
       '@types/jest': 27.4.0
+      '@types/lodash': 4.14.182
       '@types/minio': 7.0.12
       '@types/node': 16.11.26
       '@typescript-eslint/eslint-plugin': 5.14.0_ace6f9e7722b813e21eaf2dc993bc413
@@ -1896,7 +1898,6 @@ packages:
 
   /@types/lodash/4.14.182:
     resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
-    dev: false
 
   /@types/mime/1.3.2:
     resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
