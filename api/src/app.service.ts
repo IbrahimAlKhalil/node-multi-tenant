@@ -134,7 +134,7 @@ export class AppService {
           id: value.id,
           error: {
             message: e.message,
-            code: e.code,
+            code: e.code ?? 'INTERNAL_ERROR',
           },
         }),
       );
