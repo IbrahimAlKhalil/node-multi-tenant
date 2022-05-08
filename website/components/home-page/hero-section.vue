@@ -20,11 +20,12 @@
           {{ t('homePage.hero-description') }}
         </p>
         <div class="flex justify-center lg:justify-start gap-3">
-          <PrimaryBtn
-            :title="t('homePage.hero-btn-primary')"
-            :icon="DoorOpen"
-            @dialog-open="dialogVisible = true"
-          />
+          <a href="/login">
+            <PrimaryBtn
+              :title="t('homePage.hero-btn-primary')"
+              :icon="DoorOpen"
+            />
+          </a>
           <SecondaryBtn
             :title="t('homePage.hero-btn-primary')"
             :icon="PhonePlus"
