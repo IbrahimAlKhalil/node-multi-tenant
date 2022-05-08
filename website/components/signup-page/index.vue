@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import InputFeild from '#components/form-components/input-feild.vue';
+import InputFeild from '#components/form-components/input-field.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
