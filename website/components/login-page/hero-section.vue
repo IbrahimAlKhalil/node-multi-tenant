@@ -12,54 +12,32 @@
         </h1>
         <h2 class="text-lg lg:text-xl text-center">To access you dashboard</h2>
         <form @submit.prevent="handleSubmit">
-          <div class="w-1/2 mx-auto flex flex-col items-center p-5 my-10">
-            <div class="w-full mb-5">
-              <input
-                type="text"
-                name="username"
-                v-model="values.username"
-                class="block px-3 py-2 rounded-md text-white outline-0 border-b-2 border-white focus:border-primary w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
-                :class="{
-                  'border-red-500 focus:border-red-500': errors.username,
-                }"
-                placeholder="Email"
-                @focus="validate('username')"
-                @keypress="validate('username')"
-              />
-              <p class="text-sm italic text-red-500 p-1">
-                {{ errors?.username || '' }}
-              </p>
-            </div>
-            <div class="w-full mb-5 relative">
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                v-model="values.password"
-                class="block px-3 py-2 rounded-md text-white outline-0 border-b-2 border-white focus:border-primary w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
-                :class="{
-                  'border-red-500 focus:border-red-500': errors.password,
-                }"
-                placeholder="Password"
-                @focus="validate('password')"
-                @keypress="validate('password')"
-              />
-              <p class="text-sm italic text-red-500 p-1">
-                {{ errors?.password || '' }}
-              </p>
-              <div class="absolute right-0 top-1/2 -translate-y-1/2">
-                <component
-                  v-show="showPassword"
-                  :is="EyeOpen"
-                  class="text-2xl p-1 cursor-pointer"
-                  @click="showPassword = !showPassword"
-                ></component>
-                <component
-                  v-show="!showPassword"
-                  :is="EyeClosed"
-                  class="text-2xl p-1 cursor-pointer"
-                  @click="showPassword = !showPassword"
-                ></component>
-              </div>
-            </div>
+          <div class="w-1/2 mx-auto flex flex-col gap-5 items-center p-5 my-10">
+            <InputField
+              placeholder="Email"
+              name="username"
+              type="text"
+              v-model="values.username"
+              :value="values.username"
+              :error="errors.username"
+              @on-input="handleInput"
+              @on-blur="validate"
+              @on-keypress="validate"
+            />
+            <InputField
+              placeholder="Password"
+              name="password"
+              :type="showPassword ? 'text' : 'password'"
+              v-model="values.password"
+              :value="values.password"
+              :error="errors.password"
+              :isPasswordField="true"
+              :show-password="showPassword"
+              @on-input="handleInput"
+              @on-blur="validate"
+              @on-keypress="validate"
+              @on-toggle-password="showPassword = !showPassword"
+            />
             <div class="w-full mb-5">
               <input
                 type="checkbox"
@@ -86,8 +64,7 @@
 </template>
 
 <script setup>
-import EyeClosed from '#icons/solid/eye-slash.svg';
-import EyeOpen from '#icons/solid/eye.svg';
+import InputField from '#components/form-components/input-field.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
@@ -125,6 +102,10 @@ const validate = (field) => {
     .catch((err) => {
       errors.value[field] = err.message;
     });
+};
+
+const handleInput = (event) => {
+  values.value[event.target.name] = event.target.value;
 };
 
 const handleSubmit = () => {
