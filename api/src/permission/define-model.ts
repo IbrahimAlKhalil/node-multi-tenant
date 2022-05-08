@@ -13,12 +13,12 @@ const referableFields = [
 
 type Reference = PermissionReference | MutationReference | FieldReference;
 type ReferableField = typeof referableFields[number];
-type Kind = keyof Model<any, any>['kinds'];
-type Permission = Exclude<keyof Actions<any, any>, 'subscribe'>;
+type Kind = keyof Model<any, any, 'raw'>['kinds'];
+type Permission = Exclude<keyof Actions<any, any, 'raw'>, 'subscribe'>;
 
 export function defineModel<M, N extends ModelNames>(
-  model: Model<M, N>,
-): Model<M, N> {
+  model: Model<M, N, 'raw'>,
+): Model<M, N, 'processed'> {
   for (const [kind, kindValue] of Object.entries(model.kinds)) {
     if (typeof kindValue === 'boolean') {
       continue;
@@ -49,11 +49,11 @@ export function defineModel<M, N extends ModelNames>(
     }
   }
 
-  return model;
+  return model as Model<M, N, 'processed'>;
 }
 
 function resolveReference(
-  model: Model<any, any>,
+  model: Model<any, any, 'raw'>,
   referenceRole: Kind,
   referencePermission: Permission,
   refererRole: Kind,
@@ -74,7 +74,7 @@ function resolveReference(
   stack.push(reference);
 
   const referenceRoleValue = model.kinds[referenceRole];
-  const refererRoleValue = model.kinds[refererRole] as Actions<any, any>;
+  const refererRoleValue = model.kinds[refererRole] as Actions<any, any, 'raw'>;
 
   if (referenceRoleValue === undefined) {
     throw new Error(`Role "${refererRole}" is not defined`);
