@@ -30,7 +30,7 @@ export default defineModel<Chat, 'chat'>({
         },
       },
       update: {
-        fields: false,
+        fields: new Set(),
         presets() {
           return {
             deletedAt: new Date(),

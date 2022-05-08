@@ -18,8 +18,8 @@ export interface PermissionDefinition<
   >,
 > {
   fields: S extends 'raw'
-    ? boolean | Set<keyof M> | FieldReference
-    : boolean | Set<keyof M>;
+    ? true | Set<keyof M> | FieldReference
+    : true | Set<keyof M>;
   permissions?: S extends 'raw'
     ?
         | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)

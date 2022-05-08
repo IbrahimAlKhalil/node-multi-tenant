@@ -14,8 +14,8 @@ export interface PermissionDefinition<
   P = Partial<Parameters<PrismaClient[N]['findMany']>[0]>,
 > {
   fields: S extends 'raw'
-    ? boolean | Set<keyof M> | FieldReference
-    : boolean | Set<keyof M>;
+    ? true | Set<keyof M> | FieldReference
+    : true | Set<keyof M>;
   permissions?: S extends 'raw'
     ?
         | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
