@@ -4,20 +4,28 @@ import { PrismaClient } from '../../../prisma/client';
 import { FieldReference } from './field-reference';
 import { Session } from '../../types/session';
 import { ModelNames } from './model-names';
+import { ModelState } from './model-state';
 import { ModuleRef } from '@nestjs/core';
 
 export interface PermissionDefinition<
   M,
   N extends ModelNames,
+  S extends ModelState = 'processed',
   P = Partial<Parameters<PrismaClient[N]['findMany']>[0]>,
 > {
-  fields: true | Set<keyof M> | FieldReference;
-  permissions?:
-    | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
-    | P
-    | PermissionReference;
+  fields: S extends 'raw'
+    ? true | Set<keyof M> | FieldReference
+    : true | Set<keyof M>;
+  permissions?: S extends 'raw'
+    ?
+        | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
+        | P
+        | PermissionReference
+    : ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>) | P;
 }
 
-export type ReadPermission<M, N extends ModelNames> =
-  | boolean
-  | PermissionDefinition<M, N>;
+export type ReadPermission<
+  M,
+  N extends ModelNames,
+  S extends ModelState = 'processed',
+> = boolean | PermissionDefinition<M, N, S>;

@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { fileURLToPath } from 'url';
 import sdk from '@prisma/sdk';
 import Model = DMMF.Model;
+import Field = DMMF.Field;
 import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -40,16 +41,26 @@ export class PrismaService {
 
       for (const model of schema.datamodel.models) {
         const camelCaseModelName = (model.name.charAt(0).toLowerCase() + model.name.slice(1)) as ModelNames;
-        this.modelsCamelCased[camelCaseModelName] = model;
-        this.models[model.name] = model;
+        this.models[camelCaseModelName] = model;
+        this.modelsOriginal[model.name] = model;
+        this.modelsNameMap[model.name] = camelCaseModelName;
+
+        for (const field of model.fields) {
+          const fields = this.fields[camelCaseModelName] ?? {};
+          this.fields[camelCaseModelName] = fields;
+
+          fields[field.name] = field;
+        }
       }
     });
   }
 
   private instances: { [instituteId: string]: PrismaInstance } = {};
   public schema: Awaited<ReturnType<typeof sdk.getDMMF>>;
-  public modelsCamelCased: Partial<Record<ModelNames, Model>> = {};
-  public models: Record<string, Model> = {};
+  public models: Partial<Record<ModelNames, Model>> = {};
+  public modelsOriginal: Record<string, Model> = {};
+  public modelsNameMap: Record<string, ModelNames> = {};
+  public fields: Partial<Record<ModelNames, Record<string, Field>>> = {};
 
   public async getPrisma(instituteId: string): Promise<PrismaClient | null> {
     // Check if the institute exists
