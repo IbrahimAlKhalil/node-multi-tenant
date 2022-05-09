@@ -17,7 +17,7 @@
       @keypress="$emit('on-keypress', name)"
     />
     <p class="text-sm italic text-red-500 p-1">
-      {{ error }}
+      {{ error }} &nbsp;
     </p>
     <div
       class="absolute right-0 top-1/2 -translate-y-1/2"
@@ -42,7 +42,6 @@
 <script lang="ts" setup>
 import EyeClosed from '#icons/solid/eye-slash.svg';
 import EyeOpen from '#icons/solid/eye.svg';
-import { ref } from 'vue';
 
 defineEmits(['on-input', 'on-keypress', 'on-focus', 'on-toggle-password']);
 

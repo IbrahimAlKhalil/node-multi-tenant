@@ -65,6 +65,7 @@
         </span>
       </li>
     </ul>
+    <p>{{error }} &nbsp;</p>
   </div>
 </template>
 
@@ -117,6 +118,10 @@ defineProps({
   isSingleSelect: {
     type: Boolean,
     default: false,
+  },
+  error: {
+    type: String,
+    default: '',
   },
 });
 </script>

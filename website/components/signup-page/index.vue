@@ -1,7 +1,7 @@
 <template>
   <div class="blog-hero min-h-screen flex justify-center items-center">
     <div
-      class="container flex justify-center items-center h-full lg:mt-auto mb-[7vh]"
+      class="rt-scrollbar container flex justify-center h-full lg:mt-auto mb-[7vh] max-h-screen overflow-y-auto"
       style="margin-top: calc(var(--header-height) + 50px)"
     >
       <div
@@ -73,6 +73,7 @@
               :selected-items="companyInfo.languages"
               @on-select="handleSelect"
               @on-remove="handleRemove"
+              :error="companyInfoErrors.languages"
             />
             <SelectInput
               label="Default Language"
@@ -81,13 +82,14 @@
               :selected-items="companyInfo.defaultLanguage"
               @on-select="handleSingleSelect"
               :is-single-select="true"
+              :error="companyInfoErrors.defaultLanguage"
             />
             <InputField
               name="instituteName"
               type="text"
               placeholder="Enter your company name"
               v-model="companyInfo.instituteName"
-              :error="errors.instituteName"
+              :error="companyInfoErrors.instituteName"
               :value="companyInfo.instituteName"
               @on-input="handleInput"
               @on-focus="validate"
@@ -98,7 +100,7 @@
               type="text"
               placeholder="Enter your username"
               v-model="companyInfo.userName"
-              :error="errors.userName"
+              :error="companyInfoErrors.userName"
               :value="companyInfo.userName"
               @on-input="handleInput"
               @on-focus="validate"
@@ -109,7 +111,7 @@
               type="text"
               placeholder="Enter your mobile number"
               v-model="companyInfo.mobileNo"
-              :error="errors.mobileNo"
+              :error="companyInfoErrors.mobileNo"
               :value="companyInfo.mobileNo"
               @on-input="handleInput"
               @on-focus="validate"
@@ -120,7 +122,7 @@
               :type="showPassword ? 'text' : 'password'"
               placeholder="Enter your password"
               v-model="companyInfo.password"
-              :error="errors.password"
+              :error="companyInfoErrors.password"
               :value="companyInfo.password"
               @on-input="handleInput"
               @on-focus="validate"
@@ -134,7 +136,7 @@
               :type="showPassword ? 'text' : 'password'"
               placeholder="Confirm your password"
               v-model="companyInfo.confirmPassword"
-              :error="errors.confirmPassword"
+              :error="companyInfoErrors.confirmPassword"
               :value="companyInfo.confirmPassword"
               @on-input="handleInput"
               @on-focus="validate"
@@ -148,7 +150,7 @@
               type="text"
               placeholder="Enter your verification code"
               v-model="companyInfo.verificationCode"
-              :error="errors.verificationCode"
+              :error="companyInfoErrors.verificationCode"
               :value="companyInfo.verificationCode"
               @on-input="handleInput"
               @on-focus="validate"
@@ -183,7 +185,7 @@ defineEmits(['update:search', 'update:category']);
 // states
 const showPassword = ref(false);
 const btnText = ref('Signup');
-const selectedTab = ref('company');
+const selectedTab = ref('email');
 const values = ref({
   username: '',
 });
@@ -224,8 +226,12 @@ const companySchema = Yup.object().shape({
   userName: Yup.string().required('User name is required'),
   mobileNo: Yup.string().required('Mobile number is required'),
   password: Yup.string().required('Password is required'),
-  confirmPassword: Yup.string().required('Confirm password is required'),
-  verificationCode: Yup.string().required('Verification code is required'),
+  confirmPassword: Yup.string()
+    .required('Confirm password is required')
+    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+  verificationCode: Yup.string()
+    .required('Verification code is required')
+    .min(3, 'Verification code must be 4 digits'),
 });
 
 const handleEmailInput = (event) => {
@@ -248,7 +254,7 @@ const validateEmail = (field) => {
 };
 const validate = (field) => {
   companySchema
-    .validateAt(field, values.value)
+    .validateAt(field, companyInfo.value)
     .then(() => {
       companyInfoErrors.value[field] = '';
     })
@@ -285,7 +291,6 @@ const handleEmailSubmit = () => {
     .validate(values.value, { abortEarly: false })
     .then(() => {
       errors.value = {};
-      console.log(values.value);
       selectedTab.value = 'company';
     })
     .catch((err) => {
@@ -332,5 +337,22 @@ const handleCompanySubmit = () => {
 }
 .company::before {
   content: '2';
+}
+/* Scrollbar Style */
+.rt-scrollbar::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 10px;
+}
+
+/* scrollbar-thumb */
+.rt-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 10px;
+}
+
+/* scrollbar-track */
+.rt-scrollbar::-webkit-scrollbar-track {
+  background: #31313185;
+  border-radius: 10px;
 }
 </style>
