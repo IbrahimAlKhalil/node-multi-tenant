@@ -1,38 +1,38 @@
 <template>
-  <div class="my-10 bg-text text-white py-14">
-    <div class="container mx-auto text-center">
-      <h3 class="font-bold text-4xl mb-3">{{ t(title) }}</h3>
+  <div class="">
+    <div
+      class="container mx-auto text-center rounded-lg shadow-2xl border-t border-gray-100 py-14 my-10"
+    >
+      <h3 class="font-bold text-4xl text-primary mb-3">{{ t(title) }}</h3>
       <p class="md:w-4/5 mx-auto text-gray-400 mb-5">{{ t(description) }}</p>
-      <form class="flex justify-center items-center w-1/2 mx-auto">
-        <input
-          type="text"
-          :placeholder="t(placeholder)"
-          class="block p-3 rounded-tl-lg rounded-bl-lg outline-0 focus:bg-amber-100 text-text"
-          style="
-            flex: 2 0 70%;
-            clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
-          "
-        />
-        <button
-          class="bg-secondary text-white font-bold py-3 px-10 rounded-tr-lg rounded-br-lg -ml-6"
-          style="
-            flex: 1 0 auto;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 21% 100%);
-          "
-        >
-          {{ t(button) }}
-        </button>
-      </form>
+      <div class="news-letter-form">
+        <div class="common input-area">
+          <input
+            type="text"
+            placeholder="Enter email here"
+            v-model="email"
+            class="input"
+          />
+        </div>
+        <div class="common submit-area">
+          <input type="submit" value="Subscribe" class="input" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import SendIcon from '#icons/solid/paper-plane.svg';
+import SubscriptionButton from '#images/subscription-button.svg?url';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'news-letter-section',
+  data: () => ({
+    email: '',
+  }),
   setup() {
     const i18n = useI18n();
 
@@ -43,7 +43,93 @@ export default defineComponent({
       button: "homePage['news-letter-section']['button']",
       placeholder: "homePage['news-letter-section']['placeholder']",
       t: i18n.t,
+      SendIcon,
+      SubscriptionButton,
     };
   },
 });
 </script>
+
+<style scoped>
+.news-letter-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 75px;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 100%;
+  background: none;
+}
+.common {
+  border-top-width: 2px;
+  border-bottom-width: 2px;
+  border-color: var(--color-primary);
+  border-style: solid;
+  position: relative;
+  padding: 0.5rem;
+}
+.input-area {
+  border-left-width: 2px;
+  border-radius: 0.5rem 0 0 0.5rem;
+  min-width: 30%;
+}
+.submit-area {
+  border-right-width: 2px;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: var(--color-primary);
+  color: #fff;
+  z-index: 2;
+}
+.submit-area input {
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.common::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 110%;
+  border-bottom-width: 2px;
+  border-top-width: 2px;
+  border-style: solid;
+  border-color: var(--color-primary);
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+}
+
+.input-area::after {
+  border-right-width: 2px;
+  border-radius: 0 0.5rem 0.5rem 0;
+  transform: skew(35deg) translateX(-20px);
+  right: -50px;
+}
+.submit-area::after {
+  height: 108%;
+  border-left-width: 2px;
+  border-radius: 0.5rem 0 0 0.5rem;
+  transform: skew(35deg) translateX(20px);
+  left: -50px;
+  background: var(--color-primary);
+  z-index: -1;
+}
+.common,
+.common::after {
+  transition: all 0.3s ease-in-out;
+}
+
+.submit-area:hover,
+.submit-area:hover::after {
+  cursor: pointer;
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+</style>

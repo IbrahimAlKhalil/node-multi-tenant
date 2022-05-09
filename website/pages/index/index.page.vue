@@ -10,9 +10,10 @@
     <best-services-section />
     <key-features-section />
     <pricing-section />
+    <about-us-section />
     <our-clients-section />
-    <news-letter-section />
     <testimonial-section />
+    <news-letter-section />
   </layout-main>
 </template>
 
@@ -25,6 +26,7 @@ import FeaturesSection from '#components/home-page/features-section.vue';
 import ServicesSection from '#components/home-page/services-section.vue';
 import KeyFeaturesSection from '#components/home-page/key-features.vue';
 import PricingSection from '#components/home-page/pricing-section.vue';
+import AboutUsSection from '#components/home-page/about-us-section.vue';
 import HeroSection from '#components/home-page/hero-section.vue';
 import LayoutMain from '#layouts/main.vue';
 import { defineComponent, onMounted, ref } from 'vue';
@@ -32,6 +34,7 @@ import { defineComponent, onMounted, ref } from 'vue';
 export default defineComponent({
   name: 'our-client-section',
   components: {
+    'about-us-section': AboutUsSection,
     FeaturesSection,
     BestServicesSection,
     TestimonialSection,

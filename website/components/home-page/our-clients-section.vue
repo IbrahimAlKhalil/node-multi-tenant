@@ -1,5 +1,5 @@
 <template>
-  <div class="our-clients-section my-10">
+  <div class="our-clients-section my-20">
     <div class="container mx-auto">
       <!--   ===================== Start Text Content ======================    -->
       <div class="text-content text-center md:w-4/5 mx-auto mb-5">
@@ -10,7 +10,7 @@
       <!--   ===================== End Text Content ======================    -->
       <!--   ===================== Start Clients Carousel ======================    -->
       <div class="clients-carousel flex items-center">
-        <div @click="print">
+        <div @click="slider.prev()">
           <component
             :is="LeftArrow"
             class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
@@ -21,7 +21,7 @@
             <div
               v-for="(client, index) in clients"
               :key="index"
-              class="swiper-item p-3 rounded-full overflow-hidden flex items-center justify-center transition duration-300 hover:shadow-lg my-5"
+              class="swiper-item p-3 flex items-center justify-center transition duration-300 my-5"
               style="
                 flex: 1 0 10rem;
                 width: calc(8rem + 2vw * (1 - 0.1));
@@ -31,12 +31,12 @@
               <img
                 :src="client.image"
                 :alt="client.title"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover p-2 transition duration-300 grayscale hover:grayscale-0 opacity-75 hover:opacity-100"
               />
             </div>
           </div>
         </div>
-        <div @click="next">
+        <div @click="slider.next">
           <component
             :is="RightArrow"
             class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
@@ -49,19 +49,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import RightArrow from '#icons/solid/angle-right.svg';
 import LeftArrow from '#icons/solid/angle-left.svg';
-import { useStyleStore } from '#stores/style.store';
 import Siema from 'siema';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'our-clients-section',
-
+  mounted() {
+    const slider = new Siema({
+      selector: '.clients',
+      duration: 200,
+      easing: 'ease-out',
+      perPage: {
+        0: 2,
+        768: 3,
+        1024: 5,
+      },
+      startIndex: 0,
+      draggable: true,
+      multipleDrag: false,
+      threshold: 20,
+      loop: false,
+      rtl: false,
+    });
+  },
   setup: function () {
     const i18n = useI18n();
-    const styles = useStyleStore();
     const clients = [
       {
         id: 1,
@@ -104,45 +119,6 @@ export default defineComponent({
         image: '/assets/images/client-2.png',
       },
     ];
-
-    let slider: Siema;
-
-    const renderSlider = (value: typeof styles.breakpoints) => {
-      console.log(value);
-      slider = new Siema({
-        selector: '.clients',
-        duration: 200,
-        easing: 'ease-out',
-        perPage:
-          !value['sm-and-down'] && !value['lg-and-up']
-            ? 3
-            : value['md-and-down'] && !value['md-and-up']
-            ? 2
-            : 5,
-        startIndex: 0,
-        draggable: true,
-        multipleDrag: false,
-        threshold: 20,
-        loop: true,
-        rtl: false,
-      });
-    };
-
-    onMounted(() => {
-      renderSlider(styles.breakpoints);
-    });
-
-    watch(
-      styles.breakpoints,
-      (value) => {
-        slider.destroy(true, () => {
-          renderSlider(value);
-        });
-      },
-      {
-        deep: true,
-      },
-    );
 
     return {
       description: "homePage['our-clients-section']['description']",

@@ -62,7 +62,17 @@
           ></component>
         </div>
       </div>
-      <div class="handler"></div>
+      <div class="handler my-5">
+        <ul class="flex justify-center gap-1">
+          <li
+            v-for="(n, index) in slider?.innerElements?.length || 0"
+            :key="n"
+            class="w-4 h-4 rounded-full border border-primary"
+            :class="{ 'bg-primary': index === slider?.currentSlide }"
+            @click="slider.goTo(index)"
+          ></li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
