@@ -1,6 +1,6 @@
 <template>
   <header
-    class="fixed top-0 w-full z-10 transition duration-300 ease-in-out"
+    class="fixed top-0 w-full z-[99999] transition duration-300 ease-in-out"
     :class="{ 'bg-white shadow-md': isSticky }"
     style="height: var(--header-height)"
   >
@@ -52,24 +52,25 @@
             :is="MenuBar"
           />
         </div>
-        <primary-btn
-          :title="t('common.login')"
-          :icon="DoorOpen"
-          class="hidden lg:block"
-        />
+        <a href="/login">
+          <primary-btn
+            :title="t('common.login')"
+            :icon="DoorOpen"
+            class="hidden lg:block"
+          />
+        </a>
       </div>
     </div>
   </header>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import IconQuestionCircle from '#icons/duotone/question-circle.svg';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
 import IconInfoCircle from '#icons/duotone/info-circle.svg';
 import IconMoneyCheck from '#icons/duotone/money-check.svg';
 import { usePageContext } from '#modules/use-page-context';
-import LoginWhite from '#icons/others/login-white.svg?url';
 import IconBookOpen from '#icons/duotone/book-open.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import MenuBar from '#icons/light/bars.svg';
@@ -80,13 +81,15 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 onMounted(() => {
-  window.addEventListener('scroll', (e) => updateScroll(window.scrollY));
+  window.addEventListener('scroll', (e: Event) => updateScroll(window.scrollY));
 });
 onUnmounted(() => {
-  window.removeEventListener('scroll', (e) => updateScroll(window.scrollY));
+  window.removeEventListener('scroll', (e: Event) =>
+    updateScroll(window.scrollY),
+  );
 });
 
-const updateScroll = (value) => {
+const updateScroll = (value: number) => {
   if (value > headerHeight.value) {
     isSticky.value = true;
   }
@@ -95,11 +98,10 @@ const updateScroll = (value) => {
   }
 };
 
-const isSticky = ref(false);
-
 const i18n = useI18n();
 const { urlPathname } = usePageContext();
 
+const isSticky = ref(false);
 const t = ref(i18n.t);
 const headerHeight = ref(70);
 const menu = ref([
