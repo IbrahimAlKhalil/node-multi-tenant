@@ -12,9 +12,12 @@
           <blog-sidebar
             :categories="categories"
             :active-category="activeCategory"
+            @update:category="updateSidebarCategory"
             :tags="tags"
             :active-tag="activeTag"
-            v-model:search="sidebarSearch"
+            @update:tag="updateSidebarTag"
+            :sidebarSearch="sidebarSearch"
+            @update:search="updateSidebarSearch"
           />
         </template>
         <template #main>
@@ -26,8 +29,6 @@
 </template>
 
 <script setup>
-import TestimonialSection from '#components/home-page/testimonial-section.vue';
-import NewsLetterSection from '#components/home-page/news-letter-section.vue';
 import BlogSidebar from '#components/blog-page/blog-sidebar.vue';
 import BlogHero from '#components/blog-page/blog-hero.vue';
 import Blogs from '#components/blog-page/blogs.vue';
@@ -40,6 +41,28 @@ const activeTag = ref('all');
 const sidebarSearch = ref('');
 const heroSearch = ref('');
 const heroSearchCategory = ref('');
+
+// * Actions
+/**
+ * @param {string} search value
+ */
+const updateSidebarSearch = (search) => {
+  sidebarSearch.value = search;
+};
+
+/**
+ * @param {string} category slug
+ */
+const updateSidebarCategory = (category) => {
+  activeCategory.value = category;
+};
+
+/**
+ * @param {string} tag slug
+ */
+const updateSidebarTag = (tag) => {
+  activeTag.value = tag;
+};
 
 const categories = ref([
   {

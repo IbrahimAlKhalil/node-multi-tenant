@@ -18,7 +18,7 @@
       class="h-full bg-[rgba(0,0,0,0.75)] w-full absolute top-0 right-0"
       @click="toggleFilter"
     >
-      <div class="w-1/2 h-full absolute top-0 right-0">
+      <div class="w-1/2 h-full absolute top-0 right-0" @click.stop>
         <slot name="sidebar" />
       </div>
     </div>
