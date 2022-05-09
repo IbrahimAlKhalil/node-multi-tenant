@@ -4,6 +4,8 @@
 
 :root{
     --header-height: 70px;
+    --color-primary: #0079F7;
+    --color-primary-dark: #0056B0;
 }
 
 * {
