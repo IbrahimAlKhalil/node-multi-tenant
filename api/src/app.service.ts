@@ -119,6 +119,8 @@ export class AppService {
       return;
     }
 
+    debugger;
+
     // Emit the message
     let response: any[] = [];
 
@@ -138,6 +140,7 @@ export class AppService {
           },
         }),
       );
+      return;
     }
 
     const data =
