@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+    scroll-behavior: smooth;
+}
+
 :root{
     --header-height: 70px;
     --color-primary: #0079F7;
