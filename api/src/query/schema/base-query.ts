@@ -45,7 +45,7 @@ export const baseQuery = Joi.object<BaseQuery>({
     switch: [
       {
         is: 'findUnique',
-        then: findUnique.required(),
+        then: findUnique,
       },
       {
         is: 'findFirst',
