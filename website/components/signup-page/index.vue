@@ -1,175 +1,161 @@
 <template>
-  <div class="blog-hero min-h-screen flex justify-center items-center">
+  <h1 class="font-bold text-3xl lg:text-5xl text-center uppercase mb-5">
+    Sign up
+  </h1>
+  <h2 class="text-lg lg:text-xl text-center">To access you dashboard</h2>
+  <div class="flex items-center justify-center gap-20 py-5">
     <div
-      class="rt-scrollbar container flex justify-center h-full lg:mt-auto mb-[7vh] max-h-screen overflow-y-auto"
-      style="margin-top: calc(var(--header-height) + 50px)"
+      class="email font-bold cursor-pointer"
+      :class="[
+        selectedTab === 'email'
+          ? 'text-white before:bg-white'
+          : 'text-gray-500 before:bg-gray-500',
+      ]"
     >
-      <div
-        class="backdrop w-full h-full px-8 py-14 rounded-xl text-white h-full"
-      >
-        <h1 class="font-bold text-3xl lg:text-5xl text-center uppercase mb-5">
-          Sign up
-        </h1>
-        <h2 class="text-lg lg:text-xl text-center">To access you dashboard</h2>
-        <div class="flex items-center justify-center gap-20 py-5">
-          <div
-            class="email font-bold cursor-pointer"
-            :class="[
-              selectedTab === 'email'
-                ? 'text-white before:bg-white'
-                : 'text-gray-500 before:bg-gray-500',
-            ]"
-          >
-            <p>Email</p>
-          </div>
-          <div
-            class="company font-bold cursor-pointer"
-            :class="[
-              selectedTab === 'company'
-                ? 'text-white before:bg-white'
-                : 'text-gray-500 before:bg-gray-500',
-            ]"
-          >
-            <p>Company Info</p>
-          </div>
-        </div>
-        <form
-          @submit.prevent="handleEmailSubmit"
-          v-show="selectedTab === 'email'"
-        >
-          <div class="w-1/2 mx-auto flex flex-col gap-8 items-center p-5 my-10">
-            <InputField
-              name="username"
-              type="text"
-              placeholder="Enter your email"
-              v-model="values.username"
-              :error="errors.username"
-              :value="values.username"
-              @on-input="handleEmailInput"
-              @on-focus="validateEmail"
-              @on-keypress="validateEmail"
-            />
-            <input
-              type="submit"
-              :value="btnText"
-              class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
-            />
-          </div>
-        </form>
-        <form
-          @submit.prevent="handleCompanySubmit"
-          v-show="selectedTab === 'company'"
-        >
-          <div class="w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
-            <SelectInput
-              label="Languages"
-              :options="[
-                { label: 'বাংলা', value: 'bn' },
-                { label: 'English', value: 'en' },
-                { label: 'العربية', value: 'ar' },
-                { label: 'اردو', value: 'ur' },
-                { label: 'हिंदी', value: 'hi' },
-              ]"
-              :selected-items="companyInfo.languages"
-              @on-select="handleSelect"
-              @on-remove="handleRemove"
-              :error="companyInfoErrors.languages"
-            />
-            <SelectInput
-              label="Default Language"
-              name="defaultLanguage"
-              :options="companyInfo.languages"
-              :selected-items="companyInfo.defaultLanguage"
-              @on-select="handleSingleSelect"
-              :is-single-select="true"
-              :error="companyInfoErrors.defaultLanguage"
-            />
-            <InputField
-              name="instituteName"
-              type="text"
-              placeholder="Enter your company name"
-              v-model="companyInfo.instituteName"
-              :error="companyInfoErrors.instituteName"
-              :value="companyInfo.instituteName"
-              @on-input="handleInput"
-              @on-focus="validate"
-              @on-keypress="validate"
-            />
-            <InputField
-              name="userName"
-              type="text"
-              placeholder="Enter your username"
-              v-model="companyInfo.userName"
-              :error="companyInfoErrors.userName"
-              :value="companyInfo.userName"
-              @on-input="handleInput"
-              @on-focus="validate"
-              @on-keypress="validate"
-            />
-            <InputField
-              name="mobileNo"
-              type="text"
-              placeholder="Enter your mobile number"
-              v-model="companyInfo.mobileNo"
-              :error="companyInfoErrors.mobileNo"
-              :value="companyInfo.mobileNo"
-              @on-input="handleInput"
-              @on-focus="validate"
-              @on-keypress="validate"
-            />
-            <InputField
-              name="password"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="Enter your password"
-              v-model="companyInfo.password"
-              :error="companyInfoErrors.password"
-              :value="companyInfo.password"
-              @on-input="handleInput"
-              @on-focus="validate"
-              @on-keypress="validate"
-              :isPasswordField="true"
-              :show-password="showPassword"
-              @on-toggle-password="showPassword = !showPassword"
-            />
-            <InputField
-              name="confirmPassword"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="Confirm your password"
-              v-model="companyInfo.confirmPassword"
-              :error="companyInfoErrors.confirmPassword"
-              :value="companyInfo.confirmPassword"
-              @on-input="handleInput"
-              @on-focus="validate"
-              @on-keypress="validate"
-              :isPasswordField="true"
-              :show-password="showPassword"
-              @on-toggle-password="showPassword = !showPassword"
-            />
-            <InputField
-              name="verificationCode"
-              type="text"
-              placeholder="Enter your verification code"
-              v-model="companyInfo.verificationCode"
-              :error="companyInfoErrors.verificationCode"
-              :value="companyInfo.verificationCode"
-              @on-input="handleInput"
-              @on-focus="validate"
-              @on-keypress="validate"
-            />
-            <input
-              type="submit"
-              value="Update"
-              class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
-            />
-          </div>
-        </form>
-        <p class="text-center italic">
-          Already have an account?
-          <a href="/login" class="font-bold text-secondary">Login here</a>
-        </p>
-      </div>
+      <p>Email</p>
+    </div>
+    <div
+      class="company font-bold cursor-pointer"
+      :class="[
+        selectedTab === 'company'
+          ? 'text-white before:bg-white'
+          : 'text-gray-500 before:bg-gray-500',
+      ]"
+    >
+      <p>Company Info</p>
     </div>
   </div>
+  <form @submit.prevent="handleEmailSubmit" v-show="selectedTab === 'email'">
+    <div class="w-1/2 mx-auto flex flex-col gap-5 items-center p-5 my-5">
+      <InputField
+        name="username"
+        type="text"
+        placeholder="Enter your email"
+        v-model="values.username"
+        :error="errors.username"
+        :value="values.username"
+        @on-input="handleEmailInput"
+        @on-focus="validateEmail"
+        @on-keypress="validateEmail"
+      />
+      <input
+        type="submit"
+        :value="btnText"
+        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+      />
+    </div>
+  </form>
+  <form
+    @submit.prevent="handleCompanySubmit"
+    v-show="selectedTab === 'company'"
+  >
+    <div class="w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
+      <SelectInput
+        label="Languages"
+        :options="[
+          { label: 'বাংলা', value: 'bn' },
+          { label: 'English', value: 'en' },
+          { label: 'العربية', value: 'ar' },
+          { label: 'اردو', value: 'ur' },
+          { label: 'हिंदी', value: 'hi' },
+        ]"
+        :selected-items="companyInfo.languages"
+        @on-select="handleSelect"
+        @on-remove="handleRemove"
+        :error="companyInfoErrors.languages"
+      />
+      <SelectInput
+        label="Default Language"
+        name="defaultLanguage"
+        :options="companyInfo.languages"
+        :selected-items="companyInfo.defaultLanguage"
+        @on-select="handleSingleSelect"
+        :is-single-select="true"
+        :error="companyInfoErrors.defaultLanguage"
+      />
+      <InputField
+        name="instituteName"
+        type="text"
+        placeholder="Enter your company name"
+        v-model="companyInfo.instituteName"
+        :error="companyInfoErrors.instituteName"
+        :value="companyInfo.instituteName"
+        @on-input="handleInput"
+        @on-focus="validate"
+        @on-keypress="validate"
+      />
+      <InputField
+        name="userName"
+        type="text"
+        placeholder="Enter your username"
+        v-model="companyInfo.userName"
+        :error="companyInfoErrors.userName"
+        :value="companyInfo.userName"
+        @on-input="handleInput"
+        @on-focus="validate"
+        @on-keypress="validate"
+      />
+      <InputField
+        name="mobileNo"
+        type="text"
+        placeholder="Enter your mobile number"
+        v-model="companyInfo.mobileNo"
+        :error="companyInfoErrors.mobileNo"
+        :value="companyInfo.mobileNo"
+        @on-input="handleInput"
+        @on-focus="validate"
+        @on-keypress="validate"
+      />
+      <InputField
+        name="password"
+        :type="showPassword ? 'text' : 'password'"
+        placeholder="Enter your password"
+        v-model="companyInfo.password"
+        :error="companyInfoErrors.password"
+        :value="companyInfo.password"
+        @on-input="handleInput"
+        @on-focus="validate"
+        @on-keypress="validate"
+        :isPasswordField="true"
+        :show-password="showPassword"
+        @on-toggle-password="showPassword = !showPassword"
+      />
+      <InputField
+        name="confirmPassword"
+        :type="showPassword ? 'text' : 'password'"
+        placeholder="Confirm your password"
+        v-model="companyInfo.confirmPassword"
+        :error="companyInfoErrors.confirmPassword"
+        :value="companyInfo.confirmPassword"
+        @on-input="handleInput"
+        @on-focus="validate"
+        @on-keypress="validate"
+        :isPasswordField="true"
+        :show-password="showPassword"
+        @on-toggle-password="showPassword = !showPassword"
+      />
+      <InputField
+        name="verificationCode"
+        type="text"
+        placeholder="Enter your verification code"
+        v-model="companyInfo.verificationCode"
+        :error="companyInfoErrors.verificationCode"
+        :value="companyInfo.verificationCode"
+        @on-input="handleInput"
+        @on-focus="validate"
+        @on-keypress="validate"
+      />
+      <input
+        type="submit"
+        value="Update"
+        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+      />
+    </div>
+  </form>
+  <p class="text-center italic">
+    Already have an account?
+    <a href="/login" class="font-bold text-secondary">Login here</a>
+  </p>
 </template>
 
 <script setup>
@@ -306,15 +292,6 @@ const handleCompanySubmit = () => {
 </script>
 
 <style scoped>
-.backdrop {
-  background-color: rgba(0, 0, 0, 0.7);
-  background-blend-mode: multiply;
-}
-.blog-hero {
-  background: url('assets/images/HeroBackground.svg') no-repeat;
-  background-size: cover;
-  background-position: center;
-}
 .email,
 .company {
   position: relative;
@@ -337,22 +314,5 @@ const handleCompanySubmit = () => {
 }
 .company::before {
   content: '2';
-}
-/* Scrollbar Style */
-.rt-scrollbar::-webkit-scrollbar {
-  width: 0.5rem;
-  height: 10px;
-}
-
-/* scrollbar-thumb */
-.rt-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: 10px;
-}
-
-/* scrollbar-track */
-.rt-scrollbar::-webkit-scrollbar-track {
-  background: #31313185;
-  border-radius: 10px;
 }
 </style>
