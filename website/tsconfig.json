@@ -26,6 +26,7 @@
     "paths": {
       "#icons/*": ["./assets/icons/*"],
       "#images/*": ["./assets/images/*"],
+      "#videos/*": ["./assets/videos/*"],
       "#components/*": ["./components/*"],
       "#modules/*": ["./modules/*"],
       "#layouts/*": ["./layouts/*"],
