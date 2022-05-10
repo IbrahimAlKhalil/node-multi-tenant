@@ -9,31 +9,25 @@
     >
       <div class="logo h-full">
         <a href="/" class="block h-full">
-          <img
-            :alt="t('common.app-title')"
-            class="h-full md:hidden"
-            :src="LogoIcon"
-          />
-
-          <img
-            class="h-full hidden md:block"
-            :alt="t('common.app-title')"
-            :src="Logo"
-          />
+          <img class="h-full" :alt="t('common.app-title')" :src="Logo" />
         </a>
       </div>
 
       <nav class="nav flex-grow hidden lg:block">
         <ul class="flex items-center justify-center">
-          <li class="m-0 p-0 group" v-for="item in menu" :key="item.href">
+          <li
+            class="m-0 p-0 group text-text"
+            v-for="item in navData.data"
+            :key="item.href"
+          >
             <a
               :href="item.href"
-              class="ml-2 p-2 rounded-sm group-hover:text-primary font-bold text-md text-text transition-all duration-150"
-              :class="{ 'text-primary': item.href === currentPath }"
+              class="ml-2 p-2 rounded-sm group-hover:text-primary font-bold text-md transition-all duration-150"
+              :class="{ 'text-primary': item.href === navData.currentPath }"
             >
               <component
                 class="mr-1 text-inherit group-hover:scale-110 transition-all duration-300 hidden xl:inline-block"
-                :class="{ 'scale-150': item.href === currentPath }"
+                :class="{ 'scale-125': item.href === navData.currentPath }"
                 :is="item.icon"
               />
 
@@ -65,28 +59,36 @@
 </template>
 
 <script lang="ts" setup>
-import IconQuestionCircle from '#icons/duotone/question-circle.svg';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
-import IconPhoneLaptop from '#icons/duotone/phone-laptop.svg';
-import IconInfoCircle from '#icons/duotone/info-circle.svg';
-import IconMoneyCheck from '#icons/duotone/money-check.svg';
 import { usePageContext } from '#modules/use-page-context';
-import IconBookOpen from '#icons/duotone/book-open.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
-import MenuBar from '#icons/light/bars.svg';
-import IconBlog from '#icons/duotone/blog.svg';
-import LogoIcon from '#images/icon.svg?url';
-import Logo from '#images/logo.svg?url';
+import { useNavData } from '#stores/navdata.store';
 import { onMounted, onUnmounted, ref } from 'vue';
+import MenuBar from '#icons/light/bars.svg';
+import Logo from '#images/logo.svg?url';
 import { useI18n } from 'vue-i18n';
+
+const i18n = useI18n();
+const { urlPathname } = usePageContext();
+const navData = useNavData();
+
+if (navData.currentPath !== urlPathname) {
+  navData.currentPath = urlPathname;
+}
 
 onMounted(() => {
   window.addEventListener('scroll', (e: Event) => updateScroll(window.scrollY));
+  window.addEventListener('hashchange', hashChange);
+
+  if (location.hash) {
+    hashChange();
+  }
 });
 onUnmounted(() => {
   window.removeEventListener('scroll', (e: Event) =>
     updateScroll(window.scrollY),
   );
+  window.removeEventListener('hashchange', hashChange);
 });
 
 const updateScroll = (value: number) => {
@@ -98,42 +100,11 @@ const updateScroll = (value: number) => {
   }
 };
 
-const i18n = useI18n();
-const { urlPathname } = usePageContext();
+const hashChange = () => {
+  navData.setCurrentPath(`/${location.hash}`);
+};
 
 const isSticky = ref(false);
 const t = ref(i18n.t);
 const headerHeight = ref(70);
-const menu = ref([
-  {
-    text: 'menu.about',
-    href: '/about',
-    icon: IconInfoCircle,
-  },
-  {
-    text: 'menu.features',
-    href: '/features',
-    icon: IconPhoneLaptop,
-  },
-  {
-    text: 'menu.pricing',
-    href: '/pricing',
-    icon: IconMoneyCheck,
-  },
-  {
-    text: 'menu.tutorials',
-    href: '/tutorials',
-    icon: IconBookOpen,
-  },
-  {
-    text: 'menu.blog',
-    href: '/blog',
-    icon: IconBlog,
-  },
-  {
-    text: 'menu.faq',
-    href: '/faq',
-    icon: IconQuestionCircle,
-  },
-]);
 </script>

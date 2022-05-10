@@ -26,10 +26,12 @@
               :icon="DoorOpen"
             />
           </a>
-          <SecondaryBtn
-            :title="t('homePage.hero-btn-primary')"
-            :icon="PhonePlus"
-          />
+          <a href="/contact">
+            <SecondaryBtn
+              :title="t('homePage.hero-btn-secondary')"
+              :icon="PhonePlus"
+            />
+          </a>
         </div>
       </div>
       <div
@@ -66,7 +68,6 @@ import PhonePlus from '#icons/duotone/phone-plus.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import VideoImage from '#images/Video.svg?url';
 import { useI18n } from 'vue-i18n';
-import { onMounted } from 'vue';
 
 const i18n = useI18n();
 const t = i18n.t;

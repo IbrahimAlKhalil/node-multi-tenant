@@ -2,15 +2,16 @@
   <layout-main>
     <div class="relative">
       <hero-section :isVisible="isFeaturesSectionVisible" />
-      <div id="observer">
-        <features-section />
-      </div>
+      <features-section id="observer" />
     </div>
-    <services-section />
-    <best-services-section />
-    <key-features-section />
-    <pricing-section />
-    <about-us-section />
+
+    <section id="features" class="hash-section">
+      <services-section />
+      <best-services-section />
+      <key-features-section />
+    </section>
+    <pricing-section class="hash-section" />
+    <about-us-section class="hash-section" />
     <our-clients-section />
     <testimonial-section />
     <news-letter-section />
@@ -25,11 +26,12 @@ import NewsLetterSection from '#components/home-page/news-letter-section.vue';
 import FeaturesSection from '#components/home-page/features-section.vue';
 import ServicesSection from '#components/home-page/services-section.vue';
 import KeyFeaturesSection from '#components/home-page/key-features.vue';
-import PricingSection from '#components/home-page/pricing-section.vue';
 import AboutUsSection from '#components/home-page/about-us-section.vue';
+import PricingSection from '#components/home-page/pricing-section.vue';
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import HeroSection from '#components/home-page/hero-section.vue';
+import { useNavData } from '#stores/navdata.store';
 import LayoutMain from '#layouts/main.vue';
-import { defineComponent, onMounted, ref } from 'vue';
 
 export default defineComponent({
   name: 'our-client-section',
@@ -48,9 +50,21 @@ export default defineComponent({
   },
 
   setup() {
+    const navData = useNavData();
+
     const isFeaturesSectionVisible = ref(false);
+
+    let featureSectionElement: HTMLAnchorElement | null = null;
+    let observer: IntersectionObserver | null = null;
+
+    let hashSections: NodeList | null = null;
+    let observerHashSections: IntersectionObserver | null = null;
+
     onMounted(() => {
-      const observer = new IntersectionObserver((entries) => {
+      featureSectionElement = document.querySelector('#observer');
+      hashSections = document.querySelectorAll('.hash-section');
+
+      observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
@@ -61,13 +75,34 @@ export default defineComponent({
           }
         });
       });
-      const elements = document.querySelectorAll('#observer');
-      elements.forEach((element) => {
-        observer.observe(element);
+      observerHashSections = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (entry.target.id) {
+              navData.setCurrentPath(`/#${entry.target.id}`);
+            } else {
+              navData.setCurrentPath('/');
+            }
+          }
+        });
       });
+      if (observerHashSections && hashSections) {
+        hashSections.forEach((section) => {
+          observerHashSections.observe(section);
+        });
+      }
+      if (featureSectionElement && observer) {
+        observer.observe(featureSectionElement);
+      }
+    });
+    onUnmounted(() => {
+      if (featureSectionElement && observer) {
+        observer.unobserve(featureSectionElement);
+      }
     });
     return {
       isFeaturesSectionVisible,
+      navData,
     };
   },
 });

@@ -4,7 +4,9 @@
       <!--   ===================== Start Text Content ======================    -->
       <div class="text-content text-center md:w-4/5 mx-auto mb-5">
         <p class="font-bold text-xl text-text">{{ t(subTitle) }}</p>
-        <h3 class="font-bold text-4xl text-primary my-3">{{ t(title) }}</h3>
+        <h3 class="font-bold text-4xl lg:text-5xl text-primary my-3">
+          {{ t(title) }}
+        </h3>
         <p>{{ t(description) }}</p>
       </div>
       <!--   ===================== End Text Content ======================    -->

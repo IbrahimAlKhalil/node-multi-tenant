@@ -38,6 +38,7 @@ export default defineComponent({
   name: 'features-section',
   setup() {
     const i18n = useI18n();
+
     const items = [
       {
         id: '1',

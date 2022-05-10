@@ -15,8 +15,15 @@
           />
         </div>
         <div class="common submit-area flex items-center">
-          <input type="submit" value="Subscribe" class="input" />
-          <component :is="PaperPlane" class="text-2xl px-3"></component>
+          <input
+            type="submit"
+            value="Subscribe"
+            class="input text-lg lg:text-2xl uppercase"
+          />
+          <component
+            :is="PaperPlane"
+            class="text-xl lg:text-2xl px-3"
+          ></component>
         </div>
       </div>
     </div>
@@ -88,11 +95,6 @@ export default defineComponent({
   background: var(--color-primary);
   color: #fff;
   z-index: 2;
-}
-.submit-area input {
-  font-size: 1.25rem;
-  font-weight: bold;
-  text-transform: uppercase;
 }
 
 .common::after {

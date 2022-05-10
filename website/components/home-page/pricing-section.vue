@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-light py-16">
+  <section id="pricing" class="bg-light py-16">
     <div class="container mx-auto">
       <div class="text-content text-center md:w-1/2 mx-auto mb-10">
         <p class="sub-heading font-bold text-text">SAHARA IT</p>
@@ -68,7 +68,7 @@
         <!--  Table End  -->
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">

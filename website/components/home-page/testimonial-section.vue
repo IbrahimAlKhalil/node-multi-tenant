@@ -1,9 +1,9 @@
 <template>
   <div class="testimonial-section my-10">
     <div class="container mx-auto">
-      <div class="intro text-center mb-5">
+      <div class="intro text-center mb-8">
         <p class="font-bold text-xl text-text">{{ t(textContent.subTitle) }}</p>
-        <h3 class="font-bold text-5xl text-primary my-3">
+        <h3 class="font-bold text-4xl lg:text-5xl text-primary my-3">
           {{ t(textContent.title) }}
         </h3>
         <p class="md:w-4/5 mx-auto text-text">
@@ -14,12 +14,12 @@
         <div class="prev-btn cursor-pointer" @click="slider.prev()">
           <component
             :is="LeftArrow"
-            class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
+            class="text-2xl lg:text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
           ></component>
         </div>
         <div class="testimonial-slider testimonials">
           <div
-            class="testimonials__slider-1 border-2 border-gray-200 rounded-lg p-4 flex items-center gap-5"
+            class="testimonials__slider-1 border-2 border-gray-200 rounded-lg p-4 flex flex-col lg:flex-row items-center gap-5"
             v-for="(testimonial, index) in testimonials"
             :key="index"
           >
@@ -31,11 +31,13 @@
                 class="object-cover rounded-lg"
               />
             </div>
-            <div class="text" style="flex: 2 1 60%">
-              <h3 class="font-bold text-4xl text-primary mb-3">
+            <div class="text text-center lg:text-left" style="flex: 2 1 60%">
+              <h3 class="font-bold text-xl lg:text-4xl text-primary mb-3">
                 {{ t(testimonial.company) }}
               </h3>
-              <p class="text-text text-md">{{ t(testimonial.description) }}</p>
+              <p class="text-text text-sm lg:text-md">
+                {{ t(testimonial.description) }}
+              </p>
               <div class="flex items-center justify-between mt-4">
                 <div class="author">
                   <h4 class="font-bold text-xl">{{ t(testimonial.author) }}</h4>
@@ -58,7 +60,7 @@
         <div class="next-btn cursor-pointer" @click="slider.next()">
           <component
             :is="RightArrow"
-            class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
+            class="text-2xl lg:text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
           ></component>
         </div>
       </div>
