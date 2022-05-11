@@ -1,0 +1,25 @@
+{
+  "categories": "Categories",
+  "tags": "Tags",
+  "noPosts": "No posts yet",
+  "noCategories": "No categories yet",
+  "noTags": "No tags yet",
+  "noPostsInCategory": "No posts in this category",
+  "readMore": "Read more",
+  "readMoreInCategory": "Read more in this category",
+  "readMoreInTag": "Read more in this tag",
+  "readMoreInCategoryAndTag": "Read more in this category and tag",
+
+  "category-data": {
+    "all": "All",
+    "item-1": "Category 1",
+    "item-2": "Category 2",
+    "item-3": "Category 3"
+  },
+  "tag-data": {
+    "all": "All",
+    "item-1": "Tag 1",
+    "item-2": "Tag 2",
+    "item-3": "Tag 3"
+  }
+}

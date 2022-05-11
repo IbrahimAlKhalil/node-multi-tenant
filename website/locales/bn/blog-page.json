@@ -1,0 +1,25 @@
+{
+  "categories": "বিভাগ",
+  "tags": "ট্যাগ",
+  "noPosts": "কোন পোস্ট নেই",
+  "noCategories": "কোন বিভাগ নেই",
+  "noTags": "কোন ট্যাগ নেই",
+  "noPostsInCategory": "কোন পোস্ট নেই এই বিভাগে",
+  "readMore": "বিস্তারিত",
+  "readMoreInCategory": "বিস্তারিত এই বিভাগে",
+  "readMoreInTag": "বিস্তারিত এই ট্যাগে",
+  "readMoreInCategoryAndTag": "বিস্তারিত এই বিভাগে এবং এই ট্যাগে",
+
+  "category-data": {
+    "all": "সব",
+    "item-1": "বিভাগ 1",
+    "item-2": "বিভাগ 2",
+    "item-3": "বিভাগ 3"
+  },
+  "tag-data": {
+    "all": "সব",
+    "item-1": "ট্যাগ 1",
+    "item-2": "ট্যাগ 2",
+    "item-3": "ট্যাগ 3"
+  }
+}
