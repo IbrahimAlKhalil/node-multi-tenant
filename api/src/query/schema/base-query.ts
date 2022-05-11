@@ -1,4 +1,4 @@
-import { ModelNames } from '../../permission/types/model-names';
+import { ModelNames } from '../types/model-names';
 import { findUnique } from './find-unique.js';
 import { findMany } from './find-many.js';
 import Joi from 'joi';
@@ -45,7 +45,7 @@ export const baseQuery = Joi.object<BaseQuery>({
     switch: [
       {
         is: 'findUnique',
-        then: findUnique.required(),
+        then: findUnique,
       },
       {
         is: 'findFirst',

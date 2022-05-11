@@ -1,5 +1,5 @@
 import { InstituteService } from '../institute/institute.service.js';
-import { ModelNames } from '../permission/types/model-names';
+import { ModelNames } from '../query/types/model-names';
 import { PrismaInstance } from '../types/prisma-instance';
 import { DMMF } from '../../prisma/client/runtime';
 import { PrismaClient } from '../../prisma/client';

@@ -138,6 +138,7 @@ export class AppService {
           },
         }),
       );
+      return;
     }
 
     const data =

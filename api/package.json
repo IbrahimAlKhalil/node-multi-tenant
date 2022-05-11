@@ -41,6 +41,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.5",
+    "slow-json-stringify": "^2.0.1",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.8.0"
   },
   "devDependencies": {
