@@ -81,6 +81,7 @@ export class QueryService {
   public i18nModels: Partial<
     Record<ModelNames, { name: ModelNames; model: Model<any, ModelNames> }>
   > = {};
+  private orderByNestedFields = ['_count', '_sum', '_avg', '_min', '_max'];
 
   private classifyFields<O extends ClassifyOptions>(
     options: O,
@@ -122,7 +123,15 @@ export class QueryService {
     for (let i = 0; i < fieldsLength; i++) {
       const field = fields[i];
 
-      if (field === '_count' || field === '_relevance') {
+      if (
+        field === '_count' ||
+        field === '_relevance' ||
+        field === '_all' ||
+        field === '_sum' ||
+        field === '_avg' ||
+        field === '_min' ||
+        field === '_max'
+      ) {
         if (classifications.special) {
           classifications.special.push(field);
         }
@@ -710,6 +719,15 @@ export class QueryService {
         }
       }
 
+      const onfLength = this.orderByNestedFields.length;
+      for (let i = 0; i < onfLength; i++) {
+        const onf = this.orderByNestedFields[i];
+
+        if (orderBy.fields[onf]) {
+          fieldSetToCheck.push(Object.keys(orderBy.fields[onf]));
+        }
+      }
+
       const fields = this.classifyFields({
         session,
         action: 'read',
@@ -720,6 +738,7 @@ export class QueryService {
           relation: true,
           unknown: true,
           notAllowed: true,
+          special: true,
         },
       });
 
@@ -845,7 +864,8 @@ export class QueryService {
         baseQuery.type === 'findMany' ||
         baseQuery.type === 'findFirst' ||
         baseQuery.type === 'findUnique' ||
-        baseQuery.type === 'count'
+        baseQuery.type === 'count' ||
+        baseQuery.type === 'groupBy'
       ) {
         // Check if user has permission to subscribe to this model
         if (baseQuery.subscribe) {
@@ -869,28 +889,30 @@ export class QueryService {
         }
 
         // Check permission for orderBy and cursor fields
-        const clausesToCheck = ['cursor'];
+        const objClauses = ['cursor', '_sum', '_avg', '_min', '_max'];
+        const arrClauses = ['distinct', 'by'];
         const fieldSetToCheck: string[][] = [];
 
-        const clausesLength = clausesToCheck.length;
-        for (let i = 0; i < clausesLength; i++) {
-          const clause = clausesToCheck[i];
-          if (baseQuery.query?.[clause]) {
+        const objLength = objClauses.length;
+        for (let i = 0; i < objLength; i++) {
+          const clause = objClauses[i];
+          if (baseQuery.query[clause]) {
             fieldSetToCheck.push(Object.keys(baseQuery.query[clause]));
           }
         }
 
-        // Check Permission for distinct fields
-        if (baseQuery.query.distinct) {
-          let fields: string[] = [];
-
-          if (typeof baseQuery.query.distinct === 'string') {
-            fields = [baseQuery.query.distinct];
-          } else {
-            fields = baseQuery.query.distinct;
+        const arrLength = arrClauses.length;
+        for (let i = 0; i < arrLength; i++) {
+          const clause = arrClauses[i];
+          if (!baseQuery.query[clause]) {
+            continue;
           }
 
-          fieldSetToCheck.push(fields);
+          if (typeof baseQuery.query[clause] === 'string') {
+            fieldSetToCheck.push([baseQuery.query[clause]]);
+          } else if (Array.isArray(baseQuery.query[clause])) {
+            fieldSetToCheck.push(baseQuery.query[clause]);
+          }
         }
 
         if (fieldSetToCheck.length) {
