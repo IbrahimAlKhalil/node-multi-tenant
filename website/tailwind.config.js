@@ -6,7 +6,7 @@ module.exports = {
     './layouts/**/*.vue',
     './components/**/*.vue',
     './pages/**/*.vue',
-    './renderer/**/*.vue',
+    './renderer/**/*.{vue,js,ts}',
   ],
   theme: {
     container: {
@@ -31,6 +31,8 @@ module.exports = {
         'secondary-dark': '#dc6b05',
         text: '#333333',
         light: '#F5F5F5',
+        dark: '#0F1011',
+        'dark-light': '#181B1C',
       },
     },
   },

@@ -1,10 +1,12 @@
 <template>
-  <div class="our-clients-section my-20">
+  <div class="our-clients-section my-20 text-text dark:text-light">
     <div class="container mx-auto">
       <!--   ===================== Start Text Content ======================    -->
       <div class="text-content text-center md:w-4/5 mx-auto mb-5">
-        <p class="font-bold text-xl text-text">{{ t(subTitle) }}</p>
-        <h3 class="font-bold text-4xl lg:text-5xl text-primary my-3">
+        <p class="font-bold text-xl">{{ t(subTitle) }}</p>
+        <h3
+          class="font-bold text-4xl lg:text-5xl text-primary dark:text-secondary my-3"
+        >
           {{ t(title) }}
         </h3>
         <p>{{ t(description) }}</p>

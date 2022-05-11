@@ -36,7 +36,7 @@ async function render(
         <link rel='manifest' href='/site.webmanifest' />
         <title>${title}</title>
       </head>
-      <body>
+      <body class='dark:bg-dark-light'>
         <main id='app'>${dangerouslySkipEscape(appHtml)}</main>
       </body>
     </html>`;

@@ -1,12 +1,14 @@
 <template>
-  <div class="testimonial-section my-10">
+  <div class="testimonial-section my-10 text-text dark:text-light">
     <div class="container mx-auto">
       <div class="intro text-center mb-8">
-        <p class="font-bold text-xl text-text">{{ t(textContent.subTitle) }}</p>
-        <h3 class="font-bold text-4xl lg:text-5xl text-primary my-3">
+        <p class="font-bold">{{ t(textContent.subTitle) }}</p>
+        <h3
+          class="font-bold text-4xl lg:text-5xl text-primary dark:text-secondary my-3"
+        >
           {{ t(textContent.title) }}
         </h3>
-        <p class="md:w-4/5 mx-auto text-text">
+        <p class="md:w-4/5 mx-auto">
           {{ t(textContent.description) }}
         </p>
       </div>
@@ -19,7 +21,7 @@
         </div>
         <div class="testimonial-slider testimonials">
           <div
-            class="testimonials__slider-1 border-2 border-gray-200 rounded-lg p-4 flex flex-col lg:flex-row items-center gap-5"
+            class="testimonials__slider-1 border-2 border-gray-200 rounded-lg p-4 flex flex-col lg:flex-row items-center gap-5 dark:bg-light text-text dark:text-light"
             v-for="(testimonial, index) in testimonials"
             :key="index"
           >
@@ -32,15 +34,19 @@
               />
             </div>
             <div class="text text-center lg:text-left" style="flex: 2 1 60%">
-              <h3 class="font-bold text-xl lg:text-4xl text-primary mb-3">
+              <h3
+                class="font-bold text-xl lg:text-4xl text-primary dark:text-secondary mb-3"
+              >
                 {{ t(testimonial.company) }}
               </h3>
-              <p class="text-text text-sm lg:text-md">
+              <p class="text-sm lg:text-md text-text">
                 {{ t(testimonial.description) }}
               </p>
               <div class="flex items-center justify-between mt-4">
                 <div class="author">
-                  <h4 class="font-bold text-xl">{{ t(testimonial.author) }}</h4>
+                  <h4 class="font-bold text-xl text-text">
+                    {{ t(testimonial.author) }}
+                  </h4>
                   <p class="text-gray-500">
                     {{ t(testimonial.author_position) }}
                   </p>

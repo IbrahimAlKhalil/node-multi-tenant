@@ -1,5 +1,5 @@
 <template>
-  <div class="my-10">
+  <div class="my-10 text-text dark:text-light">
     <div
       class="container mx-auto flex flex-col lg:flex-row lg:justify-between items-center gap-20"
     >
@@ -7,15 +7,15 @@
         class="text text-center lg:text-left flex lg:block flex-col items-center"
         style="flex: 1 1 40%"
       >
-        <p class="text__subtitle font-bold text-text">
+        <p class="text__subtitle font-bold">
           {{ t("homePage['services-section']['sub-title']") }}
         </p>
         <h3
-          class="text__heading text-5xl leading-[1.5] font-bold text-primary my-5"
+          class="text__heading text-5xl leading-[1.5] font-bold text-primary dark:text-secondary my-5"
         >
           {{ t("homePage['services-section']['title']") }}
         </h3>
-        <p class="text__para text-text text-sm lg:text-justify mb-5">
+        <p class="text__para text-sm lg:text-justify mb-5">
           {{ t("homePage['services-section']['description']") }}
         </p>
         <secondary-btn :title="t(buttonText)" />
@@ -41,7 +41,7 @@
             <h3 class="info-box__title text-xl font-bold mb-2 text-primary">
               {{ t(item.title) }}
             </h3>
-            <p class="info-box__para text-sm text-text text-justify">
+            <p class="info-box__para text-sm text-justify">
               {{ t(item.description) }}
             </p>
           </div>

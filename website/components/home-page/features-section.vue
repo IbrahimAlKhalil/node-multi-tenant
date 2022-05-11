@@ -5,7 +5,7 @@
     data-aos-delay="200"
   >
     <div
-      class="lg:bg-white lg:rounded-lg lg:shadow-lg lg:w-4/5 lg:gap-0 lg:flex-nowrap md:flex-row md:flex-wrap md:basis-1/2 md:justify-evenly mx-auto flex flex-col justify-between gap-10 py-5"
+      class="lg:bg-white dark:bg-dark lg:rounded-lg lg:shadow-lg lg:w-4/5 lg:gap-0 lg:flex-nowrap md:flex-row md:flex-wrap md:basis-1/2 md:justify-evenly flex flex-col justify-between gap-10 mx-auto py-5"
     >
       <!-- ================== Item Start ===================== -->
       <div
@@ -19,10 +19,10 @@
       >
         <img :src="item.icon" :alt="t(item.title)" width="90px" />
         <div class="text">
-          <h3 class="font-bold text-primary text-xl mb-2">
+          <h3 class="font-bold text-primary dark:text-secondary text-xl mb-2">
             {{ t(item.title) }}
           </h3>
-          <p class="text-text">{{ t(item.description) }}</p>
+          <p class="text-text dark:text-light">{{ t(item.description) }}</p>
         </div>
       </div>
       <!-- Item End -->
