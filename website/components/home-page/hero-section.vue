@@ -19,7 +19,9 @@
         <p class="text-2xl text-inherit mb-5">
           {{ t('homePage.hero-description') }}
         </p>
-        <div class="flex justify-center lg:justify-start gap-3">
+        <div
+          class="flex flex-col md:flex-row justify-center items-center lg:justify-start gap-3"
+        >
           <a href="/login">
             <PrimaryBtn
               :title="t('homePage.hero-btn-primary')"
@@ -35,7 +37,7 @@
         </div>
       </div>
       <div
-        class="media flex-1 -order-1 lg:order-1 w-full h-full flex justify-center lg:justify-end items-center"
+        class="media flex-1 -order-1 mt-10 lg:mt-0 lg:order-1 w-full h-full flex justify-center lg:justify-end items-center"
         data-aos="zoom-in"
         data-aos-delay="200"
         data-aos-duration="1000"

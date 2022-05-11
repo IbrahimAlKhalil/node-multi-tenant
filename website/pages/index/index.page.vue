@@ -1,6 +1,6 @@
 <template>
   <layout-main>
-    <div class="relative">
+    <div class="relative hash-section">
       <hero-section :isVisible="isFeaturesSectionVisible" />
       <features-section id="observer" />
     </div>
@@ -12,9 +12,9 @@
     </section>
     <pricing-section class="hash-section" />
     <about-us-section class="hash-section" />
-    <our-clients-section />
-    <testimonial-section />
-    <news-letter-section />
+    <our-clients-section class="hash-section" />
+    <testimonial-section class="hash-section" />
+    <news-letter-section class="hash-section" />
   </layout-main>
 </template>
 
@@ -49,7 +49,7 @@ export default defineComponent({
     LayoutMain,
   },
 
-  setup() {
+  setup: function () {
     const navData = useNavData();
 
     const isFeaturesSectionVisible = ref(false);
@@ -58,7 +58,7 @@ export default defineComponent({
     let observer: IntersectionObserver | null = null;
 
     let hashSections: NodeList | null = null;
-    let observerHashSections: IntersectionObserver | null = null;
+    let observerHashSections: IntersectionObserver;
 
     onMounted(() => {
       featureSectionElement = document.querySelector('#observer');
@@ -78,10 +78,13 @@ export default defineComponent({
       observerHashSections = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            console.log(entry.target.id);
             if (entry.target.id) {
+              location.hash = entry.target.id;
               navData.setCurrentPath(`/#${entry.target.id}`);
             } else {
               navData.setCurrentPath('/');
+              location.hash = '';
             }
           }
         });
@@ -91,6 +94,7 @@ export default defineComponent({
           observerHashSections.observe(section);
         });
       }
+
       if (featureSectionElement && observer) {
         observer.observe(featureSectionElement);
       }
@@ -98,6 +102,12 @@ export default defineComponent({
     onUnmounted(() => {
       if (featureSectionElement && observer) {
         observer.unobserve(featureSectionElement);
+      }
+
+      if (observerHashSections && hashSections) {
+        hashSections.forEach((section) => {
+          observerHashSections.unobserve(section);
+        });
       }
     });
     return {
