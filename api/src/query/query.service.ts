@@ -10,8 +10,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { DMMF } from '../../prisma/client/runtime';
 import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
-import { Actions, Model } from './types/model';
 import { BaseQuery } from './schema/base-query';
+import { Actions, Model } from './types/model';
 import { Session } from '../types/session';
 import { ModuleRef } from '@nestjs/core';
 import isEmpty from 'lodash/isEmpty.js';
@@ -771,7 +771,8 @@ export class QueryService {
       if (
         baseQuery.type === 'findMany' ||
         baseQuery.type === 'findFirst' ||
-        baseQuery.type === 'findUnique'
+        baseQuery.type === 'findUnique' ||
+        baseQuery.type === 'count'
       ) {
         // Check if user has permission to subscribe to this model
         if (baseQuery.subscribe) {
