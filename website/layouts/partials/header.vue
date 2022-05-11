@@ -1,7 +1,7 @@
 <template>
   <header
-    class="fixed top-0 w-full z-[99999] transition duration-300 ease-in-out"
-    :class="{ 'bg-white shadow-md': isSticky }"
+    class="fixed top-0 w-full z-[99999] transition duration-300 ease-in-out b"
+    :class="{ 'bg-white dark:bg-dark shadow-md': isSticky }"
     style="height: var(--header-height)"
   >
     <div
@@ -77,18 +77,10 @@ if (navData.currentPath !== urlPathname) {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', (e: Event) => updateScroll(window.scrollY));
-  window.addEventListener('hashchange', hashChange);
-
-  if (location.hash) {
-    hashChange();
-  }
+  window.addEventListener('scroll', () => updateScroll(window.scrollY));
 });
 onUnmounted(() => {
-  window.removeEventListener('scroll', (e: Event) =>
-    updateScroll(window.scrollY),
-  );
-  window.removeEventListener('hashchange', hashChange);
+  window.removeEventListener('scroll', () => updateScroll(window.scrollY));
 });
 
 const updateScroll = (value: number) => {
@@ -98,10 +90,6 @@ const updateScroll = (value: number) => {
   if (value < headerHeight.value) {
     isSticky.value = false;
   }
-};
-
-const hashChange = () => {
-  navData.setCurrentPath(`/${location.hash}`);
 };
 
 const isSticky = ref(false);
