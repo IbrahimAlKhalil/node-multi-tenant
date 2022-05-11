@@ -16,12 +16,13 @@
       <nav class="nav flex-grow hidden lg:block">
         <ul class="flex items-center justify-center">
           <li
-            class="m-0 p-0 group text-text hover:text-primary"
+            class="m-0 p-0 group hover:text-primary"
             :class="{
               'dark:text-light dark:hover:text-secondary': isSticky,
-              'text-primary': item.href === navData.currentPath,
-              'dark:text-secondary':
+              'text-primary': item.href === navData.currentPath && !isSticky,
+              'dark:text-secondary text-primary':
                 item.href === navData.currentPath && isSticky,
+              'text-text': item.href !== navData.currentPath,
             }"
             v-for="item in navData.data"
             :key="item.href"

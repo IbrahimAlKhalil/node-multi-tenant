@@ -78,13 +78,9 @@ export default defineComponent({
       observerHashSections = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            console.log(entry.target.id);
             if (entry.target.id) {
-              location.hash = entry.target.id;
+              // location.hash = entry.target.id;
               navData.setCurrentPath(`/#${entry.target.id}`);
-            } else {
-              navData.setCurrentPath('/');
-              location.hash = '';
             }
           }
         });

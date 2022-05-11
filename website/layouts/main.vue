@@ -1,5 +1,6 @@
 <template>
   <the-header />
+  <floating-switch />
   <slot />
   <the-footer>
     <template v-slot:widget1>
@@ -15,6 +16,7 @@
 </template>
 
 <script lang="ts">
+import FloatingSwitch from '#components/floating-switch/floating-switch.vue';
 import TheHeader from '#layouts/partials/header.vue';
 import TheFooter from '#layouts/partials/footer.vue';
 import Widget1 from '#components/footer/widget-1.vue';
@@ -24,6 +26,13 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'layout-main',
-  components: { TheHeader, TheFooter, Widget1, Widget2, Widget3 },
+  components: {
+    TheHeader,
+    TheFooter,
+    Widget1,
+    Widget2,
+    Widget3,
+    'floating-switch': FloatingSwitch,
+  },
 });
 </script>
