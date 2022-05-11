@@ -20,6 +20,7 @@ export default defineConfig({
     alias: {
       '#icons': __dirname + '/assets/icons',
       '#images': __dirname + '/assets/images',
+      '#videos': __dirname + '/assets/videos',
       '#components': __dirname + '/components',
       '#modules': __dirname + '/modules',
       '#layouts': __dirname + '/layouts',

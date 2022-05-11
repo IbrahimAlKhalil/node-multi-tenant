@@ -22,7 +22,7 @@ export async function initRenderer(app: Express) {
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl;
     const pageContextInit = {
-      lang: req.query.lang ?? 'bn',
+      lang: req.query.lang ?? req.cookies.lang ?? 'bn',
       url,
     };
 

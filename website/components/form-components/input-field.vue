@@ -1,6 +1,6 @@
 <template>
   <div class="w-full relative">
-    <label class="font-bold text-gray-700" for="email">
+    <label class="font-bold text-gray-700" :for="name">
       {{ label }}
     </label>
     <input
@@ -8,7 +8,7 @@
       :name="name"
       :value="value"
       @input="$emit('on-input', $event)"
-      class="block px-3 py-2 rounded-md text-white outline-0 border-b-2 border-white focus:border-primary w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
+      class="block px-3 py-2 rounded-md border-b-2 border-t border-t-transparent border-b-white focus:border-primary focus:border-x focus:border-t text-white outline-0 w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
       :class="{
         'border-red-500 focus:border-red-500': error,
       }"
@@ -16,9 +16,7 @@
       @focus="$emit('on-focus', name)"
       @keypress="$emit('on-keypress', name)"
     />
-    <p class="text-sm italic text-red-500 p-1">
-      {{ error }} &nbsp;
-    </p>
+    <p class="text-sm italic text-red-500 p-1">{{ error }} &nbsp;</p>
     <div
       class="absolute right-0 top-1/2 -translate-y-1/2"
       :class="[isPasswordField ? 'visible opacity-100' : 'invisible opacity-0']"

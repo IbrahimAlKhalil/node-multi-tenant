@@ -1,5 +1,6 @@
 import { initRenderer } from './middlewares/renderer';
 import institute from './controllers/institute';
+import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import express from 'express';
 import path from 'path';
@@ -10,6 +11,7 @@ import path from 'path';
 
   app.use(express.static(path.resolve(__dirname, '../public')));
   app.use(compression());
+  app.use(cookieParser());
 
   app.use('/api', router);
   router.use('/institute', institute);

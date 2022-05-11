@@ -14,8 +14,16 @@
             class="input"
           />
         </div>
-        <div class="common submit-area">
-          <input type="submit" value="Subscribe" class="input" />
+        <div class="common submit-area flex items-center">
+          <input
+            type="submit"
+            value="Subscribe"
+            class="input text-lg lg:text-2xl uppercase"
+          />
+          <component
+            :is="PaperPlane"
+            class="text-xl lg:text-2xl px-3"
+          ></component>
         </div>
       </div>
     </div>
@@ -23,8 +31,9 @@
 </template>
 
 <script lang="ts">
-import SendIcon from '#icons/solid/paper-plane.svg';
 import SubscriptionButton from '#images/subscription-button.svg?url';
+import PaperPlane from '#icons/solid/paper-plane.svg';
+import SendIcon from '#icons/solid/paper-plane.svg';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -45,6 +54,7 @@ export default defineComponent({
       t: i18n.t,
       SendIcon,
       SubscriptionButton,
+      PaperPlane,
     };
   },
 });
@@ -85,11 +95,6 @@ export default defineComponent({
   background: var(--color-primary);
   color: #fff;
   z-index: 2;
-}
-.submit-area input {
-  font-size: 1.25rem;
-  font-weight: bold;
-  text-transform: uppercase;
 }
 
 .common::after {
