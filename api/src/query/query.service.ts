@@ -865,7 +865,8 @@ export class QueryService {
         baseQuery.type === 'findFirst' ||
         baseQuery.type === 'findUnique' ||
         baseQuery.type === 'count' ||
-        baseQuery.type === 'groupBy'
+        baseQuery.type === 'groupBy' ||
+        baseQuery.type === 'aggregate'
       ) {
         // Check if user has permission to subscribe to this model
         if (baseQuery.subscribe) {
