@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 module.exports = {
+  darkMode: 'class',
   content: [
     './layouts/**/*.vue',
     './components/**/*.vue',

@@ -21,7 +21,7 @@ async function render(
     documentProps?.description ?? 'কওমী মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার';
 
   const documentHtml = escapeInject`<!DOCTYPE html>
-    <html lang='en'>
+    <html lang='en' class="dark">
       <head>
         <meta charset='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
