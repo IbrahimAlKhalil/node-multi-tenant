@@ -1,5 +1,7 @@
 <template>
-  <div class="sidebar h-full bg-primary-lighter p-3 rounded-lg">
+  <div
+    class="sidebar h-full bg-primary-lighter dark:bg-dark text-text dark:text-light p-3 rounded-lg"
+  >
     <div class="flex flex-col gap-5">
       <div class="search">
         <h5 class="font-bold text-xl text-primary mb-3">Search Bolg</h5>
@@ -21,7 +23,7 @@
             @click="$emit('update:category', category.slug)"
           >
             <span
-              class="flex items-center gap-2 my-1 text-text cursor-pointer"
+              class="flex items-center gap-2 my-1 cursor-pointer"
               :class="{
                 'text-secondary-dark font-bold':
                   category.slug === activeCategory,
@@ -45,7 +47,7 @@
             @click="$emit('update:tag', tag.slug)"
           >
             <span
-              class="flex items-center gap-2 my-1 text-text cursor-pointer"
+              class="flex items-center gap-2 my-1 cursor-pointer"
               :class="{
                 'text-secondary-dark font-bold': tag.slug === activeTag,
               }"

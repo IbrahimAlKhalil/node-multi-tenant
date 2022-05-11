@@ -2,7 +2,7 @@
   <div
     data-aos="zoom-in"
     data-aos-duration="1200"
-    class="single-blog displayBox flex flex-col lg:flex-row items-center gap-10 border-t border-gray-100 rounded-lg p-5 bg-white shadow-lg"
+    class="single-blog displayBox flex flex-col lg:flex-row items-center gap-10 border-t border-gray-100 dark:border-black rounded-lg p-5 bg-white dark:bg-dark shadow-lg"
   >
     <div :class="{ 'lg:order-2': !isOdd }" style="flex: 1">
       <div class="single-blog__image">
@@ -17,7 +17,7 @@
         <div class="single-blog__date text-sm text-gray-500 italic mb-4">
           {{ date }}
         </div>
-        <p class="single-blog__text text-md text-text mb-5">
+        <p class="single-blog__text text-md text-text dark:text-light mb-5">
           {{ text }}
         </p>
         <div class="single-blog__action-btn group">
