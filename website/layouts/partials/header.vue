@@ -85,6 +85,7 @@ if (navData.currentPath !== urlPathname) {
 
 onMounted(() => {
   window.addEventListener('scroll', () => updateScroll(window.scrollY));
+  isSticky.value = window.scrollY !== 0;
 });
 onUnmounted(() => {
   window.removeEventListener('scroll', () => updateScroll(window.scrollY));
