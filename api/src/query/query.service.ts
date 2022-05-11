@@ -963,4 +963,23 @@ export class QueryService {
 
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
   }
+
+  public async create(
+    rootQuery: BaseQuery,
+    session: Session,
+    trx?: PrismaClient,
+  ): Promise<any> {
+    const queue: BaseQuery[] = [rootQuery];
+
+    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
+
+    if (!prisma) {
+      throw new WsException(
+        `Instance #${session.iid} is either not found or not active`,
+        'UNAUTHORIZED',
+      );
+    }
+
+    return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
+  }
 }

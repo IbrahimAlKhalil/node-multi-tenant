@@ -47,6 +47,8 @@ export class QueryListener {
         query.type === 'aggregate'
       ) {
         result = await this.queryService.find(query, session);
+      } else if (query.type === 'create') {
+        result = await this.queryService.create(query, session);
       }
 
       return result;
