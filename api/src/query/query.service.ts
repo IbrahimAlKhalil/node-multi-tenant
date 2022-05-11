@@ -122,7 +122,7 @@ export class QueryService {
     for (let i = 0; i < fieldsLength; i++) {
       const field = fields[i];
 
-      if (field === '_count') {
+      if (field === '_count' || field === '_relevance') {
         if (classifications.special) {
           classifications.special.push(field);
         }
@@ -426,11 +426,12 @@ export class QueryService {
       return;
     }
 
+    const permissionModel = this.models[baseQuery.model];
     const modelFields = this.prismaService.fields[baseQuery.model];
 
-    if (!modelFields) {
+    if (!modelFields || !permissionModel) {
       throw new WsException(
-        `Model "${baseQuery.model}" doesn't exist.`,
+        `You don't have access to model ${baseQuery.model} or it doesn't exist`,
         'QUERY_INVALID',
       );
     }
@@ -677,6 +678,78 @@ export class QueryService {
     return true;
   }
 
+  private checkOrderBy(baseQuery: BaseQuery, session: Session): void {
+    debugger;
+
+    const orderBys = Array.isArray(baseQuery.query.orderBy)
+      ? baseQuery.query.orderBy
+      : [baseQuery.query.orderBy];
+    const queue: { model: ModelNames; fields: Record<string, any> }[] = [];
+
+    const orderByLength = orderBys.length;
+    for (let i = 0; i < orderByLength; i++) {
+      const orderBy = orderBys[i];
+
+      queue.push({
+        model: baseQuery.model,
+        fields: orderBy,
+      });
+    }
+
+    while (queue.length) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const orderBy = queue.shift()!;
+
+      const fieldSetToCheck: string[][] = [Object.keys(orderBy.fields)];
+
+      if (orderBy.fields._relevance) {
+        if (typeof orderBy.fields._relevance.fields === 'string') {
+          fieldSetToCheck.push([orderBy.fields._relevance.fields]);
+        } else if (Array.isArray(orderBy.fields._relevance.fields)) {
+          fieldSetToCheck.push(orderBy.fields._relevance.fields);
+        }
+      }
+
+      const fields = this.classifyFields({
+        session,
+        action: 'read',
+        model: orderBy.model,
+        fields: Array.from(new Set(fieldSetToCheck.flat())),
+        classes: {
+          scalar: true,
+          relation: true,
+          unknown: true,
+          notAllowed: true,
+        },
+      });
+
+      QueryService.checkFieldPermissions(orderBy.model, fields);
+
+      if (fields.relation.length) {
+        const length = fields.relation.length;
+        for (let i = 0; i < length; i++) {
+          const relation = fields.relation[i];
+          const permissionModel = this.models[orderBy.model];
+          const modelFields = this.prismaService.fields[orderBy.model];
+
+          if (!modelFields || !permissionModel) {
+            throw new WsException(
+              `You don't have access to "${orderBy.model}" model or it doesn't exist.`,
+              'QUERY_INVALID',
+            );
+          }
+
+          const modelField = modelFields[relation];
+
+          queue.push({
+            model: this.prismaService.modelsNameMap[modelField.type],
+            fields: orderBy.fields[relation],
+          });
+        }
+      }
+    }
+  }
+
   private processSelect(
     queue: BaseQuery[],
     baseQuery: BaseQuery,
@@ -791,8 +864,12 @@ export class QueryService {
           this.addDefaultSelects(queue, baseQuery, session, modelFields);
         }
 
+        if (baseQuery.query.orderBy) {
+          this.checkOrderBy(baseQuery, session);
+        }
+
         // Check permission for orderBy and cursor fields
-        const clausesToCheck = ['orderBy', 'cursor'];
+        const clausesToCheck = ['cursor'];
         const fieldSetToCheck: string[][] = [];
 
         const clausesLength = clausesToCheck.length;
@@ -839,6 +916,16 @@ export class QueryService {
             {
               model: baseQuery.model,
               where: baseQuery.query.where,
+            },
+            session,
+          );
+        }
+
+        if (baseQuery.query.having) {
+          this.checkWhere(
+            {
+              model: baseQuery.model,
+              where: baseQuery.query.having,
             },
             session,
           );
