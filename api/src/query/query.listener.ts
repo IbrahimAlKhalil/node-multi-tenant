@@ -27,25 +27,29 @@ export class QueryListener {
       throw new WsException(e.message, 'QUERY_INVALID');
     }
 
-    const processedQuery = await this.queryService.processQuery(query, {
+    const session = {
       knd: ws.knd,
       iid: ws.iid,
       uid: ws.uid,
       jti: ws.jti,
       rol: ws.rol,
-    });
-
-    const prisma = await this.prismaService.getPrisma(ws.iid);
-
-    if (!prisma) {
-      throw new WsException(
-        `Instance #${ws.iid} is either not found or not active`,
-        'UNAUTHORIZED',
-      );
-    }
+    };
 
     try {
-      return (prisma[query.model][query.type] as any)(processedQuery.query);
+      let result: any;
+
+      if (
+        query.type === 'findMany' ||
+        query.type === 'findFirst' ||
+        query.type === 'findUnique' ||
+        query.type === 'count' ||
+        query.type === 'groupBy' ||
+        query.type === 'aggregate'
+      ) {
+        result = await this.queryService.find(query, session);
+      }
+
+      return result;
     } catch (e) {
       throw new WsException(e.message, 'PRISMA_ERROR');
     }

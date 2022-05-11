@@ -836,10 +836,7 @@ export class QueryService {
     }
   }
 
-  public async processQuery(
-    rootQuery: BaseQuery,
-    session: Session,
-  ): Promise<Pick<BaseQuery, 'model' | 'type' | 'query'>> {
+  public async find(rootQuery: BaseQuery, session: Session): Promise<any> {
     const queue: BaseQuery[] = [rootQuery];
 
     while (queue.length) {
@@ -860,114 +857,105 @@ export class QueryService {
         );
       }
 
-      if (
-        baseQuery.type === 'findMany' ||
-        baseQuery.type === 'findFirst' ||
-        baseQuery.type === 'findUnique' ||
-        baseQuery.type === 'count' ||
-        baseQuery.type === 'groupBy' ||
-        baseQuery.type === 'aggregate'
-      ) {
-        // Check if user has permission to subscribe to this model
-        if (baseQuery.subscribe) {
-          QueryService.getActionPermission(
-            'subscribe',
-            baseQuery.model,
-            permissionModel,
-            session,
-          );
-        }
-
-        if (baseQuery.query.select) {
-          this.processSelect(queue, baseQuery, session, modelFields);
-        } else {
-          // Add default fields to select
-          this.addDefaultSelects(queue, baseQuery, session, modelFields);
-        }
-
-        if (baseQuery.query.orderBy) {
-          this.checkOrderBy(baseQuery, session);
-        }
-
-        // Check permission for orderBy and cursor fields
-        const objClauses = ['cursor', '_sum', '_avg', '_min', '_max'];
-        const arrClauses = ['distinct', 'by'];
-        const fieldSetToCheck: string[][] = [];
-
-        const objLength = objClauses.length;
-        for (let i = 0; i < objLength; i++) {
-          const clause = objClauses[i];
-          if (baseQuery.query[clause]) {
-            fieldSetToCheck.push(Object.keys(baseQuery.query[clause]));
-          }
-        }
-
-        const arrLength = arrClauses.length;
-        for (let i = 0; i < arrLength; i++) {
-          const clause = arrClauses[i];
-          if (!baseQuery.query[clause]) {
-            continue;
-          }
-
-          if (typeof baseQuery.query[clause] === 'string') {
-            fieldSetToCheck.push([baseQuery.query[clause]]);
-          } else if (Array.isArray(baseQuery.query[clause])) {
-            fieldSetToCheck.push(baseQuery.query[clause]);
-          }
-        }
-
-        if (fieldSetToCheck.length) {
-          QueryService.checkFieldPermissions(
-            baseQuery.model,
-            this.classifyFields({
-              session,
-              action: 'read',
-              model: baseQuery.model,
-              fields: Array.from(new Set(fieldSetToCheck.flat())),
-              classes: {
-                scalar: true,
-                notAllowed: true,
-                unknown: true,
-              },
-            }),
-          );
-        }
-
-        // Check permission for fields specified in where clause
-        if (baseQuery.query.where) {
-          this.checkWhere(
-            {
-              model: baseQuery.model,
-              where: baseQuery.query.where,
-            },
-            session,
-          );
-        }
-
-        if (baseQuery.query.having) {
-          this.checkWhere(
-            {
-              model: baseQuery.model,
-              where: baseQuery.query.having,
-            },
-            session,
-          );
-        }
-
-        // Add permission query to base query
-        await this.applyPermissions(
-          'read',
-          session,
-          baseQuery,
+      // Check if user has permission to subscribe to this model
+      if (baseQuery.subscribe) {
+        QueryService.getActionPermission(
+          'subscribe',
+          baseQuery.model,
           permissionModel,
+          session,
         );
       }
+
+      if (baseQuery.query.select) {
+        this.processSelect(queue, baseQuery, session, modelFields);
+      } else {
+        // Add default fields to select
+        this.addDefaultSelects(queue, baseQuery, session, modelFields);
+      }
+
+      if (baseQuery.query.orderBy) {
+        this.checkOrderBy(baseQuery, session);
+      }
+
+      // Check permission for orderBy and cursor fields
+      const objClauses = ['cursor', '_sum', '_avg', '_min', '_max'];
+      const arrClauses = ['distinct', 'by'];
+      const fieldSetToCheck: string[][] = [];
+
+      const objLength = objClauses.length;
+      for (let i = 0; i < objLength; i++) {
+        const clause = objClauses[i];
+        if (baseQuery.query[clause]) {
+          fieldSetToCheck.push(Object.keys(baseQuery.query[clause]));
+        }
+      }
+
+      const arrLength = arrClauses.length;
+      for (let i = 0; i < arrLength; i++) {
+        const clause = arrClauses[i];
+        if (!baseQuery.query[clause]) {
+          continue;
+        }
+
+        if (typeof baseQuery.query[clause] === 'string') {
+          fieldSetToCheck.push([baseQuery.query[clause]]);
+        } else if (Array.isArray(baseQuery.query[clause])) {
+          fieldSetToCheck.push(baseQuery.query[clause]);
+        }
+      }
+
+      if (fieldSetToCheck.length) {
+        QueryService.checkFieldPermissions(
+          baseQuery.model,
+          this.classifyFields({
+            session,
+            action: 'read',
+            model: baseQuery.model,
+            fields: Array.from(new Set(fieldSetToCheck.flat())),
+            classes: {
+              scalar: true,
+              notAllowed: true,
+              unknown: true,
+            },
+          }),
+        );
+      }
+
+      // Check permission for fields specified in where clause
+      if (baseQuery.query.where) {
+        this.checkWhere(
+          {
+            model: baseQuery.model,
+            where: baseQuery.query.where,
+          },
+          session,
+        );
+      }
+
+      if (baseQuery.query.having) {
+        this.checkWhere(
+          {
+            model: baseQuery.model,
+            where: baseQuery.query.having,
+          },
+          session,
+        );
+      }
+
+      // Add permission query to base query
+      await this.applyPermissions('read', session, baseQuery, permissionModel);
     }
 
-    return {
-      type: rootQuery.type,
-      model: rootQuery.model,
-      query: rootQuery.query,
-    };
+    const prisma = await this.prismaService.getPrisma(session.iid);
+
+    if (!prisma) {
+      throw new WsException(
+        `Instance #${session.iid} is either not found or not active`,
+        'UNAUTHORIZED',
+      );
+    }
+
+    return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
   }
 }
