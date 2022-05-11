@@ -7,6 +7,7 @@ import { WsException } from '../exceptions/ws-exception.js';
 import { ClassifyOptions } from './types/classify-options';
 import { ClassifyResult } from './types/classify-result';
 import { Injectable, Logger } from '@nestjs/common';
+import { PrismaClient } from '../../prisma/client';
 import { DMMF } from '../../prisma/client/runtime';
 import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
@@ -836,7 +837,11 @@ export class QueryService {
     }
   }
 
-  public async find(rootQuery: BaseQuery, session: Session): Promise<any> {
+  public async find(
+    rootQuery: BaseQuery,
+    session: Session,
+    trx?: PrismaClient,
+  ): Promise<any> {
     const queue: BaseQuery[] = [rootQuery];
 
     while (queue.length) {
@@ -947,7 +952,7 @@ export class QueryService {
       await this.applyPermissions('read', session, baseQuery, permissionModel);
     }
 
-    const prisma = await this.prismaService.getPrisma(session.iid);
+    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
 
     if (!prisma) {
       throw new WsException(
