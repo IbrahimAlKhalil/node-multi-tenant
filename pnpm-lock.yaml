@@ -196,7 +196,7 @@ importers:
       pinia: ^2.0.14
       postcss: ^8.4.12
       prettier: ^2.5.1
-      prisma: ^3.11.0
+      prisma: ^3.14.0
       siema: ^1.5.1
       svgo: ^2.8.0
       tailwindcss: ^3.0.23
@@ -210,7 +210,7 @@ importers:
       vue-i18n: ^9.1.10
       yup: ^0.32.11
     dependencies:
-      '@prisma/client': 3.14.0_prisma@3.11.0
+      '@prisma/client': 3.14.0_prisma@3.14.0
       '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
@@ -243,7 +243,7 @@ importers:
       eslint-plugin-vue: 8.5.0_eslint@8.11.0
       postcss: 8.4.12
       prettier: 2.5.1
-      prisma: 3.11.0
+      prisma: 3.14.0
       svgo: 2.8.0
       tailwindcss: 3.0.23_eq6rdkkr572vfnsce6ssjbbos4
       ts-node: 10.7.0_km4n477qwm7pejhoqwcv25fz6q
@@ -1477,6 +1477,20 @@ packages:
       prisma: 3.11.0
     dev: false
 
+  /@prisma/client/3.14.0_prisma@3.14.0:
+    resolution: {integrity: sha512-atb41UpgTR1MCst0VIbiHTMw8lmXnwUvE1KyUCAkq08+wJyjRE78Due+nSf+7uwqQn+fBFYVmoojtinhlLOSaA==}
+    engines: {node: '>=12.6'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
+      prisma: 3.14.0
+    dev: false
+
   /@prisma/debug/3.13.0:
     resolution: {integrity: sha512-uzL4ug7pWbiodTSW/WMAJ9SOP/ulxn6EVlV4YTpKaidgPMOLPqSV7iLZP7P4w7q3HGSpWZp+kr2a4nq7+ANEfg==}
     dependencies:
@@ -1522,7 +1536,6 @@ packages:
   /@prisma/engines/3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a:
     resolution: {integrity: sha512-LwZvI3FY6f43xFjQNRuE10JM5R8vJzFTSmbV9X0Wuhv9kscLkjRlZt0BEoiHmO+2HA3B3xxbMfB5du7ZoSFXGg==}
     requiresBuild: true
-    dev: false
 
   /@prisma/fetch-engine/3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a:
     resolution: {integrity: sha512-biB8habC1IrxJc9xhOeS0Rkr4JmyTlRZ+5I8zdH/5F78nZmYzsFdT/KEAA4Wnc1U01Vou5mfJCFrLN+c3+gJXg==}
@@ -8033,6 +8046,15 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b
+    dev: true
+
+  /prisma/3.14.0:
+    resolution: {integrity: sha512-l9MOgNCn/paDE+i1K2fp9NZ+Du4trzPTJsGkaQHVBufTGqzoYHuNk8JfzXuIn0Gte6/ZjyKj652Jq/Lc1tp2yw==}
+    engines: {node: '>=12.6'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
     dev: true
 
   /process-nextick-args/2.0.1:
