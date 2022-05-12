@@ -442,7 +442,7 @@ export class QueryService {
     if (!modelFields || !permissionModel) {
       throw new WsException(
         `You don't have access to model ${baseQuery.model} or it doesn't exist`,
-        'QUERY_INVALID',
+        'PERMISSION_DENIED',
       );
     }
 
@@ -755,7 +755,7 @@ export class QueryService {
           if (!modelFields || !permissionModel) {
             throw new WsException(
               `You don't have access to "${orderBy.model}" model or it doesn't exist.`,
-              'QUERY_INVALID',
+              'PERMISSION_DENIED',
             );
           }
 
@@ -858,7 +858,7 @@ export class QueryService {
         // Permission for this model is not defined
         throw new WsException(
           `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
-          'QUERY_INVALID',
+          'PERMISSION_DENIED',
         );
       }
 
