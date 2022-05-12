@@ -1,6 +1,6 @@
 <template>
   <layout-main>
-    <div class="relative hash-section">
+    <div class="relative">
       <hero-section :isVisible="isFeaturesSectionVisible" />
       <features-section id="observer" />
     </div>
@@ -12,9 +12,9 @@
     </section>
     <pricing-section class="hash-section" />
     <about-us-section class="hash-section" />
-    <our-clients-section class="hash-section" />
-    <testimonial-section class="hash-section" />
-    <news-letter-section class="hash-section" />
+    <our-clients-section />
+    <testimonial-section />
+    <news-letter-section />
   </layout-main>
 </template>
 
