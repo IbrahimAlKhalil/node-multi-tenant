@@ -1,7 +1,7 @@
 import { defineModel } from '../define-model.js';
-import { Chat } from '../../../prisma/client';
+import { ChatMessage } from '../../../prisma/client';
 
-export default defineModel<Chat, 'chat'>({
+export default defineModel<ChatMessage, 'chatMessage'>({
   kinds: {
     POWER: {
       read: {
@@ -10,7 +10,7 @@ export default defineModel<Chat, 'chat'>({
           return {
             where: {
               Conversation: {
-                ConversationMember: {
+                ConversationMembers: {
                   some: {
                     userId: session.uid,
                   },

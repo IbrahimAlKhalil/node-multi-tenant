@@ -31,7 +31,7 @@ model Activity {
   ip        String          @db.VarChar(50)
   userAgent String          @db.VarChar(255)
   User      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Revision  Revision[]
+  Revisions Revision[]
 
   @@index([action, table, recordId])
   @@index([userId])
@@ -44,7 +44,7 @@ model Address {
   subDistrictId Int
   SubDistrict   SubDistrict   @relation(fields: [subDistrictId], references: [id], onUpdate: Restrict)
   User          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  AddressI18n   AddressI18n[]
+  I18n          AddressI18n[]
 
   @@unique([userId, addressType])
   @@index([subDistrictId])
@@ -86,10 +86,10 @@ model Archive {
 }
 
 model Area {
-  id       Int        @id @default(autoincrement())
-  order    Int?       @unique
-  AreaI18n AreaI18n[]
-  Building Building[]
+  id        Int        @id @default(autoincrement())
+  order     Int?       @unique
+  I18n      AreaI18n[]
+  Buildings Building[]
 }
 
 model AreaI18n {
@@ -107,7 +107,7 @@ model Bench {
   benchGroupId Int
   order        Int
   BenchGroup   BenchGroup @relation(fields: [benchGroupId], references: [id], onDelete: Cascade)
-  Seat         Seat[]
+  Seats        Seat[]
 
   @@unique([benchGroupId, order])
 }
@@ -117,22 +117,23 @@ model BenchGroup {
   hallId   Int
   order    Int
   ExamHall ExamHall @relation(fields: [hallId], references: [id], onDelete: Cascade)
-  Bench    Bench[]
+  Benches  Bench[]
 
   @@unique([hallId, order])
 }
 
 model Book {
-  id            Int             @id @default(autoincrement())
-  classId       Int
-  groupId       Int?
-  categoryId    Int?
-  Class         Class           @relation(fields: [classId], references: [id], onDelete: Cascade)
-  BookGroup     BookGroup?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  BookI18n      BookI18n[]
-  ExamBook      ExamBook[]
-  ExamRawResult ExamRawResult[]
-  ExamResult    ExamResult[]
+  id             Int             @id @default(autoincrement())
+  classId        Int
+  groupId        Int?
+  categoryId     Int?
+  Class          Class           @relation(fields: [classId], references: [id], onDelete: Cascade)
+  BookGroup      BookGroup?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  I18n           BookI18n[]
+  ExamBooks      ExamBook[]
+  ExamRawResults ExamRawResult[]
+  ExamResults    ExamResult[]
+  ExamBookGroups ExamBookGroup[]
 
   @@index([categoryId])
   @@index([classId])
@@ -140,8 +141,8 @@ model Book {
 }
 
 model BookCategory {
-  id               Int                @id @default(autoincrement())
-  BookCategoryI18n BookCategoryI18n[]
+  id   Int                @id @default(autoincrement())
+  I18n BookCategoryI18n[]
 }
 
 model BookCategoryI18n {
@@ -155,10 +156,11 @@ model BookCategoryI18n {
 }
 
 model BookGroup {
-  id            Int             @id @default(autoincrement())
-  Book          Book[]
-  BookGroupI18n BookGroupI18n[]
-  ExamResult    ExamResult[]
+  id                 Int                  @id @default(autoincrement())
+  Book               Book[]
+  I18n               BookGroupI18n[]
+  ExamResults        ExamResult[]
+  ExamBookGroupGrade ExamBookGroupGrade[]
 }
 
 model BookGroupI18n {
@@ -182,11 +184,12 @@ model BookI18n {
 }
 
 model Building {
-  id     Int     @id @default(autoincrement())
+  id     Int            @id @default(autoincrement())
   areaId Int?
   order  Int?
-  Area   Area?   @relation(fields: [areaId], references: [id], onDelete: Cascade)
-  Floor  Floor[]
+  Area   Area?          @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  Floors Floor[]
+  I18n   BuildingI18n[]
 
   @@unique([areaId, order])
 }
@@ -194,29 +197,32 @@ model Building {
 model BuildingI18n {
   buildingId Int
   languageId Int
-  name       String @db.VarChar(100)
+  name       String   @db.VarChar(100)
+  Building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  Language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
 
   @@id([buildingId, languageId])
 }
 
 model Class {
-  id         Int          @id @default(autoincrement())
-  order      Int
-  Admission  Admission[]
-  Book       Book[]
-  ClassGroup ClassGroup[]
-  ClassI18n  ClassI18n[]
-  Exam       Exam[]
+  id          Int          @id @default(autoincrement())
+  order       Int
+  Admissions  Admission[]
+  Books       Book[]
+  ClassGroups ClassGroup[]
+  I18n        ClassI18n[]
+  Exams       Exam[]
 }
 
 model ClassGroup {
-  id             Int              @id @default(autoincrement())
-  classId        Int
-  Class          Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
-  Admission      Admission[]
-  ClassGroupI18n ClassGroupI18n[]
-  ExamClassGroup ExamClassGroup[]
+  id              Int              @id @default(autoincrement())
+  classId         Int
+  Class           Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
+  Admissions      Admission[]
+  I18n            ClassGroupI18n[]
+  ExamClassGroups ExamClassGroup[]
 
+  ExamBookGroup ExamBookGroup[]
   @@index([classId])
 }
 
@@ -241,9 +247,9 @@ model ClassI18n {
 }
 
 model Country {
-  id          Int           @id @default(autoincrement())
-  CountryI18n CountryI18n[]
-  State       State[]
+  id     Int           @id @default(autoincrement())
+  I18n   CountryI18n[]
+  States State[]
 }
 
 model CountryI18n {
@@ -257,10 +263,10 @@ model CountryI18n {
 }
 
 model Designation {
-  id              Int               @id @default(autoincrement())
-  order           Int?
-  DesignationI18n DesignationI18n[]
-  Staff           Staff[]
+  id     Int               @id @default(autoincrement())
+  order  Int?
+  I18n   DesignationI18n[]
+  Staffs Staff[]
 }
 
 model DesignationI18n {
@@ -277,8 +283,8 @@ model District {
   id           Int            @id @default(autoincrement())
   divisionId   Int
   Division     Division       @relation(fields: [divisionId], references: [id], onDelete: Cascade)
-  DistrictI18n DistrictI18n[]
-  SubDistrict  SubDistrict[]
+  I18n         DistrictI18n[]
+  SubDistricts SubDistrict[]
 
   @@index([divisionId])
 }
@@ -294,11 +300,11 @@ model DistrictI18n {
 }
 
 model Division {
-  id           Int            @id @default(autoincrement())
-  stateId      Int
-  State        State          @relation(fields: [stateId], references: [id], onDelete: Cascade)
-  District     District[]
-  DivisionI18n DivisionI18n[]
+  id        Int            @id @default(autoincrement())
+  stateId   Int
+  State     State          @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  Districts District[]
+  I18n      DivisionI18n[]
 
   @@index([stateId])
 }
@@ -314,29 +320,30 @@ model DivisionI18n {
 }
 
 model Exam {
-  id              Int               @id @default(autoincrement())
-  presetId        Int
-  sessionId       Int
-  classId         Int
-  published       Boolean?          @default(false)
-  Class           Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
-  Session         Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  ExamRawResult   ExamRawResult[]
-  ExamResultGrade ExamResultGrade[]
-  ExamRoutine     ExamRoutine[]
-  ExamRoutineSeat ExamRoutineSeat[]
+  id               Int               @id @default(autoincrement())
+  presetId         Int
+  sessionId        Int
+  classId          Int
+  published        Boolean?          @default(false)
+  Class            Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
+  Session          Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  ExamRawResults   ExamRawResult[]
+  ExamResultGrades ExamResultGrade[]
+  ExamRoutines     ExamRoutine[]
+  ExamRoutineSeats ExamRoutineSeat[]
 }
 
 model ExamBook {
-  id             Int              @id @default(autoincrement())
-  presetId       Int
-  bookId         Int
-  optional       Boolean          @default(false)
-  take           Float?           @db.Real
-  Book           Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  ExamPreset     ExamPreset       @relation(fields: [presetId], references: [id], onDelete: Cascade)
-  ExamBookMethod ExamBookMethod[]
-  ExamRoutine    ExamRoutine[]
+  id              Int              @id @default(autoincrement())
+  presetId        Int
+  bookId          Int
+  optional        Boolean          @default(false)
+  take            Float?           @db.Real
+  Book            Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  ExamPreset      ExamPreset       @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  ExamBookMethods ExamBookMethod[]
+  ExamRoutines    ExamRoutine[]
+  ExamBookGrades  ExamBookGrade[]
 
   @@unique([presetId, bookId])
 }
@@ -344,7 +351,9 @@ model ExamBook {
 model ExamBookGrade {
   examBookId Int
   gradeId    Int
-  mark       Float @db.Real
+  mark       Float    @db.Real
+  ExamBook   ExamBook @relation(fields: [examBookId], references: [id], onDelete: Cascade)
+  Grade      Grade    @relation(fields: [gradeId], references: [id], onDelete: Cascade)
 
   @@id([examBookId, gradeId])
 }
@@ -353,7 +362,10 @@ model ExamBookGroup {
   presetId    Int
   bookId      Int
   groupId     Int
-  cascadeFail Boolean @default(false)
+  cascadeFail Boolean    @default(false)
+  Preset      ExamPreset @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  Book        Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  Group       ClassGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@id([presetId, bookId, groupId])
 }
@@ -361,7 +373,9 @@ model ExamBookGroup {
 model ExamBookGroupGrade {
   bookGroupId Int
   gradeId     Int
-  mark        Float @db.Real
+  mark        Float     @db.Real
+  BookGroup   BookGroup @relation(fields: [bookGroupId], references: [id], onDelete: Cascade)
+  Grade       Grade     @relation(fields: [gradeId], references: [id], onDelete: Cascade)
 
   @@id([bookGroupId, gradeId])
 }
@@ -401,15 +415,15 @@ model ExamHall {
   benches       Int          @db.SmallInt
   seatsperbench Int          @db.SmallInt
   Room          Room         @relation(fields: [id], references: [id], onDelete: Cascade)
-  BenchGroup    BenchGroup[]
+  BenchGroups   BenchGroup[]
 }
 
 model ExamMethod {
-  id             Int              @id @default(autoincrement())
-  ExamBookMethod ExamBookMethod[]
-  ExamMethodI18n ExamMethodI18n[]
-  ExamRawResult  ExamRawResult[]
-  ExamRoutine    ExamRoutine[]
+  id              Int              @id @default(autoincrement())
+  ExamBookMethods ExamBookMethod[]
+  ExamMethodI18ns ExamMethodI18n[]
+  ExamRawResults  ExamRawResult[]
+  ExamRoutines    ExamRoutine[]
 }
 
 model ExamMethodI18n {
@@ -433,10 +447,11 @@ model ExamPreset {
   failGradeId      Int
   published        Boolean?         @default(false)
   Grade            Grade            @relation(fields: [failGradeId], references: [id], onDelete: Cascade)
-  ExamBook         ExamBook[]
-  ExamClassGroup   ExamClassGroup[]
-  ExamGrade        ExamGrade[]
-  ExamPresetI18n   ExamPresetI18n[]
+  ExamBooks        ExamBook[]
+  ExamClassGroups  ExamClassGroup[]
+  ExamGrades       ExamGrade[]
+  I18n             ExamPresetI18n[]
+  ExamBookGroups   ExamBookGroup[]
 }
 
 model ExamPresetI18n {
@@ -488,32 +503,32 @@ model ExamResult {
 }
 
 model ExamResultGrade {
-  id         Int          @id @default(autoincrement())
-  examId     Int
-  userId     Int
-  gradeId    Int?
-  point      Decimal?     @db.Decimal(5, 2)
-  position   Int?
-  Exam       Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
-  Grade      Grade?       @relation(fields: [gradeId], references: [id], onDelete: Cascade)
-  User       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  ExamResult ExamResult[]
+  id          Int          @id @default(autoincrement())
+  examId      Int
+  userId      Int
+  gradeId     Int?
+  point       Decimal?     @db.Decimal(5, 2)
+  position    Int?
+  Exam        Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  Grade       Grade?       @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  User        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ExamResults ExamResult[]
 
   @@unique([examId, userId])
   @@index([gradeId])
 }
 
 model ExamRoutine {
-  id              Int               @id
-  examId          Int
-  bookId          Int
-  methodId        Int?
-  start           DateTime          @db.Timestamptz(6)
-  end             DateTime          @db.Timestamptz(6)
-  ExamBook        ExamBook          @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  Exam            Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
-  ExamMethod      ExamMethod?       @relation(fields: [methodId], references: [id], onDelete: Cascade)
-  ExamRoutineSeat ExamRoutineSeat[]
+  id               Int               @id
+  examId           Int
+  bookId           Int
+  methodId         Int?
+  start            DateTime          @db.Timestamptz(6)
+  end              DateTime          @db.Timestamptz(6)
+  ExamBook         ExamBook          @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  Exam             Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  ExamMethod       ExamMethod?       @relation(fields: [methodId], references: [id], onDelete: Cascade)
+  ExamRoutineSeats ExamRoutineSeat[]
 
   @@unique([examId, bookId, methodId])
 }
@@ -533,18 +548,18 @@ model ExamRoutineSeat {
 }
 
 model File {
-  id               String             @id @db.Uuid
-  folderId         Int?
-  mimeTypeId       Int
-  name             String             @db.VarChar(255)
-  size             BigInt
-  Folder           Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  MimeType         MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  ChatFile         ChatFile[]
-  InstituteI18n    InstituteI18n[]
-  Notification     Notification[]
-  NotificationBase NotificationBase[]
-  User             User[]
+  id                String             @id @db.Uuid
+  folderId          Int?
+  mimeTypeId        Int
+  name              String             @db.VarChar(255)
+  size              BigInt
+  Folder            Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MimeType          MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ChatFiles         ChatFile[]
+  I18n              InstituteI18n[]
+  Notifications     Notification[]
+  NotificationBases NotificationBase[]
+  Users             User[]
 
   @@index([folderId])
   @@index([mimeTypeId])
@@ -555,8 +570,8 @@ model Floor {
   buildingId Int?
   order      Int?
   Building   Building?   @relation(fields: [buildingId], references: [id], onDelete: Cascade)
-  FloorI18n  FloorI18n[]
-  Room       Room[]
+  I18n       FloorI18n[]
+  Rooms      Room[]
 
   @@unique([buildingId, order])
 }
@@ -575,21 +590,23 @@ model Folder {
   id       Int      @id @default(autoincrement())
   name     String   @db.VarChar(255)
   parentId Int?
-  Folder   Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  File     File[]
-  Parent   Folder[] @relation("FolderToFolder_parentId")
+  Parent   Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Files    File[]
+  Children Folder[] @relation("FolderToFolder_parentId")
 
   @@index([parentId])
 }
 
 model Grade {
-  id              Int               @id @default(autoincrement())
-  point           Float?            @db.Real
-  ExamGrade       ExamGrade[]
-  ExamPreset      ExamPreset[]
-  ExamResult      ExamResult[]
-  ExamResultGrade ExamResultGrade[]
-  GradeI18n       GradeI18n[]
+  id                  Int                  @id @default(autoincrement())
+  point               Float?               @db.Real
+  ExamGrades          ExamGrade[]
+  ExamPresets         ExamPreset[]
+  ExamResults         ExamResult[]
+  ExamResultGrades    ExamResultGrade[]
+  I18n                GradeI18n[]
+  ExamBookGrades      ExamBookGrade[]
+  ExamBookGroupGrades ExamBookGroupGrade[]
 }
 
 model GradeI18n {
@@ -614,9 +631,9 @@ model GroupI18n {
 }
 
 model GuardianRole {
-  id               Int                @id @default(autoincrement())
-  GuardianRoleI18n GuardianRoleI18n[]
-  GuardianRoleUser GuardianRoleUser[]
+  id                Int                @id @default(autoincrement())
+  I18n              GuardianRoleI18n[]
+  GuardianRoleUsers GuardianRoleUser[]
 }
 
 model GuardianRoleI18n {
@@ -634,17 +651,17 @@ model GuardianRoleUser {
   studentUserId  Int
   roleId         Int
   GuardianUser   User         @relation("GuardianRoleUser_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
-  GuardianRole   GuardianRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
   StudentUser    User         @relation("GuardianRoleUser_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
+  GuardianRole   GuardianRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@id([guardianUserId, studentUserId, roleId])
 }
 
 model Institute {
-  id            Int             @id @default(autoincrement())
-  mobile        String          @db.VarChar(16)
-  email         String          @db.VarChar(320)
-  InstituteI18n InstituteI18n[]
+  id     Int             @id @default(autoincrement())
+  mobile String          @db.VarChar(16)
+  email  String          @db.VarChar(320)
+  I18n   InstituteI18n[]
 }
 
 model InstituteI18n {
@@ -692,6 +709,7 @@ model Language {
   StateI18n           StateI18n[]
   SubDistrictI18n     SubDistrictI18n[]
   UserI18n            UserI18n[]
+  BuildingI18n        BuildingI18n[]
 }
 
 model Lock {
@@ -727,13 +745,13 @@ model Notification {
 }
 
 model NotificationBase {
-  id                  Int                     @id @default(autoincrement())
-  picture             String?                 @db.Uuid
-  link                String?                 @db.VarChar(600)
-  linkType            notification_link_type?
-  File                File?                   @relation(fields: [picture], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Notification        Notification[]
-  NotificationContent NotificationContent[]
+  id                   Int                     @id @default(autoincrement())
+  picture              String?                 @db.Uuid
+  link                 String?                 @db.VarChar(600)
+  linkType             notification_link_type?
+  File                 File?                   @relation(fields: [picture], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Notifications        Notification[]
+  NotificationContents NotificationContent[]
 }
 
 model NotificationContent {
@@ -776,7 +794,7 @@ model Room {
   order    Int?
   Floor    Floor?     @relation(fields: [floorId], references: [id], onDelete: Cascade)
   ExamHall ExamHall?
-  RoomI18n RoomI18n[]
+  I18n     RoomI18n[]
 
   @@unique([floorId, order])
 }
@@ -792,21 +810,21 @@ model RoomI18n {
 }
 
 model Seat {
-  id              Int               @id
-  benchId         Int
-  order           Int
-  Bench           Bench             @relation(fields: [benchId], references: [id], onDelete: Cascade)
-  ExamRoutineSeat ExamRoutineSeat[]
+  id               Int               @id
+  benchId          Int
+  order            Int
+  Bench            Bench             @relation(fields: [benchId], references: [id], onDelete: Cascade)
+  ExamRoutineSeats ExamRoutineSeat[]
 
   @@unique([benchId, order])
 }
 
 model Session {
-  id          Int           @id @default(autoincrement())
-  active      Boolean?      @default(false)
-  Admission   Admission[]
-  Exam        Exam[]
-  SessionI18n SessionI18n[]
+  id         Int           @id @default(autoincrement())
+  active     Boolean?      @default(false)
+  Admissions Admission[]
+  Exams      Exam[]
+  I18n       SessionI18n[]
 }
 
 model SessionI18n {
@@ -835,9 +853,9 @@ model Sms {
 }
 
 model SmsTemplate {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(100)
-  SmsTemplateI18n SmsTemplateI18n[]
+  id   Int               @id @default(autoincrement())
+  name String            @db.VarChar(100)
+  I18n SmsTemplateI18n[]
 }
 
 model SmsTemplateI18n {
@@ -857,15 +875,15 @@ model Staff {
   order         Int?
   Designation   Designation @relation(fields: [designationId], references: [id], onDelete: Cascade)
   User          User        @relation(fields: [id], references: [id], onDelete: Cascade)
-  StaffI18n     StaffI18n[]
+  I18n          StaffI18n[]
 
   @@index([designationId])
 }
 
 model StaffGroup {
-  id              Int               @id @default(autoincrement())
-  GroupI18n       GroupI18n[]
-  StaffGroupPivot StaffGroupPivot[]
+  id               Int               @id @default(autoincrement())
+  I18n             GroupI18n[]
+  StaffGroupPivots StaffGroupPivot[]
 }
 
 model StaffGroupPivot {
@@ -891,8 +909,8 @@ model State {
   id        Int         @id @default(autoincrement())
   countryId Int
   Country   Country     @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  Division  Division[]
-  StateI18n StateI18n[]
+  Divisions Division[]
+  I18n      StateI18n[]
 
   @@index([countryId])
 }
@@ -919,11 +937,11 @@ model StudentGuardian {
 }
 
 model SubDistrict {
-  id              Int               @id @default(autoincrement())
-  districtId      Int
-  District        District          @relation(fields: [districtId], references: [id], onDelete: Cascade)
-  Address         Address[]
-  SubDistrictI18n SubDistrictI18n[]
+  id         Int               @id @default(autoincrement())
+  districtId Int
+  District   District          @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  Addresss   Address[]
+  I18n       SubDistrictI18n[]
 
   @@index([districtId])
 }
@@ -946,38 +964,38 @@ model Trash {
 }
 
 model User {
-  id                         Int                  @id @default(autoincrement())
-  type                       user_kind
-  mobile                     String?              @unique @db.VarChar(16)
-  email                      String?              @unique @db.VarChar(320)
-  picture                    String?              @db.Uuid
-  dateOfBirth                DateTime?            @db.Date
-  nid                        String?              @db.VarChar(40)
-  gender                     gender
-  bloodType                  blood_type?
-  username                   String?              @unique @db.VarChar(100)
-  password                   String?
-  disabled                   Boolean?             @default(false)
-  File                       File?                @relation(fields: [picture], references: [id])
-  AccessToken                AccessToken[]
-  Activity                   Activity[]
-  Address                    Address[]
-  Admission                  Admission[]
-  Chat                       Chat[]
-  ConversationMember         ConversationMember[]
-  ExamRawResult              ExamRawResult[]
-  ExamResultGrade            ExamResultGrade[]
-  ExamRoutineSeat            ExamRoutineSeat[]
-  GuardianRoleUserByGuardian GuardianRoleUser[]   @relation("GuardianRoleUser_guardianUserIdToUser")
-  GuardianRoleUserByStudent  GuardianRoleUser[]   @relation("GuardianRoleUser_studentUserIdToUser")
-  Notification               Notification[]
-  Preset                     Preset[]
-  RoleUser                   RoleUser[]
-  Staff                      Staff?
-  StaffGroupPivot            StaffGroupPivot[]
-  StudentGuardianByGuardian  StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
-  StudentGuardianByStudent   StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
-  UserI18n                   UserI18n[]
+  id                          Int                  @id @default(autoincrement())
+  type                        user_kind
+  mobile                      String?              @unique @db.VarChar(16)
+  email                       String?              @unique @db.VarChar(320)
+  picture                     String?              @db.Uuid
+  dateOfBirth                 DateTime?            @db.Date
+  nid                         String?              @db.VarChar(40)
+  gender                      gender
+  bloodType                   blood_type?
+  username                    String?              @unique @db.VarChar(100)
+  password                    String?
+  disabled                    Boolean?             @default(false)
+  File                        File?                @relation(fields: [picture], references: [id])
+  AccessTokens                AccessToken[]
+  Activitys                   Activity[]
+  Addresss                    Address[]
+  Admissions                  Admission[]
+  Chats                       ChatMessage[]
+  ConversationMembers         ConversationMember[]
+  ExamRawResults              ExamRawResult[]
+  ExamResultGrades            ExamResultGrade[]
+  ExamRoutineSeats            ExamRoutineSeat[]
+  GuardianRoleUserByGuardians GuardianRoleUser[]   @relation("GuardianRoleUser_guardianUserIdToUser")
+  GuardianRoleUserByStudents  GuardianRoleUser[]   @relation("GuardianRoleUser_studentUserIdToUser")
+  Notifications               Notification[]
+  Presets                     Preset[]
+  RoleUsers                   RoleUser[]
+  Staff                       Staff?
+  StaffGroupPivots            StaffGroupPivot[]
+  StudentGuardianByGuardians  StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
+  StudentGuardianByStudents   StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
+  I18n                        UserI18n[]
 }
 
 model UserI18n {
@@ -992,19 +1010,19 @@ model UserI18n {
   @@id([userId, languageId])
 }
 
-model Chat {
-  id             Int          @id @default(autoincrement())
+model ChatMessage {
+  id             Int           @id @default(autoincrement())
   conversationId Int
   userId         Int
   parentId       Int
-  message        String       @db.VarChar(6000)
-  createdAt      DateTime     @default(now()) @db.Timestamptz(6)
-  deletedAt      DateTime?    @db.Timestamptz(6)
-  Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  Chat           Chat         @relation("ChatToChat_parentId", fields: [parentId], references: [id], onDelete: Cascade)
-  User           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Parent         Chat[]       @relation("ChatToChat_parentId")
-  ChatFile       ChatFile[]
+  message        String        @db.VarChar(6000)
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+  deletedAt      DateTime?     @db.Timestamptz(6)
+  Conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  Parent         ChatMessage   @relation("ChatMessageToChatMessage_parentId", fields: [parentId], references: [id], onDelete: Cascade)
+  User           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Replies        ChatMessage[] @relation("ChatMessageToChatMessage_parentId")
+  ChatFiles      ChatFile[]
 
   @@index([conversationId])
   @@index([parentId])
@@ -1013,20 +1031,20 @@ model Chat {
 
 model ChatFile {
   chatId Int
-  fileId String @db.Uuid
-  Chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  File   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String      @db.Uuid
+  Chat   ChatMessage @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  File   File        @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
   @@id([chatId, fileId])
 }
 
 model Conversation {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(100)
-  description        String               @db.VarChar(600)
-  inviteOnly         Boolean              @default(true)
-  Chat               Chat[]
-  ConversationMember ConversationMember[]
+  id                  Int                  @id @default(autoincrement())
+  name                String               @db.VarChar(100)
+  description         String               @db.VarChar(600)
+  inviteOnly          Boolean              @default(true)
+  ChatMessages        ChatMessage[]
+  ConversationMembers ConversationMember[]
 }
 
 model ConversationMember {
@@ -1041,10 +1059,10 @@ model ConversationMember {
 }
 
 model Role {
-  id             Int              @id @default(autoincrement())
-  RoleI18n       RoleI18n[]
-  RolePermission RolePermission[]
-  RoleUser       RoleUser[]
+  id              Int              @id @default(autoincrement())
+  I18n            RoleI18n[]
+  RolePermissions RolePermission[]
+  RoleUsers       RoleUser[]
 }
 
 model RoleI18n {

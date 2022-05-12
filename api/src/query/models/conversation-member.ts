@@ -10,7 +10,7 @@ export default defineModel<ConversationMember, 'conversationMember'>({
           return {
             where: {
               Conversation: {
-                ConversationMember: {
+                ConversationMembers: {
                   some: {
                     userId: session.uid,
                   },
