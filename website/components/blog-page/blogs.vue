@@ -1,7 +1,7 @@
 <template>
   <div class="blog-area">
     <div class="flex flex-col gap-10">
-      <single-blog
+      <single-blog-card
         v-for="(blog, index) of blogsList"
         :key="blog.id"
         :title="blog.title"
@@ -20,12 +20,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import SingleBlog from '#components/blog-page/single-blog.vue';
+import SingleBlogCard from '#components/blog-page/single-blog-card.vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'the-blogs',
-  components: { SingleBlog },
+  components: { SingleBlogCard },
   setup: function () {
     const i18n = useI18n();
     const blogsList = [
