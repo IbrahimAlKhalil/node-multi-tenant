@@ -4,4 +4,3 @@ packages:
   - 'api'
   - 'web'
   - 'website'
-  - 'website-vite-ssr'

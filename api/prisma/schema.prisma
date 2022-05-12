@@ -572,12 +572,12 @@ model FloorI18n {
 }
 
 model Folder {
-  id           Int      @id @default(autoincrement())
-  name         String   @db.VarChar(255)
-  parentId     Int?
-  Folder       Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  File         File[]
-  other_Folder Folder[] @relation("FolderToFolder_parentId")
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255)
+  parentId Int?
+  Folder   Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  File     File[]
+  Parent   Folder[] @relation("FolderToFolder_parentId")
 
   @@index([parentId])
 }
@@ -616,6 +616,7 @@ model GroupI18n {
 model GuardianRole {
   id               Int                @id @default(autoincrement())
   GuardianRoleI18n GuardianRoleI18n[]
+  GuardianRoleUser GuardianRoleUser[]
 }
 
 model GuardianRoleI18n {
@@ -629,12 +630,12 @@ model GuardianRoleI18n {
 }
 
 model GuardianRoleUser {
-  guardianUserId                             Int
-  studentUserId                              Int
-  roleId                                     Int
-  User_GuardianRoleUser_guardianUserIdToUser User @relation("GuardianRoleUser_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
-  User_GuardianRoleUser_roleIdToUser         User @relation("GuardianRoleUser_roleIdToUser", fields: [roleId], references: [id], onDelete: Cascade)
-  User_GuardianRoleUser_studentUserIdToUser  User @relation("GuardianRoleUser_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
+  guardianUserId Int
+  studentUserId  Int
+  roleId         Int
+  GuardianUser   User         @relation("GuardianRoleUser_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
+  GuardianRole   GuardianRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  StudentUser    User         @relation("GuardianRoleUser_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
 
   @@id([guardianUserId, studentUserId, roleId])
 }
@@ -907,11 +908,11 @@ model StateI18n {
 }
 
 model StudentGuardian {
-  guardianUserId                            Int
-  studentUserId                             Int
-  relation                                  guardian_relation_type?
-  User_StudentGuardian_guardianUserIdToUser User                    @relation("StudentGuardian_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
-  User_StudentGuardian_studentUserIdToUser  User                    @relation("StudentGuardian_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
+  guardianUserId Int
+  studentUserId  Int
+  relation       guardian_relation_type?
+  GuardianUser   User                    @relation("StudentGuardian_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
+  StudentUser    User                    @relation("StudentGuardian_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
 
   @@id([guardianUserId, studentUserId])
   @@index([studentUserId, relation])
@@ -945,39 +946,38 @@ model Trash {
 }
 
 model User {
-  id                                                     Int                  @id @default(autoincrement())
-  type                                                   user_kind
-  mobile                                                 String?              @unique @db.VarChar(16)
-  email                                                  String?              @unique @db.VarChar(320)
-  picture                                                String?              @db.Uuid
-  dateOfBirth                                            DateTime?            @db.Date
-  nid                                                    String?              @db.VarChar(40)
-  gender                                                 gender
-  bloodType                                              blood_type?
-  username                                               String?              @unique @db.VarChar(100)
-  password                                               String?
-  disabled                                               Boolean?             @default(false)
-  File                                                   File?                @relation(fields: [picture], references: [id])
-  AccessToken                                            AccessToken[]
-  Activity                                               Activity[]
-  Address                                                Address[]
-  Admission                                              Admission[]
-  Chat                                                   Chat[]
-  ConversationMember                                     ConversationMember[]
-  ExamRawResult                                          ExamRawResult[]
-  ExamResultGrade                                        ExamResultGrade[]
-  ExamRoutineSeat                                        ExamRoutineSeat[]
-  GuardianRoleUser_GuardianRoleUser_guardianUserIdToUser GuardianRoleUser[]   @relation("GuardianRoleUser_guardianUserIdToUser")
-  GuardianRoleUser_GuardianRoleUser_roleIdToUser         GuardianRoleUser[]   @relation("GuardianRoleUser_roleIdToUser")
-  GuardianRoleUser_GuardianRoleUser_studentUserIdToUser  GuardianRoleUser[]   @relation("GuardianRoleUser_studentUserIdToUser")
-  Notification                                           Notification[]
-  Preset                                                 Preset[]
-  RoleUser                                               RoleUser[]
-  Staff                                                  Staff?
-  StaffGroupPivot                                        StaffGroupPivot[]
-  StudentGuardian_StudentGuardian_guardianUserIdToUser   StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
-  StudentGuardian_StudentGuardian_studentUserIdToUser    StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
-  UserI18n                                               UserI18n[]
+  id                         Int                  @id @default(autoincrement())
+  type                       user_kind
+  mobile                     String?              @unique @db.VarChar(16)
+  email                      String?              @unique @db.VarChar(320)
+  picture                    String?              @db.Uuid
+  dateOfBirth                DateTime?            @db.Date
+  nid                        String?              @db.VarChar(40)
+  gender                     gender
+  bloodType                  blood_type?
+  username                   String?              @unique @db.VarChar(100)
+  password                   String?
+  disabled                   Boolean?             @default(false)
+  File                       File?                @relation(fields: [picture], references: [id])
+  AccessToken                AccessToken[]
+  Activity                   Activity[]
+  Address                    Address[]
+  Admission                  Admission[]
+  Chat                       Chat[]
+  ConversationMember         ConversationMember[]
+  ExamRawResult              ExamRawResult[]
+  ExamResultGrade            ExamResultGrade[]
+  ExamRoutineSeat            ExamRoutineSeat[]
+  GuardianRoleUserByGuardian GuardianRoleUser[]   @relation("GuardianRoleUser_guardianUserIdToUser")
+  GuardianRoleUserByStudent  GuardianRoleUser[]   @relation("GuardianRoleUser_studentUserIdToUser")
+  Notification               Notification[]
+  Preset                     Preset[]
+  RoleUser                   RoleUser[]
+  Staff                      Staff?
+  StaffGroupPivot            StaffGroupPivot[]
+  StudentGuardianByGuardian  StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
+  StudentGuardianByStudent   StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
+  UserI18n                   UserI18n[]
 }
 
 model UserI18n {
@@ -1003,7 +1003,7 @@ model Chat {
   Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   Chat           Chat         @relation("ChatToChat_parentId", fields: [parentId], references: [id], onDelete: Cascade)
   User           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  other_Chat     Chat[]       @relation("ChatToChat_parentId")
+  Parent         Chat[]       @relation("ChatToChat_parentId")
   ChatFile       ChatFile[]
 
   @@index([conversationId])

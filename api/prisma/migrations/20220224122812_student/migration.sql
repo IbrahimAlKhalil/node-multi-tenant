@@ -104,8 +104,8 @@ CREATE TABLE "GuardianRoleUser"
     "roleId"         int NOT NULL,
     CONSTRAINT "GuardianRoleUser_pkey" PRIMARY KEY ("guardianUserId", "studentUserId", "roleId"),
     CONSTRAINT "GuardianRoleUser_guardianUserId_fkey" FOREIGN KEY ("guardianUserId") REFERENCES "User" (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "GuardianRoleUser_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "User" (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "GuardianRoleUser_studentUserId_fkey" FOREIGN KEY ("studentUserId") REFERENCES "User" (id) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "GuardianRoleUser_studentUserId_fkey" FOREIGN KEY ("studentUserId") REFERENCES "User" (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "GuardianRoleUser_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "GuardianRole" (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "StudentGuardian"
