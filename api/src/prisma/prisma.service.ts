@@ -37,8 +37,6 @@ export class PrismaService {
     sdk.getDMMF({
       datamodelPath: path.join(__dirname, '../../prisma/schema.prisma'),
     }).then(schema => {
-      this.schema = schema;
-
       for (const model of schema.datamodel.models) {
         const camelCaseModelName = (model.name.charAt(0).toLowerCase() + model.name.slice(1)) as ModelNames;
         this.models[camelCaseModelName] = model;
@@ -56,7 +54,6 @@ export class PrismaService {
   }
 
   private instances: { [instituteId: string]: PrismaInstance } = {};
-  public schema: Awaited<ReturnType<typeof sdk.getDMMF>>;
   public models: Partial<Record<ModelNames, Model>> = {};
   public modelsOriginal: Record<string, Model> = {};
   public modelsNameMap: Record<string, ModelNames> = {};
