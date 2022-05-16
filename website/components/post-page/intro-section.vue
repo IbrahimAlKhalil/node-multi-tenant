@@ -1,5 +1,5 @@
 <template>
-  <div class="container intro text-center text-text dark:text-light">
+  <div class="w-9/12 mx-auto intro text-center text-text dark:text-light">
     <h1
       class="text-5xl font-bold capitalize mt-10 mb-5 text-primary dark:text-secondary"
     >

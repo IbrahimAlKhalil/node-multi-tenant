@@ -1,16 +1,22 @@
 <template>
   <section>
     <div class="w-9/12 mx-auto">
-      <h2 class="text-2xl font-bold text-center">Leave a comment</h2>
+      <h2
+        class="text-3xl text-primary dark:text-secondary font-bold text-center"
+      >
+        Leave a comment
+      </h2>
       <form class="flex flex-col">
         <textarea
           name="comment"
           id="comment"
           cols="30"
           rows="10"
-          class="p-3 rounded-lg border-2 border-gray-300 focus:border-primary transition outline-none"
+          class="p-3 my-5 rounded-lg border-2 border-gray-300 focus:border-primary transition outline-none bg-transparent dark:text-light"
         ></textarea>
-        <primary-btn title="Submit" @handle-click.prevent="submitComment" />
+        <div>
+          <primary-btn title="Submit" @handle-click.prevent="submitComment" />
+        </div>
       </form>
     </div>
   </section>
