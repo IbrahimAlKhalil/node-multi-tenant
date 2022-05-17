@@ -1,12 +1,17 @@
+type author = {
+  name: string;
+  email?: string;
+  url?: string;
+  avatar: string;
+};
+
 export type comment = {
-  id: number;
-  author: {
-    name: string;
-    avatar: string;
-  };
+  postId: number;
+  id: string;
+  author: author;
   createdAt: string;
-  title: string;
   content: string;
-  react: number;
+  liked: number;
+  disliked: number;
   replies: comment[];
 };
