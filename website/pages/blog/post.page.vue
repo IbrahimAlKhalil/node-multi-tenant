@@ -47,33 +47,12 @@ export default defineComponent({
         date: '2020-01-01',
         slug: 'this-is-blog-post-title',
       },
-      commentsData: [
-        {
-          id: 1,
-          author: {
-            name: 'John Doe',
-            avatar: 'https://i.pravatar.cc/300',
-          },
-          title: 'This is comment title',
-          content: 'This is comment content',
-          createdAt: '2020-01-01',
-          react: 10,
-          replies: [
-            {
-              id: 1,
-              author: {
-                name: 'John Doe',
-                avatar: 'https://i.pravatar.cc/300',
-              },
-              title: 'This is comment title',
-              content: 'This is comment content',
-              createdAt: '2020-01-01',
-              react: 100,
-            },
-          ],
-        },
-      ] as comment[],
-      test: '<p>This is test</p><p>This is test</p><p>This is test</p>',
+      commentsData: [] as comment[],
+      test:
+        '<div>' +
+        '<h3>This is test html data rendering</h3>' +
+        '<p>This is test html data rendering</p>' +
+        '</div>',
     };
   },
 

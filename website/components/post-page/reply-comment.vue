@@ -52,9 +52,11 @@ export default defineComponent({
   },
   setup() {
     const isReplyingComment = ref(false);
+
     const submitComment = () => {
       isReplyingComment.value = false;
     };
+
     return {
       isReplyingComment,
       submitComment,
