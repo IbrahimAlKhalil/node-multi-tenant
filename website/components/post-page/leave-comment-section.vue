@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'leave-comment-section',
