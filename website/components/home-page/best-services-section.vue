@@ -1,6 +1,6 @@
 <template>
   <div
-    class="best-services mt-10 py-10 bg-primary-lighter border-y-4 border-secondary"
+    class="best-services mt-10 py-10 bg-primary-lighter dark:bg-dark text-text dark:text-light border-y-4 border-secondary"
   >
     <div
       v-for="(item, index) in items"
@@ -15,11 +15,11 @@
           'md:text-left': index % 2 === 0,
         }"
       >
-        <p class="font-bold text-lg text-text">{{ t(item.subTitle) }}</p>
-        <h3 class="font-bold text-5xl text-primary my-5">
+        <p class="font-bold text-lg">{{ t(item.subTitle) }}</p>
+        <h3 class="font-bold text-5xl text-primary dark:text-secondary my-5">
           {{ t(item.title) }}
         </h3>
-        <p class="text-text text-sm">
+        <p class="text-sm">
           {{ t(item.description) }}
         </p>
       </div>

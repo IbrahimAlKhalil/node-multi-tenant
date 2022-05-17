@@ -7,15 +7,17 @@ import passReset from './pass-reset.json';
 import registration from './registration.json';
 import validation from './validation.json';
 import blogs from './blogs.json';
+import blogPage from './blog-page.json';
 
 export default {
   registration,
   validation,
   passReset,
+  blogPage,
+  homePage,
   message,
   common,
   login,
   menu,
-  homePage,
   blogs,
 };

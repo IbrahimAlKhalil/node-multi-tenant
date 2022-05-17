@@ -1,12 +1,17 @@
 <template>
-  <section id="pricing" class="bg-light py-16">
+  <section
+    id="pricing"
+    class="bg-light dark:bg-dark text-text dark:text-light py-16"
+  >
     <div class="container mx-auto">
       <div class="text-content text-center md:w-1/2 mx-auto mb-10">
-        <p class="sub-heading font-bold text-text">SAHARA IT</p>
-        <h3 class="heading text-5xl font-bold text-primary my-5">
+        <p class="sub-heading font-bold">SAHARA IT</p>
+        <h3
+          class="heading text-5xl font-bold text-primary dark:text-secondary my-5"
+        >
           We offering some awesome plans for you
         </h3>
-        <p class="text-sm text-text">
+        <p class="text-sm">
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industry's standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
@@ -20,13 +25,13 @@
         <div
           v-for="(item, index) in pricingData"
           :key="item.id"
-          class="tables__table border-t-4 border-secondary bg-white px-8 py-10 md:py-5 text-xl rounded-b-lg flex flex-col items-center"
+          class="tables__table border-t-4 border-secondary bg-white px-8 py-10 md:py-5 text-xl rounded-b-lg flex flex-col items-center text-text"
           :class="{ 'border-primary shadow-xl': item.isFeatured }"
           data-aos="fade-up"
           :data-aos-delay="100 * index"
         >
           <h3
-            class="font-bold text-2xl text-center mt-5 mb-8 leading-10 text-text uppercase"
+            class="font-bold text-2xl text-center mt-5 mb-8 leading-10 uppercase"
           >
             {{ item.title }}
             <span

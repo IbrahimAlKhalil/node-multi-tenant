@@ -16,17 +16,24 @@
       <nav class="nav flex-grow hidden lg:block">
         <ul class="flex items-center justify-center">
           <li
-            class="m-0 p-0 group text-text"
+            class="m-0 p-0 group hover:text-primary"
+            :class="{
+              'dark:text-light dark:hover:text-secondary': isSticky,
+              'text-primary': item.href === navData.currentPath && !isSticky,
+              'dark:text-secondary text-primary':
+                item.href === navData.currentPath && isSticky,
+              'text-text': item.href !== navData.currentPath,
+            }"
             v-for="item in navData.data"
             :key="item.href"
           >
             <a
               :href="item.href"
-              class="ml-2 p-2 rounded-sm group-hover:text-primary font-bold text-md transition-all duration-150"
-              :class="{ 'text-primary': item.href === navData.currentPath }"
+              class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
+              :class="{}"
             >
               <component
-                class="mr-1 text-inherit group-hover:scale-110 transition-all duration-300 hidden xl:inline-block"
+                class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
                 :class="{ 'scale-125': item.href === navData.currentPath }"
                 :is="item.icon"
               />
@@ -78,6 +85,7 @@ if (navData.currentPath !== urlPathname) {
 
 onMounted(() => {
   window.addEventListener('scroll', () => updateScroll(window.scrollY));
+  isSticky.value = window.scrollY !== 0;
 });
 onUnmounted(() => {
   window.removeEventListener('scroll', () => updateScroll(window.scrollY));

@@ -21,7 +21,7 @@ async function render(
     documentProps?.description ?? 'কওমী মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার';
 
   const documentHtml = escapeInject`<!DOCTYPE html>
-    <html lang='en' class="dark">
+    <html lang='en' class="">
       <head>
         <meta charset='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
@@ -36,7 +36,7 @@ async function render(
         <link rel='manifest' href='/site.webmanifest' />
         <title>${title}</title>
       </head>
-      <body>
+      <body class='dark:bg-dark-light'>
         <main id='app'>${dangerouslySkipEscape(appHtml)}</main>
       </body>
     </html>`;

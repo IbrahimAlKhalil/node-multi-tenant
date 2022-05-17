@@ -1,9 +1,11 @@
 <template>
   <div class="">
     <div
-      class="container mx-auto text-center rounded-lg shadow-2xl border-t border-gray-100 py-14 my-10"
+      class="container mx-auto text-center rounded-lg shadow-2xl dark:bg-dark border-t border-gray-100 dark:border-black py-14 my-10"
     >
-      <h3 class="font-bold text-4xl text-primary mb-3">{{ t(title) }}</h3>
+      <h3 class="font-bold text-4xl text-primary dark:text-secondary mb-3">
+        {{ t(title) }}
+      </h3>
       <p class="md:w-4/5 mx-auto text-gray-400 mb-5">{{ t(description) }}</p>
       <div class="news-letter-form">
         <div class="common input-area">

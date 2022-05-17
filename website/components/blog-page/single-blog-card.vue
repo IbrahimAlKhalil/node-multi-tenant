@@ -2,7 +2,7 @@
   <div
     data-aos="zoom-in"
     data-aos-duration="1200"
-    class="single-blog displayBox flex flex-col lg:flex-row items-center gap-10 border-t border-gray-100 rounded-lg p-5 bg-white shadow-lg"
+    class="single-blog displayBox flex flex-col lg:flex-row items-center gap-10 border-t border-gray-100 dark:border-black rounded-lg p-5 bg-white dark:bg-dark shadow-lg"
   >
     <div :class="{ 'lg:order-2': !isOdd }" style="flex: 1">
       <div class="single-blog__image">
@@ -12,13 +12,14 @@
     <div style="flex: 1">
       <div class="single-blog__content">
         <h3 class="single-blog__title font-bold text-3xl text-primary mb-2">
-          {{ title }}
+          {{ t(title) }}
         </h3>
-        <div class="single-blog__date text-sm text-gray-500 italic mb-4">
-          {{ date }}
+        <div class="single-blog__date text-sm text-gray-500 mb-4">
+          <span class="font-bold">{{ t(dateLabel) }}: </span>
+          <span class="italic">{{ t(date) }}</span>
         </div>
-        <p class="single-blog__text text-md text-text mb-5">
-          {{ text }}
+        <p class="single-blog__text text-md text-text dark:text-light mb-5">
+          {{ t(text) }}
         </p>
         <div class="single-blog__action-btn group">
           <a
@@ -26,7 +27,7 @@
             class="flex items-center gap-2 text-secondary transition group-hover:text-secondary-dark"
           >
             <span class="block font-bold text-lg">
-              {{ linkText }}
+              {{ t(linkText) }}
             </span>
             <component
               :is="RightArrow"
@@ -49,6 +50,10 @@ export default defineComponent({
   name: 'single-blog',
   props: {
     title: {
+      type: String,
+      required: true,
+    },
+    dateLabel: {
       type: String,
       required: true,
     },

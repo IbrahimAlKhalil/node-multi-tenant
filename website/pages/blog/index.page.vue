@@ -67,22 +67,22 @@ const updateSidebarTag = (tag) => {
 const categories = ref([
   {
     id: 0,
-    name: 'All',
+    name: "blogPage['category-data']['all']",
     slug: 'all',
   },
   {
     id: 1,
-    name: 'Category 1',
+    name: "blogPage['category-data']['item-1']",
     slug: 'category-1',
   },
   {
     id: 2,
-    name: 'Category 2',
+    name: "blogPage['category-data']['item-2']",
     slug: 'category-2',
   },
   {
     id: 3,
-    name: 'Category 3',
+    name: "blogPage['category-data']['item-3']",
     slug: 'category-3',
   },
 ]);
@@ -90,22 +90,22 @@ const categories = ref([
 const tags = ref([
   {
     id: 0,
-    name: 'All',
+    name: "blogPage['tag-data']['all']",
     slug: 'all',
   },
   {
     id: 1,
-    name: 'Tag 1',
+    name: "blogPage['tag-data']['item-1']",
     slug: 'tag-1',
   },
   {
     id: 2,
-    name: 'Tag 2',
+    name: "blogPage['tag-data']['item-2']",
     slug: 'tag-2',
   },
   {
     id: 3,
-    name: 'Tag 3',
+    name: "blogPage['tag-data']['item-3']",
     slug: 'tag-3',
   },
 ]);
