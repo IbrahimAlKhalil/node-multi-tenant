@@ -655,7 +655,7 @@ export class QueryService {
         this.moduleRef,
       );
     } else {
-      permissionQuery = permission.permissions;
+      permissionQuery = structuredClone(permission.permissions);
     }
 
     if (!permissionQuery) {
