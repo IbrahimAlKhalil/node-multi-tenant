@@ -19,6 +19,7 @@ export interface PermissionDefinition<
   PermissionFn = (
     session: Session,
     query: P,
+    prisma: PrismaClient,
     ioc: ModuleRef,
   ) => PermissionReturn<P>,
   Permission = S extends 'raw'
@@ -27,6 +28,7 @@ export interface PermissionDefinition<
   Preset = (
     session: Session,
     query: P,
+    prisma: PrismaClient,
     ioc: ModuleRef,
   ) => Partial<M> | Promise<Partial<M>>,
 > {

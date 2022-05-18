@@ -13,6 +13,7 @@ export interface PermissionDefinition<
   PermissionFn = (
     session: Session,
     query: P,
+    prisma: PrismaClient,
     ioc: ModuleRef,
   ) => PermissionReturn<P>,
 > {
