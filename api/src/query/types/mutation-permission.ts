@@ -25,12 +25,15 @@ export interface PermissionDefinition<
   Permission = S extends 'raw'
     ? PermissionReference | PermissionFn | P
     : PermissionFn,
-  Preset = (
-    session: Session,
-    query: P,
-    prisma: PrismaClient,
-    ioc: ModuleRef,
-  ) => Partial<M> | Promise<Partial<M>>,
+  PresetFields = Partial<M>,
+  Preset =
+    | ((
+        session: Session,
+        query: P,
+        prisma: PrismaClient,
+        ioc: ModuleRef,
+      ) => PresetFields | Promise<PresetFields>)
+    | PresetFields,
 > {
   fields: S extends 'raw'
     ? true | Set<keyof M> | FieldReference
