@@ -508,8 +508,8 @@ export class QueryService {
   ): void {
     const queue: typeof rootWhere[] = [rootWhere];
 
-    while (queue.length) {
-      const where = queue.shift();
+    for (let q = 0; q < queue.length; q++) {
+      const where = queue[q];
 
       if (!where) {
         continue;
@@ -707,9 +707,8 @@ export class QueryService {
       });
     }
 
-    while (queue.length) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const orderBy = queue.shift()!;
+    for (let q = 0; q < queue.length; q++) {
+      const orderBy = queue[q];
 
       const fieldSetToCheck: string[][] = [Object.keys(orderBy.fields)];
 
@@ -854,8 +853,8 @@ export class QueryService {
       );
     }
 
-    while (queue.length) {
-      const baseQuery = queue.shift();
+    for (let q = 0; q < queue.length; q++) {
+      const baseQuery = queue[q];
 
       if (!baseQuery) {
         continue;
