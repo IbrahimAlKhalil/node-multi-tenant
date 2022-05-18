@@ -1,5 +1,4 @@
-import { CreatePermission } from './create-permission';
-import { UpdatePermission } from './update-permission';
+import { MutationPermission } from './mutation-permission';
 import { DeletePermission } from './delete-permission';
 import { ReadPermission } from './read-permission';
 import { user_kind } from '../../../prisma/client';
@@ -13,8 +12,8 @@ export interface Actions<
   S extends ModelState = 'processed',
 > {
   read?: ReadPermission<M, N, S>;
-  create?: CreatePermission<M, N, S>;
-  update?: UpdatePermission<M, N, S>;
+  create?: MutationPermission<M, N, 'create', S>;
+  update?: MutationPermission<M, N, 'update', S>;
   delete?: DeletePermission<N, S>;
   subscribe?: boolean;
 }

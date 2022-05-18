@@ -9,17 +9,16 @@ import { ModuleRef } from '@nestjs/core';
 export interface PermissionDefinition<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  P = Partial<
-    Parameters<PrismaClient[N]['delete']>[0] &
-      Parameters<PrismaClient[N]['deleteMany']>[0]
-  >,
+  P = Partial<Parameters<PrismaClient[N]['delete']>[0]>,
+  PermissionFn = (
+    session: Session,
+    query: P,
+    ioc: ModuleRef,
+  ) => PermissionReturn<P>,
 > {
   permissions?: S extends 'raw'
-    ?
-        | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
-        | P
-        | PermissionReference
-    : ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>) | P;
+    ? PermissionReference | PermissionFn | P
+    : PermissionFn;
 }
 
 export type DeletePermission<

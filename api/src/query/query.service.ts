@@ -1,5 +1,4 @@
-import { PermissionDefinition as CreatePermission } from './types/create-permission';
-import { PermissionDefinition as UpdatePermission } from './types/update-permission';
+import { PermissionDefinition as MutationPermission } from './types/mutation-permission';
 import { PermissionDefinition as DeletePermission } from './types/delete-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -26,9 +25,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 type Permission<T extends keyof Actions<any, any>> = T extends 'read'
   ? ReadPermission<any, any>
   : T extends 'create'
-  ? CreatePermission<any, any>
+  ? MutationPermission<any, any, 'create'>
   : T extends 'update'
-  ? UpdatePermission<any, any>
+  ? MutationPermission<any, any, 'update'>
   : T extends 'delete'
   ? DeletePermission<any, any>
   : true | void;
