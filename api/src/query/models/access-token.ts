@@ -6,7 +6,7 @@ export default defineModel<AccessToken, 'accessToken'>({
     ALL: {
       read: {
         fields: true,
-        permissions(session) {
+        permission(session) {
           return {
             where: {
               userId: session.uid,
@@ -15,7 +15,7 @@ export default defineModel<AccessToken, 'accessToken'>({
         },
       },
       delete: {
-        permissions: 'ALL.read',
+        permission: 'ALL.read',
       },
     },
   },

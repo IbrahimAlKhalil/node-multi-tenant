@@ -26,6 +26,7 @@
     "pgsql-parser": "^13.3.9"
   },
   "devDependencies": {
-    "@types/dockerode": "^3.3.9"
+    "@types/dockerode": "^3.3.9",
+    "object-sizeof": "^1.6.3"
   }
 }

@@ -1,6 +1,6 @@
-import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as UpdatePermission } from './types/update-permission';
 import { PermissionDefinition as DeletePermission } from './types/delete-permission';
+import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { WsException } from '../exceptions/ws-exception.js';
@@ -251,7 +251,7 @@ export class QueryService {
       );
     }
 
-    // Get action permissions
+    // Get action permission
     const permission = QueryService.getActionPermission(
       options.action,
       options.model,
@@ -259,7 +259,7 @@ export class QueryService {
       options.session,
     );
 
-    // Check permissions for scalar fields
+    // Check permission for scalar fields
     if (permission === true || permission.fields === true) {
       classifications.allowed = classifications.scalar;
     } else {
@@ -442,7 +442,7 @@ export class QueryService {
     if (!modelFields || !permissionModel) {
       throw new WsException(
         `You don't have access to model ${baseQuery.model} or it doesn't exist`,
-        'QUERY_INVALID',
+        'PERMISSION_DENIED',
       );
     }
 
@@ -509,8 +509,8 @@ export class QueryService {
   ): void {
     const queue: typeof rootWhere[] = [rootWhere];
 
-    while (queue.length) {
-      const where = queue.shift();
+    for (let q = 0; q < queue.length; q++) {
+      const where = queue[q];
 
       if (!where) {
         continue;
@@ -629,7 +629,7 @@ export class QueryService {
   }
 
   private async applyPermissions(
-    action: Exclude<keyof Actions<any, any>, 'subscribe'>,
+    action: Exclude<keyof Actions<any, any>, 'subscribe' | 'create'>,
     session: Session,
     baseQuery: BaseQuery,
     permissionModel: Model<any, any>,
@@ -647,14 +647,14 @@ export class QueryService {
 
     let permissionQuery: any;
 
-    if (typeof permission.permissions === 'function') {
-      permissionQuery = await permission.permissions(
+    if (typeof permission.permission === 'function') {
+      permissionQuery = await permission.permission(
         session,
         baseQuery.query,
         this.moduleRef,
       );
     } else {
-      permissionQuery = permission.permissions;
+      permissionQuery = structuredClone(permission.permission);
     }
 
     if (!permissionQuery) {
@@ -706,9 +706,8 @@ export class QueryService {
       });
     }
 
-    while (queue.length) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const orderBy = queue.shift()!;
+    for (let q = 0; q < queue.length; q++) {
+      const orderBy = queue[q];
 
       const fieldSetToCheck: string[][] = [Object.keys(orderBy.fields)];
 
@@ -755,7 +754,7 @@ export class QueryService {
           if (!modelFields || !permissionModel) {
             throw new WsException(
               `You don't have access to "${orderBy.model}" model or it doesn't exist.`,
-              'QUERY_INVALID',
+              'PERMISSION_DENIED',
             );
           }
 
@@ -844,8 +843,17 @@ export class QueryService {
   ): Promise<any> {
     const queue: BaseQuery[] = [rootQuery];
 
-    while (queue.length) {
-      const baseQuery = queue.shift();
+    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
+
+    if (!prisma) {
+      throw new WsException(
+        `Instance #${session.iid} is either not found or not active`,
+        'UNAUTHORIZED',
+      );
+    }
+
+    for (let q = 0; q < queue.length; q++) {
+      const baseQuery = queue[q];
 
       if (!baseQuery) {
         continue;
@@ -858,7 +866,7 @@ export class QueryService {
         // Permission for this model is not defined
         throw new WsException(
           `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
-          'QUERY_INVALID',
+          'PERMISSION_DENIED',
         );
       }
 
@@ -950,15 +958,6 @@ export class QueryService {
 
       // Add permission query to base query
       await this.applyPermissions('read', session, baseQuery, permissionModel);
-    }
-
-    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
-
-    if (!prisma) {
-      throw new WsException(
-        `Instance #${session.iid} is either not found or not active`,
-        'UNAUTHORIZED',
-      );
     }
 
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);

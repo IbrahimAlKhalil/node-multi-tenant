@@ -8,7 +8,7 @@ type GENERAL = 'GENERAL.create' | 'GENERAL.update';
 type POWER = 'POWER.create' | 'POWER.update';
 type NONE_POWER = 'NONE_POWER.create' | 'NONE_POWER.update';
 
-export type MutationReference =
+export type PresetReference =
   | ALL
   | STUDENT
   | GUARDIAN

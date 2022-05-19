@@ -1,5 +1,5 @@
-import { CreatePermission } from './create-permission';
 import { UpdatePermission } from './update-permission';
+import { CreatePermission } from './create-permission';
 import { DeletePermission } from './delete-permission';
 import { ReadPermission } from './read-permission';
 import { user_kind } from '../../../prisma/client';
@@ -24,7 +24,6 @@ export interface Model<
   N extends ModelNames,
   S extends ModelState = 'processed',
 > {
-  parent?: Model<any, N, 'raw'>;
   schema?: ObjectSchema<M>;
   kinds: Partial<
     Record<

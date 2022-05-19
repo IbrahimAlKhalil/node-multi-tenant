@@ -1,7 +1,7 @@
 import { PermissionReference } from './permission-reference';
-import { MutationReference } from './mutation-reference';
 import { PermissionReturn } from './permission-return';
 import { PrismaClient } from '../../../prisma/client';
+import { PresetReference } from './preset-reference';
 import { FieldReference } from './field-reference';
 import { Session } from '../../types/session';
 import { ModelState } from './model-state';
@@ -12,46 +12,37 @@ export interface PermissionDefinition<
   M,
   N extends ModelNames,
   S extends ModelState = 'processed',
-  P = Partial<
-    Parameters<PrismaClient[N]['update']>[0] &
-      Parameters<PrismaClient[N]['updateMany']>[0]
-  >,
+  P = Partial<Parameters<PrismaClient[N]['update']>[0]>,
+  T = Partial<Parameters<PrismaClient[N]['findMany']>[0]>,
+  PermissionFn = (
+    session: Session,
+    query: P,
+    ioc: ModuleRef,
+  ) => PermissionReturn<P>,
+  ValidationFn = (
+    session: Session,
+    query: T,
+    ioc: ModuleRef,
+  ) => PermissionReturn<T>,
+  PresetFields = Partial<M>,
+  Preset =
+    | ((
+        session: Session,
+        query: P,
+        ioc: ModuleRef,
+      ) => PresetFields | Promise<PresetFields>)
+    | PresetFields,
 > {
   fields: S extends 'raw'
     ? true | Set<keyof M> | FieldReference
     : true | Set<keyof M>;
-  permissions?: S extends 'raw'
-    ?
-        | ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>)
-        | P
-        | PermissionReference
-    : ((session: Session, query: P, ioc: ModuleRef) => PermissionReturn<P>) | P;
-  presets?: S extends 'raw'
-    ?
-        | ((
-            session: Session,
-            query: P,
-            ioc: ModuleRef,
-          ) => Partial<M> | Promise<Partial<M>>)
-        | MutationReference
-    : (
-        session: Session,
-        query: P,
-        ioc: ModuleRef,
-      ) => Partial<M> | Promise<Partial<M>>;
+  permission?: S extends 'raw'
+    ? PermissionReference | PermissionFn | P
+    : PermissionFn;
+  preset?: S extends 'raw' ? Preset | PresetReference : Preset;
   validation?: S extends 'raw'
-    ?
-        | ((
-            session: Session,
-            query: P,
-            ioc: ModuleRef,
-          ) => boolean | Promise<boolean>)
-        | MutationReference
-    : (
-        session: Session,
-        query: P,
-        ioc: ModuleRef,
-      ) => boolean | Promise<boolean>;
+    ? PermissionReference | ValidationFn | T
+    : ValidationFn;
 }
 
 export type UpdatePermission<
