@@ -1,24 +1,37 @@
 import { PermissionReference } from './types/permission-reference';
-import { MutationReference } from './types/mutation-reference';
+import { PresetReference } from './types/preset-reference';
 import { FieldReference } from './types/field-reference';
 import { ModelNames } from './types/model-names';
 import { Actions, Model } from './types/model';
 
 const referableFields = [
   'fields',
-  'permissions',
-  'presets',
+  'permission',
+  'preset',
   'validation',
 ] as const;
 
-type Reference = PermissionReference | MutationReference | FieldReference;
+type Reference = PermissionReference | PresetReference | FieldReference;
 type ReferableField = typeof referableFields[number];
 type Kind = keyof Model<any, any, 'raw'>['kinds'];
 type Permission = Exclude<keyof Actions<any, any, 'raw'>, 'subscribe'>;
 
+function resolveReferencePath(field: ReferableField, split: string[]): void {
+  if (
+    field === 'validation' &&
+    (split[1] === 'read' || split[1] === 'delete')
+  ) {
+    split.push('permission');
+  } else if (field === 'permission' && split[1] === 'create') {
+    split.push('validation');
+  } else {
+    split.push(field);
+  }
+}
+
 export function defineModel<M, N extends ModelNames>(
   model: Model<M, N, 'raw'>,
-): Model<M, N, 'processed'> {
+): Model<M, N> {
   for (const [kind, kindValue] of Object.entries(model.kinds)) {
     if (typeof kindValue === 'boolean') {
       continue;
@@ -36,12 +49,17 @@ export function defineModel<M, N extends ModelNames>(
 
         const split = permissionValue[field].split('.');
 
+        if (split.length === 2) {
+          resolveReferencePath(field, split);
+        }
+
         resolveReference(
           model,
           split[0],
           split[1],
           kind as Kind,
           permission as Permission,
+          split[2],
           field,
           [`${kind}.${permission}` as Reference],
         );
@@ -49,7 +67,7 @@ export function defineModel<M, N extends ModelNames>(
     }
   }
 
-  return model as Model<M, N, 'processed'>;
+  return model as Model<M, N>;
 }
 
 function resolveReference(
@@ -58,7 +76,8 @@ function resolveReference(
   referencePermission: Permission,
   refererRole: Kind,
   refererPermission: Permission,
-  field: ReferableField,
+  referenceField: ReferableField,
+  refererField: ReferableField,
   stack: Reference[] = [],
 ): void {
   const reference = `${referenceRole}.${referencePermission}` as Reference;
@@ -81,7 +100,8 @@ function resolveReference(
   }
 
   if (typeof referenceRoleValue === 'boolean') {
-    (refererRoleValue[refererPermission] as any)[field] = referenceRoleValue;
+    (refererRoleValue[refererPermission] as any)[refererField] =
+      referenceRoleValue;
     return;
   }
 
@@ -92,17 +112,21 @@ function resolveReference(
   }
 
   if (typeof referenceRoleValue[referencePermission] === 'boolean') {
-    (refererRoleValue[refererPermission] as any)[field] =
+    (refererRoleValue[refererPermission] as any)[refererField] =
       referenceRoleValue[referencePermission];
     return;
   }
 
   const referenceValue = (referenceRoleValue[referencePermission] as any)[
-    field
+    referenceField
   ];
 
   if (typeof referenceValue === 'string') {
     const split = referenceValue.split('.');
+
+    if (split.length === 2) {
+      resolveReferencePath(referenceField, split);
+    }
 
     return resolveReference(
       model,
@@ -110,10 +134,11 @@ function resolveReference(
       split[1] as Permission,
       referenceRole,
       referencePermission,
-      field,
+      split[2] as ReferableField,
+      referenceField,
       stack,
     );
   }
 
-  (refererRoleValue[refererPermission] as any)[field] = referenceValue;
+  (refererRoleValue[refererPermission] as any)[refererField] = referenceValue;
 }

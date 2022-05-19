@@ -1,5 +1,6 @@
-import { PermissionDefinition as MutationPermission } from './types/mutation-permission';
+import { PermissionDefinition as UpdatePermission } from './types/update-permission';
 import { PermissionDefinition as DeletePermission } from './types/delete-permission';
+import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { WsException } from '../exceptions/ws-exception.js';
@@ -25,9 +26,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 type Permission<T extends keyof Actions<any, any>> = T extends 'read'
   ? ReadPermission<any, any>
   : T extends 'create'
-  ? MutationPermission<any, any, 'create'>
+  ? CreatePermission<any, any>
   : T extends 'update'
-  ? MutationPermission<any, any, 'update'>
+  ? UpdatePermission<any, any>
   : T extends 'delete'
   ? DeletePermission<any, any>
   : true | void;
@@ -250,7 +251,7 @@ export class QueryService {
       );
     }
 
-    // Get action permissions
+    // Get action permission
     const permission = QueryService.getActionPermission(
       options.action,
       options.model,
@@ -258,7 +259,7 @@ export class QueryService {
       options.session,
     );
 
-    // Check permissions for scalar fields
+    // Check permission for scalar fields
     if (permission === true || permission.fields === true) {
       classifications.allowed = classifications.scalar;
     } else {
@@ -628,11 +629,10 @@ export class QueryService {
   }
 
   private async applyPermissions(
-    action: Exclude<keyof Actions<any, any>, 'subscribe'>,
+    action: Exclude<keyof Actions<any, any>, 'subscribe' | 'create'>,
     session: Session,
     baseQuery: BaseQuery,
     permissionModel: Model<any, any>,
-    prisma: PrismaClient,
   ): Promise<boolean> {
     const permission = QueryService.getActionPermission(
       action,
@@ -647,15 +647,14 @@ export class QueryService {
 
     let permissionQuery: any;
 
-    if (typeof permission.permissions === 'function') {
-      permissionQuery = await permission.permissions(
+    if (typeof permission.permission === 'function') {
+      permissionQuery = await permission.permission(
         session,
         baseQuery.query,
-        prisma,
         this.moduleRef,
       );
     } else {
-      permissionQuery = structuredClone(permission.permissions);
+      permissionQuery = structuredClone(permission.permission);
     }
 
     if (!permissionQuery) {
@@ -958,13 +957,7 @@ export class QueryService {
       }
 
       // Add permission query to base query
-      await this.applyPermissions(
-        'read',
-        session,
-        baseQuery,
-        permissionModel,
-        prisma,
-      );
+      await this.applyPermissions('read', session, baseQuery, permissionModel);
     }
 
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);

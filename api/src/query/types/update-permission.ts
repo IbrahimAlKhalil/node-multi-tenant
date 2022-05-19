@@ -1,36 +1,34 @@
 import { PermissionReference } from './permission-reference';
-import { MutationReference } from './mutation-reference';
 import { PermissionReturn } from './permission-return';
 import { PrismaClient } from '../../../prisma/client';
+import { PresetReference } from './preset-reference';
 import { FieldReference } from './field-reference';
 import { Session } from '../../types/session';
 import { ModelState } from './model-state';
 import { ModelNames } from './model-names';
 import { ModuleRef } from '@nestjs/core';
 
-type Action = 'update' | 'create';
-
 export interface PermissionDefinition<
   M,
   N extends ModelNames,
-  A extends Action,
   S extends ModelState = 'processed',
-  P = Partial<Parameters<PrismaClient[N][A]>[0]>,
+  P = Partial<Parameters<PrismaClient[N]['update']>[0]>,
+  T = Partial<Parameters<PrismaClient[N]['findMany']>[0]>,
   PermissionFn = (
     session: Session,
     query: P,
-    prisma: PrismaClient,
     ioc: ModuleRef,
   ) => PermissionReturn<P>,
-  Permission = S extends 'raw'
-    ? PermissionReference | PermissionFn | P
-    : PermissionFn,
+  ValidationFn = (
+    session: Session,
+    query: T,
+    ioc: ModuleRef,
+  ) => PermissionReturn<T>,
   PresetFields = Partial<M>,
   Preset =
     | ((
         session: Session,
         query: P,
-        prisma: PrismaClient,
         ioc: ModuleRef,
       ) => PresetFields | Promise<PresetFields>)
     | PresetFields,
@@ -38,14 +36,17 @@ export interface PermissionDefinition<
   fields: S extends 'raw'
     ? true | Set<keyof M> | FieldReference
     : true | Set<keyof M>;
-  permissions?: Permission;
-  presets?: S extends 'raw' ? Preset | MutationReference : Preset;
-  validation?: Permission;
+  permission?: S extends 'raw'
+    ? PermissionReference | PermissionFn | P
+    : PermissionFn;
+  preset?: S extends 'raw' ? Preset | PresetReference : Preset;
+  validation?: S extends 'raw'
+    ? PermissionReference | ValidationFn | T
+    : ValidationFn;
 }
 
-export type MutationPermission<
+export type UpdatePermission<
   M,
   N extends ModelNames,
-  A extends Action,
   S extends ModelState = 'processed',
-> = boolean | PermissionDefinition<M, N, A, S>;
+> = boolean | PermissionDefinition<M, N, S>;

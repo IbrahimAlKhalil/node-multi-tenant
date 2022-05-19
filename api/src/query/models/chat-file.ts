@@ -6,7 +6,7 @@ export default defineModel<ChatFile, 'chatFile'>({
     POWER: {
       read: {
         fields: true,
-        permissions(session) {
+        permission(session) {
           return {
             where: {
               Chat: {

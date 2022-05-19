@@ -1,12 +1,12 @@
-import { defineModel } from '../define-model.js';
 import { ChatMessage } from '../../../prisma/client';
+import { defineModel } from '../define-model.js';
 
 export default defineModel<ChatMessage, 'chatMessage'>({
   kinds: {
     POWER: {
       read: {
         fields: true,
-        permissions(session) {
+        permission(session) {
           return {
             where: {
               Conversation: {
@@ -22,8 +22,8 @@ export default defineModel<ChatMessage, 'chatMessage'>({
       },
       create: {
         fields: new Set(['id', 'conversationId', 'parentId', 'message']),
-        permissions: 'POWER.read',
-        presets(session) {
+        validation: 'POWER.read',
+        preset(session) {
           return {
             userId: session.uid,
           };
@@ -31,7 +31,7 @@ export default defineModel<ChatMessage, 'chatMessage'>({
       },
       update: {
         fields: new Set(),
-        presets() {
+        preset() {
           return {
             deletedAt: new Date(),
           };

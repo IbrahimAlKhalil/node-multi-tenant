@@ -6,7 +6,7 @@ export default defineModel<ConversationMember, 'conversationMember'>({
     POWER: {
       read: {
         fields: true,
-        permissions(session) {
+        permission(session) {
           return {
             where: {
               Conversation: {
