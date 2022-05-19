@@ -24,6 +24,7 @@
           ></textarea>
           <div>
             <primary-btn title="Submit" @handle-click.prevent="submitComment" />
+            <secondary-btn />
           </div>
         </form>
       </div>
@@ -34,10 +35,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
+import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
 
 export default defineComponent({
   name: 'reply-comment',
   components: {
+    SecondaryBtn,
     PrimaryBtn,
   },
   props: {
