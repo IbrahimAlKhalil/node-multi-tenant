@@ -6,6 +6,7 @@
     <post-description-section :post-description="test" />
     <post-tags-section :post="post" />
     <post-share-section />
+    <the-tab />
     <leave-comment-section />
     <comments-layout :comments="commentsData" />
   </layout-main>
@@ -19,6 +20,7 @@ import PostShareSection from '#components/post-page/share-section.vue';
 import PostIntroSection from '#components/post-page/intro-section.vue';
 import PostTagsSection from '#components/post-page/tags-section.vue';
 import PostHeroSection from '#components/post-page/hero-section.vue';
+import TheTab from '#components/ui/tab-component/tab.vue'
 import { usePageContext } from '#modules/use-page-context';
 import { defineComponent } from 'vue';
 import LayoutMain from '#layouts/main.vue';
@@ -37,6 +39,7 @@ export default defineComponent({
     PostTagsSection,
     PostHeroSection,
     LayoutMain,
+    TheTab,
   },
 
   data() {
