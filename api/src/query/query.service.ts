@@ -843,15 +843,6 @@ export class QueryService {
   ): Promise<any> {
     const queue: BaseQuery[] = [rootQuery];
 
-    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
-
-    if (!prisma) {
-      throw new WsException(
-        `Instance #${session.iid} is either not found or not active`,
-        'UNAUTHORIZED',
-      );
-    }
-
     for (let q = 0; q < queue.length; q++) {
       const baseQuery = queue[q];
 
@@ -958,6 +949,15 @@ export class QueryService {
 
       // Add permission query to base query
       await this.applyPermissions('read', session, baseQuery, permissionModel);
+    }
+
+    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
+
+    if (!prisma) {
+      throw new WsException(
+        `Instance #${session.iid} is either not found or not active`,
+        'UNAUTHORIZED',
+      );
     }
 
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
