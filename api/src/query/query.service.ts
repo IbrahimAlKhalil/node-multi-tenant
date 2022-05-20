@@ -13,6 +13,7 @@ import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
 import { BaseQuery } from './schema/base-query';
 import { Actions, Model } from './types/model';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { Session } from '../types/session';
 import { ModuleRef } from '@nestjs/core';
 import isEmpty from 'lodash/isEmpty.js';
@@ -654,7 +655,7 @@ export class QueryService {
         this.moduleRef,
       );
     } else {
-      permissionQuery = structuredClone(permission.permission);
+      permissionQuery = cloneDeep(permission.permission);
     }
 
     if (!permissionQuery) {
