@@ -57,7 +57,7 @@
 import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
 import DisLikeLine from '#icons/regular/thumbs-down.svg';
 import DisLikeSolid from '#icons/solid/thumbs-down.svg';
-import TooltipUI from '#components/ui/tooltip.vue';
+import TooltipUI from '#components/ui/badge.vue';
 import likeSolid from '#icons/solid/thumbs-up.svg';
 import LikeLine from '#icons/regular/thumbs-up.svg';
 import { useComments } from '#stores/comment.store';
