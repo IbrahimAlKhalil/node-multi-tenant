@@ -5,7 +5,7 @@
       height: size + 'px',
       background: `hsl(${Math.random() * (350 - 1) + 1}, 100%, 49%)`,
     }"
-    class="rounded-full border flex items-center justify-center text-light"
+    class="rounded-full border flex items-center justify-center text-light overflow-hidden"
   >
     <img v-show="!!url" :src="url" :alt="text" />
     <p v-show="!!!url" class="uppercase font-bold text-2xl">

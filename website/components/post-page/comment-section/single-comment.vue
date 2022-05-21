@@ -1,5 +1,9 @@
 <template>
-  <comment-author name="Ahmad" date="2022-05-21" />
+  <comment-author
+    name="Ahmad"
+    date="2022-05-21"
+    avatar="https://i.pravatar.cc/300?img=2"
+  />
   <p class="p-2 text-justify text-text">
     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos
     dolores esse illum inventore molestiae odio omnis quod, repellat repellendus

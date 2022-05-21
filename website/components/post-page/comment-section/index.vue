@@ -76,10 +76,11 @@ export default defineComponent({
       this.comment = '';
     },
     selectSuggestion(value: string) {
-      this.comment = value;
+      this.comment = this.comment + ' ' + value;
     },
     selectMentionPerson(value: string) {
-      this.comment = this.comment + value;
+      this.comment =
+        this.comment.substring(0, this.comment.length - 1) + ' ' + value;
     },
   },
   setup() {
