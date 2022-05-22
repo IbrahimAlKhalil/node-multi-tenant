@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import UnderlineHeading from '#components/ui/UnderlineHeading.vue';
+import UnderlineHeading from '#components/ui/underline-heading.vue';
 const title = ref('Important Links');
 const links = ref([
   {
