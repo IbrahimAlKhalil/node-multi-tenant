@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "es2022",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "declaration": true,
     "removeComments": true,
@@ -8,6 +8,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",

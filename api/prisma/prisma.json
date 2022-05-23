@@ -1,0 +1,6263 @@
+[
+  {
+    "name": "AccessToken",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "csrfToken",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "ipAddress",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "userAgent",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "expiresAt",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "createdAt",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "AccessTokenToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Activity",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "action",
+        "kind": "enum",
+        "isList": false,
+        "type": "activity_action"
+      },
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "recordId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "timestamp",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "ip",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "userAgent",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "ActivityToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Revisions",
+        "kind": "object",
+        "isList": true,
+        "type": "Revision",
+        "relationName": "ActivityToRevision",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Address",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "addressType",
+        "kind": "enum",
+        "isList": false,
+        "type": "address_type"
+      },
+      {
+        "name": "subDistrictId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "SubDistrict",
+        "kind": "object",
+        "isList": false,
+        "type": "SubDistrict",
+        "relationName": "AddressToSubDistrict",
+        "relationFromFields": [
+          "subDistrictId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "AddressToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "AddressI18n",
+        "relationName": "AddressToAddressI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "userId",
+        "addressType"
+      ]
+    ]
+  },
+  {
+    "name": "AddressI18n",
+    "fields": [
+      {
+        "name": "addressId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "addressLine",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Address",
+        "kind": "object",
+        "isList": false,
+        "type": "Address",
+        "relationName": "AddressToAddressI18n",
+        "relationFromFields": [
+          "addressId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "AddressI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "languageId",
+      "addressId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Admission",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "classId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "sessionId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "roll",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "closed",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "comment",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Class",
+        "kind": "object",
+        "isList": false,
+        "type": "Class",
+        "relationName": "AdmissionToClass",
+        "relationFromFields": [
+          "classId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ClassGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "ClassGroup",
+        "relationName": "AdmissionToClassGroup",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Session",
+        "kind": "object",
+        "isList": false,
+        "type": "Session",
+        "relationName": "AdmissionToSession",
+        "relationFromFields": [
+          "sessionId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "AdmissionToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "roll",
+        "classId",
+        "groupId"
+      ],
+      [
+        "userId",
+        "sessionId",
+        "classId",
+        "groupId"
+      ]
+    ]
+  },
+  {
+    "name": "Archive",
+    "fields": [
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "recordId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      }
+    ],
+    "primaryKey": [
+      "table",
+      "recordId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Area",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "AreaI18n",
+        "relationName": "AreaToAreaI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Buildings",
+        "kind": "object",
+        "isList": true,
+        "type": "Building",
+        "relationName": "AreaToBuilding",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "AreaI18n",
+    "fields": [
+      {
+        "name": "areaId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Area",
+        "kind": "object",
+        "isList": false,
+        "type": "Area",
+        "relationName": "AreaToAreaI18n",
+        "relationFromFields": [
+          "areaId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "AreaI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "areaId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Bench",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "benchGroupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "BenchGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "BenchGroup",
+        "relationName": "BenchToBenchGroup",
+        "relationFromFields": [
+          "benchGroupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Seats",
+        "kind": "object",
+        "isList": true,
+        "type": "Seat",
+        "relationName": "BenchToSeat",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "benchGroupId",
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "BenchGroup",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "hallId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "ExamHall",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamHall",
+        "relationName": "BenchGroupToExamHall",
+        "relationFromFields": [
+          "hallId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Benches",
+        "kind": "object",
+        "isList": true,
+        "type": "Bench",
+        "relationName": "BenchToBenchGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "hallId",
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "Book",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "classId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "categoryId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Class",
+        "kind": "object",
+        "isList": false,
+        "type": "Class",
+        "relationName": "BookToClass",
+        "relationFromFields": [
+          "classId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "BookGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "BookGroup",
+        "relationName": "BookToBookGroup",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BookI18n",
+        "relationName": "BookToBookI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBooks",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBook",
+        "relationName": "BookToExamBook",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRawResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRawResult",
+        "relationName": "BookToExamRawResult",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResult",
+        "relationName": "BookToExamResult",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGroups",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGroup",
+        "relationName": "BookToExamBookGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "BookCategory",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BookCategoryI18n",
+        "relationName": "BookCategoryToBookCategoryI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "BookCategoryI18n",
+    "fields": [
+      {
+        "name": "categoryId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "BookCategory",
+        "kind": "object",
+        "isList": false,
+        "type": "BookCategory",
+        "relationName": "BookCategoryToBookCategoryI18n",
+        "relationFromFields": [
+          "categoryId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "BookCategoryI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "categoryId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "BookGroup",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Book",
+        "kind": "object",
+        "isList": true,
+        "type": "Book",
+        "relationName": "BookToBookGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BookGroupI18n",
+        "relationName": "BookGroupToBookGroupI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResult",
+        "relationName": "BookGroupToExamResult",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGroupGrade",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGroupGrade",
+        "relationName": "BookGroupToExamBookGroupGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "BookGroupI18n",
+    "fields": [
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "BookGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "BookGroup",
+        "relationName": "BookGroupToBookGroupI18n",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "BookGroupI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "groupId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "BookI18n",
+    "fields": [
+      {
+        "name": "bookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Book",
+        "kind": "object",
+        "isList": false,
+        "type": "Book",
+        "relationName": "BookToBookI18n",
+        "relationFromFields": [
+          "bookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "BookI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "languageId",
+      "bookId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Building",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "areaId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Area",
+        "kind": "object",
+        "isList": false,
+        "type": "Area",
+        "relationName": "AreaToBuilding",
+        "relationFromFields": [
+          "areaId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Floors",
+        "kind": "object",
+        "isList": true,
+        "type": "Floor",
+        "relationName": "BuildingToFloor",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BuildingI18n",
+        "relationName": "BuildingToBuildingI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "areaId",
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "BuildingI18n",
+    "fields": [
+      {
+        "name": "buildingId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Building",
+        "kind": "object",
+        "isList": false,
+        "type": "Building",
+        "relationName": "BuildingToBuildingI18n",
+        "relationFromFields": [
+          "buildingId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "BuildingI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "buildingId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Class",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Admissions",
+        "kind": "object",
+        "isList": true,
+        "type": "Admission",
+        "relationName": "AdmissionToClass",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Books",
+        "kind": "object",
+        "isList": true,
+        "type": "Book",
+        "relationName": "BookToClass",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ClassGroups",
+        "kind": "object",
+        "isList": true,
+        "type": "ClassGroup",
+        "relationName": "ClassToClassGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ClassI18n",
+        "relationName": "ClassToClassI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Exams",
+        "kind": "object",
+        "isList": true,
+        "type": "Exam",
+        "relationName": "ClassToExam",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ClassGroup",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "classId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Class",
+        "kind": "object",
+        "isList": false,
+        "type": "Class",
+        "relationName": "ClassToClassGroup",
+        "relationFromFields": [
+          "classId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Admissions",
+        "kind": "object",
+        "isList": true,
+        "type": "Admission",
+        "relationName": "AdmissionToClassGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ClassGroupI18n",
+        "relationName": "ClassGroupToClassGroupI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamClassGroups",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamClassGroup",
+        "relationName": "ClassGroupToExamClassGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGroup",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGroup",
+        "relationName": "ClassGroupToExamBookGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ClassGroupI18n",
+    "fields": [
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "ClassGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "ClassGroup",
+        "relationName": "ClassGroupToClassGroupI18n",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "ClassGroupI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "groupId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ClassI18n",
+    "fields": [
+      {
+        "name": "classId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Class",
+        "kind": "object",
+        "isList": false,
+        "type": "Class",
+        "relationName": "ClassToClassI18n",
+        "relationFromFields": [
+          "classId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "ClassI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "classId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Country",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "CountryI18n",
+        "relationName": "CountryToCountryI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "States",
+        "kind": "object",
+        "isList": true,
+        "type": "State",
+        "relationName": "CountryToState",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "CountryI18n",
+    "fields": [
+      {
+        "name": "countryId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Country",
+        "kind": "object",
+        "isList": false,
+        "type": "Country",
+        "relationName": "CountryToCountryI18n",
+        "relationFromFields": [
+          "countryId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "CountryI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "countryId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Designation",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "DesignationI18n",
+        "relationName": "DesignationToDesignationI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Staffs",
+        "kind": "object",
+        "isList": true,
+        "type": "Staff",
+        "relationName": "DesignationToStaff",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "DesignationI18n",
+    "fields": [
+      {
+        "name": "designationId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Designation",
+        "kind": "object",
+        "isList": false,
+        "type": "Designation",
+        "relationName": "DesignationToDesignationI18n",
+        "relationFromFields": [
+          "designationId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "DesignationI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "designationId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "District",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "divisionId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Division",
+        "kind": "object",
+        "isList": false,
+        "type": "Division",
+        "relationName": "DistrictToDivision",
+        "relationFromFields": [
+          "divisionId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "DistrictI18n",
+        "relationName": "DistrictToDistrictI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "SubDistricts",
+        "kind": "object",
+        "isList": true,
+        "type": "SubDistrict",
+        "relationName": "DistrictToSubDistrict",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "DistrictI18n",
+    "fields": [
+      {
+        "name": "districtId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "District",
+        "kind": "object",
+        "isList": false,
+        "type": "District",
+        "relationName": "DistrictToDistrictI18n",
+        "relationFromFields": [
+          "districtId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "DistrictI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "districtId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Division",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "stateId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "State",
+        "kind": "object",
+        "isList": false,
+        "type": "State",
+        "relationName": "DivisionToState",
+        "relationFromFields": [
+          "stateId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Districts",
+        "kind": "object",
+        "isList": true,
+        "type": "District",
+        "relationName": "DistrictToDivision",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "DivisionI18n",
+        "relationName": "DivisionToDivisionI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "DivisionI18n",
+    "fields": [
+      {
+        "name": "divisionId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Division",
+        "kind": "object",
+        "isList": false,
+        "type": "Division",
+        "relationName": "DivisionToDivisionI18n",
+        "relationFromFields": [
+          "divisionId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "DivisionI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "divisionId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Exam",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "presetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "sessionId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "classId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "published",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "Class",
+        "kind": "object",
+        "isList": false,
+        "type": "Class",
+        "relationName": "ClassToExam",
+        "relationFromFields": [
+          "classId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Session",
+        "kind": "object",
+        "isList": false,
+        "type": "Session",
+        "relationName": "ExamToSession",
+        "relationFromFields": [
+          "sessionId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamRawResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRawResult",
+        "relationName": "ExamToExamRawResult",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamResultGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResultGrade",
+        "relationName": "ExamToExamResultGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRoutines",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutine",
+        "relationName": "ExamToExamRoutine",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRoutineSeats",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutineSeat",
+        "relationName": "ExamToExamRoutineSeat",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamBook",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "presetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "bookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "optional",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "take",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Float"
+      },
+      {
+        "name": "Book",
+        "kind": "object",
+        "isList": false,
+        "type": "Book",
+        "relationName": "BookToExamBook",
+        "relationFromFields": [
+          "bookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamPreset",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamPreset",
+        "relationName": "ExamBookToExamPreset",
+        "relationFromFields": [
+          "presetId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamBookMethods",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookMethod",
+        "relationName": "ExamBookToExamBookMethod",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRoutines",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutine",
+        "relationName": "ExamBookToExamRoutine",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGrade",
+        "relationName": "ExamBookToExamBookGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "presetId",
+        "bookId"
+      ]
+    ]
+  },
+  {
+    "name": "ExamBookGrade",
+    "fields": [
+      {
+        "name": "examBookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "gradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mark",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Float"
+      },
+      {
+        "name": "ExamBook",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamBook",
+        "relationName": "ExamBookToExamBookGrade",
+        "relationFromFields": [
+          "examBookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "ExamBookGradeToGrade",
+        "relationFromFields": [
+          "gradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "examBookId",
+      "gradeId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamBookGroup",
+    "fields": [
+      {
+        "name": "presetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "bookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "cascadeFail",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "Preset",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamPreset",
+        "relationName": "ExamBookGroupToExamPreset",
+        "relationFromFields": [
+          "presetId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Book",
+        "kind": "object",
+        "isList": false,
+        "type": "Book",
+        "relationName": "BookToExamBookGroup",
+        "relationFromFields": [
+          "bookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Group",
+        "kind": "object",
+        "isList": false,
+        "type": "ClassGroup",
+        "relationName": "ClassGroupToExamBookGroup",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "presetId",
+      "bookId",
+      "groupId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamBookGroupGrade",
+    "fields": [
+      {
+        "name": "bookGroupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "gradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mark",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Float"
+      },
+      {
+        "name": "BookGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "BookGroup",
+        "relationName": "BookGroupToExamBookGroupGrade",
+        "relationFromFields": [
+          "bookGroupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "ExamBookGroupGradeToGrade",
+        "relationFromFields": [
+          "gradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "bookGroupId",
+      "gradeId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamBookMethod",
+    "fields": [
+      {
+        "name": "examBookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "methodId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "fullMark",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Float"
+      },
+      {
+        "name": "failMark",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Float"
+      },
+      {
+        "name": "ExamBook",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamBook",
+        "relationName": "ExamBookToExamBookMethod",
+        "relationFromFields": [
+          "examBookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamMethod",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamMethod",
+        "relationName": "ExamBookMethodToExamMethod",
+        "relationFromFields": [
+          "methodId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "examBookId",
+      "methodId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamClassGroup",
+    "fields": [
+      {
+        "name": "presetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "ClassGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "ClassGroup",
+        "relationName": "ClassGroupToExamClassGroup",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamPreset",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamPreset",
+        "relationName": "ExamClassGroupToExamPreset",
+        "relationFromFields": [
+          "presetId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "presetId",
+      "groupId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamGrade",
+    "fields": [
+      {
+        "name": "presetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "gradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "ExamGradeToGrade",
+        "relationFromFields": [
+          "gradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamPreset",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamPreset",
+        "relationName": "ExamGradeToExamPreset",
+        "relationFromFields": [
+          "presetId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "presetId",
+      "gradeId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamHall",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "columns",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "benches",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "seatsperbench",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Room",
+        "kind": "object",
+        "isList": false,
+        "type": "Room",
+        "relationName": "ExamHallToRoom",
+        "relationFromFields": [
+          "id"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "BenchGroups",
+        "kind": "object",
+        "isList": true,
+        "type": "BenchGroup",
+        "relationName": "BenchGroupToExamHall",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamMethod",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "ExamBookMethods",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookMethod",
+        "relationName": "ExamBookMethodToExamMethod",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamMethodI18ns",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamMethodI18n",
+        "relationName": "ExamMethodToExamMethodI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRawResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRawResult",
+        "relationName": "ExamMethodToExamRawResult",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRoutines",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutine",
+        "relationName": "ExamMethodToExamRoutine",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamMethodI18n",
+    "fields": [
+      {
+        "name": "methodId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "description",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "ExamMethodI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamMethod",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamMethod",
+        "relationName": "ExamMethodToExamMethodI18n",
+        "relationFromFields": [
+          "methodId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "methodId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamPreset",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "calcMethod",
+        "kind": "enum",
+        "isList": false,
+        "type": "exam_calc_method"
+      },
+      {
+        "name": "markFormula",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "gradeFormula",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "customGroups",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "averageCondition",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "failGradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "published",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "ExamPresetToGrade",
+        "relationFromFields": [
+          "failGradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamBooks",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBook",
+        "relationName": "ExamBookToExamPreset",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamClassGroups",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamClassGroup",
+        "relationName": "ExamClassGroupToExamPreset",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamGrade",
+        "relationName": "ExamGradeToExamPreset",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamPresetI18n",
+        "relationName": "ExamPresetToExamPresetI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGroups",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGroup",
+        "relationName": "ExamBookGroupToExamPreset",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamPresetI18n",
+    "fields": [
+      {
+        "name": "presetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "ExamPresetI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamPreset",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamPreset",
+        "relationName": "ExamPresetToExamPresetI18n",
+        "relationFromFields": [
+          "presetId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "presetId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamRawResult",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "examId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "bookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "methodId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mark",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Decimal"
+      },
+      {
+        "name": "Book",
+        "kind": "object",
+        "isList": false,
+        "type": "Book",
+        "relationName": "BookToExamRawResult",
+        "relationFromFields": [
+          "bookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Exam",
+        "kind": "object",
+        "isList": false,
+        "type": "Exam",
+        "relationName": "ExamToExamRawResult",
+        "relationFromFields": [
+          "examId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamMethod",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamMethod",
+        "relationName": "ExamMethodToExamRawResult",
+        "relationFromFields": [
+          "methodId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "ExamRawResultToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "userId",
+        "examId",
+        "bookId",
+        "methodId"
+      ]
+    ]
+  },
+  {
+    "name": "ExamRelate",
+    "fields": [
+      {
+        "name": "mainPresetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "relatedPresetId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      }
+    ],
+    "primaryKey": [
+      "mainPresetId",
+      "relatedPresetId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ExamResult",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "bookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "resultGradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "gradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mark",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Decimal"
+      },
+      {
+        "name": "Book",
+        "kind": "object",
+        "isList": false,
+        "type": "Book",
+        "relationName": "BookToExamResult",
+        "relationFromFields": [
+          "bookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "ExamResultToGrade",
+        "relationFromFields": [
+          "gradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "BookGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "BookGroup",
+        "relationName": "BookGroupToExamResult",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamResultGrade",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamResultGrade",
+        "relationName": "ExamResultToExamResultGrade",
+        "relationFromFields": [
+          "resultGradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "bookId",
+        "resultGradeId"
+      ],
+      [
+        "groupId",
+        "resultGradeId"
+      ]
+    ]
+  },
+  {
+    "name": "ExamResultGrade",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "examId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "gradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "point",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Decimal"
+      },
+      {
+        "name": "position",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Exam",
+        "kind": "object",
+        "isList": false,
+        "type": "Exam",
+        "relationName": "ExamToExamResultGrade",
+        "relationFromFields": [
+          "examId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "ExamResultGradeToGrade",
+        "relationFromFields": [
+          "gradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "ExamResultGradeToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResult",
+        "relationName": "ExamResultToExamResultGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "examId",
+        "userId"
+      ]
+    ]
+  },
+  {
+    "name": "ExamRoutine",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "examId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "bookId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "methodId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "start",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "end",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "ExamBook",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamBook",
+        "relationName": "ExamBookToExamRoutine",
+        "relationFromFields": [
+          "bookId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Exam",
+        "kind": "object",
+        "isList": false,
+        "type": "Exam",
+        "relationName": "ExamToExamRoutine",
+        "relationFromFields": [
+          "examId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamMethod",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamMethod",
+        "relationName": "ExamMethodToExamRoutine",
+        "relationFromFields": [
+          "methodId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamRoutineSeats",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutineSeat",
+        "relationName": "ExamRoutineToExamRoutineSeat",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "examId",
+        "bookId",
+        "methodId"
+      ]
+    ]
+  },
+  {
+    "name": "ExamRoutineSeat",
+    "fields": [
+      {
+        "name": "examId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "routineId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "seatId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Exam",
+        "kind": "object",
+        "isList": false,
+        "type": "Exam",
+        "relationName": "ExamToExamRoutineSeat",
+        "relationFromFields": [
+          "examId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamRoutine",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamRoutine",
+        "relationName": "ExamRoutineToExamRoutineSeat",
+        "relationFromFields": [
+          "routineId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Seat",
+        "kind": "object",
+        "isList": false,
+        "type": "Seat",
+        "relationName": "ExamRoutineSeatToSeat",
+        "relationFromFields": [
+          "seatId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "ExamRoutineSeatToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "examId",
+      "routineId",
+      "userId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "File",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "folderId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mimeTypeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "size",
+        "kind": "scalar",
+        "isList": false,
+        "type": "BigInt"
+      },
+      {
+        "name": "Folder",
+        "kind": "object",
+        "isList": false,
+        "type": "Folder",
+        "relationName": "FileToFolder",
+        "relationFromFields": [
+          "folderId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "MimeType",
+        "kind": "object",
+        "isList": false,
+        "type": "MimeType",
+        "relationName": "FileToMimeType",
+        "relationFromFields": [
+          "mimeTypeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ChatFiles",
+        "kind": "object",
+        "isList": true,
+        "type": "ChatFile",
+        "relationName": "ChatFileToFile",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "InstituteI18n",
+        "relationName": "FileToInstituteI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Notifications",
+        "kind": "object",
+        "isList": true,
+        "type": "Notification",
+        "relationName": "FileToNotification",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "NotificationBases",
+        "kind": "object",
+        "isList": true,
+        "type": "NotificationBase",
+        "relationName": "FileToNotificationBase",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Users",
+        "kind": "object",
+        "isList": true,
+        "type": "User",
+        "relationName": "FileToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Floor",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "buildingId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Building",
+        "kind": "object",
+        "isList": false,
+        "type": "Building",
+        "relationName": "BuildingToFloor",
+        "relationFromFields": [
+          "buildingId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "FloorI18n",
+        "relationName": "FloorToFloorI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Rooms",
+        "kind": "object",
+        "isList": true,
+        "type": "Room",
+        "relationName": "FloorToRoom",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "buildingId",
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "FloorI18n",
+    "fields": [
+      {
+        "name": "floorId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Floor",
+        "kind": "object",
+        "isList": false,
+        "type": "Floor",
+        "relationName": "FloorToFloorI18n",
+        "relationFromFields": [
+          "floorId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "FloorI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "floorId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Folder",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "parentId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Parent",
+        "kind": "object",
+        "isList": false,
+        "type": "Folder",
+        "relationName": "FolderToFolder_parentId",
+        "relationFromFields": [
+          "parentId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Files",
+        "kind": "object",
+        "isList": true,
+        "type": "File",
+        "relationName": "FileToFolder",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Children",
+        "kind": "object",
+        "isList": true,
+        "type": "Folder",
+        "relationName": "FolderToFolder_parentId",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Grade",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "point",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Float"
+      },
+      {
+        "name": "ExamGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamGrade",
+        "relationName": "ExamGradeToGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamPresets",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamPreset",
+        "relationName": "ExamPresetToGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResult",
+        "relationName": "ExamResultToGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamResultGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResultGrade",
+        "relationName": "ExamResultGradeToGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "GradeI18n",
+        "relationName": "GradeToGradeI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGrade",
+        "relationName": "ExamBookGradeToGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamBookGroupGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamBookGroupGrade",
+        "relationName": "ExamBookGroupGradeToGrade",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "GradeI18n",
+    "fields": [
+      {
+        "name": "gradeId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "comment",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Grade",
+        "kind": "object",
+        "isList": false,
+        "type": "Grade",
+        "relationName": "GradeToGradeI18n",
+        "relationFromFields": [
+          "gradeId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "GradeI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "gradeId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "GroupI18n",
+    "fields": [
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "StaffGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "StaffGroup",
+        "relationName": "GroupI18nToStaffGroup",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "GroupI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "groupId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "GuardianRole",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "GuardianRoleI18n",
+        "relationName": "GuardianRoleToGuardianRoleI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "GuardianRoleUsers",
+        "kind": "object",
+        "isList": true,
+        "type": "GuardianRoleUser",
+        "relationName": "GuardianRoleToGuardianRoleUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "GuardianRoleI18n",
+    "fields": [
+      {
+        "name": "roleId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "GuardianRoleI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "GuardianRole",
+        "kind": "object",
+        "isList": false,
+        "type": "GuardianRole",
+        "relationName": "GuardianRoleToGuardianRoleI18n",
+        "relationFromFields": [
+          "roleId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "roleId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "GuardianRoleUser",
+    "fields": [
+      {
+        "name": "guardianUserId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "studentUserId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "roleId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "GuardianUser",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "GuardianRoleUser_guardianUserIdToUser",
+        "relationFromFields": [
+          "guardianUserId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "StudentUser",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "GuardianRoleUser_studentUserIdToUser",
+        "relationFromFields": [
+          "studentUserId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "GuardianRole",
+        "kind": "object",
+        "isList": false,
+        "type": "GuardianRole",
+        "relationName": "GuardianRoleToGuardianRoleUser",
+        "relationFromFields": [
+          "roleId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "guardianUserId",
+      "studentUserId",
+      "roleId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Institute",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mobile",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "email",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "InstituteI18n",
+        "relationName": "InstituteToInstituteI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "InstituteI18n",
+    "fields": [
+      {
+        "name": "instituteId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "logo",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "address",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "slogan",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Institute",
+        "kind": "object",
+        "isList": false,
+        "type": "Institute",
+        "relationName": "InstituteToInstituteI18n",
+        "relationFromFields": [
+          "instituteId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "InstituteI18nToLanguage",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "File",
+        "kind": "object",
+        "isList": false,
+        "type": "File",
+        "relationName": "FileToInstituteI18n",
+        "relationFromFields": [
+          "logo"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "instituteId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Language",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "AddressI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "AddressI18n",
+        "relationName": "AddressI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "AreaI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "AreaI18n",
+        "relationName": "AreaI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "BookCategoryI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BookCategoryI18n",
+        "relationName": "BookCategoryI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "BookGroupI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BookGroupI18n",
+        "relationName": "BookGroupI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "BookI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BookI18n",
+        "relationName": "BookI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ClassGroupI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ClassGroupI18n",
+        "relationName": "ClassGroupI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ClassI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ClassI18n",
+        "relationName": "ClassI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "CountryI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "CountryI18n",
+        "relationName": "CountryI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "DesignationI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "DesignationI18n",
+        "relationName": "DesignationI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "DistrictI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "DistrictI18n",
+        "relationName": "DistrictI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "DivisionI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "DivisionI18n",
+        "relationName": "DivisionI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamMethodI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamMethodI18n",
+        "relationName": "ExamMethodI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamPresetI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamPresetI18n",
+        "relationName": "ExamPresetI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "FloorI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "FloorI18n",
+        "relationName": "FloorI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "GradeI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "GradeI18n",
+        "relationName": "GradeI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "GroupI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "GroupI18n",
+        "relationName": "GroupI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "GuardianRoleI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "GuardianRoleI18n",
+        "relationName": "GuardianRoleI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "InstituteI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "InstituteI18n",
+        "relationName": "InstituteI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "NotificationContent",
+        "kind": "object",
+        "isList": true,
+        "type": "NotificationContent",
+        "relationName": "LanguageToNotificationContent",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "RoleI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "RoleI18n",
+        "relationName": "LanguageToRoleI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "RoomI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "RoomI18n",
+        "relationName": "LanguageToRoomI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "SessionI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "SessionI18n",
+        "relationName": "LanguageToSessionI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Setting",
+        "kind": "object",
+        "isList": true,
+        "type": "Setting",
+        "relationName": "LanguageToSetting",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "SmsTemplateI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "SmsTemplateI18n",
+        "relationName": "LanguageToSmsTemplateI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "StaffI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "StaffI18n",
+        "relationName": "LanguageToStaffI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "StateI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "StateI18n",
+        "relationName": "LanguageToStateI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "SubDistrictI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "SubDistrictI18n",
+        "relationName": "LanguageToSubDistrictI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "UserI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "UserI18n",
+        "relationName": "LanguageToUserI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "BuildingI18n",
+        "kind": "object",
+        "isList": true,
+        "type": "BuildingI18n",
+        "relationName": "BuildingI18nToLanguage",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Lock",
+    "fields": [
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "column",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "recordId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      }
+    ],
+    "primaryKey": [
+      "table",
+      "column",
+      "recordId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "MimeType",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "extension",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "File",
+        "kind": "object",
+        "isList": true,
+        "type": "File",
+        "relationName": "FileToMimeType",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Notification",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "baseId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "picture",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "vars",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "read",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "NotificationBase",
+        "kind": "object",
+        "isList": false,
+        "type": "NotificationBase",
+        "relationName": "NotificationToNotificationBase",
+        "relationFromFields": [
+          "baseId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "File",
+        "kind": "object",
+        "isList": false,
+        "type": "File",
+        "relationName": "FileToNotification",
+        "relationFromFields": [
+          "picture"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "NotificationToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "NotificationBase",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "picture",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "link",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "linkType",
+        "kind": "enum",
+        "isList": false,
+        "type": "notification_link_type"
+      },
+      {
+        "name": "File",
+        "kind": "object",
+        "isList": false,
+        "type": "File",
+        "relationName": "FileToNotificationBase",
+        "relationFromFields": [
+          "picture"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Notifications",
+        "kind": "object",
+        "isList": true,
+        "type": "Notification",
+        "relationName": "NotificationToNotificationBase",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "NotificationContents",
+        "kind": "object",
+        "isList": true,
+        "type": "NotificationContent",
+        "relationName": "NotificationBaseToNotificationContent",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "NotificationContent",
+    "fields": [
+      {
+        "name": "baseId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "description",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "NotificationBase",
+        "kind": "object",
+        "isList": false,
+        "type": "NotificationBase",
+        "relationName": "NotificationBaseToNotificationContent",
+        "relationFromFields": [
+          "baseId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToNotificationContent",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "baseId",
+      "languageId"
+    ],
+    "uniqueFields": [
+      [
+        "baseId",
+        "languageId"
+      ]
+    ]
+  },
+  {
+    "name": "Preset",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "value",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "PresetToUser",
+        "relationFromFields": [
+          "id"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id",
+      "table"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Revision",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "activityId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "recordId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "data",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "delta",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Json"
+      },
+      {
+        "name": "Activity",
+        "kind": "object",
+        "isList": false,
+        "type": "Activity",
+        "relationName": "ActivityToRevision",
+        "relationFromFields": [
+          "activityId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Room",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "floorId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Floor",
+        "kind": "object",
+        "isList": false,
+        "type": "Floor",
+        "relationName": "FloorToRoom",
+        "relationFromFields": [
+          "floorId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamHall",
+        "kind": "object",
+        "isList": false,
+        "type": "ExamHall",
+        "relationName": "ExamHallToRoom",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "RoomI18n",
+        "relationName": "RoomToRoomI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "floorId",
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "RoomI18n",
+    "fields": [
+      {
+        "name": "roomId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToRoomI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Room",
+        "kind": "object",
+        "isList": false,
+        "type": "Room",
+        "relationName": "RoomToRoomI18n",
+        "relationFromFields": [
+          "roomId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "roomId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Seat",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "benchId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Bench",
+        "kind": "object",
+        "isList": false,
+        "type": "Bench",
+        "relationName": "BenchToSeat",
+        "relationFromFields": [
+          "benchId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "ExamRoutineSeats",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutineSeat",
+        "relationName": "ExamRoutineSeatToSeat",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "benchId",
+        "order"
+      ]
+    ]
+  },
+  {
+    "name": "Session",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "active",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "Admissions",
+        "kind": "object",
+        "isList": true,
+        "type": "Admission",
+        "relationName": "AdmissionToSession",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Exams",
+        "kind": "object",
+        "isList": true,
+        "type": "Exam",
+        "relationName": "ExamToSession",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "SessionI18n",
+        "relationName": "SessionToSessionI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "SessionI18n",
+    "fields": [
+      {
+        "name": "sessionId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToSessionI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Session",
+        "kind": "object",
+        "isList": false,
+        "type": "Session",
+        "relationName": "SessionToSessionI18n",
+        "relationFromFields": [
+          "sessionId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "sessionId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Setting",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "smsApiToken",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "smsSenderId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToSetting",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Sms",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "mobile",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "text",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "status",
+        "kind": "enum",
+        "isList": false,
+        "type": "sms_status"
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "SmsTemplate",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "SmsTemplateI18n",
+        "relationName": "SmsTemplateToSmsTemplateI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "SmsTemplateI18n",
+    "fields": [
+      {
+        "name": "templateId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "text",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToSmsTemplateI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "SmsTemplate",
+        "kind": "object",
+        "isList": false,
+        "type": "SmsTemplate",
+        "relationName": "SmsTemplateToSmsTemplateI18n",
+        "relationFromFields": [
+          "templateId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "templateId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Staff",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "designationId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "joiningDate",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "order",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Designation",
+        "kind": "object",
+        "isList": false,
+        "type": "Designation",
+        "relationName": "DesignationToStaff",
+        "relationFromFields": [
+          "designationId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "StaffToUser",
+        "relationFromFields": [
+          "id"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "StaffI18n",
+        "relationName": "StaffToStaffI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "StaffGroup",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "GroupI18n",
+        "relationName": "GroupI18nToStaffGroup",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "StaffGroupPivots",
+        "kind": "object",
+        "isList": true,
+        "type": "StaffGroupPivot",
+        "relationName": "StaffGroupToStaffGroupPivot",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "StaffGroupPivot",
+    "fields": [
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "groupId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "StaffGroup",
+        "kind": "object",
+        "isList": false,
+        "type": "StaffGroup",
+        "relationName": "StaffGroupToStaffGroupPivot",
+        "relationFromFields": [
+          "groupId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "StaffGroupPivotToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "userId",
+      "groupId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "StaffI18n",
+    "fields": [
+      {
+        "name": "staffId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "description",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToStaffI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Staff",
+        "kind": "object",
+        "isList": false,
+        "type": "Staff",
+        "relationName": "StaffToStaffI18n",
+        "relationFromFields": [
+          "staffId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "staffId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "State",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "countryId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Country",
+        "kind": "object",
+        "isList": false,
+        "type": "Country",
+        "relationName": "CountryToState",
+        "relationFromFields": [
+          "countryId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Divisions",
+        "kind": "object",
+        "isList": true,
+        "type": "Division",
+        "relationName": "DivisionToState",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "StateI18n",
+        "relationName": "StateToStateI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "StateI18n",
+    "fields": [
+      {
+        "name": "stateId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToStateI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "State",
+        "kind": "object",
+        "isList": false,
+        "type": "State",
+        "relationName": "StateToStateI18n",
+        "relationFromFields": [
+          "stateId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "stateId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "StudentGuardian",
+    "fields": [
+      {
+        "name": "guardianUserId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "studentUserId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "relation",
+        "kind": "enum",
+        "isList": false,
+        "type": "guardian_relation_type"
+      },
+      {
+        "name": "GuardianUser",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "StudentGuardian_guardianUserIdToUser",
+        "relationFromFields": [
+          "guardianUserId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "StudentUser",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "StudentGuardian_studentUserIdToUser",
+        "relationFromFields": [
+          "studentUserId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "guardianUserId",
+      "studentUserId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "SubDistrict",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "districtId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "District",
+        "kind": "object",
+        "isList": false,
+        "type": "District",
+        "relationName": "DistrictToSubDistrict",
+        "relationFromFields": [
+          "districtId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Addresss",
+        "kind": "object",
+        "isList": true,
+        "type": "Address",
+        "relationName": "AddressToSubDistrict",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "SubDistrictI18n",
+        "relationName": "SubDistrictToSubDistrictI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "SubDistrictI18n",
+    "fields": [
+      {
+        "name": "subDistrictId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToSubDistrictI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "SubDistrict",
+        "kind": "object",
+        "isList": false,
+        "type": "SubDistrict",
+        "relationName": "SubDistrictToSubDistrictI18n",
+        "relationFromFields": [
+          "subDistrictId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "subDistrictId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Trash",
+    "fields": [
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "recordId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      }
+    ],
+    "primaryKey": [
+      "table",
+      "recordId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "User",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "type",
+        "kind": "enum",
+        "isList": false,
+        "type": "user_kind"
+      },
+      {
+        "name": "mobile",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "email",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "picture",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "dateOfBirth",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "nid",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "gender",
+        "kind": "enum",
+        "isList": false,
+        "type": "gender"
+      },
+      {
+        "name": "bloodType",
+        "kind": "enum",
+        "isList": false,
+        "type": "blood_type"
+      },
+      {
+        "name": "username",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "password",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "disabled",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "File",
+        "kind": "object",
+        "isList": false,
+        "type": "File",
+        "relationName": "FileToUser",
+        "relationFromFields": [
+          "picture"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "AccessTokens",
+        "kind": "object",
+        "isList": true,
+        "type": "AccessToken",
+        "relationName": "AccessTokenToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Activitys",
+        "kind": "object",
+        "isList": true,
+        "type": "Activity",
+        "relationName": "ActivityToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Addresss",
+        "kind": "object",
+        "isList": true,
+        "type": "Address",
+        "relationName": "AddressToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Admissions",
+        "kind": "object",
+        "isList": true,
+        "type": "Admission",
+        "relationName": "AdmissionToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Chats",
+        "kind": "object",
+        "isList": true,
+        "type": "ChatMessage",
+        "relationName": "ChatMessageToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ConversationMembers",
+        "kind": "object",
+        "isList": true,
+        "type": "ConversationMember",
+        "relationName": "ConversationMemberToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRawResults",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRawResult",
+        "relationName": "ExamRawResultToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamResultGrades",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamResultGrade",
+        "relationName": "ExamResultGradeToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ExamRoutineSeats",
+        "kind": "object",
+        "isList": true,
+        "type": "ExamRoutineSeat",
+        "relationName": "ExamRoutineSeatToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "GuardianRoleUserByGuardians",
+        "kind": "object",
+        "isList": true,
+        "type": "GuardianRoleUser",
+        "relationName": "GuardianRoleUser_guardianUserIdToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "GuardianRoleUserByStudents",
+        "kind": "object",
+        "isList": true,
+        "type": "GuardianRoleUser",
+        "relationName": "GuardianRoleUser_studentUserIdToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Notifications",
+        "kind": "object",
+        "isList": true,
+        "type": "Notification",
+        "relationName": "NotificationToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Presets",
+        "kind": "object",
+        "isList": true,
+        "type": "Preset",
+        "relationName": "PresetToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "RoleUsers",
+        "kind": "object",
+        "isList": true,
+        "type": "RoleUser",
+        "relationName": "RoleUserToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "Staff",
+        "kind": "object",
+        "isList": false,
+        "type": "Staff",
+        "relationName": "StaffToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "StaffGroupPivots",
+        "kind": "object",
+        "isList": true,
+        "type": "StaffGroupPivot",
+        "relationName": "StaffGroupPivotToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "StudentGuardianByGuardians",
+        "kind": "object",
+        "isList": true,
+        "type": "StudentGuardian",
+        "relationName": "StudentGuardian_guardianUserIdToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "StudentGuardianByStudents",
+        "kind": "object",
+        "isList": true,
+        "type": "StudentGuardian",
+        "relationName": "StudentGuardian_studentUserIdToUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "UserI18n",
+        "relationName": "UserToUserI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": [
+      [
+        "mobile"
+      ],
+      [
+        "email"
+      ],
+      [
+        "username"
+      ]
+    ]
+  },
+  {
+    "name": "UserI18n",
+    "fields": [
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "father",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "mother",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToUserI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "UserToUserI18n",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "userId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ChatMessage",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "conversationId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "parentId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "message",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "createdAt",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "deletedAt",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "Conversation",
+        "kind": "object",
+        "isList": false,
+        "type": "Conversation",
+        "relationName": "ChatMessageToConversation",
+        "relationFromFields": [
+          "conversationId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Parent",
+        "kind": "object",
+        "isList": false,
+        "type": "ChatMessage",
+        "relationName": "ChatMessageToChatMessage_parentId",
+        "relationFromFields": [
+          "parentId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "ChatMessageToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Replies",
+        "kind": "object",
+        "isList": true,
+        "type": "ChatMessage",
+        "relationName": "ChatMessageToChatMessage_parentId",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ChatFiles",
+        "kind": "object",
+        "isList": true,
+        "type": "ChatFile",
+        "relationName": "ChatFileToChatMessage",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ChatFile",
+    "fields": [
+      {
+        "name": "chatId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "fileId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Chat",
+        "kind": "object",
+        "isList": false,
+        "type": "ChatMessage",
+        "relationName": "ChatFileToChatMessage",
+        "relationFromFields": [
+          "chatId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "File",
+        "kind": "object",
+        "isList": false,
+        "type": "File",
+        "relationName": "ChatFileToFile",
+        "relationFromFields": [
+          "fileId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "chatId",
+      "fileId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Conversation",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "description",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "inviteOnly",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "ChatMessages",
+        "kind": "object",
+        "isList": true,
+        "type": "ChatMessage",
+        "relationName": "ChatMessageToConversation",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "ConversationMembers",
+        "kind": "object",
+        "isList": true,
+        "type": "ConversationMember",
+        "relationName": "ConversationToConversationMember",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "ConversationMember",
+    "fields": [
+      {
+        "name": "conversationId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "lastRead",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "lastSeen",
+        "kind": "scalar",
+        "isList": false,
+        "type": "DateTime"
+      },
+      {
+        "name": "Conversation",
+        "kind": "object",
+        "isList": false,
+        "type": "Conversation",
+        "relationName": "ConversationToConversationMember",
+        "relationFromFields": [
+          "conversationId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "ConversationMemberToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "conversationId",
+      "userId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "Role",
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "I18n",
+        "kind": "object",
+        "isList": true,
+        "type": "RoleI18n",
+        "relationName": "RoleToRoleI18n",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "RolePermissions",
+        "kind": "object",
+        "isList": true,
+        "type": "RolePermission",
+        "relationName": "RoleToRolePermission",
+        "relationFromFields": [],
+        "relationToFields": []
+      },
+      {
+        "name": "RoleUsers",
+        "kind": "object",
+        "isList": true,
+        "type": "RoleUser",
+        "relationName": "RoleToRoleUser",
+        "relationFromFields": [],
+        "relationToFields": []
+      }
+    ],
+    "primaryKey": [
+      "id"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "RoleI18n",
+    "fields": [
+      {
+        "name": "roleId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "languageId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "name",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "description",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "Language",
+        "kind": "object",
+        "isList": false,
+        "type": "Language",
+        "relationName": "LanguageToRoleI18n",
+        "relationFromFields": [
+          "languageId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "Role",
+        "kind": "object",
+        "isList": false,
+        "type": "Role",
+        "relationName": "RoleToRoleI18n",
+        "relationFromFields": [
+          "roleId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "roleId",
+      "languageId"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "RolePermission",
+    "fields": [
+      {
+        "name": "roleId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "table",
+        "kind": "scalar",
+        "isList": false,
+        "type": "String"
+      },
+      {
+        "name": "create",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "read",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "update",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "delete",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Boolean"
+      },
+      {
+        "name": "Role",
+        "kind": "object",
+        "isList": false,
+        "type": "Role",
+        "relationName": "RoleToRolePermission",
+        "relationFromFields": [
+          "roleId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "roleId",
+      "table"
+    ],
+    "uniqueFields": []
+  },
+  {
+    "name": "RoleUser",
+    "fields": [
+      {
+        "name": "userId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "roleId",
+        "kind": "scalar",
+        "isList": false,
+        "type": "Int"
+      },
+      {
+        "name": "Role",
+        "kind": "object",
+        "isList": false,
+        "type": "Role",
+        "relationName": "RoleToRoleUser",
+        "relationFromFields": [
+          "roleId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      },
+      {
+        "name": "User",
+        "kind": "object",
+        "isList": false,
+        "type": "User",
+        "relationName": "RoleUserToUser",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ]
+      }
+    ],
+    "primaryKey": [
+      "userId",
+      "roleId"
+    ],
+    "uniqueFields": []
+  }
+]

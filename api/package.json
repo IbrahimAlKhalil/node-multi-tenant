@@ -27,7 +27,6 @@
     "@nestjs/event-emitter": "^1.1.1",
     "@nestjs/jwt": "^8.0.0",
     "@prisma/client": "^3.14.0",
-    "@prisma/sdk": "^3.14.0",
     "argon2": "^0.28.5",
     "convert-units": "3.0.0-beta.4",
     "dotenv": "^16.0.1",
