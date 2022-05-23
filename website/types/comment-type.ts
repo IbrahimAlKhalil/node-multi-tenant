@@ -11,7 +11,11 @@ export type comment = {
   author: author;
   createdAt: string;
   content: string;
-  liked: number;
-  disliked: number;
+  reactions: {
+    like: number;
+    dislike: number;
+    sad: number;
+    angry: number;
+  };
   replies: comment[];
 };

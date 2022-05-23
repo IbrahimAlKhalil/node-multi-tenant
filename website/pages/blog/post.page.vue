@@ -14,6 +14,9 @@
     <tab-body v-show="activeTab === 1">
       <comment-section />
     </tab-body>
+    <tab-body v-show="activeTab !== 1">
+      <div class="p-20"></div>
+    </tab-body>
   </layout-main>
 </template>
 

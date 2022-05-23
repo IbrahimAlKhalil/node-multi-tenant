@@ -23,17 +23,33 @@
       </template>
     </the-tooltip>
     <ul class="flex items-center bg-gray-200 rounded">
-      <li class="flex items-center gap-2 px-2 py-1 border-r border-r-gray-50">
-        <span>
+      <li
+        v-for="(reaction, name) in reactions"
+        :key="reaction"
+        v-show="reaction > 0"
+        class="flex items-center gap-2 px-2 py-1 border-r border-r-gray-50"
+      >
+        <span v-show="name === 'like'">
           <component :is="ThumbsUp" class="text-blue-500 text-lg"></component>
         </span>
-        <span>12</span>
-      </li>
-      <li class="flex items-center gap-2 px-2 py-1">
-        <span>
+        <span v-show="name === 'dislike'">
           <component :is="ThumbsDown" class="text-red-500 text-lg"></component>
         </span>
-        <span>12</span>
+        <span v-show="name === 'sad'">
+          <component
+            v-show="name === 'sad'"
+            :is="SadIcon"
+            class="text-red-500 text-lg"
+          ></component>
+        </span>
+        <span v-show="name === 'angry'">
+          <component
+            v-show="name === 'angry'"
+            :is="AngryIcon"
+            class="text-red-500 text-lg"
+          ></component>
+        </span>
+        <span>{{ reaction }}</span>
       </li>
     </ul>
     <button
@@ -58,6 +74,12 @@ export default defineComponent({
   name: 'comment-reaction',
   components: { TheTooltip },
   emits: ['handle-reply'],
+  props: {
+    reactions: {
+      type: Object,
+      required: true,
+    },
+  },
   setup() {
     return {
       ReactionIcon,

@@ -14,19 +14,17 @@
 </template>
 
 <script lang="ts">
+import { useComments } from '#stores/comment.store';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'comment-suggestion',
   emits: ['select-suggestion'],
-  props: {
-    suggestions: {
-      type: Array,
-      required: true,
-    },
-  },
   setup() {
-    return;
+    const { suggestions } = useComments();
+    return {
+      suggestions,
+    };
   },
 });
 </script>

@@ -1,43 +1,43 @@
 <template>
   <div class="comment-group container my-10">
-    <single-comment :handle-reply="handleReply" />
-    <leave-comment
-      v-show="isReplying"
-      :fluid="true"
-      submit-comment="submitComment"
-      @update:input="updateComment"
+    <single-comment
+      :handle-reply="handleReply"
+      :authorName="comment.author.name"
+      :publishedDate="comment.createdAt"
+      :avatar="comment.author.avatar"
+      :commentContent="comment.content"
+      :reactions="comment.reactions"
     />
+    <div class="pl-10 py-3 border-l-2 border-l-gray-200 bg-gray-50">
+      <single-comment
+        v-for="reply in comment.replies"
+        :key="reply.id"
+        :handle-reply="handleReply"
+        :authorName="reply.author.name"
+        :publishedDate="reply.createdAt"
+        :avatar="reply.author.avatar"
+        :commentContent="reply.content"
+        :reactions="reply.reactions"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SingleComment from '#components/post-page/comment-section/single-comment.vue';
-import LeaveComment from '#components/post-page/comment-section/leave-comment.vue';
 
 export default defineComponent({
   name: 'comment-group',
-  components: { SingleComment, LeaveComment },
-  data() {
-    return {
-      isReplying: false,
-      comment: '',
-    };
-  },
-  methods: {
-    updateComment(value: string) {
-      this.comment = value;
-    },
-    handleReply() {
-      this.isReplying = !this.isReplying;
-    },
-    submitComment() {
-      console.log(this.comment);
-      this.comment = '';
+  components: { SingleComment },
+  props: {
+    comment: {
+      type: Object,
+      required: true,
     },
   },
   setup() {
-    return;
+    return {};
   },
 });
 </script>
