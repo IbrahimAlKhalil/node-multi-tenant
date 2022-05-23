@@ -13,6 +13,7 @@ import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
 import { BaseQuery } from './schema/base-query';
 import { Actions, Model } from './types/model';
+import cloneDeep from 'lodash/cloneDeep.js';
 import { Session } from '../types/session';
 import { ModuleRef } from '@nestjs/core';
 import isEmpty from 'lodash/isEmpty.js';
@@ -654,7 +655,7 @@ export class QueryService {
         this.moduleRef,
       );
     } else {
-      permissionQuery = structuredClone(permission.permission);
+      permissionQuery = cloneDeep(permission.permission);
     }
 
     if (!permissionQuery) {
@@ -843,15 +844,6 @@ export class QueryService {
   ): Promise<any> {
     const queue: BaseQuery[] = [rootQuery];
 
-    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
-
-    if (!prisma) {
-      throw new WsException(
-        `Instance #${session.iid} is either not found or not active`,
-        'UNAUTHORIZED',
-      );
-    }
-
     for (let q = 0; q < queue.length; q++) {
       const baseQuery = queue[q];
 
@@ -958,6 +950,15 @@ export class QueryService {
 
       // Add permission query to base query
       await this.applyPermissions('read', session, baseQuery, permissionModel);
+    }
+
+    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
+
+    if (!prisma) {
+      throw new WsException(
+        `Instance #${session.iid} is either not found or not active`,
+        'UNAUTHORIZED',
+      );
     }
 
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
