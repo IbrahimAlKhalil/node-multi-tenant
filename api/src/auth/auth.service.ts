@@ -47,11 +47,6 @@ export class AuthService {
       return null;
     }
 
-    // Verify csrf token
-    if (jwtPayload.cst !== csrfToken) {
-      return null;
-    }
-
     // Check token's existence in the database
 
     const prisma = await this.prismaService.getPrisma(jwtPayload.iid);
@@ -61,9 +56,10 @@ export class AuthService {
       return null;
     }
 
-    const tokenExistsInDB = await prisma.accessToken.findUnique({
+    const tokenExistsInDB = await prisma.accessToken.findFirst({
       where: {
         id: jwtPayload.jti,
+        csrfToken,
       },
       select: {
         id: true,

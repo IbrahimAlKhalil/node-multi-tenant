@@ -29,6 +29,7 @@ CREATE TYPE "user_kind" AS ENUM ('STUDENT', 'GUARDIAN', 'STAFF', 'ADMIN', 'SUPPO
 CREATE TABLE "AccessToken" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
+    "csrfToken" TEXT NOT NULL,
     "ipAddress" TEXT NOT NULL,
     "userAgent" TEXT,
     "expiresAt" TIMESTAMPTZ(6) NOT NULL,

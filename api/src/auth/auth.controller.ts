@@ -159,6 +159,7 @@ export class AuthController {
     const accessToken = await prisma.accessToken.create({
       data: {
         userId: user.id,
+        csrfToken,
         ipAddress,
         userAgent,
         expiresAt,
@@ -179,7 +180,6 @@ export class AuthController {
       iid: instituteId,
       knd: user.type,
       rol: roles.map((role) => role.roleId),
-      cst: csrfToken,
       jti: accessToken.id,
       exp: Math.round(expiresAt.getTime() / 1000),
     };
