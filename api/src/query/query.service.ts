@@ -8,11 +8,11 @@ import { ClassifyOptions } from './types/classify-options';
 import { ClassifyResult } from './types/classify-result';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '../../prisma/client';
-import { DMMF } from '../../prisma/client/runtime';
 import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
 import { BaseQuery } from './schema/base-query';
 import { Actions, Model } from './types/model';
+import { Field } from '../prisma/types/field';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { Session } from '../types/session';
 import { ModuleRef } from '@nestjs/core';
@@ -338,7 +338,7 @@ export class QueryService {
     queue: BaseQuery[],
     baseQuery: BaseQuery,
     session: Session,
-    modelFields: Record<string, DMMF.Field>,
+    modelFields: Record<string, Field>,
   ): void {
     // User did not specify any fields to select, so we will select default fields
     baseQuery.query.select = {};
@@ -774,7 +774,7 @@ export class QueryService {
     queue: BaseQuery[],
     baseQuery: BaseQuery,
     session: Session,
-    modelFields: Record<string, DMMF.Field>,
+    modelFields: Record<string, Field>,
   ): void {
     // Classify fields
     const fields = this.classifyFields({

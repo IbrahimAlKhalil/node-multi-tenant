@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { run as generatePrismaJson } from './scripts/gen-prisma-json.mjs';
 import { run as formatSql } from './scripts/format-sql.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
@@ -92,6 +93,16 @@ program.addCommand(
     .option('-a, --api', 'Format the migration files for the API')
     .option('-w, --website', 'Format the migration files for the website')
     .action((_, p) => formatSql(
+      p.getOptionValue('api'),
+      p.getOptionValue('website'),
+    )),
+);
+
+program.addCommand(
+  new Command('gen-prisma-json')
+    .option('-a, --api', 'Generate the prisma.json file for the API')
+    .option('-w, --website', 'Generate the prisma.json file for the website')
+    .action((_, p) => generatePrismaJson(
       p.getOptionValue('api'),
       p.getOptionValue('website'),
     )),

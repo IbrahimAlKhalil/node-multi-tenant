@@ -1,17 +1,17 @@
 import { InstituteService } from '../institute/institute.service.js';
-import { ModelNames } from '../query/types/model-names';
 import { PrismaInstance } from '../types/prisma-instance';
-import { DMMF } from '../../prisma/client/runtime';
+import { ModelNames } from '../query/types/model-names';
 import { PrismaClient } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
+import { Model } from './types/model';
+import { Field } from './types/field';
 import { fileURLToPath } from 'url';
-import sdk from '@prisma/sdk';
-import Model = DMMF.Model;
-import Field = DMMF.Field;
-import path from 'path';
+import path, { dirname } from 'path';
+import fs from 'fs/promises';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 @Injectable()
 export class PrismaService {
@@ -34,10 +34,10 @@ export class PrismaService {
       }
     }, 5 * 60 * 1000);
 
-    sdk.getDMMF({
-      datamodelPath: path.join(__dirname, '../../prisma/schema.prisma'),
-    }).then(schema => {
-      for (const model of schema.datamodel.models) {
+    fs.readFile(path.resolve(__dirname, '../../prisma/prisma.json'), 'utf-8').then(data => {
+      const models = JSON.parse(data) as Model[];
+
+      for (const model of models) {
         const camelCaseModelName = (model.name.charAt(0).toLowerCase() + model.name.slice(1)) as ModelNames;
         this.models[camelCaseModelName] = model;
         this.modelsOriginal[model.name] = model;
