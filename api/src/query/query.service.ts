@@ -961,6 +961,11 @@ export class QueryService {
       );
     }
 
+    prisma.user.groupBy({
+      by: ['id'],
+      orderBy,
+    });
+
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
   }
 
