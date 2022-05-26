@@ -12,7 +12,6 @@ export const deleteSchema = Joi.object({
         Joi.boolean(),
       ]),
     ])
-    .keys()
     .min(1)
     .required(),
   include: Joi.object().optional(),
