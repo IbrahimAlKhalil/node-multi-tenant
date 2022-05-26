@@ -111,7 +111,7 @@ export class AppService {
 
     if (!value.id) {
       // Emit the event without listening for response
-      this.eventEmitter.emit(value.type, {
+      this.eventEmitter.emit(`ws.${value.type}`, {
         ws,
         data: value.data,
         binary: isBinary,
@@ -123,7 +123,7 @@ export class AppService {
     let response: any[] = [];
 
     try {
-      response = await this.eventEmitter.emitAsync(value.type, {
+      response = await this.eventEmitter.emitAsync(`ws.${value.type}`, {
         ws,
         data: value.data,
         binary: isBinary,

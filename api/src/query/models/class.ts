@@ -9,12 +9,9 @@ export default defineModel<Class, 'class'>({
       },
     },
     POWER: {
-      read: {
-        fields: 'ALL.read',
-      },
-      create: {
-        fields: new Set(['order']),
-      },
+      read: true,
+      create: true,
+      update: true,
     },
   },
 });

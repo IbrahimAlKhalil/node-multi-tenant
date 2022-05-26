@@ -13,21 +13,20 @@ import { upsert } from './upsert.js';
 import { count } from './count.js';
 import Joi from 'joi';
 
-export interface BaseQuery {
-  type:
-    | 'findMany'
-    | 'findFirst'
-    | 'findUnique'
-    | 'count'
-    | 'aggregate'
-    | 'groupBy'
-    | 'create'
-    | 'createMany'
-    | 'update'
-    | 'updateMany'
-    | 'upsert'
-    | 'delete'
-    | 'deleteMany';
+export type QueryType =
+  | 'findMany'
+  | 'findFirst'
+  | 'findUnique'
+  | 'count'
+  | 'groupBy'
+  | 'aggregate';
+
+export type SingleMutationType = 'create' | 'update' | 'delete' | 'upsert';
+export type MultiMutationType = 'createMany' | 'updateMany' | 'deleteMany';
+export type MutationType = SingleMutationType | MultiMutationType;
+
+export interface BaseQuery<T = QueryType | MutationType> {
+  type: T;
   query: Record<string, any>;
   model: ModelNames;
   subscribe?: boolean;

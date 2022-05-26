@@ -2,6 +2,7 @@ import { PermissionDefinition as UpdatePermission } from './types/update-permiss
 import { PermissionDefinition as DeletePermission } from './types/delete-permission';
 import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
+import { FKeyHolder, Relation, RelationAnalyzed } from './types/relation';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { WsException } from '../exceptions/ws-exception.js';
 import { ClassifyOptions } from './types/classify-options';
@@ -10,17 +11,26 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '../../prisma/client';
 import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
-import { BaseQuery } from './schema/base-query';
 import { Actions, Model } from './types/model';
 import { Field } from '../prisma/types/field';
 import cloneDeep from 'lodash/cloneDeep.js';
+import { Mutation } from './types/mutation';
 import { Session } from '../types/session';
+import isObject from 'lodash/isObject.js';
 import { ModuleRef } from '@nestjs/core';
 import isEmpty from 'lodash/isEmpty.js';
 import merge from 'lodash/merge.js';
 import { fileURLToPath } from 'url';
+import pick from 'lodash/pick.js';
 import fs from 'fs/promises';
 import path from 'path';
+
+import {
+  BaseQuery,
+  MutationType,
+  QueryType,
+  SingleMutationType,
+} from './schema/base-query';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -629,6 +639,19 @@ export class QueryService {
     }
   }
 
+  private static flattenUniqueWhere<T = Record<string, any>>(where: T): T {
+    const flattenWhere: Record<string, any> = { ...where };
+
+    for (const field of Object.keys(flattenWhere)) {
+      if (isObject(flattenWhere[field])) {
+        merge(flattenWhere, flattenWhere[field]);
+        delete flattenWhere[field];
+      }
+    }
+
+    return flattenWhere as T;
+  }
+
   private async applyPermissions(
     action: Exclude<keyof Actions<any, any>, 'subscribe' | 'create'>,
     session: Session,
@@ -689,9 +712,47 @@ export class QueryService {
     return true;
   }
 
-  private checkOrderBy(baseQuery: BaseQuery, session: Session): void {
-    debugger;
+  private async applyPreset(
+    action: Exclude<keyof Actions<any, any>, 'subscribe' | 'delete' | 'read'>,
+    session: Session,
+    baseQuery: BaseQuery,
+    permissionModel: Model<any, any>,
+  ): Promise<void> {
+    const permission = QueryService.getActionPermission(
+      action,
+      baseQuery.model,
+      permissionModel,
+      session,
+    );
 
+    if (permission === true) {
+      return;
+    }
+
+    let preset: any;
+
+    if (typeof permission.preset === 'function') {
+      preset = await permission.preset(
+        session,
+        baseQuery.query,
+        this.moduleRef,
+      );
+    } else {
+      preset = cloneDeep(permission.preset);
+    }
+
+    if (!preset) {
+      return;
+    }
+
+    if (baseQuery.query.data) {
+      merge(baseQuery.query.data, preset);
+    } else {
+      baseQuery.query.data = preset;
+    }
+  }
+
+  private checkOrderBy(baseQuery: BaseQuery, session: Session): void {
     const orderBys = Array.isArray(baseQuery.query.orderBy)
       ? baseQuery.query.orderBy
       : [baseQuery.query.orderBy];
@@ -837,8 +898,638 @@ export class QueryService {
     }
   }
 
+  private analyzeRelation(field: Field): RelationAnalyzed {
+    const rightModelName = this.prismaService.modelsNameMap[field.type];
+    const rightModel = this.prismaService.models[rightModelName];
+
+    if (!rightModel) {
+      throw new WsException(
+        `You don't have access to model "${rightModelName}" or it doesn't exist.`,
+        'PERMISSION_DENIED',
+      );
+    }
+
+    if (!field.relationName) {
+      throw new Error(`Relation name is missing for field "${field.name}"`);
+    }
+
+    const rightField =
+      this.prismaService.relations[rightModelName]?.[field.relationName];
+
+    if (!rightField) {
+      throw new Error('Something went wrong, please contact support.');
+    }
+
+    const left: RelationAnalyzed['left'] = {
+      model: this.prismaService.modelsOriginal[rightField.type],
+      target: this.prismaService.modelsNameMap[rightField.type],
+      type: rightField.isList ? 'many' : 'one',
+      field,
+    };
+
+    const right: RelationAnalyzed['right'] = {
+      target: this.prismaService.modelsNameMap[field.type],
+      type: field.isList ? 'many' : 'one',
+      model: rightModel,
+      field: rightField,
+    };
+
+    let fKeyHolder: FKeyHolder;
+    let nonFKeyHolder: Relation;
+
+    if (field.relationFromFields?.length || field.relationToFields?.length) {
+      fKeyHolder = left as FKeyHolder;
+      fKeyHolder.fieldsFrom = field.relationFromFields ?? [];
+      fKeyHolder.fieldsTo = field.relationToFields ?? [];
+      nonFKeyHolder = right;
+    } else {
+      fKeyHolder = right as FKeyHolder;
+      fKeyHolder.fieldsFrom = rightField.relationFromFields ?? [];
+      fKeyHolder.fieldsTo = rightField.relationToFields ?? [];
+      nonFKeyHolder = left;
+    }
+
+    return {
+      left,
+      right,
+      fKeyHolder,
+      nonFKeyHolder,
+    };
+  }
+
+  private checkUniqueWhere(
+    where: Record<string, any>,
+    session: Session,
+    modelName: ModelNames,
+  ): Record<string, any> {
+    const flattenWhere = QueryService.flattenUniqueWhere(where);
+
+    const specifiedFields = this.classifyFields({
+      session,
+      model: modelName,
+      action: 'read',
+      fields: Object.keys(flattenWhere),
+      classes: {
+        scalar: true,
+        allowed: true,
+        notAllowed: true,
+        unknown: true,
+        operator: true,
+      },
+    });
+
+    QueryService.checkFieldPermissions(modelName, specifiedFields);
+
+    return flattenWhere;
+  }
+
+  private async processMutation(
+    mutation: Omit<BaseQuery<SingleMutationType>, 'subscribe'>,
+    session: Session,
+    prisma: PrismaClient,
+    parents?: Mutation[],
+    relation?: RelationAnalyzed,
+  ): Promise<{ current: Mutation; all: Mutation[] }> {
+    const model = this.prismaService.models[mutation.model];
+    const permissionModel = this.models[mutation.model];
+    const modelFields = this.prismaService.fields[mutation.model];
+
+    if (!model || !permissionModel || !modelFields) {
+      throw new WsException(
+        `You don't have access to model "${mutation.model}" or it doesn't exist.`,
+        'PERMISSION_DENIED',
+      );
+    }
+
+    /** Handle delete mutation */
+    if (mutation.type === 'delete') {
+      const permission = await QueryService.getActionPermission(
+        'delete',
+        mutation.model,
+        permissionModel,
+        session,
+      );
+
+      if (mutation.query.where) {
+        this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+      }
+
+      const _delete: Mutation = {
+        type: 'delete',
+        target: mutation.model,
+        permission: {
+          delete: permission,
+        },
+        oldData: null,
+        newData: null,
+        query: mutation.query,
+        relation,
+        parents,
+        model,
+      };
+
+      return {
+        current: _delete,
+        all: [_delete],
+      };
+    }
+    /** -------- End -------- */
+
+    type Action = Exclude<ClassifyOptions['action'], 'read' | undefined>;
+    type DataObj<T extends Action = Action> = {
+      action: T;
+      data: Record<string, any>;
+      permission: Permission<T> | true;
+      fields?: ClassifyResult<any>;
+    };
+
+    const mutations: Mutation[] = [];
+    const dataObjs: DataObj[] = [];
+    const classes: ClassifyOptions['classes'] = {
+      scalar: true,
+      notAllowed: true,
+      unknown: true,
+      relation: true,
+    };
+
+    /** Extract data from mutation */
+    if (mutation.type === 'upsert') {
+      dataObjs.push({
+        action: 'create',
+        data: mutation.query.create,
+      } as DataObj);
+
+      dataObjs.push({
+        action: 'update',
+        data: mutation.query.update,
+      } as DataObj);
+    } else {
+      dataObjs.push({
+        action: mutation.type,
+        data: mutation.query.data,
+      } as DataObj);
+    }
+    /** -------- End -------- */
+
+    /** Check permission for each data object and classify fields */
+    const dataLength = dataObjs.length;
+
+    for (let i = 0; i < dataLength; i++) {
+      const dataObj = dataObjs[i];
+
+      dataObj.permission = await QueryService.getActionPermission(
+        dataObj.action,
+        mutation.model,
+        permissionModel,
+        session,
+      );
+
+      if (!dataObj.data) {
+        continue;
+      }
+
+      const fields = this.classifyFields({
+        session,
+        classes,
+        action: dataObj.action,
+        model: mutation.model,
+        fields: Object.keys(dataObj.data),
+      });
+
+      // Check fields permissions
+      QueryService.checkFieldPermissions(mutation.model, fields);
+
+      dataObj.fields = fields;
+    }
+    /** -------- End -------- */
+
+    /** Create mutation for each data object */
+    let mutationObj: Mutation;
+
+    if (mutation.type === 'upsert') {
+      const createObj = dataObjs.find((obj) => obj.action === 'create');
+      const updateObj = dataObjs.find((obj) => obj.action === 'update');
+
+      if (!createObj || !updateObj) {
+        throw new Error('Something went wrong, please contact support');
+      }
+
+      const query: Record<string, any> = {};
+
+      if (createObj.fields) {
+        query.create = pick(createObj.data, createObj.fields.scalar);
+      }
+
+      if (updateObj.fields) {
+        query.update = pick(updateObj.data, updateObj.fields.scalar);
+      }
+
+      if (mutation.query.where) {
+        this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+
+        query.where = mutation.query.where;
+      }
+
+      mutationObj = {
+        type: 'upsert',
+        target: mutation.model,
+        permission: {
+          create: createObj.permission as Permission<'create'>,
+          update: updateObj.permission as Permission<'update'>,
+        },
+        oldData: null,
+        newData: null,
+        query,
+        relation,
+        parents,
+        model,
+      };
+
+      mutations.push(mutationObj);
+    } else {
+      const dataObj = dataObjs[0];
+
+      const query: Record<string, any> = {};
+
+      if (dataObj.fields) {
+        query.data = pick(dataObj.data, dataObj.fields.scalar);
+      }
+
+      if (mutation.query.where) {
+        this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+
+        query.where = mutation.query.where;
+      }
+
+      mutationObj = {
+        type: mutation.type,
+        target: mutation.model,
+        permission: {
+          [mutation.type]: dataObj.permission as Permission<Action>,
+        },
+        oldData: null,
+        newData: null,
+        query,
+        relation,
+        parents,
+        model,
+      };
+
+      mutations.push(mutationObj);
+    }
+    /** -------- End -------- */
+
+    /** Create mutation for each relation */
+    for (let i = 0; i < dataLength; i++) {
+      const dataObj = dataObjs[i];
+      const data =
+        mutationObj.type === 'upsert'
+          ? mutationObj.query[dataObj.action]
+          : mutationObj.query.data;
+
+      if (!dataObj.fields || !dataObj.data) {
+        continue;
+      }
+
+      for (const relationField of dataObj.fields.relation) {
+        const modelField = modelFields[relationField];
+        const relation = this.analyzeRelation(modelField);
+        const fieldData = dataObj.data[relationField];
+
+        /** Handle create */
+        const creates: Record<string, any>[] = [];
+
+        if (isObject(fieldData.create)) {
+          creates.push(
+            ...(Array.isArray(fieldData.create)
+              ? fieldData.create
+              : [fieldData.create]),
+          );
+        }
+
+        if (isObject(fieldData.createMany) && fieldData.createMany.data) {
+          creates.push(
+            ...(Array.isArray(fieldData.createMany.data)
+              ? fieldData.createMany.data
+              : [fieldData.createMany.data]),
+          );
+        }
+
+        for (const create of creates) {
+          if (!isObject(create)) {
+            throw new WsException(
+              `Invalid create data for relation "${relationField}"`,
+              'QUERY_INVALID',
+            );
+          }
+
+          const _mutations = await this.processMutation(
+            {
+              type: 'create',
+              model: relation.right.target,
+              query: {
+                data: create,
+              },
+            },
+            session,
+            prisma,
+            [mutationObj],
+            relation,
+          );
+
+          mutations.push(..._mutations.all);
+        }
+        /** -------- End -------- */
+
+        /** Handle connect/update */
+        if (isObject(fieldData.connect)) {
+          const connects: Record<string, any>[] = Array.isArray(
+            fieldData.connect,
+          )
+            ? fieldData.connect
+            : [fieldData.connect];
+
+          for (const connect of connects) {
+            if (!isObject(connect)) {
+              throw new WsException(
+                `Invalid connect data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            /** One-to-many or One-to-one where right side is the foreign-key holder */
+            if (
+              relation.left.type === 'one' &&
+              relation.fKeyHolder === relation.right
+            ) {
+              this.checkUniqueWhere(
+                connect,
+                session,
+                relation.fKeyHolder.target,
+              );
+
+              QueryService.checkFieldPermissions(
+                relation.fKeyHolder.target,
+                this.classifyFields({
+                  session,
+                  action: 'update',
+                  model: relation.fKeyHolder.target,
+                  fields: relation.fKeyHolder.fieldsFrom,
+                  classes: {
+                    scalar: true,
+                    notAllowed: true,
+                  },
+                }),
+              );
+
+              const update: Mutation = {
+                type: 'update',
+                model: relation.fKeyHolder.model,
+                target: relation.fKeyHolder.target,
+                query: {
+                  data: {},
+                  where: connect,
+                },
+                parents: [mutationObj],
+                oldData: null,
+                newData: null,
+                permission: {},
+                relation,
+              };
+
+              mutations.push(update);
+
+              continue;
+            }
+            /** -------- End -------- */
+
+            /** Many-to-one or One-to-many where left side is the foreign-key holder */
+            if (
+              relation.left === relation.fKeyHolder &&
+              relation.right.type === 'one'
+            ) {
+              this.checkUniqueWhere(connect, session, relation.right.target);
+
+              QueryService.checkFieldPermissions(
+                relation.left.target,
+                this.classifyFields({
+                  session,
+                  action: dataObj.action,
+                  model: relation.left.target,
+                  fields: relation.fKeyHolder.fieldsFrom,
+                  classes: {
+                    scalar: true,
+                    notAllowed: true,
+                  },
+                }),
+              );
+
+              const query: Record<string, any> = {
+                where: connect,
+                select: {},
+              };
+
+              const length = relation.fKeyHolder.fieldsTo.length;
+
+              for (let i = 0; i < length; i++) {
+                const fieldTo = relation.fKeyHolder.fieldsTo[i];
+                query.select[fieldTo] = true;
+              }
+
+              const oneItem = await (
+                prisma[relation.right.target] as any
+              ).findUnique(query);
+
+              if (!oneItem) {
+                throw new WsException(
+                  `Invalid connect data for relation "${relationField}"`,
+                  'QUERY_INVALID',
+                );
+              }
+
+              for (let i = 0; i < length; i++) {
+                const fieldTo = relation.fKeyHolder.fieldsTo[i];
+                const fieldFrom = relation.fKeyHolder.fieldsFrom[i];
+
+                data[fieldFrom] = oneItem[fieldTo];
+              }
+            }
+            /** -------- End -------- */
+
+            /** Many-to-many
+             *
+             * Explicit many-to-many is already handled in the above code
+             * TODO: Support implicit many-to-many
+             *
+             * */
+          }
+        }
+        /** -------- End -------- */
+
+        /** Handle connectOrCreate/upsert */
+        if (isObject(fieldData.connectOrCreate)) {
+          const connects: Record<string, any>[] = Array.isArray(
+            fieldData.connectOrCreate,
+          )
+            ? fieldData.connectOrCreate
+            : [fieldData.connectOrCreate];
+
+          for (const connectOrCreate of connects) {
+            if (!connectOrCreate || connectOrCreate.constructor !== Object) {
+              throw new WsException(
+                `Invalid connect data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            /** One-to-many or One-to-one where right side is the foreign-key holder */
+            if (
+              relation.left.type === 'one' &&
+              relation.fKeyHolder === relation.right
+            ) {
+              const flattenWhere = QueryService.flattenUniqueWhere(
+                connectOrCreate.where,
+              );
+
+              if (!connectOrCreate.create) {
+                connectOrCreate.create = {};
+              }
+
+              for (const key of Object.keys(flattenWhere)) {
+                if (!relation.fKeyHolder.fieldsFrom.includes(key)) {
+                  connectOrCreate.create[key] = flattenWhere[key];
+                }
+              }
+
+              mutations.push(
+                ...(
+                  await this.processMutation(
+                    {
+                      type: 'upsert',
+                      model: relation.fKeyHolder.target,
+                      query: {
+                        create: connectOrCreate.create,
+                        where: connectOrCreate.where,
+                        update: {},
+                      },
+                    },
+                    session,
+                    prisma,
+                    [mutationObj],
+                    relation,
+                  )
+                ).all,
+              );
+
+              continue;
+            }
+            /** -------- End -------- */
+
+            /** Many-to-one or One-to-many where left side is the foreign-key holder */
+            if (
+              relation.left === relation.fKeyHolder &&
+              relation.right.type === 'one'
+            ) {
+              this.checkUniqueWhere(
+                connectOrCreate,
+                session,
+                relation.right.target,
+              );
+
+              QueryService.checkFieldPermissions(
+                relation.left.target,
+                this.classifyFields({
+                  session,
+                  action: dataObj.action,
+                  model: relation.left.target,
+                  fields: relation.fKeyHolder.fieldsFrom,
+                  classes: {
+                    scalar: true,
+                    notAllowed: true,
+                  },
+                }),
+              );
+
+              debugger;
+
+              const query: Record<string, any> = {
+                where: connectOrCreate.where,
+                select: {},
+              };
+
+              const length = relation.fKeyHolder.fieldsTo.length;
+
+              for (let i = 0; i < length; i++) {
+                const fieldTo = relation.fKeyHolder.fieldsTo[i];
+                query.select[fieldTo] = true;
+              }
+
+              const oneItem = await (
+                prisma[relation.right.target] as any
+              ).findUnique(query);
+
+              if (oneItem) {
+                for (let i = 0; i < length; i++) {
+                  const fieldTo = relation.fKeyHolder.fieldsTo[i];
+                  const fieldFrom = relation.fKeyHolder.fieldsFrom[i];
+
+                  data[fieldFrom] = oneItem[fieldTo];
+                }
+              } else {
+                if (!connectOrCreate.create) {
+                  connectOrCreate.create = {};
+                }
+
+                const _mutations = await this.processMutation(
+                  {
+                    type: 'create',
+                    model: relation.right.target,
+                    query: {
+                      data: connectOrCreate.create,
+                    },
+                  },
+                  session,
+                  prisma,
+                );
+
+                if (!mutationObj.parents) {
+                  mutationObj.parents = [];
+                }
+
+                mutationObj.parents.push(_mutations.current);
+
+                // Add parent mutations before the current mutation
+                mutations.splice(
+                  mutations.indexOf(mutationObj),
+                  0,
+                  ..._mutations.all,
+                );
+              }
+            }
+            /** -------- End -------- */
+
+            /** Many-to-many
+             *
+             * Explicit many-to-many is already handled in the above code
+             * TODO: Support implicit many-to-many
+             *
+             * */
+          }
+        }
+
+        /** -------- End -------- */
+      }
+    }
+    /** -------- End -------- */
+
+    return {
+      all: mutations,
+      current: mutationObj,
+    };
+  }
+
   public async find(
-    rootQuery: BaseQuery,
+    rootQuery: BaseQuery<QueryType>,
     session: Session,
     trx?: PrismaClient,
   ): Promise<any> {
@@ -956,7 +1647,7 @@ export class QueryService {
 
     if (!prisma) {
       throw new WsException(
-        `Instance #${session.iid} is either not found or not active`,
+        `Institute #${session.iid} is either not found or not active`,
         'UNAUTHORIZED',
       );
     }
@@ -964,22 +1655,64 @@ export class QueryService {
     return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
   }
 
-  public async create(
-    rootQuery: BaseQuery,
+  public async mutate(
+    mutation: Omit<BaseQuery<MutationType>, 'subscribe'>,
     session: Session,
-    trx?: PrismaClient,
   ): Promise<any> {
-    const queue: BaseQuery[] = [rootQuery];
+    // Process select and include
+    let selectQueue: BaseQuery[] | null = [mutation];
 
-    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
+    for (let q = 0; q < selectQueue.length; q++) {
+      const baseQuery = selectQueue[q];
+      const modelFields = this.prismaService.fields[baseQuery.model];
+
+      if (!modelFields) {
+        // Permission for this model is not defined
+        throw new WsException(
+          `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
+          'PERMISSION_DENIED',
+        );
+      }
+
+      if (mutation.query.select) {
+        this.processSelect(selectQueue, baseQuery, session, modelFields);
+      } else {
+        // Add default fields to select
+        this.addDefaultSelects(selectQueue, mutation, session, modelFields);
+      }
+    }
+
+    // Backup root query's selections
+    const select = mutation.query.select;
+    delete mutation.query.select;
+    // Garbage collect
+    selectQueue = null;
+
+    // Acquire prisma client
+    const prisma = await this.prismaService.getPrisma(session.iid);
 
     if (!prisma) {
       throw new WsException(
-        `Instance #${session.iid} is either not found or not active`,
+        `Institute #${session.iid} is either not found or not active`,
         'UNAUTHORIZED',
       );
     }
 
-    return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
+    if (
+      mutation.type === 'create' ||
+      mutation.type === 'update' ||
+      mutation.type === 'delete' ||
+      mutation.type === 'upsert'
+    ) {
+      const mutations = await this.processMutation(
+        mutation as BaseQuery<SingleMutationType>,
+        session,
+        prisma,
+      );
+
+      return mutations.all.map((m) => pick(m, 'type', 'target', 'query'));
+    }
+
+    return mutation.query;
   }
 }

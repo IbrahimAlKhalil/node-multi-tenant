@@ -57,7 +57,6 @@ async function generate(prismaDir) {
       delete field.documentation;
       delete field.hasDefaultValue;
       delete field.isReadOnly;
-      delete field.isRequired;
       delete field.isUpdatedAt;
       delete field.relationOnDelete;
     }

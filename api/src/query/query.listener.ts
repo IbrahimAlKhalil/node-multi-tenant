@@ -1,10 +1,16 @@
-import { BaseQuery, baseQuery } from './schema/base-query.js';
 import { WsException } from '../exceptions/ws-exception.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryService } from './query.service.js';
-import { OnEvent } from '@nestjs/event-emitter';
-import { WsEvent } from '../types/ws-event';
+import { OnWsEvent } from '../on-ws-event.js';
+
+import { WsEvent } from '../types/ws-event.js';
+import {
+  BaseQuery,
+  baseQuery,
+  MutationType,
+  QueryType,
+} from './schema/base-query.js';
 
 @Injectable()
 export class QueryListener {
@@ -14,8 +20,25 @@ export class QueryListener {
   ) {}
 
   private logger = new Logger(QueryListener.name);
+  private queryTypes = new Set([
+    'findMany',
+    'findFirst',
+    'findUnique',
+    'count',
+    'groupBy',
+    'aggregate',
+  ]);
+  private mutationTypes = new Set([
+    'create',
+    'update',
+    'delete',
+    'upsert',
+    'createMany',
+    'updateMany',
+    'deleteMany',
+  ]);
 
-  @OnEvent('query')
+  @OnWsEvent('query')
   async onQuery({ ws, data }: WsEvent<BaseQuery>) {
     let query: BaseQuery;
 
@@ -38,17 +61,16 @@ export class QueryListener {
     try {
       let result: any;
 
-      if (
-        query.type === 'findMany' ||
-        query.type === 'findFirst' ||
-        query.type === 'findUnique' ||
-        query.type === 'count' ||
-        query.type === 'groupBy' ||
-        query.type === 'aggregate'
-      ) {
-        result = await this.queryService.find(query, session);
-      } else if (query.type === 'create') {
-        result = await this.queryService.create(query, session);
+      if (this.queryTypes.has(query.type)) {
+        result = await this.queryService.find(
+          query as BaseQuery<QueryType>,
+          session,
+        );
+      } else if (this.mutationTypes.has(query.type)) {
+        result = await this.queryService.mutate(
+          query as BaseQuery<MutationType>,
+          session,
+        );
       }
 
       return result;
