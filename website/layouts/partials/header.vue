@@ -75,17 +75,34 @@ import MenuBar from '#icons/light/bars.svg';
 import Logo from '#images/logo.svg?url';
 import { useI18n } from 'vue-i18n';
 
-const i18n = useI18n();
-const { urlPathname } = usePageContext();
+const { urlPathname, pageProps } = usePageContext();
+console.log('The page props: ', pageProps);
 const navData = useNavData();
+const i18n = useI18n();
+
+const headerHeight = ref(70);
+const isSticky = ref(false);
+const t = ref(i18n.t);
 
 if (navData.currentPath !== urlPathname) {
   navData.currentPath = urlPathname;
 }
 
+function checkStickyHeader() {
+  return (
+    (navData.currentPath.split('/')[1] === 'blog' &&
+      navData.currentPath.split('/').length > 2) ||
+    navData.currentPath.split('/')[1] === 'tutorials'
+  );
+}
+
 onMounted(() => {
-  window.addEventListener('scroll', () => updateScroll(window.scrollY));
-  isSticky.value = window.scrollY !== 0;
+  if (checkStickyHeader()) {
+    isSticky.value = true;
+  } else {
+    window.addEventListener('scroll', () => updateScroll(window.scrollY));
+    isSticky.value = window.scrollY !== 0;
+  }
 });
 onUnmounted(() => {
   window.removeEventListener('scroll', () => updateScroll(window.scrollY));
@@ -99,8 +116,4 @@ const updateScroll = (value: number) => {
     isSticky.value = false;
   }
 };
-
-const isSticky = ref(false);
-const t = ref(i18n.t);
-const headerHeight = ref(70);
 </script>
