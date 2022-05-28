@@ -1,0 +1,56 @@
+<template>
+  <div
+    class="bg-gray-50 font-bold border border-gray-200 rounded-t-md py-2 pl-8 my-3 flex justify-between items-center overflow-hidden relative before:w-5 before:h-full before:bg-secondary before:absolute before:left-0 before:top-0 cursor-pointer"
+    :class="{ 'rounded-b-md': !isOpen }"
+    @click="isOpen = !isOpen"
+  >
+    <p>{{ title }}</p>
+    <span class="text-4xl px-3 text-secondary">
+      <component :is="AngleDown" v-show="!isOpen" style="bottom: 0"></component>
+      <component :is="AngleUp" v-show="isOpen" style="bottom: 0"></component>
+    </span>
+  </div>
+  <div
+    v-show="isOpen"
+    :class="{ 'rounded-b-md': isOpen }"
+    class="bg-gray-50 relative before:w-5 before:h-full before:bg-gray-200 before:absolute before:left-0 before:top-0 p-5 pl-8 overflow-hidden"
+  >
+    <p>
+      {{ description }}
+    </p>
+  </div>
+</template>
+
+<script lang="ts">
+import AngleDown from '#icons/solid/angle-down.svg';
+import AngleUp from '#icons/solid/angle-up.svg';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'the-accordion',
+
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+
+  props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    description: {
+      type: String,
+      default: '',
+    },
+  },
+
+  setup() {
+    return {
+      AngleDown,
+      AngleUp,
+    };
+  },
+});
+</script>
