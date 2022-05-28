@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-html{
+html {
     scroll-behavior: smooth;
 }
 
-:root{
+:root {
     --header-height: 70px;
     --color-primary: #0079F7;
     --color-primary-dark: #0056B0;
@@ -23,4 +23,23 @@ html{
     fill: currentColor;
     bottom: 0.125em;
     position: relative;
+}
+
+
+/* Scrollbar Style */
+.rt-scrollbar::-webkit-scrollbar {
+    width: .5rem;
+    height: 10px;
+}
+
+/* scrollbar-thumb */
+.rt-scrollbar::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 10px;
+}
+
+/* scrollbar-track */
+.rt-scrollbar::-webkit-scrollbar-track {
+    background: #cacaca;
+    border-radius: 10px;
 }
