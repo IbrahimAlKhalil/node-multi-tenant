@@ -1,13 +1,13 @@
 import { PermissionDefinition as CreatePermission } from './create-permission';
 import { PermissionDefinition as UpdatePermission } from './update-permission';
 import { PermissionDefinition as DeletePermission } from './delete-permission';
-import { SingleMutationType } from '../schema/base-query';
+import { MutationType } from '../schema/base-query';
 import { Model } from '../../prisma/types/model';
 import { RelationAnalyzed } from './relation';
 import { ModelNames } from './model-names';
 
 export interface Mutation {
-  type: SingleMutationType;
+  type: MutationType;
   target: ModelNames;
   model: Model;
   permission: {
@@ -20,5 +20,4 @@ export interface Mutation {
   newData: Record<string, any> | null;
   parents?: Mutation[];
   relation?: RelationAnalyzed;
-  skipDuplicate?: boolean;
 }

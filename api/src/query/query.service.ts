@@ -962,7 +962,32 @@ export class QueryService {
     session: Session,
     modelName: ModelNames,
   ): Record<string, any> {
+    const model = this.prismaService.models[modelName];
+
+    if (!model) {
+      throw new WsException(
+        `You don't have access to model "${modelName}" or it doesn't exist.`,
+        'PERMISSION_DENIED',
+      );
+    }
+
     const flattenWhere = QueryService.flattenUniqueWhere(where);
+    const fields = Object.keys(flattenWhere);
+
+    for (const field of fields) {
+      if (model.primaryKey.includes(field)) {
+        continue;
+      }
+
+      if (model.uniqueFields.some((uf) => uf.includes(field))) {
+        continue;
+      }
+
+      throw new WsException(
+        `You can't use "${field}" in unique where clause.`,
+        'QUERY_INVALID',
+      );
+    }
 
     const specifiedFields = this.classifyFields({
       session,
@@ -974,7 +999,6 @@ export class QueryService {
         allowed: true,
         notAllowed: true,
         unknown: true,
-        operator: true,
       },
     });
 
@@ -984,12 +1008,12 @@ export class QueryService {
   }
 
   private async processMutation(
-    mutation: Omit<BaseQuery<SingleMutationType>, 'subscribe'>,
+    mutation: Omit<BaseQuery<MutationType>, 'subscribe'>,
     session: Session,
     prisma: PrismaClient,
     parents?: Mutation[],
     relation?: RelationAnalyzed,
-  ): Promise<{ current: Mutation; all: Mutation[] }> {
+  ): Promise<{ current: Mutation[]; all: Mutation[] }> {
     const model = this.prismaService.models[mutation.model];
     const permissionModel = this.models[mutation.model];
     const modelFields = this.prismaService.fields[mutation.model];
@@ -1002,7 +1026,7 @@ export class QueryService {
     }
 
     /** Handle delete mutation */
-    if (mutation.type === 'delete') {
+    if (mutation.type === 'delete' || mutation.type === 'deleteMany') {
       const permission = await QueryService.getActionPermission(
         'delete',
         mutation.model,
@@ -1010,12 +1034,17 @@ export class QueryService {
         session,
       );
 
+      // TODO: Apply permission
       if (mutation.query.where) {
-        this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+        if (mutation.type === 'delete') {
+          this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+        } else {
+          this.checkWhere(mutation.query.where, session);
+        }
       }
 
       const _delete: Mutation = {
-        type: 'delete',
+        type: mutation.type,
         target: mutation.model,
         permission: {
           delete: permission,
@@ -1029,7 +1058,7 @@ export class QueryService {
       };
 
       return {
-        current: _delete,
+        current: [_delete],
         all: [_delete],
       };
     }
@@ -1039,6 +1068,7 @@ export class QueryService {
     type DataObj<T extends Action = Action> = {
       action: T;
       data: Record<string, any>;
+      mutation: Mutation;
       permission: Permission<T> | true;
       fields?: ClassifyResult<any>;
     };
@@ -1064,19 +1094,26 @@ export class QueryService {
         data: mutation.query.update,
       } as DataObj);
     } else {
-      dataObjs.push({
-        action: mutation.type,
-        data: mutation.query.data,
-      } as DataObj);
+      const dataArr = Array.isArray(mutation.query.data)
+        ? mutation.query.data
+        : [mutation.query.data];
+
+      for (const data of dataArr) {
+        dataObjs.push({
+          action:
+            mutation.type === 'createMany'
+              ? 'create'
+              : mutation.type === 'updateMany'
+              ? 'update'
+              : mutation.type,
+          data,
+        } as DataObj);
+      }
     }
     /** -------- End -------- */
 
     /** Check permission for each data object and classify fields */
-    const dataLength = dataObjs.length;
-
-    for (let i = 0; i < dataLength; i++) {
-      const dataObj = dataObjs[i];
-
+    for (const dataObj of dataObjs) {
       dataObj.permission = await QueryService.getActionPermission(
         dataObj.action,
         mutation.model,
@@ -1104,8 +1141,6 @@ export class QueryService {
     /** -------- End -------- */
 
     /** Create mutation for each data object */
-    let mutationObj: Mutation;
-
     if (mutation.type === 'upsert') {
       const createObj = dataObjs.find((obj) => obj.action === 'create');
       const updateObj = dataObjs.find((obj) => obj.action === 'update');
@@ -1124,13 +1159,14 @@ export class QueryService {
         query.update = pick(updateObj.data, updateObj.fields.scalar);
       }
 
+      // TODO: Apply permission
       if (mutation.query.where) {
         this.checkUniqueWhere(mutation.query.where, session, mutation.model);
 
         query.where = mutation.query.where;
       }
 
-      mutationObj = {
+      const mutationObj: Mutation = {
         type: 'upsert',
         target: mutation.model,
         permission: {
@@ -1146,42 +1182,45 @@ export class QueryService {
       };
 
       mutations.push(mutationObj);
+      createObj.mutation = mutationObj;
+      updateObj.mutation = mutationObj;
     } else {
-      const dataObj = dataObjs[0];
+      for (const dataObj of dataObjs) {
+        const query: Record<string, any> = {};
 
-      const query: Record<string, any> = {};
+        if (dataObj.fields) {
+          query.data = pick(dataObj.data, dataObj.fields.scalar);
+        }
 
-      if (dataObj.fields) {
-        query.data = pick(dataObj.data, dataObj.fields.scalar);
+        if (mutation.query.where) {
+          this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+
+          query.where = mutation.query.where;
+        }
+
+        const mutationObj: Mutation = {
+          type: mutation.type === 'createMany' ? 'create' : mutation.type,
+          target: mutation.model,
+          permission: {
+            [dataObj.action]: dataObj.permission as Permission<Action>,
+          },
+          oldData: null,
+          newData: null,
+          query,
+          relation,
+          parents,
+          model,
+        };
+
+        mutations.push(mutationObj);
+        dataObj.mutation = mutationObj;
       }
-
-      if (mutation.query.where) {
-        this.checkUniqueWhere(mutation.query.where, session, mutation.model);
-
-        query.where = mutation.query.where;
-      }
-
-      mutationObj = {
-        type: mutation.type,
-        target: mutation.model,
-        permission: {
-          [mutation.type]: dataObj.permission as Permission<Action>,
-        },
-        oldData: null,
-        newData: null,
-        query,
-        relation,
-        parents,
-        model,
-      };
-
-      mutations.push(mutationObj);
     }
     /** -------- End -------- */
 
     /** Create mutation for each relation */
-    for (let i = 0; i < dataLength; i++) {
-      const dataObj = dataObjs[i];
+    for (const dataObj of dataObjs) {
+      const mutationObj = dataObj.mutation;
       const data =
         mutationObj.type === 'upsert'
           ? mutationObj.query[dataObj.action]
@@ -1193,8 +1232,16 @@ export class QueryService {
 
       for (const relationField of dataObj.fields.relation) {
         const modelField = modelFields[relationField];
-        const relation = this.analyzeRelation(modelField);
         const fieldData = dataObj.data[relationField];
+        const relation = this.analyzeRelation(modelField);
+        const relPermModel = this.models[relation.right.target];
+
+        if (!relPermModel) {
+          throw new WsException(
+            `You don't have access to model "${relation.right.target}" or it doesn't exist.`,
+            'PERMISSION_DENIED',
+          );
+        }
 
         /** Handle create */
         const creates: Record<string, any>[] = [];
@@ -1241,7 +1288,7 @@ export class QueryService {
         }
         /** -------- End -------- */
 
-        /** Handle connect/update */
+        /** Handle connect */
         if (isObject(fieldData.connect)) {
           const connects: Record<string, any>[] = Array.isArray(
             fieldData.connect,
@@ -1278,6 +1325,7 @@ export class QueryService {
                   classes: {
                     scalar: true,
                     notAllowed: true,
+                    unknown: true,
                   },
                 }),
               );
@@ -1293,7 +1341,14 @@ export class QueryService {
                 parents: [mutationObj],
                 oldData: null,
                 newData: null,
-                permission: {},
+                permission: {
+                  update: QueryService.getActionPermission(
+                    'update',
+                    relation.fKeyHolder.target,
+                    relPermModel,
+                    session,
+                  ),
+                },
                 relation,
               };
 
@@ -1303,7 +1358,7 @@ export class QueryService {
             }
             /** -------- End -------- */
 
-            /** Many-to-one or One-to-many where left side is the foreign-key holder */
+            /** Many-to-one or One-to-one where left side is the foreign-key holder */
             if (
               relation.left === relation.fKeyHolder &&
               relation.right.type === 'one'
@@ -1366,7 +1421,7 @@ export class QueryService {
         }
         /** -------- End -------- */
 
-        /** Handle connectOrCreate/upsert */
+        /** Handle connectOrCreate */
         if (isObject(fieldData.connectOrCreate)) {
           const connects: Record<string, any>[] = Array.isArray(
             fieldData.connectOrCreate,
@@ -1425,7 +1480,7 @@ export class QueryService {
             }
             /** -------- End -------- */
 
-            /** Many-to-one or One-to-many where left side is the foreign-key holder */
+            /** Many-to-one or One-to-one where left side is the foreign-key holder */
             if (
               relation.left === relation.fKeyHolder &&
               relation.right.type === 'one'
@@ -1446,11 +1501,10 @@ export class QueryService {
                   classes: {
                     scalar: true,
                     notAllowed: true,
+                    unknown: true,
                   },
                 }),
               );
-
-              debugger;
 
               const query: Record<string, any> = {
                 where: connectOrCreate.where,
@@ -1496,7 +1550,7 @@ export class QueryService {
                   mutationObj.parents = [];
                 }
 
-                mutationObj.parents.push(_mutations.current);
+                mutationObj.parents.push(_mutations.current[0]);
 
                 // Add parent mutations before the current mutation
                 mutations.splice(
@@ -1516,6 +1570,177 @@ export class QueryService {
              * */
           }
         }
+        /** -------- End -------- */
+
+        /** Handle disconnect/set */
+        if (relation.left.field.isRequired) {
+          /** Disconnect */
+          if (
+            fieldData.disconnect === true &&
+            relation.left === relation.fKeyHolder
+          ) {
+            for (const fieldFrom of relation.fKeyHolder.fieldsFrom) {
+              data[fieldFrom] = null;
+            }
+          } else if (isObject(fieldData.disconnect)) {
+            const disconnects: Record<string, any>[] = Array.isArray(
+              fieldData.disconnect,
+            )
+              ? fieldData.disconnect
+              : [fieldData.disconnect];
+
+            for (const disconnect of disconnects) {
+              if (!disconnect || disconnect.constructor !== Object) {
+                throw new WsException(
+                  `Invalid disconnect data for relation "${relationField}"`,
+                  'QUERY_INVALID',
+                );
+              }
+
+              // TODO: Apply permission
+              this.checkUniqueWhere(disconnect, session, relation.right.target);
+
+              QueryService.checkFieldPermissions(
+                relation.left.target,
+                this.classifyFields({
+                  session,
+                  action: 'update',
+                  model: relation.fKeyHolder.target,
+                  fields: relation.fKeyHolder.fieldsFrom,
+                  classes: {
+                    scalar: true,
+                    notAllowed: true,
+                    unknown: true,
+                  },
+                }),
+              );
+
+              const query: Record<string, any> = {
+                where: disconnect,
+                data: {},
+              };
+
+              for (const fieldFrom of relation.fKeyHolder.fieldsFrom) {
+                query.data[fieldFrom] = null;
+              }
+
+              const update: Mutation = {
+                relation,
+                query,
+                type: 'update',
+                model: relation.fKeyHolder.model,
+                target: relation.fKeyHolder.target,
+                parents: [mutationObj],
+                newData: null,
+                oldData: null,
+                permission: {
+                  update: QueryService.getActionPermission(
+                    'update',
+                    relation.fKeyHolder.target,
+                    relPermModel,
+                    session,
+                  ),
+                },
+              };
+
+              mutations.push(update);
+            }
+          }
+          /** --- End --- */
+
+          /** Set */
+          if (
+            Array.isArray(fieldData.set) &&
+            relation.right === relation.fKeyHolder
+          ) {
+            QueryService.checkFieldPermissions(
+              relation.right.target,
+              this.classifyFields({
+                session,
+                action: 'update',
+                model: relation.right.target,
+                fields: relation.fKeyHolder.fieldsFrom,
+                classes: {
+                  scalar: true,
+                  notAllowed: true,
+                  unknown: true,
+                },
+              }),
+            );
+
+            const permission = QueryService.getActionPermission(
+              'update',
+              relation.right.target,
+              relPermModel,
+              session,
+            );
+
+            const disconnectQuery: Record<string, any> = {
+              where: {},
+              data: {},
+            };
+
+            for (const fieldFrom of relation.fKeyHolder.fieldsFrom) {
+              disconnectQuery.data[fieldFrom] = null;
+            }
+
+            mutations.push({
+              model: relation.right.model,
+              target: relation.right.target,
+              type: 'updateMany',
+              newData: null,
+              oldData: null,
+              parents: [mutationObj],
+              permission: {
+                update: permission,
+              },
+              relation,
+              query: disconnectQuery,
+            });
+
+            for (const set of fieldData.set) {
+              if (!set || set.constructor !== Object) {
+                throw new WsException(
+                  `Invalid set data for relation "${relationField}"`,
+                  'QUERY_INVALID',
+                );
+              }
+
+              this.checkUniqueWhere(set, session, relation.right.target);
+
+              mutations.push({
+                model: relation.right.model,
+                target: relation.right.target,
+                type: 'update',
+                newData: null,
+                oldData: null,
+                parents: [mutationObj],
+                permission: {
+                  update: permission,
+                },
+                query: {
+                  where: set,
+                  data: {},
+                },
+              });
+            }
+          } else if (fieldData.set !== undefined) {
+            throw new WsException(
+              `Invalid set data for relation "${relationField}"`,
+              'QUERY_INVALID',
+            );
+          }
+          /** --- End --- */
+        } else if (fieldData.disconnect || fieldData.set) {
+          throw new WsException(
+            `Cannot disconnect relation "${relationField}" because it is required`,
+            'QUERY_INVALID',
+          );
+        }
+        /** -------- End -------- */
+
+        /** Handle update */
+        // TODO: Implement update
 
         /** -------- End -------- */
       }
@@ -1524,7 +1749,10 @@ export class QueryService {
 
     return {
       all: mutations,
-      current: mutationObj,
+      current:
+        mutation.type === 'upsert'
+          ? [dataObjs[0].mutation]
+          : dataObjs.map((d) => d.mutation),
     };
   }
 
@@ -1698,20 +1926,13 @@ export class QueryService {
       );
     }
 
-    if (
-      mutation.type === 'create' ||
-      mutation.type === 'update' ||
-      mutation.type === 'delete' ||
-      mutation.type === 'upsert'
-    ) {
-      const mutations = await this.processMutation(
-        mutation as BaseQuery<SingleMutationType>,
-        session,
-        prisma,
-      );
+    const mutations = await this.processMutation(
+      mutation as BaseQuery<SingleMutationType>,
+      session,
+      prisma,
+    );
 
-      return mutations.all.map((m) => pick(m, 'type', 'target', 'query'));
-    }
+    return mutations.all.map((m) => pick(m, 'type', 'target', 'query'));
 
     return mutation.query;
   }

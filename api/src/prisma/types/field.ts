@@ -4,6 +4,7 @@ export interface Field {
   kind: DMMF.FieldKind;
   name: string;
   isList: boolean;
+  isRequired: boolean;
   type: string;
   relationFromFields?: string[];
   relationToFields?: any[];
