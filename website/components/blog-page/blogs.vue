@@ -37,7 +37,7 @@ export default defineComponent({
           'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
         dateLabel: "blogs['date-label']",
         date: 'blogs.blog1.date',
-        link: '#',
+        link: '/blog/blog-1',
         linkText: 'blogs.blog1.linkText',
       },
       {
@@ -48,7 +48,7 @@ export default defineComponent({
           'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
         dateLabel: "blogs['date-label']",
         date: 'blogs.blog2.date',
-        link: '#',
+        link: '/blog/blog-2',
         linkText: 'blogs.blog2.linkText',
       },
       {
@@ -59,7 +59,7 @@ export default defineComponent({
           'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
         dateLabel: "blogs['date-label']",
         date: 'blogs.blog3.date',
-        link: '#',
+        link: '/blog/blog-3',
         linkText: 'blogs.blog3.linkText',
       },
     ];
