@@ -44,7 +44,10 @@ export class HelperService {
   }
 
   public generateRandomNumber(length = 3): Promise<number> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (length <= 0) {
+        reject(new Error('length must be greater than 0'));
+      }
       resolve(
         Math.floor(
           Math.pow(10, length - 1) +
