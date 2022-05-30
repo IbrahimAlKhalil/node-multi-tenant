@@ -10,15 +10,14 @@ import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import fs from 'fs/promises';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 @Injectable()
 export class PrismaService {
   constructor(
     private readonly instituteService: InstituteService,
     private readonly config: Config,
   ) {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
     // Remove old instances that are not used for a while
     setInterval(() => {
       const now = Date.now();
@@ -34,11 +33,15 @@ export class PrismaService {
       }
     }, 5 * 60 * 1000);
 
-    fs.readFile(path.resolve(__dirname, '../../prisma/prisma.json'), 'utf-8').then(data => {
+    fs.readFile(
+      path.resolve(__dirname, '../../prisma/prisma.json'),
+      'utf-8',
+    ).then((data) => {
       const models = JSON.parse(data) as Model[];
 
       for (const model of models) {
-        const camelCaseModelName = (model.name.charAt(0).toLowerCase() + model.name.slice(1)) as ModelNames;
+        const camelCaseModelName = (model.name.charAt(0).toLowerCase() +
+          model.name.slice(1)) as ModelNames;
         this.models[camelCaseModelName] = model;
         this.modelsOriginal[model.name] = model;
         this.modelsNameMap[model.name] = camelCaseModelName;
