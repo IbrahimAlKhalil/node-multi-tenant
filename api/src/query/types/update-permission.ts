@@ -13,7 +13,7 @@ export interface PermissionDefinition<
   N extends ModelNames,
   S extends ModelState = 'processed',
   P = Partial<Parameters<PrismaClient[N]['updateMany']>[0]>,
-  T = Partial<Parameters<PrismaClient[N]['findMany']>[0]>,
+  T = Partial<Parameters<PrismaClient[N]['findFirst']>[0]>,
   PermissionFn = (
     session: Session,
     query: P,
