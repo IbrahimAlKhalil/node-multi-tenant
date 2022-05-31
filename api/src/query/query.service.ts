@@ -2117,7 +2117,7 @@ export class QueryService {
   private async applyValidation(
     mutation: Mutation<'create' | 'update' | 'upsert'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     const permission =
       mutation.type === 'create' || mutation.type === 'update'
@@ -2169,13 +2169,21 @@ export class QueryService {
   private async findItemToMutate(
     mutation: Mutation<'delete' | 'update' | 'upsert'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     const findQuery: Record<string, any> = {
       where: {
         AND: [],
       },
     };
+
+    if (mutation.query.select) {
+      findQuery.select = mutation.query.select;
+    }
+
+    if (mutation.query.include) {
+      findQuery.include = mutation.query.include;
+    }
 
     if (mutation.query.where) {
       findQuery.where.AND.push(
@@ -2421,7 +2429,7 @@ export class QueryService {
   public async create(
     mutation: Mutation<'create'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     // Apply joi validation
     QueryService.validateSchema(mutation);
@@ -2447,7 +2455,7 @@ export class QueryService {
   public async update(
     mutation: Mutation<'update'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     // Apply joi validation
     QueryService.validateSchema(mutation);
@@ -2477,7 +2485,7 @@ export class QueryService {
   public async delete(
     mutation: Mutation<'delete'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     // Find item to update
     await this.findItemToMutate(mutation, session, trx);
@@ -2496,7 +2504,7 @@ export class QueryService {
   public async upsert(
     mutation: Mutation<'upsert'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     // Apply joi validation
     QueryService.validateSchema(mutation);
@@ -2548,7 +2556,7 @@ export class QueryService {
   public async updateMany(
     mutation: Mutation<'updateMany'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ) {
     // TODO: Implement updateMany
   }
@@ -2556,7 +2564,7 @@ export class QueryService {
   public async deleteMany(
     mutation: Mutation<'deleteMany'>,
     session: Session,
-    trx: TransactionClient,
+    trx: PrismaClient | TransactionClient,
   ) {
     // TODO: Implement updateMany
   }
@@ -2610,19 +2618,41 @@ export class QueryService {
       );
     }
 
-    const mutations = await this.processMutation<MutationType>(
-      mutation,
-      session,
-      prisma,
-    );
+    const mutations = await this.processMutation(mutation, session, prisma);
 
     if (
-      select &&
-      (mutation.type === 'delete' || mutation.type === 'deleteMany')
+      mutation.type === 'delete' ||
+      mutation.type === 'deleteMany' ||
+      mutation.type === 'updateMany'
     ) {
-      for (const mutation of mutations.current) {
-        mutation.select = select;
+      if (select) {
+        for (const mutation of mutations.current) {
+          mutation.query.select = select;
+        }
       }
+
+      if (include) {
+        for (const mutation of mutations.current) {
+          mutation.query.include = include;
+        }
+      }
+    }
+
+    if (mutation.type === 'delete') {
+      await this.delete(
+        mutations.current[0] as Mutation<'delete'>,
+        session,
+        prisma,
+      );
+
+      if (!mutations.current[0].oldData) {
+        throw new WsException(
+          `Item to delete is not found`,
+          'RECORD_NOT_FOUND',
+        );
+      }
+
+      return mutations.current[0].oldData;
     }
 
     if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
@@ -2645,17 +2675,6 @@ export class QueryService {
         );
       }
     });
-
-    if (mutation.type === 'delete') {
-      if (!mutations.current[0].oldData) {
-        throw new WsException(
-          `Item to delete is not found`,
-          'RECORD_NOT_FOUND',
-        );
-      }
-
-      return mutations.current[0].oldData;
-    }
 
     if (!select && !include) {
       if (mutation.type === 'createMany') {

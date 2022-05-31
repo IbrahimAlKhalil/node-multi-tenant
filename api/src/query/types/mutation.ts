@@ -25,6 +25,5 @@ export interface Mutation<M extends MutationType = MutationType> {
   oldData: Record<string, any> | null;
   newData: Record<string, any> | null;
   schema?: ObjectSchema;
-  select?: Record<string, any>;
   parents?: Parent[];
 }
