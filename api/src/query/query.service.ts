@@ -1921,7 +1921,7 @@ export class QueryService {
         /** -------- End -------- */
 
         /** Handle delete */
-        if (relation.right.type === 'many' && fieldData.delete) {
+        if (!relation.left.field.isRequired && fieldData.delete) {
           const deletes = Array.isArray(fieldData.delete)
             ? fieldData.delete
             : [fieldData.delete];
@@ -1957,7 +1957,7 @@ export class QueryService {
           }
         } else if (fieldData.delete) {
           throw new WsException(
-            `Cannot delete relation "${relationField}"`,
+            `Cannot delete required relation "${relationField}"`,
             'QUERY_INVALID',
           );
         }
@@ -2047,43 +2047,6 @@ export class QueryService {
     }
   }
 
-  private async applyMutationPermission(
-    mutation: Mutation<'delete' | 'update'>,
-    session: Session,
-    where: Record<string, any>,
-  ): Promise<void> {
-    const permission = mutation.permission[mutation.type];
-
-    if (permission && permission !== true && permission.permission) {
-      if (typeof permission.permission === 'function') {
-        const permissionQuery = await permission.permission(
-          session,
-          mutation.query,
-          this.moduleRef,
-        );
-
-        if (!permissionQuery) {
-          throw new WsException(
-            `You don't have permission to do a "${mutation.type}" on model "${mutation.target}"`,
-            'PERMISSION_DENIED',
-          );
-        }
-
-        if (permissionQuery !== true) {
-          where.AND.push(
-            await permission.permission(
-              session,
-              mutation.query,
-              this.moduleRef,
-            ),
-          );
-        }
-      } else {
-        where.AND.push(permission.permission);
-      }
-    }
-  }
-
   private async applyValidation(
     mutation: Mutation<'create' | 'update'>,
     session: Session,
@@ -2127,6 +2090,95 @@ export class QueryService {
             'VALIDATION_FAILED',
           );
         }
+      }
+    }
+  }
+
+  private async findItemToMutate(
+    mutation: Mutation<'delete' | 'update'>,
+    session: Session,
+    trx: TransactionClient,
+  ): Promise<void> {
+    const findQuery: Record<string, any> = {
+      where: {
+        AND: [],
+      },
+    };
+
+    if (mutation.query.where) {
+      findQuery.where.AND.push(
+        QueryService.flattenUniqueWhere(mutation.query.where),
+      );
+    }
+
+    if (mutation.parents) {
+      for (const parent of mutation.parents) {
+        const where: Record<string, any> = {};
+        const length = parent.relation.fKeyHolder.fieldsFrom.length;
+
+        if (parent.relation.right === parent.relation.fKeyHolder) {
+          for (let i = 0; i < length; i++) {
+            where[parent.relation.fKeyHolder.fieldsFrom[i]] =
+              parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
+          }
+        } else {
+          for (let i = 0; i < length; i++) {
+            where[parent.relation.fKeyHolder.fieldsTo[i]] =
+              parent.mutation.newData?.[
+                parent.relation.fKeyHolder.fieldsFrom[i]
+              ];
+          }
+        }
+
+        findQuery.where.AND.push(where);
+      }
+    }
+
+    // Apply permission
+    const permission = mutation.permission[mutation.type];
+
+    if (permission && permission !== true && permission.permission) {
+      if (typeof permission.permission === 'function') {
+        const permissionQuery = await permission.permission(
+          session,
+          mutation.query,
+          this.moduleRef,
+        );
+
+        if (!permissionQuery) {
+          throw new WsException(
+            `You don't have permission to do a "${mutation.type}" on model "${mutation.target}"`,
+            'PERMISSION_DENIED',
+          );
+        }
+
+        if (permissionQuery !== true) {
+          findQuery.where.AND.push(
+            await permission.permission(
+              session,
+              mutation.query,
+              this.moduleRef,
+            ),
+          );
+        }
+      } else {
+        findQuery.where.AND.push(permission.permission);
+      }
+    }
+
+    mutation.oldData = await (trx[mutation.target] as any).findFirst(findQuery);
+
+    if (mutation.oldData) {
+      mutation.query.where = {};
+      let where: Record<string, any> = mutation.query.where;
+
+      if (mutation.model.primaryKey.length > 1) {
+        where = {};
+        mutation.query.where[mutation.model.primaryKey.join('_')] = where;
+      }
+
+      for (const key of mutation.model.primaryKey) {
+        where[key] = mutation.oldData[key];
       }
     }
   }
@@ -2296,13 +2348,7 @@ export class QueryService {
     // Apply validation
     await this.applyValidation(mutation, session, trx);
 
-    const eventPayload = pick(
-      mutation,
-      'newData',
-      'oldData',
-      'query',
-      'target',
-    );
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
     (eventPayload as any).session = session;
     this.eventEmitter.emitAsync(`${mutation.target}.create`, eventPayload);
   }
@@ -2318,60 +2364,11 @@ export class QueryService {
     // Apply presets
     await this.applyPreset(mutation, session);
 
-    const findQuery: Record<string, any> = {
-      where: {
-        AND: [],
-      },
-    };
-
-    if (mutation.query.where) {
-      findQuery.where.AND.push(
-        QueryService.flattenUniqueWhere(mutation.query.where),
-      );
-    }
-
-    if (mutation.parents) {
-      for (const parent of mutation.parents) {
-        const where: Record<string, any> = {};
-        const length = parent.relation.fKeyHolder.fieldsFrom.length;
-
-        if (parent.relation.right === parent.relation.fKeyHolder) {
-          for (let i = 0; i < length; i++) {
-            where[parent.relation.fKeyHolder.fieldsFrom[i]] =
-              parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
-          }
-        } else {
-          for (let i = 0; i < length; i++) {
-            where[parent.relation.fKeyHolder.fieldsTo[i]] =
-              parent.mutation.newData?.[
-                parent.relation.fKeyHolder.fieldsFrom[i]
-              ];
-          }
-        }
-
-        findQuery.where.AND.push(where);
-      }
-    }
-
-    // Apply permission
-    await this.applyMutationPermission(mutation, session, findQuery.where);
-
-    mutation.oldData = await (trx[mutation.target] as any).findFirst(findQuery);
+    // Find item to update
+    await this.findItemToMutate(mutation, session, trx);
 
     if (!mutation.oldData) {
       return;
-    }
-
-    mutation.query.where = {};
-    let where: Record<string, any> = mutation.query.where;
-
-    if (mutation.model.primaryKey.length > 1) {
-      where = {};
-      mutation.query.where[mutation.model.primaryKey.join('_')] = where;
-    }
-
-    for (const key of mutation.model.primaryKey) {
-      where[key] = mutation.oldData[key];
     }
 
     mutation.newData = await (trx[mutation.target] as any).update(
@@ -2381,14 +2378,7 @@ export class QueryService {
     // Apply validation
     await this.applyValidation(mutation, session, trx);
 
-    const eventPayload = pick(
-      mutation,
-      'newData',
-      'oldData',
-      'query',
-      'target',
-      'type',
-    );
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
     (eventPayload as any).session = session;
     this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
   }
