@@ -18,6 +18,15 @@ export default defineModel<ClassI18n, 'classI18n'>({
       create: {
         fields: 'ALL.read',
       },
+      delete: {
+        permission: {
+          where: {
+            classId: {
+              not: 27,
+            },
+          },
+        },
+      },
     },
   },
 });

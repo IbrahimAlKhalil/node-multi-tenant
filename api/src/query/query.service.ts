@@ -1948,7 +1948,19 @@ export class QueryService {
         /** -------- End -------- */
 
         /** Handle delete */
-        if (!relation.left.field.isRequired && fieldData.delete) {
+        if (fieldData.delete) {
+          if (
+            relation.left === relation.fKeyHolder &&
+            relation.left.field.isRequired
+          ) {
+            throw new WsException(
+              `Cannot delete relation "${relationField}" because it is required`,
+              'QUERY_INVALID',
+            );
+          }
+
+          // TODO: Handle circular relations
+
           const deletes = Array.isArray(fieldData.delete)
             ? fieldData.delete
             : [fieldData.delete];
@@ -1982,11 +1994,6 @@ export class QueryService {
 
             mutations.push(..._mutations.all);
           }
-        } else if (fieldData.delete) {
-          throw new WsException(
-            `Cannot delete required relation "${relationField}"`,
-            'QUERY_INVALID',
-          );
         }
         /** -------- End -------- */
 
@@ -2222,15 +2229,19 @@ export class QueryService {
 
         if (permissionQuery !== true) {
           findQuery.where.AND.push(
-            await permission.permission(
-              session,
-              mutation.query,
-              this.moduleRef,
-            ),
+            (
+              await permission.permission(
+                session,
+                mutation.query,
+                this.moduleRef,
+              )
+            ).where,
           );
         }
       } else {
-        findQuery.where.AND.push(permission.permission);
+        findQuery.where.AND.push(
+          (permission.permission as Record<string, any>).where,
+        );
       }
     }
 
@@ -2563,8 +2574,9 @@ export class QueryService {
     session: Session,
   ): Promise<any> {
     let select: Record<string, any> | null = null;
+    let include: Record<string, any> | null = null;
 
-    if (mutation.query.select) {
+    if (mutation.query.select || mutation.query.include) {
       // Process select and include
       const selectQueue: BaseQuery[] | null = [mutation];
 
@@ -2591,7 +2603,9 @@ export class QueryService {
 
       // Backup root query's selections
       select = mutation.query.select;
+      include = mutation.query.include;
       delete mutation.query.select;
+      delete mutation.query.include;
     }
 
     // Acquire prisma client
@@ -2642,7 +2656,7 @@ export class QueryService {
       return mutations.current[0].oldData;
     }
 
-    if (!select) {
+    if (!select && !include) {
       if (mutation.type === 'createMany') {
         return mutations.current.map((m) => m.newData);
       }
@@ -2654,8 +2668,15 @@ export class QueryService {
     const model = this.prismaService.models[mutation.model]!;
     const query: Record<string, any> = {
       where: {},
-      select,
     };
+
+    if (select) {
+      query.select = select;
+    }
+
+    if (include) {
+      query.include = include;
+    }
 
     if (mutation.type === 'createMany') {
       query.where.OR = [];
