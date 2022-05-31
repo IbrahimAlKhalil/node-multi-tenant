@@ -1836,45 +1836,72 @@ export class QueryService {
               );
             }
 
-            let query: Record<string, any> = {};
-
-            if (relation.right.type === 'many') {
-              query = upsert;
-            } else {
-              query.update = upsert.update;
-              query.create = upsert.create;
+            if (!upsert.create) {
+              upsert.create = {};
             }
 
-            if (relation.right.type === 'many' && !query.where) {
-              query.where = {};
+            if (!upsert.update) {
+              upsert.update = {};
             }
 
-            if (!query.create) {
-              query.create = {};
-            }
+            /** One-to-many or One-to-one where right side is the foreign-key holder */
+            if (
+              relation.left.type === 'one' &&
+              relation.fKeyHolder === relation.right
+            ) {
+              if (!upsert.where) {
+                upsert.where = {};
+              }
 
-            if (!query.update) {
-              query.update = {};
-            }
-
-            const _mutations = await this.processMutation<M>(
-              {
-                model: relation.right.target,
-                type: 'upsert' as M,
-                query,
-              },
-
-              session,
-              prisma,
-              [
+              const _mutations = await this.processMutation<M>(
                 {
-                  mutation: mutationObj,
-                  relation,
+                  model: relation.right.target,
+                  type: 'upsert' as M,
+                  query: upsert,
                 },
-              ],
-            );
 
-            mutations.push(..._mutations.all);
+                session,
+                prisma,
+                [
+                  {
+                    mutation: mutationObj,
+                    relation,
+                  },
+                ],
+              );
+
+              mutations.push(..._mutations.all);
+            } else {
+              /** One-to-one/Many-to-one */
+
+              delete upsert.where;
+
+              const _mutations = await this.processMutation(
+                {
+                  model: relation.right.target,
+                  type: 'upsert',
+                  query: upsert,
+                },
+                session,
+                prisma,
+              );
+
+              if (!mutationObj.parents) {
+                mutationObj.parents = [];
+              }
+
+              mutationObj.parents.push({
+                mutation: _mutations.current[0],
+                relation,
+              });
+
+              // Add parent mutations before the current mutation
+              mutations.splice(
+                mutations.indexOf(mutationObj as Mutation<M>),
+                0,
+                ...(_mutations.all as Mutation<M>[]),
+              );
+            }
           }
         }
         /** -------- End -------- */
@@ -2017,42 +2044,80 @@ export class QueryService {
     };
   }
 
-  private static validateSchema(mutation: Mutation<'create' | 'update'>): void {
+  private static validateSchema(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+  ): void {
     if (mutation.schema) {
-      const validation = mutation.schema.validate(mutation.query.data, {
-        abortEarly: true,
-      });
+      const data: Record<string, any>[] =
+        mutation.type === 'upsert'
+          ? [mutation.query.create, mutation.query.update]
+          : [mutation.query.data];
 
-      if (validation.error) {
-        throw new WsException(validation.error.message, 'VALIDATION_FAILED');
+      for (const d of data) {
+        const validation = mutation.schema.validate(d, {
+          abortEarly: true,
+        });
+
+        if (validation.error) {
+          throw new WsException(validation.error.message, 'VALIDATION_FAILED');
+        }
       }
     }
   }
 
   private async applyPreset(
-    mutation: Mutation<'create' | 'update'>,
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
     session: Session,
   ): Promise<void> {
-    const permission = mutation.permission[mutation.type];
+    const createPermission = mutation.permission.create;
+    const updatePermission = mutation.permission.update;
+    const createData =
+      mutation.type === 'upsert' ? mutation.query.create : mutation.query.data;
+    const updateData =
+      mutation.type === 'upsert' ? mutation.query.update : mutation.query.data;
 
-    if (permission && permission !== true) {
-      if (typeof permission.preset === 'function') {
+    if (createPermission && createPermission !== true) {
+      if (typeof createPermission.preset === 'function') {
         merge(
-          mutation.query.data,
-          await permission.preset(session, mutation.query, this.moduleRef),
+          createData,
+          await createPermission.preset(
+            session,
+            mutation.query,
+            this.moduleRef,
+          ),
         );
-      } else if (typeof permission.preset === 'object') {
-        merge(mutation.query.data, permission.preset);
+      } else if (typeof createPermission.preset === 'object') {
+        merge(createData, createPermission.preset);
+      }
+    }
+
+    if (updatePermission && updatePermission !== true) {
+      if (typeof updatePermission.preset === 'function') {
+        merge(
+          updateData,
+          await updatePermission.preset(
+            session,
+            mutation.query,
+            this.moduleRef,
+          ),
+        );
+      } else if (typeof updatePermission.preset === 'object') {
+        merge(updateData, updatePermission.preset);
       }
     }
   }
 
   private async applyValidation(
-    mutation: Mutation<'create' | 'update'>,
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
     session: Session,
     trx: TransactionClient,
-  ) {
-    const permission = mutation.permission[mutation.type];
+  ): Promise<void> {
+    const permission =
+      mutation.type === 'create' || mutation.type === 'update'
+        ? mutation.permission[mutation.type]
+        : !mutation.oldData
+        ? mutation.permission.create
+        : mutation.permission.update;
 
     if (permission && permission !== true && permission.validation) {
       let validationQuery: Record<string, any> | boolean;
@@ -2095,7 +2160,7 @@ export class QueryService {
   }
 
   private async findItemToMutate(
-    mutation: Mutation<'delete' | 'update'>,
+    mutation: Mutation<'delete' | 'update' | 'upsert'>,
     session: Session,
     trx: TransactionClient,
   ): Promise<void> {
@@ -2135,7 +2200,10 @@ export class QueryService {
     }
 
     // Apply permission
-    const permission = mutation.permission[mutation.type];
+    const permission =
+      mutation.permission[
+        mutation.type === 'upsert' ? 'update' : mutation.type
+      ];
 
     if (permission && permission !== true && permission.permission) {
       if (typeof permission.permission === 'function') {
@@ -2179,6 +2247,26 @@ export class QueryService {
 
       for (const key of mutation.model.primaryKey) {
         where[key] = mutation.oldData[key];
+      }
+    }
+  }
+
+  private static connectMutationParent(
+    mutation: Mutation<'create' | 'upsert'>,
+  ): void {
+    if (mutation.parents) {
+      const data =
+        mutation.type === 'upsert'
+          ? mutation.query.create
+          : mutation.query.data;
+
+      for (const parent of mutation.parents) {
+        const length = parent.relation.fKeyHolder.fieldsFrom.length;
+
+        for (let i = 0; i < length; i++) {
+          data[parent.relation.fKeyHolder.fieldsFrom[i]] =
+            parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
+        }
       }
     }
   }
@@ -2330,16 +2418,8 @@ export class QueryService {
     // Apply presets
     await this.applyPreset(mutation, session);
 
-    if (mutation.parents) {
-      for (const parent of mutation.parents) {
-        const length = parent.relation.fKeyHolder.fieldsFrom.length;
-
-        for (let i = 0; i < length; i++) {
-          mutation.query.data[parent.relation.fKeyHolder.fieldsFrom[i]] =
-            parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
-        }
-      }
-    }
+    // Connect parent
+    QueryService.connectMutationParent(mutation);
 
     mutation.newData = await (trx[mutation.target] as any).create(
       mutation.query,
@@ -2406,8 +2486,52 @@ export class QueryService {
     mutation: Mutation<'upsert'>,
     session: Session,
     trx: TransactionClient,
-  ) {
-    // TODO: Implement upsert
+  ): Promise<void> {
+    // Apply joi validation
+    QueryService.validateSchema(mutation);
+
+    // Apply presets
+    await this.applyPreset(mutation, session);
+
+    // Find item to update
+    await this.findItemToMutate(mutation, session, trx);
+
+    if (!mutation.oldData) {
+      QueryService.connectMutationParent(mutation);
+
+      mutation.newData = await (trx[mutation.target] as any).create({
+        data: mutation.query.create,
+      });
+
+      // Apply validation
+      await this.applyValidation(mutation, session, trx);
+
+      const eventPayload = pick(
+        mutation,
+        'newData',
+        'oldData',
+        'target',
+        'type',
+      );
+      (eventPayload as any).session = session;
+      (eventPayload as any).type = 'create';
+      this.eventEmitter.emitAsync(`${mutation.target}.create`, eventPayload);
+
+      return;
+    }
+
+    mutation.newData = await (trx[mutation.target] as any).update({
+      where: mutation.query.where,
+      data: mutation.query.update,
+    });
+
+    // Apply validation
+    await this.applyValidation(mutation, session, trx);
+
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    (eventPayload as any).session = session;
+    (eventPayload as any).type = 'update';
+    this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
   }
 
   public async createMany(
