@@ -12,6 +12,7 @@ export default defineModel<Class, 'class'>({
       read: true,
       create: true,
       update: true,
+      delete: true,
     },
   },
 });

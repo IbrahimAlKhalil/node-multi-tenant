@@ -3,18 +3,21 @@ import { PermissionDefinition as DeletePermission } from './types/delete-permiss
 import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
 import { FKeyHolder, Relation, RelationAnalyzed } from './types/relation';
+import { BaseQuery, MutationType, QueryType } from './schema/base-query';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { WsException } from '../exceptions/ws-exception.js';
 import { ClassifyOptions } from './types/classify-options';
+import { Prisma, PrismaClient } from '../../prisma/client';
 import { ClassifyResult } from './types/classify-result';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import TransactionClient = Prisma.TransactionClient;
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaClient } from '../../prisma/client';
+import { Mutation, Parent } from './types/mutation';
 import { FieldClass } from './types/field-class';
 import { ModelNames } from './types/model-names';
 import { Actions, Model } from './types/model';
 import { Field } from '../prisma/types/field';
 import cloneDeep from 'lodash/cloneDeep.js';
-import { Mutation } from './types/mutation';
 import { Session } from '../types/session';
 import isObject from 'lodash/isObject.js';
 import { ModuleRef } from '@nestjs/core';
@@ -24,13 +27,6 @@ import { fileURLToPath } from 'url';
 import pick from 'lodash/pick.js';
 import fs from 'fs/promises';
 import path from 'path';
-
-import {
-  BaseQuery,
-  MutationType,
-  QueryType,
-  SingleMutationType,
-} from './schema/base-query';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -48,6 +44,7 @@ type Permission<T extends keyof Actions<any, any>> = T extends 'read'
 export class QueryService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly moduleRef: ModuleRef,
   ) {
     // Load models
@@ -712,46 +709,6 @@ export class QueryService {
     return true;
   }
 
-  private async applyPreset(
-    action: Exclude<keyof Actions<any, any>, 'subscribe' | 'delete' | 'read'>,
-    session: Session,
-    baseQuery: BaseQuery,
-    permissionModel: Model<any, any>,
-  ): Promise<void> {
-    const permission = QueryService.getActionPermission(
-      action,
-      baseQuery.model,
-      permissionModel,
-      session,
-    );
-
-    if (permission === true) {
-      return;
-    }
-
-    let preset: any;
-
-    if (typeof permission.preset === 'function') {
-      preset = await permission.preset(
-        session,
-        baseQuery.query,
-        this.moduleRef,
-      );
-    } else {
-      preset = cloneDeep(permission.preset);
-    }
-
-    if (!preset) {
-      return;
-    }
-
-    if (baseQuery.query.data) {
-      merge(baseQuery.query.data, preset);
-    } else {
-      baseQuery.query.data = preset;
-    }
-  }
-
   private checkOrderBy(baseQuery: BaseQuery, session: Session): void {
     const orderBys = Array.isArray(baseQuery.query.orderBy)
       ? baseQuery.query.orderBy
@@ -984,7 +941,7 @@ export class QueryService {
       }
 
       throw new WsException(
-        `You can't use "${field}" in unique where clause.`,
+        `"${field}" is not a unique field in model "${modelName}" or it doesn't exist.`,
         'QUERY_INVALID',
       );
     }
@@ -1007,13 +964,12 @@ export class QueryService {
     return flattenWhere;
   }
 
-  private async processMutation(
-    mutation: Omit<BaseQuery<MutationType>, 'subscribe'>,
+  private async processMutation<M extends MutationType = MutationType>(
+    mutation: Omit<BaseQuery<M>, 'subscribe'>,
     session: Session,
     prisma: PrismaClient,
-    parents?: Mutation[],
-    relation?: RelationAnalyzed,
-  ): Promise<{ current: Mutation[]; all: Mutation[] }> {
+    parents?: Parent[],
+  ): Promise<{ current: Mutation<M>[]; all: Mutation<M>[] }> {
     const model = this.prismaService.models[mutation.model];
     const permissionModel = this.models[mutation.model];
     const modelFields = this.prismaService.fields[mutation.model];
@@ -1052,14 +1008,13 @@ export class QueryService {
         oldData: null,
         newData: null,
         query: mutation.query,
-        relation,
         parents,
         model,
       };
 
       return {
-        current: [_delete],
-        all: [_delete],
+        current: [_delete as Mutation<M>],
+        all: [_delete as Mutation<M>],
       };
     }
     /** -------- End -------- */
@@ -1068,12 +1023,12 @@ export class QueryService {
     type DataObj<T extends Action = Action> = {
       action: T;
       data: Record<string, any>;
-      mutation: Mutation;
+      mutation: Mutation<Exclude<MutationType, 'delete' | 'deleteMany'>>;
       permission: Permission<T> | true;
       fields?: ClassifyResult<any>;
     };
 
-    const mutations: Mutation[] = [];
+    const mutations: Mutation<M>[] = [];
     const dataObjs: DataObj[] = [];
     const classes: ClassifyOptions['classes'] = {
       scalar: true,
@@ -1166,22 +1121,22 @@ export class QueryService {
         query.where = mutation.query.where;
       }
 
-      const mutationObj: Mutation = {
+      const mutationObj: Mutation<'upsert'> = {
         type: 'upsert',
         target: mutation.model,
         permission: {
           create: createObj.permission as Permission<'create'>,
           update: updateObj.permission as Permission<'update'>,
         },
+        schema: permissionModel.schema,
         oldData: null,
         newData: null,
         query,
-        relation,
         parents,
         model,
       };
 
-      mutations.push(mutationObj);
+      mutations.push(mutationObj as Mutation<M>);
       createObj.mutation = mutationObj;
       updateObj.mutation = mutationObj;
     } else {
@@ -1193,12 +1148,20 @@ export class QueryService {
         }
 
         if (mutation.query.where) {
-          this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+          if (mutation.type === 'update') {
+            this.checkUniqueWhere(
+              mutation.query.where,
+              session,
+              mutation.model,
+            );
+          } else if (mutation.type === 'updateMany') {
+            this.checkWhere(mutation.query.where, session);
+          }
 
           query.where = mutation.query.where;
         }
 
-        const mutationObj: Mutation = {
+        const mutationObj: Mutation<'create' | 'update' | 'updateMany'> = {
           type: mutation.type === 'createMany' ? 'create' : mutation.type,
           target: mutation.model,
           permission: {
@@ -1206,13 +1169,13 @@ export class QueryService {
           },
           oldData: null,
           newData: null,
+          schema: permissionModel.schema,
           query,
-          relation,
           parents,
           model,
         };
 
-        mutations.push(mutationObj);
+        mutations.push(mutationObj as Mutation<M>);
         dataObj.mutation = mutationObj;
       }
     }
@@ -1262,6 +1225,13 @@ export class QueryService {
           );
         }
 
+        if (relation.right.type !== 'many' && creates.length > 1) {
+          throw new WsException(
+            `Invalid mutation, "${relationField}" is not a many relation.`,
+            'INVALID_MUTATION',
+          );
+        }
+
         for (const create of creates) {
           if (!isObject(create)) {
             throw new WsException(
@@ -1270,21 +1240,58 @@ export class QueryService {
             );
           }
 
-          const _mutations = await this.processMutation(
-            {
-              type: 'create',
-              model: relation.right.target,
-              query: {
-                data: create,
+          if (relation.right.type === 'many') {
+            /** One-to-many */
+            const _mutations = await this.processMutation(
+              {
+                type: 'create',
+                model: relation.right.target,
+                query: {
+                  data: create,
+                },
               },
-            },
-            session,
-            prisma,
-            [mutationObj],
-            relation,
-          );
+              session,
+              prisma,
+              [
+                {
+                  mutation: mutationObj,
+                  relation,
+                },
+              ],
+            );
 
-          mutations.push(..._mutations.all);
+            mutations.push(...(_mutations.all as Mutation<M>[]));
+          } else {
+            /** One-to-one/Many-to-one */
+            const _mutations = await this.processMutation(
+              {
+                type: 'create',
+                model: relation.right.target,
+                query: {
+                  data: create,
+                },
+              },
+              session,
+              prisma,
+            );
+
+            if (!mutationObj.parents) {
+              mutationObj.parents = [];
+            }
+
+            mutationObj.parents.push({
+              mutation: _mutations.current[0],
+              relation,
+            });
+
+            // Add parent mutations before the current mutation
+            mutations.splice(
+              mutations.indexOf(mutationObj as Mutation<M>),
+              0,
+              ...(_mutations.all as Mutation<M>[]),
+            );
+          }
+          /** -------- End -------- */
         }
         /** -------- End -------- */
 
@@ -1330,7 +1337,7 @@ export class QueryService {
                 }),
               );
 
-              const update: Mutation = {
+              const update: Mutation<'update'> = {
                 type: 'update',
                 model: relation.fKeyHolder.model,
                 target: relation.fKeyHolder.target,
@@ -1338,9 +1345,15 @@ export class QueryService {
                   data: {},
                   where: connect,
                 },
-                parents: [mutationObj],
+                parents: [
+                  {
+                    mutation: mutationObj,
+                    relation,
+                  },
+                ],
                 oldData: null,
                 newData: null,
+                schema: relPermModel.schema,
                 permission: {
                   update: QueryService.getActionPermission(
                     'update',
@@ -1349,10 +1362,9 @@ export class QueryService {
                     session,
                   ),
                 },
-                relation,
               };
 
-              mutations.push(update);
+              mutations.push(update as Mutation<M>);
 
               continue;
             }
@@ -1458,9 +1470,9 @@ export class QueryService {
 
               mutations.push(
                 ...(
-                  await this.processMutation(
+                  await this.processMutation<M>(
                     {
-                      type: 'upsert',
+                      type: 'upsert' as M,
                       model: relation.fKeyHolder.target,
                       query: {
                         create: connectOrCreate.create,
@@ -1470,8 +1482,12 @@ export class QueryService {
                     },
                     session,
                     prisma,
-                    [mutationObj],
-                    relation,
+                    [
+                      {
+                        mutation: mutationObj,
+                        relation,
+                      },
+                    ],
                   )
                 ).all,
               );
@@ -1550,13 +1566,16 @@ export class QueryService {
                   mutationObj.parents = [];
                 }
 
-                mutationObj.parents.push(_mutations.current[0]);
+                mutationObj.parents.push({
+                  mutation: _mutations.current[0],
+                  relation,
+                });
 
                 // Add parent mutations before the current mutation
                 mutations.splice(
-                  mutations.indexOf(mutationObj),
+                  mutations.indexOf(mutationObj as Mutation<M>),
                   0,
-                  ..._mutations.all,
+                  ...(_mutations.all as Mutation<M>[]),
                 );
               }
             }
@@ -1573,7 +1592,7 @@ export class QueryService {
         /** -------- End -------- */
 
         /** Handle disconnect/set */
-        if (relation.left.field.isRequired) {
+        if (!relation.left.field.isRequired) {
           /** Disconnect */
           if (
             fieldData.disconnect === true &&
@@ -1624,15 +1643,20 @@ export class QueryService {
                 query.data[fieldFrom] = null;
               }
 
-              const update: Mutation = {
-                relation,
+              const update: Mutation<'update'> = {
                 query,
                 type: 'update',
                 model: relation.fKeyHolder.model,
                 target: relation.fKeyHolder.target,
-                parents: [mutationObj],
+                parents: [
+                  {
+                    mutation: mutationObj,
+                    relation,
+                  },
+                ],
                 newData: null,
                 oldData: null,
+                schema: relPermModel.schema,
                 permission: {
                   update: QueryService.getActionPermission(
                     'update',
@@ -1643,7 +1667,7 @@ export class QueryService {
                 },
               };
 
-              mutations.push(update);
+              mutations.push(update as Mutation<M>);
             }
           }
           /** --- End --- */
@@ -1690,13 +1714,18 @@ export class QueryService {
               type: 'updateMany',
               newData: null,
               oldData: null,
-              parents: [mutationObj],
+              parents: [
+                {
+                  mutation: mutationObj,
+                  relation,
+                },
+              ],
+              schema: relPermModel.schema,
               permission: {
                 update: permission,
               },
-              relation,
               query: disconnectQuery,
-            });
+            } as Mutation<M>);
 
             for (const set of fieldData.set) {
               if (!set || set.constructor !== Object) {
@@ -1711,10 +1740,16 @@ export class QueryService {
               mutations.push({
                 model: relation.right.model,
                 target: relation.right.target,
-                type: 'update',
+                type: 'update' as M,
                 newData: null,
                 oldData: null,
-                parents: [mutationObj],
+                parents: [
+                  {
+                    mutation: mutationObj,
+                    relation,
+                  },
+                ],
+                schema: relPermModel.schema,
                 permission: {
                   update: permission,
                 },
@@ -1740,8 +1775,269 @@ export class QueryService {
         /** -------- End -------- */
 
         /** Handle update */
-        // TODO: Implement update
+        if (fieldData.update) {
+          const updates = Array.isArray(fieldData.update)
+            ? fieldData.update
+            : [fieldData.update];
 
+          for (const update of updates) {
+            if (!update || update.constructor !== Object) {
+              throw new WsException(
+                `Invalid update data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            let query: Record<string, any> = {};
+
+            if (relation.right.type === 'many') {
+              query = update;
+            } else {
+              query.data = update;
+            }
+
+            if (relation.right.type === 'many' && !query.where) {
+              query.where = {};
+            }
+
+            const _mutations = await this.processMutation<M>(
+              {
+                model: relation.right.target,
+                type: 'update' as M,
+                query,
+              },
+
+              session,
+              prisma,
+              [
+                {
+                  mutation: mutationObj,
+                  relation,
+                },
+              ],
+            );
+
+            mutations.push(..._mutations.all);
+          }
+        }
+        /** -------- End -------- */
+
+        /** Handle upsert */
+        if (fieldData.upsert) {
+          const upserts = Array.isArray(fieldData.upsert)
+            ? fieldData.upsert
+            : [fieldData.upsert];
+
+          for (const upsert of upserts) {
+            if (!upsert || upsert.constructor !== Object) {
+              throw new WsException(
+                `Invalid upsert data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            if (!upsert.create) {
+              upsert.create = {};
+            }
+
+            if (!upsert.update) {
+              upsert.update = {};
+            }
+
+            /** One-to-many or One-to-one where right side is the foreign-key holder */
+            if (
+              relation.left.type === 'one' &&
+              relation.fKeyHolder === relation.right
+            ) {
+              if (!upsert.where) {
+                upsert.where = {};
+              }
+
+              const _mutations = await this.processMutation<M>(
+                {
+                  model: relation.right.target,
+                  type: 'upsert' as M,
+                  query: upsert,
+                },
+
+                session,
+                prisma,
+                [
+                  {
+                    mutation: mutationObj,
+                    relation,
+                  },
+                ],
+              );
+
+              mutations.push(..._mutations.all);
+            } else {
+              /** One-to-one/Many-to-one */
+
+              delete upsert.where;
+
+              const _mutations = await this.processMutation(
+                {
+                  model: relation.right.target,
+                  type: 'upsert',
+                  query: upsert,
+                },
+                session,
+                prisma,
+              );
+
+              if (!mutationObj.parents) {
+                mutationObj.parents = [];
+              }
+
+              mutationObj.parents.push({
+                mutation: _mutations.current[0],
+                relation,
+              });
+
+              // Add parent mutations before the current mutation
+              mutations.splice(
+                mutations.indexOf(mutationObj as Mutation<M>),
+                0,
+                ...(_mutations.all as Mutation<M>[]),
+              );
+            }
+          }
+        }
+        /** -------- End -------- */
+
+        /** Handle updateMany */
+        if (relation.right.type === 'many' && fieldData.updateMany) {
+          const updates = Array.isArray(fieldData.updateMany)
+            ? fieldData.updateMany
+            : [fieldData.updateMany];
+
+          for (const update of updates) {
+            if (!update || update.constructor !== Object) {
+              throw new WsException(
+                `Invalid updateMany data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            const _mutations = await this.processMutation<M>(
+              {
+                model: relation.right.target,
+                type: 'updateMany' as M,
+                query: update,
+              },
+
+              session,
+              prisma,
+              [
+                {
+                  mutation: mutationObj,
+                  relation,
+                },
+              ],
+            );
+
+            mutations.push(..._mutations.all);
+          }
+        } else if (fieldData.updateMany) {
+          throw new WsException(
+            `Cannot updateMany relation "${relationField}"`,
+            'QUERY_INVALID',
+          );
+        }
+        /** -------- End -------- */
+
+        /** Handle delete */
+        if (fieldData.delete) {
+          if (
+            relation.left === relation.fKeyHolder &&
+            relation.left.field.isRequired
+          ) {
+            throw new WsException(
+              `Cannot delete relation "${relationField}" because it is required`,
+              'QUERY_INVALID',
+            );
+          }
+
+          // TODO: Handle circular relations
+
+          const deletes = Array.isArray(fieldData.delete)
+            ? fieldData.delete
+            : [fieldData.delete];
+
+          for (const deleteData of deletes) {
+            if (!deleteData || deleteData.constructor !== Object) {
+              throw new WsException(
+                `Invalid delete data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            const _mutations = await this.processMutation<M>(
+              {
+                model: relation.right.target,
+                type: 'delete' as M,
+                query: {
+                  where: deleteData,
+                },
+              },
+
+              session,
+              prisma,
+              [
+                {
+                  mutation: mutationObj,
+                  relation,
+                },
+              ],
+            );
+
+            mutations.push(..._mutations.all);
+          }
+        }
+        /** -------- End -------- */
+
+        /** Handle deleteMany */
+        if (relation.right.type === 'many' && fieldData.deleteMany) {
+          const deletes = Array.isArray(fieldData.deleteMany)
+            ? fieldData.deleteMany
+            : [fieldData.deleteMany];
+
+          for (const deleteData of deletes) {
+            if (!deleteData || deleteData.constructor !== Object) {
+              throw new WsException(
+                `Invalid deleteMany data for relation "${relationField}"`,
+                'QUERY_INVALID',
+              );
+            }
+
+            const _mutations = await this.processMutation<M>(
+              {
+                model: relation.right.target,
+                type: 'deleteMany' as M,
+                query: {
+                  where: deleteData,
+                },
+              },
+
+              session,
+              prisma,
+              [
+                {
+                  mutation: mutationObj,
+                  relation,
+                },
+              ],
+            );
+
+            mutations.push(..._mutations.all);
+          }
+        } else if (fieldData.deleteMany) {
+          throw new WsException(
+            `Cannot deleteMany relation "${relationField}"`,
+            'QUERY_INVALID',
+          );
+        }
         /** -------- End -------- */
       }
     }
@@ -1749,11 +2045,249 @@ export class QueryService {
 
     return {
       all: mutations,
-      current:
-        mutation.type === 'upsert'
-          ? [dataObjs[0].mutation]
-          : dataObjs.map((d) => d.mutation),
+      current: (mutation.type === 'upsert'
+        ? [dataObjs[0].mutation]
+        : dataObjs.map((d) => d.mutation)) as Mutation<M>[],
     };
+  }
+
+  private static validateSchema(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+  ): void {
+    if (mutation.schema) {
+      const data: Record<string, any>[] =
+        mutation.type === 'upsert'
+          ? [mutation.query.create, mutation.query.update]
+          : [mutation.query.data];
+
+      for (const d of data) {
+        const validation = mutation.schema.validate(d, {
+          abortEarly: true,
+        });
+
+        if (validation.error) {
+          throw new WsException(validation.error.message, 'VALIDATION_FAILED');
+        }
+      }
+    }
+  }
+
+  private async applyPreset(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+    session: Session,
+  ): Promise<void> {
+    const createPermission = mutation.permission.create;
+    const updatePermission = mutation.permission.update;
+    const createData =
+      mutation.type === 'upsert' ? mutation.query.create : mutation.query.data;
+    const updateData =
+      mutation.type === 'upsert' ? mutation.query.update : mutation.query.data;
+
+    if (createPermission && createPermission !== true) {
+      if (typeof createPermission.preset === 'function') {
+        merge(
+          createData,
+          await createPermission.preset(
+            session,
+            mutation.query,
+            this.moduleRef,
+          ),
+        );
+      } else if (typeof createPermission.preset === 'object') {
+        merge(createData, createPermission.preset);
+      }
+    }
+
+    if (updatePermission && updatePermission !== true) {
+      if (typeof updatePermission.preset === 'function') {
+        merge(
+          updateData,
+          await updatePermission.preset(
+            session,
+            mutation.query,
+            this.moduleRef,
+          ),
+        );
+      } else if (typeof updatePermission.preset === 'object') {
+        merge(updateData, updatePermission.preset);
+      }
+    }
+  }
+
+  private async applyValidation(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    const permission =
+      mutation.type === 'create' || mutation.type === 'update'
+        ? mutation.permission[mutation.type]
+        : !mutation.oldData
+        ? mutation.permission.create
+        : mutation.permission.update;
+
+    if (permission && permission !== true && permission.validation) {
+      let validationQuery: Record<string, any> | boolean;
+
+      if (typeof permission.validation === 'function') {
+        validationQuery = await permission.validation(
+          session,
+          mutation.query,
+          this.moduleRef,
+        );
+      } else {
+        validationQuery = permission.validation;
+      }
+
+      if (!validationQuery) {
+        throw new WsException(
+          `Validation failed for model "${mutation.target}" while creating`,
+          'VALIDATION_FAILED',
+        );
+      }
+
+      if (validationQuery !== true) {
+        const item = await (trx[mutation.target] as any).findFirst({
+          where: {
+            AND: [
+              pick(mutation.newData, mutation.model.primaryKey),
+              validationQuery.where,
+            ],
+          },
+        });
+
+        if (!item) {
+          throw new WsException(
+            `Validation failed for model "${mutation.target}" while creating`,
+            'VALIDATION_FAILED',
+          );
+        }
+      }
+    }
+  }
+
+  private async findItemToMutate(
+    mutation: Mutation<'delete' | 'update' | 'upsert'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    const findQuery: Record<string, any> = {
+      where: {
+        AND: [],
+      },
+    };
+
+    if (mutation.query.select) {
+      findQuery.select = mutation.query.select;
+    }
+
+    if (mutation.query.include) {
+      findQuery.include = mutation.query.include;
+    }
+
+    if (mutation.query.where) {
+      findQuery.where.AND.push(
+        QueryService.flattenUniqueWhere(mutation.query.where),
+      );
+    }
+
+    if (mutation.parents) {
+      for (const parent of mutation.parents) {
+        const where: Record<string, any> = {};
+        const length = parent.relation.fKeyHolder.fieldsFrom.length;
+
+        if (parent.relation.right === parent.relation.fKeyHolder) {
+          for (let i = 0; i < length; i++) {
+            where[parent.relation.fKeyHolder.fieldsFrom[i]] =
+              parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
+          }
+        } else {
+          for (let i = 0; i < length; i++) {
+            where[parent.relation.fKeyHolder.fieldsTo[i]] =
+              parent.mutation.newData?.[
+                parent.relation.fKeyHolder.fieldsFrom[i]
+              ];
+          }
+        }
+
+        findQuery.where.AND.push(where);
+      }
+    }
+
+    // Apply permission
+    const permission =
+      mutation.permission[
+        mutation.type === 'upsert' ? 'update' : mutation.type
+      ];
+
+    if (permission && permission !== true && permission.permission) {
+      if (typeof permission.permission === 'function') {
+        const permissionQuery = await permission.permission(
+          session,
+          mutation.query,
+          this.moduleRef,
+        );
+
+        if (!permissionQuery) {
+          throw new WsException(
+            `You don't have permission to do a "${mutation.type}" on model "${mutation.target}"`,
+            'PERMISSION_DENIED',
+          );
+        }
+
+        if (permissionQuery !== true) {
+          findQuery.where.AND.push(
+            (
+              await permission.permission(
+                session,
+                mutation.query,
+                this.moduleRef,
+              )
+            ).where,
+          );
+        }
+      } else {
+        findQuery.where.AND.push(
+          (permission.permission as Record<string, any>).where,
+        );
+      }
+    }
+
+    mutation.oldData = await (trx[mutation.target] as any).findFirst(findQuery);
+
+    if (mutation.oldData) {
+      mutation.query.where = {};
+      let where: Record<string, any> = mutation.query.where;
+
+      if (mutation.model.primaryKey.length > 1) {
+        where = {};
+        mutation.query.where[mutation.model.primaryKey.join('_')] = where;
+      }
+
+      for (const key of mutation.model.primaryKey) {
+        where[key] = mutation.oldData[key];
+      }
+    }
+  }
+
+  private static connectMutationParent(
+    mutation: Mutation<'create' | 'upsert'>,
+  ): void {
+    if (mutation.parents) {
+      const data =
+        mutation.type === 'upsert'
+          ? mutation.query.create
+          : mutation.query.data;
+
+      for (const parent of mutation.parents) {
+        const length = parent.relation.fKeyHolder.fieldsFrom.length;
+
+        for (let i = 0; i < length; i++) {
+          data[parent.relation.fKeyHolder.fieldsFrom[i]] =
+            parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
+        }
+      }
+    }
   }
 
   public async find(
@@ -1880,41 +2414,199 @@ export class QueryService {
       );
     }
 
-    return (prisma[rootQuery.model][rootQuery.type] as any)(rootQuery.query);
+    try {
+      return await (prisma[rootQuery.model][rootQuery.type] as any)(
+        rootQuery.query,
+      );
+    } catch (e) {
+      throw new WsException(
+        'Something went wrong while executing query, please contact support',
+        'PRISMA_ERROR',
+      );
+    }
+  }
+
+  public async create(
+    mutation: Mutation<'create'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    // Apply joi validation
+    QueryService.validateSchema(mutation);
+
+    // Apply presets
+    await this.applyPreset(mutation, session);
+
+    // Connect parent
+    QueryService.connectMutationParent(mutation);
+
+    mutation.newData = await (trx[mutation.target] as any).create(
+      mutation.query,
+    );
+
+    // Apply validation
+    await this.applyValidation(mutation, session, trx);
+
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    (eventPayload as any).session = session;
+    this.eventEmitter.emitAsync(`${mutation.target}.create`, eventPayload);
+  }
+
+  public async update(
+    mutation: Mutation<'update'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    // Apply joi validation
+    QueryService.validateSchema(mutation);
+
+    // Apply presets
+    await this.applyPreset(mutation, session);
+
+    // Find item to update
+    await this.findItemToMutate(mutation, session, trx);
+
+    if (!mutation.oldData) {
+      return;
+    }
+
+    mutation.newData = await (trx[mutation.target] as any).update(
+      mutation.query,
+    );
+
+    // Apply validation
+    await this.applyValidation(mutation, session, trx);
+
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    (eventPayload as any).session = session;
+    this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
+  }
+
+  public async delete(
+    mutation: Mutation<'delete'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    // Find item to update
+    await this.findItemToMutate(mutation, session, trx);
+
+    if (!mutation.oldData) {
+      return;
+    }
+
+    await (trx[mutation.target] as any).delete(mutation.query);
+
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    (eventPayload as any).session = session;
+    this.eventEmitter.emitAsync(`${mutation.target}.delete`, eventPayload);
+  }
+
+  public async upsert(
+    mutation: Mutation<'upsert'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    // Apply joi validation
+    QueryService.validateSchema(mutation);
+
+    // Apply presets
+    await this.applyPreset(mutation, session);
+
+    // Find item to update
+    await this.findItemToMutate(mutation, session, trx);
+
+    if (!mutation.oldData) {
+      QueryService.connectMutationParent(mutation);
+
+      mutation.newData = await (trx[mutation.target] as any).create({
+        data: mutation.query.create,
+      });
+
+      // Apply validation
+      await this.applyValidation(mutation, session, trx);
+
+      const eventPayload = pick(
+        mutation,
+        'newData',
+        'oldData',
+        'target',
+        'type',
+      );
+      (eventPayload as any).session = session;
+      (eventPayload as any).type = 'create';
+      this.eventEmitter.emitAsync(`${mutation.target}.create`, eventPayload);
+
+      return;
+    }
+
+    mutation.newData = await (trx[mutation.target] as any).update({
+      where: mutation.query.where,
+      data: mutation.query.update,
+    });
+
+    // Apply validation
+    await this.applyValidation(mutation, session, trx);
+
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    (eventPayload as any).session = session;
+    (eventPayload as any).type = 'update';
+    this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
+  }
+
+  public async updateMany(
+    mutation: Mutation<'updateMany'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ) {
+    // TODO: Implement updateMany
+  }
+
+  public async deleteMany(
+    mutation: Mutation<'deleteMany'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ) {
+    // TODO: Implement updateMany
   }
 
   public async mutate(
     mutation: Omit<BaseQuery<MutationType>, 'subscribe'>,
     session: Session,
   ): Promise<any> {
-    // Process select and include
-    let selectQueue: BaseQuery[] | null = [mutation];
+    let select: Record<string, any> | null = null;
+    let include: Record<string, any> | null = null;
 
-    for (let q = 0; q < selectQueue.length; q++) {
-      const baseQuery = selectQueue[q];
-      const modelFields = this.prismaService.fields[baseQuery.model];
+    if (mutation.query.select || mutation.query.include) {
+      // Process select and include
+      const selectQueue: BaseQuery[] | null = [mutation];
 
-      if (!modelFields) {
-        // Permission for this model is not defined
-        throw new WsException(
-          `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
-          'PERMISSION_DENIED',
-        );
+      for (let q = 0; q < selectQueue.length; q++) {
+        const baseQuery = selectQueue[q];
+        const modelFields = this.prismaService.fields[baseQuery.model];
+        const permissionModel = this.models[baseQuery.model];
+
+        if (!modelFields || !permissionModel) {
+          // Permission for this model is not defined
+          throw new WsException(
+            `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
+            'PERMISSION_DENIED',
+          );
+        }
+
+        if (baseQuery.query.select) {
+          this.processSelect(selectQueue, baseQuery, session, modelFields);
+        } else {
+          // Add default fields to select
+          this.addDefaultSelects(selectQueue, baseQuery, session, modelFields);
+        }
       }
 
-      if (mutation.query.select) {
-        this.processSelect(selectQueue, baseQuery, session, modelFields);
-      } else {
-        // Add default fields to select
-        this.addDefaultSelects(selectQueue, mutation, session, modelFields);
-      }
+      // Backup root query's selections
+      select = mutation.query.select;
+      include = mutation.query.include;
+      delete mutation.query.select;
+      delete mutation.query.include;
     }
-
-    // Backup root query's selections
-    const select = mutation.query.select;
-    delete mutation.query.select;
-    // Garbage collect
-    selectQueue = null;
 
     // Acquire prisma client
     const prisma = await this.prismaService.getPrisma(session.iid);
@@ -1926,14 +2618,103 @@ export class QueryService {
       );
     }
 
-    const mutations = await this.processMutation(
-      mutation as BaseQuery<SingleMutationType>,
-      session,
-      prisma,
-    );
+    const mutations = await this.processMutation(mutation, session, prisma);
 
-    return mutations.all.map((m) => pick(m, 'type', 'target', 'query'));
+    if (
+      mutation.type === 'delete' ||
+      mutation.type === 'deleteMany' ||
+      mutation.type === 'updateMany'
+    ) {
+      if (select) {
+        for (const mutation of mutations.current) {
+          mutation.query.select = select;
+        }
+      }
 
-    return mutation.query;
+      if (include) {
+        for (const mutation of mutations.current) {
+          mutation.query.include = include;
+        }
+      }
+    }
+
+    if (mutation.type === 'delete') {
+      await this.delete(
+        mutations.current[0] as Mutation<'delete'>,
+        session,
+        prisma,
+      );
+
+      if (!mutations.current[0].oldData) {
+        throw new WsException(
+          `Item to delete is not found`,
+          'RECORD_NOT_FOUND',
+        );
+      }
+
+      return mutations.current[0].oldData;
+    }
+
+    if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
+      return await prisma.$transaction(
+        async (trx) =>
+          await this[mutation.type as 'deleteMany' | 'updateMany'](
+            mutation as any,
+            session,
+            trx,
+          ),
+      );
+    }
+
+    await prisma.$transaction(async (trx) => {
+      for (const mutation of mutations.all) {
+        await this[mutation.type as Exclude<MutationType, 'createMany'>](
+          mutation as any,
+          session,
+          trx,
+        );
+      }
+    });
+
+    if (!select && !include) {
+      if (mutation.type === 'createMany') {
+        return mutations.current.map((m) => m.newData);
+      }
+
+      return mutations.current[0].newData;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const model = this.prismaService.models[mutation.model]!;
+    const query: Record<string, any> = {
+      where: {},
+    };
+
+    if (select) {
+      query.select = select;
+    }
+
+    if (include) {
+      query.include = include;
+    }
+
+    if (mutation.type === 'createMany') {
+      if (model.primaryKey.length > 1) {
+        query.where[model.primaryKey[0]] = {
+          in: mutations.current.map((m) => m.newData?.[model.primaryKey[0]]),
+        };
+      } else {
+        query.where.OR = [];
+
+        for (const m of mutations.current) {
+          query.where.OR.push(pick(m.newData, model.primaryKey));
+        }
+      }
+
+      return await (prisma[mutation.model] as any).findMany(query);
+    }
+
+    query.where = pick(mutations.current[0].newData, model.primaryKey);
+    return await (prisma[mutation.model] as any).findFirst(query);
   }
 }

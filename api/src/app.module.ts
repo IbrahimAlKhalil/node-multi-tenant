@@ -22,7 +22,9 @@ import { Module } from '@nestjs/common';
     RedisModule,
     InstituteModule,
     QueryModule,
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({
+      global: true,
+    }),
   ],
   providers: [AppService],
 })

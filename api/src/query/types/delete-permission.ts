@@ -7,7 +7,12 @@ export type PermissionDefinition<
   N extends ModelNames,
   S extends ModelState = 'processed',
 > = Pick<
-  UpdatePermission<N, N, S, Partial<Parameters<PrismaClient[N]['delete']>[0]>>,
+  UpdatePermission<
+    N,
+    N,
+    S,
+    Partial<Parameters<PrismaClient[N]['findFirst']>[0]>
+  >,
   'permission'
 >;
 

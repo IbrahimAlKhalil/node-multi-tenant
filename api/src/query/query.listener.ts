@@ -2,9 +2,9 @@ import { WsException } from '../exceptions/ws-exception.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryService } from './query.service.js';
+import { WsEvent } from '../types/ws-event.js';
 import { OnWsEvent } from '../on-ws-event.js';
 
-import { WsEvent } from '../types/ws-event.js';
 import {
   BaseQuery,
   baseQuery,
@@ -58,24 +58,20 @@ export class QueryListener {
       rol: ws.rol,
     };
 
-    try {
-      let result: any;
+    let result: any;
 
-      if (this.queryTypes.has(query.type)) {
-        result = await this.queryService.find(
-          query as BaseQuery<QueryType>,
-          session,
-        );
-      } else if (this.mutationTypes.has(query.type)) {
-        result = await this.queryService.mutate(
-          query as BaseQuery<MutationType>,
-          session,
-        );
-      }
-
-      return result;
-    } catch (e) {
-      throw new WsException(e.message, 'PRISMA_ERROR');
+    if (this.queryTypes.has(query.type)) {
+      result = await this.queryService.find(
+        query as BaseQuery<QueryType>,
+        session,
+      );
+    } else if (this.mutationTypes.has(query.type)) {
+      result = await this.queryService.mutate(
+        query as BaseQuery<MutationType>,
+        session,
+      );
     }
+
+    return result;
   }
 }
