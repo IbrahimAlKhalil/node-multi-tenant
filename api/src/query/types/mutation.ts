@@ -5,9 +5,15 @@ import { MutationType } from '../schema/base-query';
 import { Model } from '../../prisma/types/model';
 import { RelationAnalyzed } from './relation';
 import { ModelNames } from './model-names';
+import { ObjectSchema } from 'joi';
 
-export interface Mutation {
-  type: MutationType;
+export interface Parent {
+  relation: RelationAnalyzed;
+  mutation: Mutation<Exclude<MutationType, 'delete' | 'deleteMany'>>;
+}
+
+export interface Mutation<M extends MutationType = MutationType> {
+  type: M;
   target: ModelNames;
   model: Model;
   permission: {
@@ -18,6 +24,7 @@ export interface Mutation {
   query: Record<string, any>;
   oldData: Record<string, any> | null;
   newData: Record<string, any> | null;
-  parents?: Mutation[];
-  relation?: RelationAnalyzed;
+  schema?: ObjectSchema;
+  select?: Record<string, any>;
+  parents?: Parent[];
 }
