@@ -2545,14 +2545,6 @@ export class QueryService {
     this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
   }
 
-  public async createMany(
-    mutation: Mutation<'createMany'>,
-    session: Session,
-    trx: TransactionClient,
-  ) {
-    // TODO: Implement createMany
-  }
-
   public async updateMany(
     mutation: Mutation<'updateMany'>,
     session: Session,
@@ -2635,13 +2627,22 @@ export class QueryService {
 
     if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
       return await prisma.$transaction(
-        async (trx) => await this[mutation.type](mutation as any, session, trx),
+        async (trx) =>
+          await this[mutation.type as 'deleteMany' | 'updateMany'](
+            mutation as any,
+            session,
+            trx,
+          ),
       );
     }
 
     await prisma.$transaction(async (trx) => {
       for (const mutation of mutations.all) {
-        await this[mutation.type](mutation as any, session, trx);
+        await this[mutation.type as Exclude<MutationType, 'createMany'>](
+          mutation as any,
+          session,
+          trx,
+        );
       }
     });
 
@@ -2679,10 +2680,16 @@ export class QueryService {
     }
 
     if (mutation.type === 'createMany') {
-      query.where.OR = [];
+      if (model.primaryKey.length > 1) {
+        query.where[model.primaryKey[0]] = {
+          in: mutations.current.map((m) => m.newData?.[model.primaryKey[0]]),
+        };
+      } else {
+        query.where.OR = [];
 
-      for (const m of mutations.current) {
-        query.where.OR.push(pick(m.newData, model.primaryKey));
+        for (const m of mutations.current) {
+          query.where.OR.push(pick(m.newData, model.primaryKey));
+        }
       }
 
       return await (prisma[mutation.model] as any).findMany(query);
