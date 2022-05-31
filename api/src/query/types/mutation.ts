@@ -17,9 +17,9 @@ export interface Mutation<M extends MutationType = MutationType> {
   target: ModelNames;
   model: Model;
   permission: {
-    create?: CreatePermission<any, any> | true;
-    update?: UpdatePermission<any, any> | true;
-    delete?: DeletePermission<any, any> | true;
+    create?: CreatePermission<any, any, 'processed'> | true;
+    update?: UpdatePermission<any, any, 'processed'> | true;
+    delete?: DeletePermission<any, 'processed'> | true;
   };
   query: Record<string, any>;
   oldData: Record<string, any> | null;

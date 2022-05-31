@@ -38,11 +38,11 @@ export interface PermissionDefinition<
     : true | Set<keyof M>;
   permission?: S extends 'raw'
     ? PermissionReference | PermissionFn | P
-    : PermissionFn;
+    : PermissionFn | P;
   preset?: S extends 'raw' ? Preset | PresetReference : Preset;
   validation?: S extends 'raw'
     ? PermissionReference | ValidationFn | T
-    : ValidationFn;
+    : ValidationFn | T;
 }
 
 export type UpdatePermission<
