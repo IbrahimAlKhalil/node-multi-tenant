@@ -26,12 +26,12 @@
 </template>
 
 <script lang="ts" setup>
+import FilterIcon from '#icons/solid/filter.svg';
 import { ref } from 'vue';
+
 const filterDrawer = ref(false);
 
 const toggleFilter = () => {
   filterDrawer.value = !filterDrawer.value;
 };
-
-import FilterIcon from '#icons/solid/filter.svg';
 </script>

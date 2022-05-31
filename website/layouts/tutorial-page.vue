@@ -1,22 +1,16 @@
 <template>
   <layout-main>
     <div class="w-full h-screen flex" style="margin-top: var(--header-height)">
-      <div
-        class="w-1/5 h-full bg-gray-200 overflow-y-auto rt-scrollbar"
-        style="flex: 1"
-      >
+      <div class="w-max h-full bg-gray-200 overflow-y-auto rt-scrollbar">
         <slot name="left-sidebar" />
       </div>
       <div
-        class="h-full bg-gray-100 overflow-y-auto rt-scrollbar"
-        style="flex: 2"
+        class="h-full overflow-hidden overflow-y-auto pr-5 scrollbar"
+        style="flex: 2; scrollbar-width: 0"
       >
         <slot />
       </div>
-      <div
-        class="h-full bg-blue-50 overflow-y-auto rt-scrollbar"
-        style="min-width: 250px"
-      >
+      <div class="h-full bg-blue-50" style="min-width: 250px">
         <slot name="right-sidebar" />
       </div>
     </div>
@@ -38,3 +32,23 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+/* Scrollbar Style */
+.scrollbar::-webkit-scrollbar {
+  width: 0.25rem;
+  height: 5px;
+}
+
+/* scrollbar-thumb */
+.scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+}
+
+/* scrollbar-track */
+.scrollbar::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 10px;
+}
+</style>
