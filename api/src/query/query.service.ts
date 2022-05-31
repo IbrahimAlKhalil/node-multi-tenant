@@ -2387,8 +2387,19 @@ export class QueryService {
     mutation: Mutation<'delete'>,
     session: Session,
     trx: TransactionClient,
-  ) {
-    // TODO: Implement delete
+  ): Promise<void> {
+    // Find item to update
+    await this.findItemToMutate(mutation, session, trx);
+
+    if (!mutation.oldData) {
+      return;
+    }
+
+    await (trx[mutation.target] as any).delete(mutation.query);
+
+    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    (eventPayload as any).session = session;
+    this.eventEmitter.emitAsync(`${mutation.target}.delete`, eventPayload);
   }
 
   public async upsert(
@@ -2484,24 +2495,31 @@ export class QueryService {
       }
     }
 
-    const results = await prisma.$transaction(async (trx) => {
-      const results: any[] = [];
+    if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
+      return await prisma.$transaction(
+        async (trx) => await this[mutation.type](mutation as any, session, trx),
+      );
+    }
 
+    await prisma.$transaction(async (trx) => {
       for (const mutation of mutations.all) {
-        results.push(await this[mutation.type](mutation as any, session, trx));
+        await this[mutation.type](mutation as any, session, trx);
       }
-
-      return results;
     });
 
     if (mutation.type === 'delete') {
-      return results[0];
-    } else if (mutation.type === 'deleteMany') {
-      return results;
+      if (!mutations.current[0].oldData) {
+        throw new WsException(
+          `Item to delete is not found`,
+          'RECORD_NOT_FOUND',
+        );
+      }
+
+      return mutations.current[0].oldData;
     }
 
     if (!select) {
-      if (mutation.type === 'createMany' || mutation.type === 'updateMany') {
+      if (mutation.type === 'createMany') {
         return mutations.current.map((m) => m.newData);
       }
 
@@ -2515,7 +2533,7 @@ export class QueryService {
       select,
     };
 
-    if (mutation.type === 'createMany' || mutation.type === 'updateMany') {
+    if (mutation.type === 'createMany') {
       query.where.OR = [];
 
       for (const m of mutations.current) {
