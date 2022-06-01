@@ -1,12 +1,12 @@
 import { WsException } from '../exceptions/ws-exception.js';
 import { WebSocket } from 'uWebSockets.js';
 
-export class WsSub {
+export class WsSub<T = any> {
   constructor(
     public readonly id: number,
     public readonly ws: WebSocket,
     public readonly isBinary: boolean,
-    public readonly data?: any,
+    public readonly data?: T,
   ) {}
 
   public send(
