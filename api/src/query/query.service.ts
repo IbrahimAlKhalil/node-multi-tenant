@@ -642,19 +642,6 @@ export class QueryService {
     }
   }
 
-  private static flattenUniqueWhere<T = Record<string, any>>(where: T): T {
-    const flattenWhere: Record<string, any> = { ...where };
-
-    for (const field of Object.keys(flattenWhere)) {
-      if (isObject(flattenWhere[field])) {
-        merge(flattenWhere, flattenWhere[field]);
-        delete flattenWhere[field];
-      }
-    }
-
-    return flattenWhere as T;
-  }
-
   private async applyPermissions(
     action: Exclude<keyof Actions<any, any>, 'subscribe' | 'create'>,
     session: Session,
@@ -919,6 +906,19 @@ export class QueryService {
     };
   }
 
+  private static flattenUniqueWhere<T = Record<string, any>>(where: T): T {
+    const flattenWhere: Record<string, any> = { ...where };
+
+    for (const field of Object.keys(flattenWhere)) {
+      if (isObject(flattenWhere[field])) {
+        merge(flattenWhere, flattenWhere[field]);
+        delete flattenWhere[field];
+      }
+    }
+
+    return flattenWhere as T;
+  }
+
   private checkUniqueWhere(
     where: Record<string, any>,
     session: Session,
@@ -967,6 +967,245 @@ export class QueryService {
     QueryService.checkFieldPermissions(modelName, specifiedFields);
 
     return flattenWhere;
+  }
+
+  private async applyPreset(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+    session: Session,
+  ): Promise<void> {
+    const createPermission = mutation.permission.create;
+    const updatePermission = mutation.permission.update;
+    const createData =
+      mutation.type === 'upsert' ? mutation.query.create : mutation.query.data;
+    const updateData =
+      mutation.type === 'upsert' ? mutation.query.update : mutation.query.data;
+
+    if (createPermission && createPermission !== true) {
+      if (typeof createPermission.preset === 'function') {
+        merge(
+          createData,
+          await createPermission.preset(
+            session,
+            mutation.query,
+            this.moduleRef,
+          ),
+        );
+      } else if (typeof createPermission.preset === 'object') {
+        merge(createData, createPermission.preset);
+      }
+    }
+
+    if (updatePermission && updatePermission !== true) {
+      if (typeof updatePermission.preset === 'function') {
+        merge(
+          updateData,
+          await updatePermission.preset(
+            session,
+            mutation.query,
+            this.moduleRef,
+          ),
+        );
+      } else if (typeof updatePermission.preset === 'object') {
+        merge(updateData, updatePermission.preset);
+      }
+    }
+  }
+
+  private async applyValidation(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    const permission =
+      mutation.type === 'create' || mutation.type === 'update'
+        ? mutation.permission[mutation.type]
+        : !mutation.oldData
+        ? mutation.permission.create
+        : mutation.permission.update;
+
+    if (permission && permission !== true && permission.validation) {
+      let validationQuery: Record<string, any> | boolean;
+
+      if (typeof permission.validation === 'function') {
+        validationQuery = await permission.validation(
+          session,
+          mutation.query,
+          this.moduleRef,
+        );
+      } else {
+        validationQuery = permission.validation;
+      }
+
+      if (!validationQuery) {
+        throw new WsException(
+          `Validation failed for model "${mutation.target}" while creating`,
+          'VALIDATION_FAILED',
+        );
+      }
+
+      if (validationQuery !== true) {
+        const item = await (trx[mutation.target] as any).findFirst({
+          where: {
+            AND: [
+              pick(mutation.newData, mutation.model.primaryKey),
+              validationQuery.where,
+            ],
+          },
+        });
+
+        if (!item) {
+          throw new WsException(
+            `Validation failed for model "${mutation.target}" while creating`,
+            'VALIDATION_FAILED',
+          );
+        }
+      }
+    }
+  }
+
+  private async findItemToMutate(
+    mutation: Mutation<'delete' | 'update' | 'upsert'>,
+    session: Session,
+    trx: PrismaClient | TransactionClient,
+  ): Promise<void> {
+    const findQuery: Record<string, any> = {
+      where: {
+        AND: [],
+      },
+    };
+
+    if (mutation.query.select) {
+      findQuery.select = mutation.query.select;
+    }
+
+    if (mutation.query.include) {
+      findQuery.include = mutation.query.include;
+    }
+
+    if (mutation.query.where) {
+      findQuery.where.AND.push(
+        QueryService.flattenUniqueWhere(mutation.query.where),
+      );
+    }
+
+    if (mutation.parents) {
+      for (const parent of mutation.parents) {
+        const where: Record<string, any> = {};
+        const length = parent.relation.fKeyHolder.fieldsFrom.length;
+
+        if (parent.relation.right === parent.relation.fKeyHolder) {
+          for (let i = 0; i < length; i++) {
+            where[parent.relation.fKeyHolder.fieldsFrom[i]] =
+              parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
+          }
+        } else {
+          for (let i = 0; i < length; i++) {
+            where[parent.relation.fKeyHolder.fieldsTo[i]] =
+              parent.mutation.newData?.[
+                parent.relation.fKeyHolder.fieldsFrom[i]
+              ];
+          }
+        }
+
+        findQuery.where.AND.push(where);
+      }
+    }
+
+    // Apply permission
+    const permission =
+      mutation.permission[
+        mutation.type === 'upsert' ? 'update' : mutation.type
+      ];
+
+    if (permission && permission !== true && permission.permission) {
+      if (typeof permission.permission === 'function') {
+        const permissionQuery = await permission.permission(
+          session,
+          mutation.query,
+          this.moduleRef,
+        );
+
+        if (!permissionQuery) {
+          throw new WsException(
+            `You don't have permission to do a "${mutation.type}" on model "${mutation.target}"`,
+            'PERMISSION_DENIED',
+          );
+        }
+
+        if (permissionQuery !== true) {
+          findQuery.where.AND.push(
+            (
+              await permission.permission(
+                session,
+                mutation.query,
+                this.moduleRef,
+              )
+            ).where,
+          );
+        }
+      } else {
+        findQuery.where.AND.push(
+          (permission.permission as Record<string, any>).where,
+        );
+      }
+    }
+
+    mutation.oldData = await (trx[mutation.target] as any).findFirst(findQuery);
+
+    if (mutation.oldData) {
+      mutation.query.where = {};
+      let where: Record<string, any> = mutation.query.where;
+
+      if (mutation.model.primaryKey.length > 1) {
+        where = {};
+        mutation.query.where[mutation.model.primaryKey.join('_')] = where;
+      }
+
+      for (const key of mutation.model.primaryKey) {
+        where[key] = mutation.oldData[key];
+      }
+    }
+  }
+
+  private static connectMutationParent(
+    mutation: Mutation<'create' | 'upsert'>,
+  ): void {
+    if (mutation.parents) {
+      const data =
+        mutation.type === 'upsert'
+          ? mutation.query.create
+          : mutation.query.data;
+
+      for (const parent of mutation.parents) {
+        const length = parent.relation.fKeyHolder.fieldsFrom.length;
+
+        for (let i = 0; i < length; i++) {
+          data[parent.relation.fKeyHolder.fieldsFrom[i]] =
+            parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
+        }
+      }
+    }
+  }
+
+  private static validateSchema(
+    mutation: Mutation<'create' | 'update' | 'upsert'>,
+  ): void {
+    if (mutation.schema) {
+      const data: Record<string, any>[] =
+        mutation.type === 'upsert'
+          ? [mutation.query.create, mutation.query.update]
+          : [mutation.query.data];
+
+      for (const d of data) {
+        const validation = mutation.schema.validate(d, {
+          abortEarly: true,
+        });
+
+        if (validation.error) {
+          throw new WsException(validation.error.message, 'VALIDATION_FAILED');
+        }
+      }
+    }
   }
 
   private async processMutation<M extends MutationType = MutationType>(
@@ -2060,245 +2299,6 @@ export class QueryService {
         ? [dataObjs[0].mutation]
         : dataObjs.map((d) => d.mutation)) as Mutation<M>[],
     };
-  }
-
-  private static validateSchema(
-    mutation: Mutation<'create' | 'update' | 'upsert'>,
-  ): void {
-    if (mutation.schema) {
-      const data: Record<string, any>[] =
-        mutation.type === 'upsert'
-          ? [mutation.query.create, mutation.query.update]
-          : [mutation.query.data];
-
-      for (const d of data) {
-        const validation = mutation.schema.validate(d, {
-          abortEarly: true,
-        });
-
-        if (validation.error) {
-          throw new WsException(validation.error.message, 'VALIDATION_FAILED');
-        }
-      }
-    }
-  }
-
-  private async applyPreset(
-    mutation: Mutation<'create' | 'update' | 'upsert'>,
-    session: Session,
-  ): Promise<void> {
-    const createPermission = mutation.permission.create;
-    const updatePermission = mutation.permission.update;
-    const createData =
-      mutation.type === 'upsert' ? mutation.query.create : mutation.query.data;
-    const updateData =
-      mutation.type === 'upsert' ? mutation.query.update : mutation.query.data;
-
-    if (createPermission && createPermission !== true) {
-      if (typeof createPermission.preset === 'function') {
-        merge(
-          createData,
-          await createPermission.preset(
-            session,
-            mutation.query,
-            this.moduleRef,
-          ),
-        );
-      } else if (typeof createPermission.preset === 'object') {
-        merge(createData, createPermission.preset);
-      }
-    }
-
-    if (updatePermission && updatePermission !== true) {
-      if (typeof updatePermission.preset === 'function') {
-        merge(
-          updateData,
-          await updatePermission.preset(
-            session,
-            mutation.query,
-            this.moduleRef,
-          ),
-        );
-      } else if (typeof updatePermission.preset === 'object') {
-        merge(updateData, updatePermission.preset);
-      }
-    }
-  }
-
-  private async applyValidation(
-    mutation: Mutation<'create' | 'update' | 'upsert'>,
-    session: Session,
-    trx: PrismaClient | TransactionClient,
-  ): Promise<void> {
-    const permission =
-      mutation.type === 'create' || mutation.type === 'update'
-        ? mutation.permission[mutation.type]
-        : !mutation.oldData
-        ? mutation.permission.create
-        : mutation.permission.update;
-
-    if (permission && permission !== true && permission.validation) {
-      let validationQuery: Record<string, any> | boolean;
-
-      if (typeof permission.validation === 'function') {
-        validationQuery = await permission.validation(
-          session,
-          mutation.query,
-          this.moduleRef,
-        );
-      } else {
-        validationQuery = permission.validation;
-      }
-
-      if (!validationQuery) {
-        throw new WsException(
-          `Validation failed for model "${mutation.target}" while creating`,
-          'VALIDATION_FAILED',
-        );
-      }
-
-      if (validationQuery !== true) {
-        const item = await (trx[mutation.target] as any).findFirst({
-          where: {
-            AND: [
-              pick(mutation.newData, mutation.model.primaryKey),
-              validationQuery.where,
-            ],
-          },
-        });
-
-        if (!item) {
-          throw new WsException(
-            `Validation failed for model "${mutation.target}" while creating`,
-            'VALIDATION_FAILED',
-          );
-        }
-      }
-    }
-  }
-
-  private async findItemToMutate(
-    mutation: Mutation<'delete' | 'update' | 'upsert'>,
-    session: Session,
-    trx: PrismaClient | TransactionClient,
-  ): Promise<void> {
-    const findQuery: Record<string, any> = {
-      where: {
-        AND: [],
-      },
-    };
-
-    if (mutation.query.select) {
-      findQuery.select = mutation.query.select;
-    }
-
-    if (mutation.query.include) {
-      findQuery.include = mutation.query.include;
-    }
-
-    if (mutation.query.where) {
-      findQuery.where.AND.push(
-        QueryService.flattenUniqueWhere(mutation.query.where),
-      );
-    }
-
-    if (mutation.parents) {
-      for (const parent of mutation.parents) {
-        const where: Record<string, any> = {};
-        const length = parent.relation.fKeyHolder.fieldsFrom.length;
-
-        if (parent.relation.right === parent.relation.fKeyHolder) {
-          for (let i = 0; i < length; i++) {
-            where[parent.relation.fKeyHolder.fieldsFrom[i]] =
-              parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
-          }
-        } else {
-          for (let i = 0; i < length; i++) {
-            where[parent.relation.fKeyHolder.fieldsTo[i]] =
-              parent.mutation.newData?.[
-                parent.relation.fKeyHolder.fieldsFrom[i]
-              ];
-          }
-        }
-
-        findQuery.where.AND.push(where);
-      }
-    }
-
-    // Apply permission
-    const permission =
-      mutation.permission[
-        mutation.type === 'upsert' ? 'update' : mutation.type
-      ];
-
-    if (permission && permission !== true && permission.permission) {
-      if (typeof permission.permission === 'function') {
-        const permissionQuery = await permission.permission(
-          session,
-          mutation.query,
-          this.moduleRef,
-        );
-
-        if (!permissionQuery) {
-          throw new WsException(
-            `You don't have permission to do a "${mutation.type}" on model "${mutation.target}"`,
-            'PERMISSION_DENIED',
-          );
-        }
-
-        if (permissionQuery !== true) {
-          findQuery.where.AND.push(
-            (
-              await permission.permission(
-                session,
-                mutation.query,
-                this.moduleRef,
-              )
-            ).where,
-          );
-        }
-      } else {
-        findQuery.where.AND.push(
-          (permission.permission as Record<string, any>).where,
-        );
-      }
-    }
-
-    mutation.oldData = await (trx[mutation.target] as any).findFirst(findQuery);
-
-    if (mutation.oldData) {
-      mutation.query.where = {};
-      let where: Record<string, any> = mutation.query.where;
-
-      if (mutation.model.primaryKey.length > 1) {
-        where = {};
-        mutation.query.where[mutation.model.primaryKey.join('_')] = where;
-      }
-
-      for (const key of mutation.model.primaryKey) {
-        where[key] = mutation.oldData[key];
-      }
-    }
-  }
-
-  private static connectMutationParent(
-    mutation: Mutation<'create' | 'upsert'>,
-  ): void {
-    if (mutation.parents) {
-      const data =
-        mutation.type === 'upsert'
-          ? mutation.query.create
-          : mutation.query.data;
-
-      for (const parent of mutation.parents) {
-        const length = parent.relation.fKeyHolder.fieldsFrom.length;
-
-        for (let i = 0; i < length; i++) {
-          data[parent.relation.fKeyHolder.fieldsFrom[i]] =
-            parent.mutation.newData?.[parent.relation.fKeyHolder.fieldsTo[i]];
-        }
-      }
-    }
   }
 
   public async find(
