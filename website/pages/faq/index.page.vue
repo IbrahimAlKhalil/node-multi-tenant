@@ -11,7 +11,11 @@
         :title="question.title"
         :description="question.description"
       />
-      <the-pagination :total="10" :activePage="1" />
+      <the-pagination
+        @change-page="handleChangePage"
+        :total="10"
+        :activePage="activePage"
+      />
     </div>
   </layout-main>
 </template>
@@ -35,6 +39,7 @@ export default defineComponent({
   },
   data() {
     return {
+      activePage: 1,
       topQuestions: [
         {
           id: 1,
@@ -62,6 +67,12 @@ export default defineComponent({
         },
       ],
     };
+  },
+  methods: {
+    handleChangePage(page: number) {
+      this.activePage = page;
+      console.log(page);
+    },
   },
   setup() {
     return {};
