@@ -9,7 +9,7 @@
           <li
             v-for="(tag, index) in tags"
             :key="index"
-            class="tag-item border-y-2 border-l-2 border-primary hover:border-primary-dark dark:border-light dark:hover:border-gray-300 rounded-l-md font-bold box-border flex items-center justify-center py-1 pl-2 pr-4 relative after:border-r-2 after:border-t-2 after:border-primary hover:after:border-primary-dark dark:after:border-light before:bg-gray-300 hover:before:bg-primary dark:before:bg-light dark:hover:before:bg-secondary text-md hover:text-primary dark:hover:text-secondary transition-all duration-300"
+            class="tag-item border-y-2 border-l-2 border-primary hover:border-primary-dark dark:border-gray-500 dark:hover:border-gray-300 rounded-l-md font-bold box-border flex items-center justify-center py-1 pl-2 pr-4 relative after:border-r-2 after:border-t-2 after:border-primary hover:after:border-primary-dark dark:hover:after:border-gray-300 dark:after:border-gray-500 before:bg-gray-300 hover:before:bg-primary dark:before:bg-light dark:hover:before:bg-secondary text-md hover:text-primary dark:hover:text-secondary transition-all duration-300"
           >
             <a :href="tag.link">{{ tag.name }}</a>
           </li>

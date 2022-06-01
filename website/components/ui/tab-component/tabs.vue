@@ -1,5 +1,5 @@
 <template>
-  <div class="border-b">
+  <div class="border-b dark:border-b-black">
     <ul class="container flex items-center justify-center gap-5">
       <the-tab
         v-for="tab in tabData"
