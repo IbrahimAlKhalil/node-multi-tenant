@@ -5,7 +5,6 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { OnWsReq } from '../decorators/on-ws-req.js';
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryService } from './query.service.js';
-import { WsSub } from '../uws/ws-sub.js';
 import { WsReq } from '../types/ws-req';
 
 @Injectable()
@@ -39,7 +38,7 @@ export class QueryListener {
   }
 
   @OnWsReq('mutation')
-  async onMutation({ ws, data }: WsSub<MutationSchema>) {
+  async onMutation({ ws, data }: WsReq<MutationSchema>) {
     let mutation: MutationSchema;
 
     try {
