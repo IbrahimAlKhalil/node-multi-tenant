@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-gray-50 font-bold border border-gray-200 rounded-t-md py-2 pl-8 my-3 flex justify-between items-center overflow-hidden relative before:w-5 before:h-full before:bg-secondary before:absolute before:left-0 before:top-0 cursor-pointer"
+    class="bg-gray-50 dark:bg-dark font-bold border border-gray-200 dark:border-black rounded-t-md py-2 pl-8 my-3 flex justify-between items-center overflow-hidden relative before:w-5 before:h-full before:bg-secondary before:absolute before:left-0 before:top-0 cursor-pointer text-text dark:text-light"
     :class="{ 'rounded-b-md': !isOpen }"
     @click="isOpen = !isOpen"
   >
@@ -13,7 +13,7 @@
   <div
     v-show="isOpen"
     :class="{ 'rounded-b-md': isOpen }"
-    class="bg-gray-50 relative before:w-5 before:h-full before:bg-gray-200 before:absolute before:left-0 before:top-0 p-5 pl-8 overflow-hidden"
+    class="bg-gray-50 dark:bg-dark relative before:w-5 before:h-full before:bg-gray-200 dark:before:bg-black dark:border-black before:absolute before:left-0 before:top-0 p-5 pl-8 overflow-hidden text-text dark:text-light"
   >
     <p>
       {{ description }}

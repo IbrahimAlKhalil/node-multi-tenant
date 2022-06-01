@@ -5,6 +5,7 @@
       :key="index"
       :title="item"
       :isActive="item === activePage"
+      @change-pagination="handleChangePage"
     ></pagination-item>
   </div>
 </template>
@@ -15,6 +16,7 @@ import PaginationItem from './pagination-item.vue';
 export default defineComponent({
   name: 'the-pagination',
   components: { PaginationItem },
+  emits: ['change-page'],
   props: {
     total: {
       type: Number,
@@ -23,6 +25,11 @@ export default defineComponent({
     activePage: {
       type: Number,
       default: 1,
+    },
+  },
+  methods: {
+    handleChangePage(page: number) {
+      this.$emit('change-page', page);
     },
   },
 });

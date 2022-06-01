@@ -25,7 +25,7 @@
         <div
           v-for="(item, index) in pricingData"
           :key="item.id"
-          class="tables__table border-t-4 border-secondary bg-white px-8 py-10 md:py-5 text-xl rounded-b-lg flex flex-col items-center text-text"
+          class="tables__table border-t-4 border-secondary bg-white dark:bg-dark-light dark:text-white px-8 py-10 md:py-5 text-xl rounded-b-lg flex flex-col items-center text-text"
           :class="{ 'border-primary shadow-xl': item.isFeatured }"
           data-aos="fade-up"
           :data-aos-delay="100 * index"
@@ -41,7 +41,9 @@
                 'text-secondary': !item.isFeatured,
               }"
               >{{ item.price
-              }}<span class="text-lg text-text lowercase">/month</span></span
+              }}<span class="text-lg text-text dark:text-gray-300 lowercase"
+                >/month</span
+              ></span
             >
           </h3>
           <ul class="mb-8">

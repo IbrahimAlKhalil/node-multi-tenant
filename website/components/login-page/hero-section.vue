@@ -50,6 +50,11 @@
     Do not have account?
     <a href="/signup" class="font-bold text-secondary">Sign UP</a>
   </p>
+  <p class="text-center italic">
+    <a href="/password-reset" class="font-bold text-secondary"
+      >Reset Password</a
+    >
+  </p>
 </template>
 
 <script setup>

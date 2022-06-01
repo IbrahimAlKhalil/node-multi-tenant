@@ -21,7 +21,7 @@
         </div>
         <div class="testimonial-slider testimonials">
           <div
-            class="testimonials__slider-1 border-2 border-gray-200 rounded-lg p-4 flex flex-col lg:flex-row items-center gap-5 dark:bg-light text-text dark:text-light"
+            class="testimonials__slider-1 border-2 border-gray-200 dark:border-secondary dark:bg-dark rounded-lg p-4 flex flex-col lg:flex-row items-center gap-5 text-text dark:text-light"
             v-for="(testimonial, index) in testimonials"
             :key="index"
           >
@@ -39,12 +39,12 @@
               >
                 {{ t(testimonial.company) }}
               </h3>
-              <p class="text-sm lg:text-md text-text">
+              <p class="text-sm lg:text-md">
                 {{ t(testimonial.description) }}
               </p>
               <div class="flex items-center justify-between mt-4">
                 <div class="author">
-                  <h4 class="font-bold text-xl text-text">
+                  <h4 class="font-bold text-xl">
                     {{ t(testimonial.author) }}
                   </h4>
                   <p class="text-gray-500">

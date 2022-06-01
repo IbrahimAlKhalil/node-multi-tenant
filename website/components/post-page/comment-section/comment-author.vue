@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-center gap-2">
     <the-avatar :size="40" :url="avatar" :text="name" />
-    <h5 class="font-bold text-text text-xl">{{ name }}</h5>
-    <p class="text-sm text-gray-500">{{ date }}</p>
+    <h5 class="font-bold text-text dark:text-light text-xl">{{ name }}</h5>
+    <p class="text-sm text-gray-500 dark:text-gray-200">{{ date }}</p>
   </div>
 </template>
 

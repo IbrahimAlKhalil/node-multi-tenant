@@ -8,7 +8,9 @@
       :commentContent="comment.content"
       :reactions="comment.reactions"
     />
-    <div class="pl-10 py-3 border-l-2 border-l-gray-200 bg-gray-50">
+    <div
+      class="pl-10 py-3 border-l-2 border-l-gray-200 dark:border-l-black bg-gray-50 dark:bg-dark"
+    >
       <single-comment
         v-for="reply in comment.replies"
         :key="reply.id"
