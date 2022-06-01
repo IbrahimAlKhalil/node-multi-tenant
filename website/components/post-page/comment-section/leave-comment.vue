@@ -1,7 +1,7 @@
 <template>
   <div class="my-5" :class="{ container: !fluid }">
     <div
-      class="input-area bg-gray-200 rounded-md border border-gray-500 relative"
+      class="input-area bg-gray-200 dark:bg-dark rounded-md border border-gray-500 relative dark:text-light"
     >
       <textarea
         name="comment"

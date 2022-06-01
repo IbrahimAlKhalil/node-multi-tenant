@@ -1,6 +1,6 @@
 <template>
   <comment-author :name="authorName" :date="publishedDate" :avatar="avatar" />
-  <p class="p-2 text-justify text-text">
+  <p class="p-2 text-justify text-text dark:text-light">
     {{ commentContent }}
   </p>
   <comment-reaction @handle-reply="handleReply" :reactions="reactions" />

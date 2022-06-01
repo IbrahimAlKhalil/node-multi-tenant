@@ -3,7 +3,7 @@
     <the-tooltip class="group">
       <component
         :is="ReactionIcon"
-        class="text-3xl text-gray-500 group-hover:text-text transition cursor-pointer"
+        class="text-3xl text-gray-500 dark:text-light group-hover:text-text dark:group-hover:text-light transition cursor-pointer"
       ></component>
       <template #tooltip>
         <ul class="flex items-center gap-2">
@@ -22,24 +22,29 @@
         </ul>
       </template>
     </the-tooltip>
-    <ul class="flex items-center bg-gray-200 rounded">
+    <ul
+      class="flex items-center bg-gray-200 dark:bg-dark-light border border-transparent dark:border-dark"
+    >
       <li
         v-for="(reaction, name) in reactions"
         :key="reaction"
         v-show="reaction > 0"
-        class="flex items-center gap-2 px-2 py-1 border-r border-r-gray-50"
+        class="flex items-center gap-2 px-2 py-1 border-r border-r-gray-50 dark:border-r-gray-700"
       >
         <span v-show="name === 'like'">
           <component :is="ThumbsUp" class="text-blue-500 text-lg"></component>
         </span>
         <span v-show="name === 'dislike'">
-          <component :is="ThumbsDown" class="text-red-500 text-lg"></component>
+          <component
+            :is="ThumbsDown"
+            class="text-stone-500 text-lg"
+          ></component>
         </span>
         <span v-show="name === 'sad'">
           <component
             v-show="name === 'sad'"
             :is="SadIcon"
-            class="text-red-500 text-lg"
+            class="text-orange-400 text-lg"
           ></component>
         </span>
         <span v-show="name === 'angry'">
@@ -49,11 +54,11 @@
             class="text-red-500 text-lg"
           ></component>
         </span>
-        <span>{{ reaction }}</span>
+        <span class="text-text dark:text-light">{{ reaction }}</span>
       </li>
     </ul>
     <button
-      class="font-bold text-primary hover:text-white hover:bg-primary uppercase transition border border-gray-100 rounded-lg px-3 py-1"
+      class="font-bold text-primary dark:text-secondary hover:text-white dark:hover:text-dark hover:bg-primary dark:hover:bg-secondary uppercase transition duration-150 border border-gray-100 rounded-lg px-3 py-1"
       @click="$emit('handle-reply')"
     >
       Reply
