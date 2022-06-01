@@ -1,5 +1,6 @@
 <template>
   <div
+    @click="$emit('change-pagination', Number(title))"
     :class="{
       'border-gray-200 dark:border-black bg-gray-50 dark:bg-dark text-text dark:text-light':
         !isActive,
@@ -17,6 +18,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'pagination-item',
+  emits: ['change-pagination'],
   props: {
     isActive: {
       type: Boolean,
