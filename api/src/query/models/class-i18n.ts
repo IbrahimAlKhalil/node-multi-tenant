@@ -12,11 +12,12 @@ export default defineModel<ClassI18n, 'classI18n'>({
       read: {
         fields: 'ALL.read',
       },
-      update: {
-        fields: 'ALL.read',
-      },
+      update: true,
       create: {
-        fields: 'ALL.read',
+        fields: true,
+        preset: {
+          name: 'Preset Test',
+        },
       },
       delete: {
         permission: {

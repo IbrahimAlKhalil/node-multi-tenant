@@ -10,7 +10,12 @@ export default defineModel<Class, 'class'>({
     },
     POWER: {
       read: true,
-      create: true,
+      create: {
+        fields: true,
+        preset: {
+          order: 10,
+        },
+      },
       update: true,
       delete: true,
     },

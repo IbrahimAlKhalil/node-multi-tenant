@@ -38,7 +38,7 @@ type Permission<T extends keyof Actions<any, any>> = T extends 'read'
   : T extends 'update'
   ? UpdatePermission<any, any>
   : T extends 'delete'
-  ? DeletePermission<any, any>
+  ? DeletePermission<any>
   : true | void;
 
 @Injectable()
@@ -645,7 +645,7 @@ export class QueryService {
   private async applyPermissions(
     action: Exclude<keyof Actions<any, any>, 'subscribe' | 'create'>,
     session: Session,
-    baseQuery: QuerySchema,
+    baseQuery: QuerySchema | MutationSchema,
     permissionModel: Model<any, any>,
   ): Promise<boolean> {
     const permission = QueryService.getActionPermission(
@@ -970,7 +970,7 @@ export class QueryService {
   }
 
   private async applyPreset(
-    mutation: Mutation<'create' | 'update' | 'upsert'>,
+    mutation: Mutation<'create' | 'update' | 'updateMany' | 'upsert'>,
     session: Session,
   ): Promise<void> {
     const createPermission = mutation.permission.create;
@@ -1063,9 +1063,8 @@ export class QueryService {
     }
   }
 
-  private async findItemToMutate(
+  private static async findItemToMutate(
     mutation: Mutation<'delete' | 'update' | 'upsert'>,
-    session: Session,
     trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     const findQuery: Record<string, any> = {
@@ -1083,9 +1082,7 @@ export class QueryService {
     }
 
     if (mutation.query.where) {
-      findQuery.where.AND.push(
-        QueryService.flattenUniqueWhere(mutation.query.where),
-      );
+      findQuery.where.AND.push(mutation.query.where);
     }
 
     if (mutation.parents) {
@@ -1108,45 +1105,6 @@ export class QueryService {
         }
 
         findQuery.where.AND.push(where);
-      }
-    }
-
-    // Apply permission
-    const permission =
-      mutation.permission[
-        mutation.type === 'upsert' ? 'update' : mutation.type
-      ];
-
-    if (permission && permission !== true && permission.permission) {
-      if (typeof permission.permission === 'function') {
-        const permissionQuery = await permission.permission(
-          session,
-          mutation.query,
-          this.moduleRef,
-        );
-
-        if (!permissionQuery) {
-          throw new WsException(
-            `You don't have permission to do a "${mutation.type}" on model "${mutation.target}"`,
-            'PERMISSION_DENIED',
-          );
-        }
-
-        if (permissionQuery !== true) {
-          findQuery.where.AND.push(
-            (
-              await permission.permission(
-                session,
-                mutation.query,
-                this.moduleRef,
-              )
-            ).where,
-          );
-        }
-      } else {
-        findQuery.where.AND.push(
-          (permission.permission as Record<string, any>).where,
-        );
       }
     }
 
@@ -1187,8 +1145,8 @@ export class QueryService {
     }
   }
 
-  private static validateSchema(
-    mutation: Mutation<'create' | 'update' | 'upsert'>,
+  private static validateMutationData(
+    mutation: Mutation<'create' | 'update' | 'updateMany' | 'upsert'>,
   ): void {
     if (mutation.schema) {
       const data: Record<string, any>[] =
@@ -1214,6 +1172,8 @@ export class QueryService {
     prisma: PrismaClient,
     parents?: Parent[],
   ): Promise<{ current: Mutation<M>[]; all: Mutation<M>[] }> {
+    debugger;
+
     const model = this.prismaService.models[mutation.model];
     const permissionModel = this.models[mutation.model];
     const modelFields = this.prismaService.fields[mutation.model];
@@ -1234,10 +1194,13 @@ export class QueryService {
         session,
       );
 
-      // TODO: Apply permission
       if (mutation.query.where) {
         if (mutation.type === 'delete') {
-          this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+          mutation.query.where = this.checkUniqueWhere(
+            mutation.query.where,
+            session,
+            mutation.model,
+          );
         } else {
           this.checkWhere(
             {
@@ -1248,6 +1211,8 @@ export class QueryService {
           );
         }
       }
+
+      await this.applyPermissions('delete', session, mutation, permissionModel);
 
       const _delete: Mutation = {
         type: mutation.type,
@@ -1364,12 +1329,19 @@ export class QueryService {
         query.update = pick(updateObj.data, updateObj.fields.scalar);
       }
 
-      // TODO: Apply permission
+      // Check where
       if (mutation.query.where) {
-        this.checkUniqueWhere(mutation.query.where, session, mutation.model);
+        mutation.query.where = this.checkUniqueWhere(
+          mutation.query.where,
+          session,
+          mutation.model,
+        );
 
         query.where = mutation.query.where;
       }
+
+      // Apply permission
+      await this.applyPermissions('update', session, mutation, permissionModel);
 
       const mutationObj: Mutation<'upsert'> = {
         type: 'upsert',
@@ -1386,6 +1358,12 @@ export class QueryService {
         model,
       };
 
+      // Validate schema
+      QueryService.validateMutationData(mutationObj);
+
+      // Apply preset
+      await this.applyPreset(mutationObj, session);
+
       mutations.push(mutationObj as Mutation<M>);
       createObj.mutation = mutationObj;
       updateObj.mutation = mutationObj;
@@ -1399,7 +1377,7 @@ export class QueryService {
 
         if (mutation.query.where) {
           if (mutation.type === 'update') {
-            this.checkUniqueWhere(
+            mutation.query.where = this.checkUniqueWhere(
               mutation.query.where,
               session,
               mutation.model,
@@ -1409,6 +1387,16 @@ export class QueryService {
           }
 
           query.where = mutation.query.where;
+        }
+
+        // Apply permission
+        if (mutation.type === 'update' || mutation.type === 'updateMany') {
+          await this.applyPermissions(
+            'update',
+            session,
+            mutation,
+            permissionModel,
+          );
         }
 
         const mutationObj: Mutation<'create' | 'update' | 'updateMany'> = {
@@ -1424,6 +1412,12 @@ export class QueryService {
           parents,
           model,
         };
+
+        // Validate schema
+        QueryService.validateMutationData(mutationObj);
+
+        // Apply preset
+        await this.applyPreset(mutationObj, session);
 
         mutations.push(mutationObj as Mutation<M>);
         dataObj.mutation = mutationObj;
@@ -1566,7 +1560,7 @@ export class QueryService {
               relation.left.type === 'one' &&
               relation.fKeyHolder === relation.right
             ) {
-              this.checkUniqueWhere(
+              const flattenWhere = this.checkUniqueWhere(
                 connect,
                 session,
                 relation.fKeyHolder.target,
@@ -1587,14 +1581,28 @@ export class QueryService {
                 }),
               );
 
+              const mutationSchema: MutationSchema = {
+                type: 'update',
+                model: relation.fKeyHolder.target,
+                query: {
+                  data: {},
+                  where: flattenWhere,
+                },
+              };
+
+              // Apply permission
+              await this.applyPermissions(
+                'update',
+                session,
+                mutationSchema,
+                relPermModel,
+              );
+
               const update: Mutation<'update'> = {
                 type: 'update',
                 model: relation.fKeyHolder.model,
                 target: relation.fKeyHolder.target,
-                query: {
-                  data: {},
-                  where: connect,
-                },
+                query: mutationSchema.query,
                 parents: [
                   {
                     mutation: mutationObj,
@@ -1613,6 +1621,9 @@ export class QueryService {
                   ),
                 },
               };
+
+              // Apply preset
+              await this.applyPreset(update, session);
 
               mutations.push(update as Mutation<M>);
 
@@ -1866,8 +1877,11 @@ export class QueryService {
                 );
               }
 
-              // TODO: Apply permission
-              this.checkUniqueWhere(disconnect, session, relation.right.target);
+              const flattenWhere = this.checkUniqueWhere(
+                disconnect,
+                session,
+                relation.right.target,
+              );
 
               QueryService.checkFieldPermissions(
                 relation.left.target,
@@ -1884,17 +1898,29 @@ export class QueryService {
                 }),
               );
 
-              const query: Record<string, any> = {
-                where: disconnect,
-                data: {},
+              const mutationSchema: MutationSchema = {
+                type: 'update',
+                model: relation.fKeyHolder.target,
+                query: {
+                  where: flattenWhere,
+                  data: {},
+                },
               };
 
+              // Apply permission
+              await this.applyPermissions(
+                'update',
+                session,
+                mutationSchema,
+                relPermModel,
+              );
+
               for (const fieldFrom of relation.fKeyHolder.fieldsFrom) {
-                query.data[fieldFrom] = null;
+                mutationSchema.query.data[fieldFrom] = null;
               }
 
               const update: Mutation<'update'> = {
-                query,
+                query: mutationSchema.query,
                 type: 'update',
                 model: relation.fKeyHolder.model,
                 target: relation.fKeyHolder.target,
@@ -1916,6 +1942,9 @@ export class QueryService {
                   ),
                 },
               };
+
+              // Apply preset
+              await this.applyPreset(update, session);
 
               mutations.push(update as Mutation<M>);
             }
@@ -1949,16 +1978,28 @@ export class QueryService {
               session,
             );
 
-            const disconnectQuery: Record<string, any> = {
-              where: {},
-              data: {},
+            const mutationSchema: MutationSchema = {
+              type: 'update',
+              model: relation.right.target,
+              query: {
+                where: {},
+                data: {},
+              },
             };
 
             for (const fieldFrom of relation.fKeyHolder.fieldsFrom) {
-              disconnectQuery.data[fieldFrom] = null;
+              mutationSchema.query.data[fieldFrom] = null;
             }
 
-            mutations.push({
+            // Apply permission
+            await this.applyPermissions(
+              'update',
+              session,
+              mutationSchema,
+              relPermModel,
+            );
+
+            const updateMany: Mutation<'updateMany'> = {
               model: relation.right.model,
               target: relation.right.target,
               type: 'updateMany',
@@ -1974,8 +2015,13 @@ export class QueryService {
               permission: {
                 update: permission,
               },
-              query: disconnectQuery,
-            } as Mutation<M>);
+              query: mutationSchema.query,
+            };
+
+            // Apply preset
+            await this.applyPreset(updateMany, session);
+
+            mutations.push(updateMany as Mutation<M>);
 
             for (const set of fieldData.set) {
               if (!set || set.constructor !== Object) {
@@ -1985,12 +2031,33 @@ export class QueryService {
                 );
               }
 
-              this.checkUniqueWhere(set, session, relation.right.target);
+              const flattenWhere = this.checkUniqueWhere(
+                set,
+                session,
+                relation.right.target,
+              );
 
-              mutations.push({
+              const mutationSchema: MutationSchema = {
+                type: 'update',
+                model: relation.right.target,
+                query: {
+                  where: flattenWhere,
+                  data: {},
+                },
+              };
+
+              // Apply permission
+              await this.applyPermissions(
+                'update',
+                session,
+                mutationSchema,
+                relPermModel,
+              );
+
+              const update: Mutation<'update'> = {
                 model: relation.right.model,
                 target: relation.right.target,
-                type: 'update' as M,
+                type: 'update',
                 newData: null,
                 oldData: null,
                 parents: [
@@ -2003,11 +2070,13 @@ export class QueryService {
                 permission: {
                   update: permission,
                 },
-                query: {
-                  where: set,
-                  data: {},
-                },
-              });
+                query: mutationSchema.query,
+              };
+
+              // Apply preset
+              await this.applyPreset(update, session);
+
+              mutations.push(update as Mutation<M>);
             }
           } else if (fieldData.set !== undefined) {
             throw new WsException(
@@ -2444,12 +2513,6 @@ export class QueryService {
     session: Session,
     trx: PrismaClient | TransactionClient,
   ): Promise<void> {
-    // Apply joi validation
-    QueryService.validateSchema(mutation);
-
-    // Apply presets
-    await this.applyPreset(mutation, session);
-
     // Connect parent
     QueryService.connectMutationParent(mutation);
 
@@ -2470,14 +2533,8 @@ export class QueryService {
     session: Session,
     trx: PrismaClient | TransactionClient,
   ): Promise<void> {
-    // Apply joi validation
-    QueryService.validateSchema(mutation);
-
-    // Apply presets
-    await this.applyPreset(mutation, session);
-
     // Find item to update
-    await this.findItemToMutate(mutation, session, trx);
+    await QueryService.findItemToMutate(mutation, trx);
 
     if (!mutation.oldData) {
       return;
@@ -2501,7 +2558,7 @@ export class QueryService {
     trx: PrismaClient | TransactionClient,
   ): Promise<void> {
     // Find item to update
-    await this.findItemToMutate(mutation, session, trx);
+    await QueryService.findItemToMutate(mutation, trx);
 
     if (!mutation.oldData) {
       return;
@@ -2519,14 +2576,8 @@ export class QueryService {
     session: Session,
     trx: PrismaClient | TransactionClient,
   ): Promise<void> {
-    // Apply joi validation
-    QueryService.validateSchema(mutation);
-
-    // Apply presets
-    await this.applyPreset(mutation, session);
-
     // Find item to update
-    await this.findItemToMutate(mutation, session, trx);
+    await QueryService.findItemToMutate(mutation, trx);
 
     if (!mutation.oldData) {
       QueryService.connectMutationParent(mutation);
