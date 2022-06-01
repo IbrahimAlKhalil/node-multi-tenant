@@ -10,8 +10,6 @@ describe('HelperService', () => {
     format: jest.fn(),
   };
 
-  //todo add LibPnService to solve the error
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,6 +60,8 @@ describe('HelperService', () => {
         value,
       });
     });
+
+    // TODO: mobile number verification is not working properly, need to fix it
 
     it('should return mobile identity', () => {
       // jest.spyOn(libPnService, 'validate').mockReturnValueOnce(true);
