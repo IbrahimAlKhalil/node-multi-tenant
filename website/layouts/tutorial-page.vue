@@ -47,13 +47,13 @@ export default defineComponent({
 
 /* scrollbar-thumb */
 .scrollbar::-webkit-scrollbar-thumb {
-  background: rgb(255, 255, 255);
+  background: transparent;
   border-radius: 10px;
 }
 
 /* scrollbar-track */
 .scrollbar::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: transparent;
   border-radius: 10px;
 }
 </style>
