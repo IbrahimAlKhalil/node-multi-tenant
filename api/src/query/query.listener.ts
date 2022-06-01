@@ -1,16 +1,17 @@
 import { WsException } from '../exceptions/ws-exception.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { OnWsReq } from '../decorators/on-ws-req.js';
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryService } from './query.service.js';
-import { WsEvent } from '../types/ws-event.js';
-import { OnWsEvent } from '../on-ws-event.js';
+import { WsEvt } from '../types/ws-evt';
 
 import {
-  BaseQuery,
-  baseQuery,
+  QuerySchema,
+  querySchema,
   MutationType,
   QueryType,
-} from './schema/base-query.js';
+} from './schema/query-schema.js';
+import { WsReq } from '../types/ws-req';
 
 @Injectable()
 export class QueryListener {
@@ -38,12 +39,12 @@ export class QueryListener {
     'deleteMany',
   ]);
 
-  @OnWsEvent('query')
-  async onQuery({ ws, data }: WsEvent<BaseQuery>) {
-    let query: BaseQuery;
+  @OnWsReq('query')
+  async onQuery({ ws, data }: WsReq<QuerySchema>) {
+    let query: QuerySchema;
 
     try {
-      query = await baseQuery.validateAsync(data);
+      query = await querySchema.validateAsync(data);
     } catch (e) {
       this.logger.error(e);
       // Rethrow error with code and message
@@ -62,12 +63,12 @@ export class QueryListener {
 
     if (this.queryTypes.has(query.type)) {
       result = await this.queryService.find(
-        query as BaseQuery<QueryType>,
+        query as QuerySchema<QueryType>,
         session,
       );
     } else if (this.mutationTypes.has(query.type)) {
       result = await this.queryService.mutate(
-        query as BaseQuery<MutationType>,
+        query as QuerySchema<MutationType>,
         session,
       );
     }

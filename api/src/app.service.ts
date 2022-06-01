@@ -1,8 +1,9 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from './auth/auth.service.js';
-import { BaseWsEvent } from './types/base-ws-event';
 import { Injectable, Logger } from '@nestjs/common';
+import { WsMessage } from './types/ws-message';
 import { Config } from './config/config.js';
+import { WsSub } from './uws/ws-sub.js';
 import { Uws } from './uws/uws.js';
 
 import {
@@ -40,9 +41,16 @@ export class AppService {
   }
 
   private logger = new Logger(AppService.name);
-  private schema = Joi.object<BaseWsEvent>({
-    id: Joi.number().min(1),
-    type: Joi.string().min(1).max(60).required(),
+  private schema = Joi.object<WsMessage>({
+    id: Joi.number()
+      .min(1)
+      .when('type', {
+        not: Joi.equal('evt'),
+        then: Joi.required(),
+        otherwise: Joi.forbidden(),
+      }),
+    type: Joi.string().allow('sub', 'req', 'evt').required(),
+    name: Joi.string().min(1).max(60).required(),
     data: Joi.any(),
   });
 
@@ -102,20 +110,38 @@ export class AppService {
     }
 
     // Validate the message
-    const { error, value } = this.schema.validate(msgObj);
+    let value: WsMessage;
 
-    if (error) {
-      this.logger.error(`Failed to validate message: ${msgTxt}`);
+    try {
+      value = await this.schema.validateAsync(msgObj);
+    } catch (e) {
+      this.logger.error(e.message);
       return;
     }
 
-    if (!value.id) {
+    if (value.type === 'evt') {
       // Emit the event without listening for response
-      this.eventEmitter.emit(`ws.${value.type}`, {
-        ws,
-        data: value.data,
-        binary: isBinary,
+      this.eventEmitter
+        .emitAsync(`ws.evt.${value.name}`, {
+          ws,
+          data: value.data,
+          binary: isBinary,
+        })
+        .catch((e) => {
+          this.logger.error(e);
+        });
+
+      return;
+    }
+
+    if (value.type === 'sub') {
+      const wsSub = new WsSub(value.id, ws, isBinary, value.data);
+
+      // Emit the event without listening for response
+      this.eventEmitter.emitAsync(`ws.sub.${value.name}`, wsSub).catch((e) => {
+        this.logger.error(e);
       });
+
       return;
     }
 
@@ -123,8 +149,9 @@ export class AppService {
     let response: any[] = [];
 
     try {
-      response = await this.eventEmitter.emitAsync(`ws.${value.type}`, {
+      response = await this.eventEmitter.emitAsync(`ws.req.${value.name}`, {
         ws,
+        id: value.id,
         data: value.data,
         binary: isBinary,
       });

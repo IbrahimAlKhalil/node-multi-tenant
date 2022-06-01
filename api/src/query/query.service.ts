@@ -995,7 +995,13 @@ export class QueryService {
         if (mutation.type === 'delete') {
           this.checkUniqueWhere(mutation.query.where, session, mutation.model);
         } else {
-          this.checkWhere(mutation.query.where, session);
+          this.checkWhere(
+            {
+              model: mutation.model,
+              where: mutation.query.where,
+            },
+            session,
+          );
         }
       }
 
@@ -2566,7 +2572,96 @@ export class QueryService {
     session: Session,
     trx: PrismaClient | TransactionClient,
   ) {
-    // TODO: Implement updateMany
+    const query: Record<string, any> = {
+      where: mutation.query.where,
+      select: {},
+      orderBy: {},
+      take: 100,
+      skip: 1,
+    };
+
+    for (const pKey of mutation.model.primaryKey) {
+      query.select[pKey] = true;
+      query.orderBy[pKey] = 'asc';
+    }
+
+    const pKeyWrapper = mutation.model.primaryKey.join('_');
+    const cursor: Record<string, any> = {};
+    let cursorInner: Record<string, any> = cursor;
+
+    if (mutation.model.primaryKey.length > 1) {
+      cursor[pKeyWrapper] = {};
+      cursorInner = cursor[pKeyWrapper];
+    }
+
+    const mutationBatch: Mutation<'delete'>[][] = [];
+    let firstBatch = true;
+
+    while (true) {
+      if (!firstBatch) {
+        query.cursor = cursor;
+      }
+
+      const items = await (trx[mutation.target] as any).findMany(query);
+
+      if (items.length === 0) {
+        break;
+      }
+
+      const mutations: Mutation<'delete'>[] = [];
+
+      for (const item of items) {
+        const query: Record<string, any> = {
+          where: {},
+        };
+
+        if (mutation.query.select) {
+          query.select = mutation.query.select;
+        }
+
+        if (mutation.query.include) {
+          query.include = mutation.query.include;
+        }
+
+        // Build where clause
+        if (mutation.model.primaryKey.length > 1) {
+          query.where[pKeyWrapper] = {};
+
+          for (const pKey of mutation.model.primaryKey) {
+            query.where[pKeyWrapper][pKey] = item[pKey];
+          }
+        } else {
+          query.where[mutation.model.primaryKey[0]] =
+            item[mutation.model.primaryKey[0]];
+        }
+
+        mutations.push({
+          type: 'delete',
+          model: mutation.model,
+          target: mutation.target,
+          permission: mutation.permission,
+          oldData: null,
+          newData: null,
+          parents: mutation.parents,
+          query,
+        });
+      }
+
+      await Promise.all(mutations.map((m) => this.delete(m, session, trx)));
+
+      for (const pKey of mutation.model.primaryKey) {
+        cursorInner[pKey] = items[items.length - 1][pKey];
+      }
+
+      mutationBatch.push(mutations);
+      firstBatch = false;
+
+      if (items.length < 100) {
+        break;
+      }
+    }
+
+    return mutationBatch.flat().map((m) => m.oldData);
   }
 
   public async mutate(
@@ -2656,14 +2751,21 @@ export class QueryService {
     }
 
     if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
-      return await prisma.$transaction(
-        async (trx) =>
-          await this[mutation.type as 'deleteMany' | 'updateMany'](
-            mutation as any,
-            session,
-            trx,
-          ),
-      );
+      return await prisma.$transaction(async (trx) => {
+        const results: any[] = [];
+
+        for (const mutation of mutations.all) {
+          results.push(
+            await this[mutation.type as 'deleteMany' | 'updateMany'](
+              mutation as any,
+              session,
+              trx,
+            ),
+          );
+        }
+
+        return results;
+      });
     }
 
     await prisma.$transaction(async (trx) => {
