@@ -1,7 +1,7 @@
 import { PermissionDefinition as CreatePermission } from './create-permission';
 import { PermissionDefinition as UpdatePermission } from './update-permission';
 import { PermissionDefinition as DeletePermission } from './delete-permission';
-import { MutationType } from '../schema/base-query';
+import { MutationType } from '../schema/mutation-schema';
 import { Model } from '../../prisma/types/model';
 import { RelationAnalyzed } from './relation';
 import { ModelNames } from './model-names';

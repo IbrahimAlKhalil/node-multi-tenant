@@ -3,13 +3,14 @@ import { PermissionDefinition as DeletePermission } from './types/delete-permiss
 import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
 import { FKeyHolder, Relation, RelationAnalyzed } from './types/relation';
-import { BaseQuery, MutationType, QueryType } from './schema/base-query';
+import { MutationSchema, MutationType } from './schema/mutation-schema';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { WsException } from '../exceptions/ws-exception.js';
 import { ClassifyOptions } from './types/classify-options';
 import { Prisma, PrismaClient } from '../../prisma/client';
 import { ClassifyResult } from './types/classify-result';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { QuerySchema } from './schema/query-schema';
 import TransactionClient = Prisma.TransactionClient;
 import { Injectable, Logger } from '@nestjs/common';
 import { Mutation, Parent } from './types/mutation';
@@ -342,8 +343,8 @@ export class QueryService {
   }
 
   private addDefaultSelects(
-    queue: BaseQuery[],
-    baseQuery: BaseQuery,
+    queue: (MutationSchema | QuerySchema)[],
+    baseQuery: MutationSchema | QuerySchema,
     session: Session,
     modelFields: Record<string, Field>,
   ): void {
@@ -377,7 +378,6 @@ export class QueryService {
           type: baseQuery.type,
           model: this.prismaService.modelsNameMap[modelField.type],
           query: baseQuery.query.include[relation],
-          subscribe: baseQuery.subscribe,
         });
       }
     }
@@ -426,7 +426,10 @@ export class QueryService {
     }
   }
 
-  private addDefaultCountSelects(baseQuery: BaseQuery, session: Session): void {
+  private addDefaultCountSelects(
+    baseQuery: MutationSchema | QuerySchema,
+    session: Session,
+  ): void {
     const fields = this.classifyFields({
       session,
       action: 'read',
@@ -478,7 +481,10 @@ export class QueryService {
     }
   }
 
-  private checkCountSelects(baseQuery: BaseQuery, session: Session): void {
+  private checkCountSelects(
+    baseQuery: MutationSchema | QuerySchema,
+    session: Session,
+  ): void {
     const fields = this.classifyFields({
       session,
       action: 'read',
@@ -652,7 +658,7 @@ export class QueryService {
   private async applyPermissions(
     action: Exclude<keyof Actions<any, any>, 'subscribe' | 'create'>,
     session: Session,
-    baseQuery: BaseQuery,
+    baseQuery: QuerySchema,
     permissionModel: Model<any, any>,
   ): Promise<boolean> {
     const permission = QueryService.getActionPermission(
@@ -709,7 +715,7 @@ export class QueryService {
     return true;
   }
 
-  private checkOrderBy(baseQuery: BaseQuery, session: Session): void {
+  private checkOrderBy(baseQuery: QuerySchema, session: Session): void {
     const orderBys = Array.isArray(baseQuery.query.orderBy)
       ? baseQuery.query.orderBy
       : [baseQuery.query.orderBy];
@@ -789,8 +795,8 @@ export class QueryService {
   }
 
   private processSelect(
-    queue: BaseQuery[],
-    baseQuery: BaseQuery,
+    queue: (MutationSchema | QuerySchema)[],
+    baseQuery: MutationSchema | QuerySchema,
     session: Session,
     modelFields: Record<string, Field>,
   ): void {
@@ -850,7 +856,6 @@ export class QueryService {
         type: baseQuery.type,
         model: this.prismaService.modelsNameMap[modelField.type],
         query: baseQuery.query.select[field],
-        subscribe: baseQuery.subscribe,
       });
     }
   }
@@ -965,7 +970,7 @@ export class QueryService {
   }
 
   private async processMutation<M extends MutationType = MutationType>(
-    mutation: Omit<BaseQuery<M>, 'subscribe'>,
+    mutation: MutationSchema<M>,
     session: Session,
     prisma: PrismaClient,
     parents?: Parent[],
@@ -2297,11 +2302,11 @@ export class QueryService {
   }
 
   public async find(
-    rootQuery: BaseQuery<QueryType>,
+    rootQuery: QuerySchema,
     session: Session,
     trx?: PrismaClient,
   ): Promise<any> {
-    const queue: BaseQuery[] = [rootQuery];
+    const queue: QuerySchema[] = [rootQuery];
 
     for (let q = 0; q < queue.length; q++) {
       const baseQuery = queue[q];
@@ -2322,14 +2327,14 @@ export class QueryService {
       }
 
       // Check if user has permission to subscribe to this model
-      if (baseQuery.subscribe) {
+      /*if (baseQuery.subscribe) {
         QueryService.getActionPermission(
           'subscribe',
           baseQuery.model,
           permissionModel,
           session,
         );
-      }
+      }*/
 
       if (baseQuery.query.select) {
         this.processSelect(queue, baseQuery, session, modelFields);
@@ -2430,6 +2435,8 @@ export class QueryService {
         'PRISMA_ERROR',
       );
     }
+
+    // TODO: Add support for subscriptions
   }
 
   public async create(
@@ -2665,7 +2672,7 @@ export class QueryService {
   }
 
   public async mutate(
-    mutation: Omit<BaseQuery<MutationType>, 'subscribe'>,
+    mutation: MutationSchema,
     session: Session,
   ): Promise<any> {
     let select: Record<string, any> | null = null;
@@ -2673,7 +2680,7 @@ export class QueryService {
 
     if (mutation.query.select || mutation.query.include) {
       // Process select and include
-      const selectQueue: BaseQuery[] | null = [mutation];
+      const selectQueue: MutationSchema[] | null = [mutation];
 
       for (let q = 0; q < selectQueue.length; q++) {
         const baseQuery = selectQueue[q];
