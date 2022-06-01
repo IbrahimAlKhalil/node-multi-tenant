@@ -26,26 +26,22 @@
       <div class="content w-11/12 mx-auto flex">
         <div class="grow pt-10" style="flex: 2">
           <section class="intro-meta pb-8 border-b border-b-gray-200">
-            <h3 class="font-bold text-5xl text-text mb-3">
-              Students Administration
-            </h3>
+            <h3 class="font-bold text-5xl mb-3">Students Administration</h3>
             <p class="text-gray-500 mb-5">
               <span>Last update at: </span> <span>28-05-2022</span>
             </p>
-            <p class="text-justify text-text">
+            <p class="text-justify">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere,
               fuga illum molestiae delectus hic repudiandae nobis distinctio
               beatae, esse non nam facilis qui, et ullam.
             </p>
           </section>
           <section class="my-10">
-            <h3 class="font-bold text-3xl text-text mb-3">
-              Students Administration
-            </h3>
-            <p class="text-gray-500 mb-5">
+            <h3 class="font-bold text-3xl mb-3">Students Administration</h3>
+            <p class="text-gray-500 dark:text-inherit mb-5">
               <span>Last update at: </span> <span>28-05-2022</span>
             </p>
-            <p class="text-justify text-text mb-5">
+            <p class="text-justify mb-5">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
               fugit soluta placeat facilis, maxime aliquid omnis, corporis
               itaque temporibus fugiat aperiam obcaecati sed enim. Ratione
@@ -54,7 +50,7 @@
               tenetur, quis dicta odit ipsum ipsam nihil voluptatum. Obcaecati,
               molestias!
             </p>
-            <p class="text-justify text-text mb-5">
+            <p class="text-justify mb-5">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
               fugit soluta placeat facilis, maxime aliquid omnis, corporis
               itaque temporibus fugiat aperiam obcaecati sed enim. Ratione
@@ -65,13 +61,11 @@
             </p>
           </section>
           <section class="my-10">
-            <h3 class="font-bold text-3xl text-text mb-3">
-              Students Administration
-            </h3>
-            <p class="text-gray-500 mb-5">
+            <h3 class="font-bold text-3xl mb-3">Students Administration</h3>
+            <p class="text-gray-500 dark:text-inherit mb-5">
               <span>Last update at: </span> <span>28-05-2022</span>
             </p>
-            <p class="text-justify text-text mb-5">
+            <p class="text-justify mb-5">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
               fugit soluta placeat facilis, maxime aliquid omnis, corporis
               itaque temporibus fugiat aperiam obcaecati sed enim. Ratione
@@ -80,7 +74,7 @@
               tenetur, quis dicta odit ipsum ipsam nihil voluptatum. Obcaecati,
               molestias!
             </p>
-            <p class="text-justify text-text mb-5">
+            <p class="text-justify mb-5">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
               fugit soluta placeat facilis, maxime aliquid omnis, corporis
               itaque temporibus fugiat aperiam obcaecati sed enim. Ratione
