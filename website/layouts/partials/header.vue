@@ -92,7 +92,8 @@ function checkStickyHeader() {
   return (
     (navData.currentPath.split('/')[1] === 'blog' &&
       navData.currentPath.split('/').length > 2) ||
-    navData.currentPath.split('/')[1] === 'tutorials'
+    navData.currentPath.split('/')[1] === 'tutorials' ||
+    navData.currentPath.split('/')[1] === 'admin'
   );
 }
 

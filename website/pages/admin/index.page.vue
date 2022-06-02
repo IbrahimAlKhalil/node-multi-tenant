@@ -1,40 +1,76 @@
 <template>
-  <h3
-    class="font-bold text-center text-5xl text-primary my-8 uppercase underline"
-  >
-    Editor
-  </h3>
-  <div class="w-4/5 mx-auto border rounded p-5">
-    <div class id="editor-vue" />
-  </div>
-  <div class="flex justify-center items-center my-5">
-    <button
-      class="bg-primary rounded px-5 py-2 text-white font-bold"
-      type="button"
-      name="button"
-      @click="save()"
-    >
-      save
-    </button>
-  </div>
-  <div class="w-4/5 mx-auto border rounded p-5">
-    <!-- value json data to html -->
-    <div id="render-html-vue" v-html="renderedHtml"></div>
-  </div>
+  <admin-page-layout>
+    <template #sidebar>
+      <p class="">
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eum, iusto!
+        Quidem consectetur ex tenetur officiis eveniet nisi, incidunt amet.
+        Tempora.
+      </p>
+    </template>
+    <div>
+      <div class="intro border-b flex justify-center border-b-gray-300 mb-8">
+        <h3
+          class="text-3xl font-bold text-center text-primary pb-2 px-2 -mb-[2px] w-fit relative after:block after:absolute after:bottom-0 after:left-0 after:w-full after:h-[4px] after:bg-primary after:rounded"
+        >
+          Post Create
+        </h3>
+      </div>
+      <form>
+        <div class="title">
+          <label for="title" class="block font-bold text-lg">Title</label>
+          <input
+            type="text"
+            id="title"
+            class="block px-2 py-1 border border-gray-300 focus:border-primary rounded outline-none w-full"
+          />
+        </div>
+        <div class="slug">
+          <label for="slug" class="block font-bold text-lg">Slug</label>
+          <input
+            type="text"
+            id="slug"
+            class="block px-2 py-1 border border-gray-300 focus:border-primary rounded outline-none w-full"
+          />
+        </div>
+        <div class="body">
+          <label for="body" class="block font-bold text-lg">Body</label>
+          <div id="editor-vue" class="border border-gray-300 rounded" />
+        </div>
+      </form>
+    </div>
+  </admin-page-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
+import AdminPageLayout from '#layouts/admin-page.vue';
 
 export default defineComponent({
   name: 'admin-page',
+  components: {
+    AdminPageLayout,
+  },
   setup() {
     const value = ref('');
     const renderedHtml = ref('');
 
-    const convertDataToHtml = async (blocks) => {
+    type dataBlockType = {
+      type: string;
+      data: {
+        level: string;
+        text: string;
+        caption: string;
+        embed: string;
+        items: string[];
+        file: {
+          url: string;
+        };
+      };
+    };
+
+    const convertDataToHtml = async (blocks: dataBlockType[]) => {
       var convertedHtml = '';
-      blocks.map((block) => {
+      blocks.map((block: dataBlockType) => {
         switch (block.type) {
           case 'header':
             convertedHtml += `<h${block.data.level}>${block.data.text}</h${block.data.level}>`;
@@ -53,7 +89,7 @@ export default defineComponent({
             break;
           case 'list':
             convertedHtml += '<ul>';
-            block.data.items.forEach(function (li) {
+            block.data.items.forEach(function (li: string) {
               convertedHtml += `<li>${li}</li>`;
             });
             convertedHtml += '</ul>';
@@ -68,7 +104,7 @@ export default defineComponent({
 
     const save = async () => {
       if (!window) return;
-      editor.save().then(async (saveData) => {
+      editor.save().then(async (saveData: any) => {
         value.value = JSON.stringify(saveData, null, 2);
         renderedHtml.value = await convertDataToHtml(saveData.blocks);
       });
@@ -125,40 +161,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-h1 {
-  font-size: 3rem;
-  font-weight: bold;
-}
-h2 {
-  font-size: 2.5rem;
-  font-weight: bold;
-}
-h3 {
-  font-size: 2rem;
-  font-weight: bold;
-}
-h4 {
-  font-size: 1.75rem;
-  font-weight: bold;
-}
-h5 {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-h6 {
-  font-size: 1rem;
-  font-weight: bold;
-}
-ul {
-  list-style: square inside;
-}
-a {
-  text-decoration: underline;
-  color: blue;
-}
-#render-html-vue > * {
-  margin-bottom: 10px;
-}
-</style>
