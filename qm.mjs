@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { run as generatePrismaJson } from './scripts/gen-prisma-json.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -85,16 +84,6 @@ program.addCommand(
   {
     isDefault: true,
   },
-);
-
-program.addCommand(
-  new Command('gen-prisma-json')
-    .option('-a, --api', 'Generate the prisma.json file for the API')
-    .option('-w, --website', 'Generate the prisma.json file for the website')
-    .action((_, p) => generatePrismaJson(
-      p.getOptionValue('api'),
-      p.getOptionValue('website'),
-    )),
 );
 
 // Create the build command
