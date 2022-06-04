@@ -1294,6 +1294,13 @@ export class QueryService {
         fields: Object.keys(dataObj.data),
       });
 
+      if (mutation.type === 'updateMany' && fields.relation.length) {
+        throw new WsException(
+          'You can not update relations in updateMany mutation',
+          'PERMISSION_DENIED',
+        );
+      }
+
       // Check fields permissions
       QueryService.checkFieldPermissions(mutation.model, fields);
 
@@ -1374,7 +1381,13 @@ export class QueryService {
               mutation.model,
             );
           } else if (mutation.type === 'updateMany') {
-            this.checkWhere(mutation.query.where, session);
+            this.checkWhere(
+              {
+                model: mutation.model,
+                where: mutation.query.where,
+              },
+              session,
+            );
           }
 
           query.where = mutation.query.where;
@@ -2523,7 +2536,7 @@ export class QueryService {
     mutation: Mutation<'update'>,
     session: Session,
     trx: PrismaClient | TransactionClient,
-  ): Promise<void> {
+  ): Promise<Record<string, any> | void> {
     // Find item to update
     await QueryService.findItemToMutate(mutation, trx);
 
@@ -2541,6 +2554,9 @@ export class QueryService {
     const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
     (eventPayload as any).session = session;
     this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return mutation.newData!;
   }
 
   public async delete(
@@ -2610,22 +2626,14 @@ export class QueryService {
     this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
   }
 
-  public async updateMany(
-    mutation: Mutation<'updateMany'>,
-    session: Session,
-    trx: PrismaClient | TransactionClient,
-  ) {
-    // TODO: Implement updateMany
-  }
-
-  public async deleteMany(
-    mutation: Mutation<'deleteMany'>,
+  public async updateManyOrDeleteMany(
+    mutation: Mutation<'updateMany' | 'deleteMany'>,
     session: Session,
     trx: PrismaClient | TransactionClient,
     wsSub?: WsSub<MutationSchema>,
-  ): Promise<void> {
-    const batchSize = 2;
-    const query: Record<string, any> = {
+  ) {
+    const batchSize = 10;
+    const findQuery: Record<string, any> = {
       where: mutation.query.where,
       select: {},
       orderBy: {},
@@ -2633,8 +2641,8 @@ export class QueryService {
     };
 
     for (const pKey of mutation.model.primaryKey) {
-      query.select[pKey] = true;
-      query.orderBy[pKey] = 'asc';
+      findQuery.select[pKey] = true;
+      findQuery.orderBy[pKey] = 'asc';
     }
 
     const pKeyWrapper = mutation.model.primaryKey.join('_');
@@ -2650,12 +2658,12 @@ export class QueryService {
 
     while (true) {
       if (batch > 0) {
-        query.cursor = cursor;
+        findQuery.cursor = cursor;
       }
 
       batch++;
-      const items = await (trx[mutation.target] as any).findMany(query);
-      const mutations: Mutation<'delete'>[] = [];
+      const items = await (trx[mutation.target] as any).findMany(findQuery);
+      const mutations: Mutation<'delete' | 'update'>[] = [];
 
       if (items.length === 0) {
         // No more items to delete
@@ -2668,56 +2676,61 @@ export class QueryService {
 
       // Create delete mutations, excluding the last item
       for (const item of items.slice(0, batchSize)) {
-        const query: Record<string, any> = {
+        const mutationQuery: Record<string, any> = {
           where: {},
         };
 
         // Add selection if exists
         if (mutation.query.select) {
-          query.select = mutation.query.select;
+          mutationQuery.select = mutation.query.select;
         }
 
         // Add include if exists
         if (mutation.query.include) {
-          query.include = mutation.query.include;
+          mutationQuery.include = mutation.query.include;
+        }
+
+        // Add data if exists
+        if (mutation.query.data) {
+          mutationQuery.data = mutation.query.data;
         }
 
         // Build where clause
         if (mutation.model.primaryKey.length > 1) {
           // Complex primary key
-          query.where[pKeyWrapper] = {};
+          mutationQuery.where[pKeyWrapper] = {};
 
           for (const pKey of mutation.model.primaryKey) {
-            query.where[pKeyWrapper][pKey] = item[pKey];
+            mutationQuery.where[pKeyWrapper][pKey] = item[pKey];
           }
         } else {
           // Simple primary key
-          query.where[mutation.model.primaryKey[0]] =
+          mutationQuery.where[mutation.model.primaryKey[0]] =
             item[mutation.model.primaryKey[0]];
         }
 
         mutations.push({
-          type: 'delete',
+          type: mutation.type === 'updateMany' ? 'update' : 'delete',
           model: mutation.model,
           target: mutation.target,
           permission: mutation.permission,
           oldData: null,
           newData: null,
           parents: mutation.parents,
-          query,
+          query: mutationQuery,
         });
       }
 
-      const deletedItems = await Promise.all(
-        mutations.map((m) => this.delete(m, session, trx)),
+      const mutatedItems = await Promise.all(
+        mutations.map((m) => this[m.type](m as any, session, trx)),
       );
 
       if (wsSub) {
         // Send deleted items to client
         if (items.length < batchSize) {
-          wsSub.send(deletedItems, true);
+          wsSub.send(mutatedItems, true);
         } else {
-          wsSub.send(deletedItems);
+          wsSub.send(mutatedItems);
         }
       }
 
@@ -2783,8 +2796,25 @@ export class QueryService {
       );
     }
 
-    const mutations = await this.processMutation(mutation, session, prisma);
+    // Process mutations
+    const mutations = await this.processMutation(mutation, session, prisma)
+      .then((mutations) => mutations)
+      .catch((err: WsException) => {
+        if (wsSub) {
+          return wsSub.error(err, true);
+        }
 
+        throw err;
+      });
+
+    if (!mutations) {
+      return;
+    }
+
+    // Add select and include to root query when mutation type is one of the following
+    // - delete
+    // - deleteMany
+    // - updateMany
     if (
       mutation.type === 'delete' ||
       mutation.type === 'deleteMany' ||
@@ -2817,15 +2847,19 @@ export class QueryService {
         );
       }
 
+      if (wsSub) {
+        return wsSub.send(item, true);
+      }
+
       return item;
     }
 
-    if (mutation.type === 'deleteMany') {
+    if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
       return await prisma.$transaction(
         async (trx) => {
           for (const mutation of mutations.all) {
-            await this.deleteMany(
-              mutation as Mutation<'deleteMany'>,
+            await this.updateManyOrDeleteMany(
+              mutation as Mutation<'deleteMany' | 'updateMany'>,
               session,
               trx,
               wsSub,
@@ -2833,33 +2867,15 @@ export class QueryService {
           }
         },
         {
-          timeout: 600000,
-          maxWait: 600000,
+          timeout: 30000, // 30 seconds
+          maxWait: 10000, // 10 seconds
         },
       );
     }
 
-    if (mutation.type === 'updateMany') {
-      return await prisma.$transaction(async (trx) => {
-        const results: any[] = [];
-
-        for (const mutation of mutations.all) {
-          results.push(
-            await this[mutation.type as 'updateMany'](
-              mutation as any,
-              session,
-              trx,
-            ),
-          );
-        }
-
-        return results;
-      });
-    }
-
     await prisma.$transaction(async (trx) => {
       for (const mutation of mutations.all) {
-        await this[mutation.type as Exclude<MutationType, 'createMany'>](
+        await this[mutation.type as 'create' | 'upsert' | 'update'](
           mutation as any,
           session,
           trx,
@@ -2869,7 +2885,19 @@ export class QueryService {
 
     if (!select && !include) {
       if (mutation.type === 'createMany') {
+        if (wsSub) {
+          return wsSub.send(
+            mutations.current.map((m) => m.newData),
+            true,
+          );
+        }
+
         return mutations.current.map((m) => m.newData);
+      }
+
+      if (wsSub) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return wsSub.send(mutations.current[0].newData!, true);
       }
 
       return mutations.current[0].newData;
