@@ -1,6 +1,6 @@
 <template>
   <div class="w-full relative">
-    <label class="font-bold text-gray-700" :for="name">
+    <label class="font-bold text-text dark:text-light" :for="name">
       {{ label }}
     </label>
     <input
@@ -8,7 +8,7 @@
       :name="name"
       :value="value"
       @input="$emit('on-input', $event)"
-      class="block px-3 py-2 rounded-md border-b-2 border-t border-t-transparent border-b-white focus:border-primary focus:border-x focus:border-t text-white outline-0 w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
+      class="block px-3 py-2 rounded-md border-b-2 border-t border-t-transparent border-b-primary focus:border-primary-dark focus:border-x focus:border-t text-text dark:text-light outline-0 w-full bg-transparent transition duration-300 ease-in placeholder:text-gray-700 dark:placeholder:text-light dark:placeholder:opacity-60 placeholder:font-bold"
       :class="{
         'border-red-500 focus:border-red-500': error,
       }"
@@ -18,7 +18,7 @@
     />
     <p class="text-sm italic text-red-500 p-1">{{ error }} &nbsp;</p>
     <div
-      class="absolute right-0 top-1/2 -translate-y-1/2"
+      class="absolute right-2 top-[13px]"
       :class="[isPasswordField ? 'visible opacity-100' : 'invisible opacity-0']"
     >
       <component
