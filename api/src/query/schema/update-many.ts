@@ -4,5 +4,5 @@ export const updateMany = Joi.object({
   include: Joi.object().optional(),
   select : Joi.object().optional(),
   data : Joi.object().required(),
-  where: Joi.object().optional(),
+  where: Joi.object().required(),
 }).required();

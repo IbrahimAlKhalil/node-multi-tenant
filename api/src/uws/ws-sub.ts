@@ -11,7 +11,7 @@ export class WsSub<T = any> {
 
   public send(
     data: Record<string, any> | Record<string, any>[] | (string | number)[],
-    finish = false,
+    finish?: boolean,
   ): void {
     this.ws.send(
       JSON.stringify({
@@ -22,7 +22,16 @@ export class WsSub<T = any> {
     );
   }
 
-  public error(exception: WsException, finish = false): void {
+  public finish(): void {
+    this.ws.send(
+      JSON.stringify({
+        id: this.id,
+        finish: true,
+      }),
+    );
+  }
+
+  public error(exception: WsException, finish?: boolean): void {
     this.ws.send(
       JSON.stringify({
         id: this.id,
