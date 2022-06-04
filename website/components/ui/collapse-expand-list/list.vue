@@ -1,5 +1,5 @@
 <template>
-  <ul class="w-full">
+  <ul class="w-full max-h-[250px] overflow-y-auto rt-scrollbar">
     <list-item
       v-for="item of items"
       :key="item.id"

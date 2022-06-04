@@ -3,6 +3,7 @@
     <span
       class="hover:text-primary flex items-center gap-2 w-full"
       :class="{ 'text-primary font-bold': isChecked }"
+      @click="isCollapsed = !isCollapsed"
     >
       <span v-show="isFolder" class="text-sm">[<b class="text-md">-</b>] </span>
       <span v-show="!isFolder">&ensp;&ensp;&ensp;</span>
@@ -32,6 +33,11 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'list-item',
+  data() {
+    return {
+      isCollapsed: true,
+    };
+  },
   props: {
     item: {
       type: Object,
