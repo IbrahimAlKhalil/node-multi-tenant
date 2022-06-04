@@ -15,5 +15,5 @@ export const OnWsSub = (
 
   events.add(event);
 
-  return OnEvent(`ws.req.${event}`, options);
+  return OnEvent(`ws.sub.${event}`, options);
 };
