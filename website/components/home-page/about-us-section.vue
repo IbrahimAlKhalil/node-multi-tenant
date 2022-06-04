@@ -7,12 +7,14 @@
     </div>
 
     <div class="text-container py-10">
-      <div class="info w-4/5 lg:w-1/2">
+      <div
+        class="info bg-white/80 dark:bg-black/80 text-black dark:text-light w-4/5 lg:w-1/2"
+      >
         <p class="font-bold text-md lg:text-lg">SAHARA IT</p>
-        <h2 class="font-bold text-3xl lg:text-5xl text-secondary my-5">
+        <h2 class="font-bold text-3xl lg:text-5xl text-primary my-5">
           A short introduction about us
         </h2>
-        <p class="text-gray-300 text-xs md:text-md lg:text-lg">
+        <p class="text-xs md:text-md lg:text-lg">
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industry's standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
@@ -66,13 +68,11 @@ import backgroundVideo from '#videos/background.mp4';
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.5);
 }
 .info {
   padding: 25px 50px 10px;
   border-radius: 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
   text-align: center;
+  text-shadow: 0 0 1px;
 }
 </style>
