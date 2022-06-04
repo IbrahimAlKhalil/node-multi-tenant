@@ -1,7 +1,12 @@
 <template>
   <div class="w-full relative">
     <div
-      class="min-h-[50px] rounded-md text-white border-b-2 border-white"
+      class="min-h-[50px] rounded-md border-b-2"
+      :class="[
+        color === 'white'
+          ? 'text-white border-white'
+          : 'text-text border-primary',
+      ]"
       @click="handleAreaClick"
     >
       <input
@@ -12,7 +17,8 @@
         @click="isDropdownOpen = !isDropdownOpen"
       />
       <span
-        class="absolute top-1/2 right-0 -translate-y-1/2 text-white text-xl p-5 cursor-pointer"
+        class="absolute top-1/2 right-0 -translate-y-1/2 text-xl p-5 cursor-pointer"
+        :class="[color === 'white' ? 'text-white' : 'text-primary']"
         @click="isDropdownOpen = !isDropdownOpen"
       >
         <component :is="Down"></component>
@@ -21,7 +27,7 @@
         <span
           v-for="item in selectedItems"
           :key="item.value"
-          class="px-2 py-1 bg-primary rounded flex items-center gap-2"
+          class="px-2 py-1 bg-primary text-white rounded flex items-center gap-2"
         >
           <span>
             {{ item.label }}
@@ -37,7 +43,7 @@
       </div>
     </div>
     <ul
-      class="my-5 p-3 absolute top-full left-0 w-full bg-white rounded-md z-10"
+      class="mb-5 p-3 absolute top-full left-0 w-full bg-white rounded-md z-10"
       v-show="isDropdownOpen"
     >
       <li
@@ -65,7 +71,7 @@
         </span>
       </li>
     </ul>
-    <p>{{error }} &nbsp;</p>
+    <p>{{ error }} &nbsp;</p>
   </div>
 </template>
 
@@ -122,6 +128,10 @@ defineProps({
   error: {
     type: String,
     default: '',
+  },
+  color: {
+    type: String,
+    default: 'white',
   },
 });
 </script>

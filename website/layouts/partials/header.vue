@@ -75,8 +75,7 @@ import MenuBar from '#icons/light/bars.svg';
 import Logo from '#images/logo.svg?url';
 import { useI18n } from 'vue-i18n';
 
-const { urlPathname, pageProps } = usePageContext();
-console.log('The page props: ', pageProps);
+const { urlPathname } = usePageContext();
 const navData = useNavData();
 const i18n = useI18n();
 
