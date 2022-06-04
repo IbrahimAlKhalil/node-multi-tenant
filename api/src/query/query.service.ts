@@ -1073,14 +1073,6 @@ export class QueryService {
       },
     };
 
-    if (mutation.query.select) {
-      findQuery.select = mutation.query.select;
-    }
-
-    if (mutation.query.include) {
-      findQuery.include = mutation.query.include;
-    }
-
     if (mutation.query.where) {
       findQuery.where.AND.push(mutation.query.where);
     }
@@ -2556,7 +2548,7 @@ export class QueryService {
     mutation: Mutation<'delete'>,
     session: Session,
     trx: PrismaClient | TransactionClient,
-  ): Promise<void> {
+  ): Promise<Record<string, any> | void> {
     // Find item to update
     await QueryService.findItemToMutate(mutation, trx);
 
@@ -2564,11 +2556,13 @@ export class QueryService {
       return;
     }
 
-    await (trx[mutation.target] as any).delete(mutation.query);
+    const item = await (trx[mutation.target] as any).delete(mutation.query);
 
     const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
     (eventPayload as any).session = session;
     this.eventEmitter.emitAsync(`${mutation.target}.delete`, eventPayload);
+
+    return item;
   }
 
   public async upsert(
@@ -2792,20 +2786,20 @@ export class QueryService {
     }
 
     if (mutation.type === 'delete') {
-      await this.delete(
+      const item = await this.delete(
         mutations.current[0] as Mutation<'delete'>,
         session,
         prisma,
       );
 
-      if (!mutations.current[0].oldData) {
+      if (!item) {
         throw new WsException(
           `Item to delete is not found`,
           'RECORD_NOT_FOUND',
         );
       }
 
-      return mutations.current[0].oldData;
+      return item;
     }
 
     if (mutation.type === 'deleteMany' || mutation.type === 'updateMany') {
