@@ -28,12 +28,12 @@
         <li
           v-for="(item, index) in items"
           :key="item.id"
-          class="info-box__item rounded-xl border border-primary px-5 pt-[60px] pb-[30px] text-center relative"
+          class="info-box__item rounded-xl px-5 pt-[60px] pb-[30px] text-center relative bg-white drop-shadow-[0_48px_100px_rgba(17,12,46,0.15)]"
           data-aos="zoom-in"
           :data-aos-delay="100 * index"
         >
           <div
-            class="info-box__icon w-[100px] h-[100px] rounded-full p-5 border bg-white border-primary absolute -top-[50px] left-1/2 -translate-x-1/2"
+            class="info-box__icon w-[100px] h-[100px] rounded-full p-5 bg-white border-primary absolute -top-[50px] left-1/2 -translate-x-1/2"
           >
             <img :src="item.avatar" :alt="t(item.title)" />
           </div>
