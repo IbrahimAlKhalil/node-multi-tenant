@@ -1,15 +1,15 @@
 <template>
-  <h1 class="font-bold text-3xl lg:text-5xl text-center uppercase mb-5">
-    Sign up
-  </h1>
-  <h2 class="text-lg lg:text-xl text-center">To access you dashboard</h2>
+  <page-title title="Sign Up" />
+  <h2 class="text-lg text-center text-gray-400 lowercase">
+    To access you dashboard
+  </h2>
   <div class="flex items-center justify-center gap-20 py-5">
     <div
-      class="email font-bold cursor-pointer"
+      class="email font-bold cursor-pointer before:text-white"
       :class="[
         selectedTab === 'email'
-          ? 'text-white before:bg-white'
-          : 'text-gray-500 before:bg-gray-500',
+          ? 'text-primary before:bg-primary dark:text-secondary dark:before:bg-secondary'
+          : 'text-gray-500 before:bg-gray-500 dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
       <p>Email</p>
@@ -18,8 +18,8 @@
       class="company font-bold cursor-pointer"
       :class="[
         selectedTab === 'company'
-          ? 'text-white before:bg-white'
-          : 'text-gray-500 before:bg-gray-500',
+          ? 'text-primary before:bg-primary before:text-light dark:text-secondary dark:before:bg-secondary'
+          : 'text-gray-500 before:bg-gray-500 before:text-light dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
       <p>Company Info</p>
@@ -51,6 +51,7 @@
   >
     <div class="w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
       <SelectInput
+        color="primary"
         label="Languages"
         :options="[
           { label: 'বাংলা', value: 'bn' },
@@ -65,6 +66,7 @@
         :error="companyInfoErrors.languages"
       />
       <SelectInput
+        color="primary"
         label="Default Language"
         name="defaultLanguage"
         :options="companyInfo.languages"
@@ -148,7 +150,7 @@
       <input
         type="submit"
         value="Update"
-        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+        class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
   </form>
@@ -158,9 +160,10 @@
   </p>
 </template>
 
-<script setup>
-import InputField from '#components/form-components/input-field.vue';
+<script lang="ts" setup>
 import SelectInput from '#components/form-components/select-input.vue';
+import InputField from '#components/form-components/input-field.vue';
+import PageTitle from '#components/ui/page-title.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
@@ -305,7 +308,6 @@ const handleCompanySubmit = () => {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  color: black;
   font-weight: 700;
   text-align: center;
 }
