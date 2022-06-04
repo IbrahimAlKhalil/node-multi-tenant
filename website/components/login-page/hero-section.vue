@@ -1,10 +1,10 @@
 <template>
-  <h1 class="font-bold text-3xl lg:text-5xl text-center uppercase mb-5">
-    Login
-  </h1>
-  <h2 class="text-lg lg:text-xl text-center">To access you dashboard</h2>
+  <page-title title="Login" />
+  <h2 class="text-lg text-center text-gray-400 lowercase">
+    To access you dashboard
+  </h2>
   <form @submit.prevent="handleSubmit">
-    <div class="w-1/2 mx-auto flex flex-col gap-5 items-center p-5">
+    <div class="w-1/2 mx-auto flex flex-col gap-3 items-center p-5">
       <InputField
         placeholder="Email"
         name="username"
@@ -30,35 +30,40 @@
         @on-keypress="validate"
         @on-toggle-password="showPassword = !showPassword"
       />
-      <div class="w-full mb-3">
+      <div class="w-full">
         <input
           type="checkbox"
           name="remember"
           id="remember"
           v-model="values.remember"
         />
-        <label for="remember" class="text-white ml-2">Remember me</label>
+        <label for="remember" class="text-text dark:text-light font-bold ml-2"
+          >Remember me</label
+        >
       </div>
       <input
         type="submit"
         :value="btnText"
-        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+        class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
   </form>
   <p class="text-center italic">
     Do not have account?
-    <a href="/signup" class="font-bold text-secondary">Sign UP</a>
+    <a href="/signup" class="font-bold text-primary dark:text-secondary"
+      >Sign UP</a
+    >
   </p>
   <p class="text-center italic">
-    <a href="/password-reset" class="font-bold text-secondary"
+    <a href="/password-reset" class="font-bold text-primary dark:text-secondary"
       >Reset Password</a
     >
   </p>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import InputField from '#components/form-components/input-field.vue';
+import PageTitle from '#components/ui/page-title.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
@@ -68,12 +73,20 @@ defineEmits(['update:search', 'update:category']);
 
 const btnText = ref('Login');
 const showPassword = ref(false);
-const values = ref({
+const values = ref<{
+  username: string;
+  password: string;
+  remember: boolean;
+}>({
   username: '',
   password: '',
   remember: false,
 });
-const errors = ref({
+
+const errors = ref<{
+  username: string;
+  password: string;
+}>({
   username: '',
   password: '',
 });
@@ -87,7 +100,7 @@ const schema = Yup.object().shape({
     .min(4, 'Password must be at least 4 characters'),
 });
 
-const validate = (field) => {
+const validate = (field: string) => {
   schema
     .validateAt(field, values.value)
     .then(() => {
