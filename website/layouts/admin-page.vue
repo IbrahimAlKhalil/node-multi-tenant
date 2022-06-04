@@ -9,7 +9,7 @@
       </div>
       <div
         style="padding-top: calc(var(--header-height) + 20px)"
-        class="w-3/12 h-full bg-gray-200 p-3"
+        class="w-3/12 min-w-[350px] h-full bg-blue-50 p-3"
       >
         <slot name="sidebar" />
       </div>

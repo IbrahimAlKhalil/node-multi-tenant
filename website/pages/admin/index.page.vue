@@ -1,11 +1,61 @@
 <template>
   <admin-page-layout>
     <template #sidebar>
-      <p class="">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eum, iusto!
-        Quidem consectetur ex tenetur officiis eveniet nisi, incidunt amet.
-        Tempora.
-      </p>
+      <div class="mt-8">
+        <underline-heading title="Status" color="primary" />
+        <div class="pl-2">
+          <h5 class="font-bold text-lg">Set Status</h5>
+          <select-input
+            :options="statusOptions"
+            :label="'Status'"
+            :selectedItems="formData.status"
+            @on-select="handleStatusSelect"
+            color="primary"
+            :isSingleSelect="true"
+          />
+        </div>
+        <div class="flex items-center justify-center">
+          <primary-btn title="Update" />
+        </div>
+      </div>
+      <div class="mt-8">
+        <underline-heading title="Categories" color="primary" />
+        <div class="pl-2">
+          <collapse-expand-list
+            :postCategory="{ id: 1.1 }"
+            :items="categories"
+          />
+        </div>
+      </div>
+      <div class="mt-8">
+        <underline-heading title="Feature Image" color="primary" />
+        <div class="pl-2">
+          <upload-file />
+        </div>
+      </div>
+      <div class="mt-8">
+        <underline-heading title="Creation Info" color="primary" />
+        <div class="pl-2">
+          <p class="text-text text-lg flex items-center gap-2 my-2">
+            <span class="font-bold">Create at: </span>
+            <span>02-06-2022</span>
+            <span>at 5:44:00 pm</span>
+          </p>
+          <p class="text-text text-lg flex items-center gap-2 my-2">
+            <span class="font-bold">Create at: </span>
+            <span>02-06-2022</span>
+            <span>at 5:44:00 pm</span>
+          </p>
+        </div>
+      </div>
+      <div class="mt-8">
+        <underline-heading title="Revision Info" color="primary" />
+        <div class="pl-2">
+          <revision-info-card />
+          <revision-info-card status="secondary" />
+          <revision-info-card status="draft" />
+        </div>
+      </div>
     </template>
     <div>
       <div class="intro border-b flex justify-center border-b-gray-300 mb-8">
@@ -16,24 +66,32 @@
         </h3>
       </div>
       <form>
-        <div class="title">
-          <label for="title" class="block font-bold text-lg">Title</label>
+        <div class="title mt-5">
+          <label for="title" class="block font-bold text-lg text-text"
+            >Title</label
+          >
           <input
             type="text"
             id="title"
+            placeholder="Title of the post"
             class="block px-2 py-1 border border-gray-300 focus:border-primary rounded outline-none w-full"
           />
         </div>
-        <div class="slug">
-          <label for="slug" class="block font-bold text-lg">Slug</label>
+        <div class="slug mt-5">
+          <label for="slug" class="block font-bold text-lg text-text"
+            >Slug</label
+          >
           <input
             type="text"
             id="slug"
+            placeholder="Slug of the post"
             class="block px-2 py-1 border border-gray-300 focus:border-primary rounded outline-none w-full"
           />
         </div>
-        <div class="body">
-          <label for="body" class="block font-bold text-lg">Body</label>
+        <div class="body my-5">
+          <label for="body" class="block font-bold text-lg text-text"
+            >Body</label
+          >
           <div id="editor-vue" class="border border-gray-300 rounded" />
         </div>
       </form>
@@ -42,17 +100,98 @@
 </template>
 
 <script lang="ts">
+import CollapseExpandList from '#components/ui/collapse-expand-list/list.vue';
+import SelectInput from '#components/form-components/select-input.vue';
+import underlineHeading from '#components/ui/underline-heading.vue';
+import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import { defineComponent, onMounted, ref } from 'vue';
 import AdminPageLayout from '#layouts/admin-page.vue';
+import UploadFile from '#components/blog-create/uploadFile.vue';
+import RevisionInfoCard from '#components/blog-create/revision-info-card.vue';
+
+type formDataType = {
+  title: string;
+  slug: string;
+  body: string;
+  status: { label: string; value: string }[];
+};
 
 export default defineComponent({
   name: 'admin-page',
   components: {
+    CollapseExpandList,
+    underlineHeading,
+    RevisionInfoCard,
     AdminPageLayout,
+    SelectInput,
+    PrimaryBtn,
+    UploadFile,
   },
   setup() {
     const value = ref('');
     const renderedHtml = ref('');
+    const formData = ref<formDataType>({
+      title: '',
+      slug: '',
+      body: '',
+      status: [],
+    });
+    const categories = ref([
+      {
+        id: '1',
+        title: 'Category 1',
+        subCategories: [
+          {
+            id: '1.1',
+            title: 'Sub Category 1.1',
+          },
+          {
+            id: '1.2',
+            title: 'Sub Category 1.2',
+            subCategories: [
+              {
+                id: '1.2.1',
+                title: 'Sub Sub Category 1.2.1',
+              },
+              {
+                id: '1.2.2',
+                title: 'Sub Sub Category 1.2.2',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: '2',
+        title: 'Category 2',
+        subCategories: [
+          {
+            id: '2.1',
+            title: 'Sub Category 2.1',
+          },
+          {
+            id: '2.2',
+            title: 'Sub Category 2.2',
+          },
+        ],
+      },
+    ]);
+
+    // actions
+    const handleStatusSelect = (option: { label: string; value: string }) => {
+      formData.value.status = [option];
+    };
+
+    const statusOptions = [
+      {
+        label: 'Draft',
+        value: 'draft',
+      },
+      {
+        label: 'Published',
+        value: 'published',
+      },
+    ];
 
     type dataBlockType = {
       type: string;
@@ -155,8 +294,12 @@ export default defineComponent({
       );
     });
     return {
-      save,
+      handleStatusSelect,
+      statusOptions,
       renderedHtml,
+      formData,
+      categories,
+      save,
     };
   },
 });
