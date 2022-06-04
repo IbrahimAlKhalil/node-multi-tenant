@@ -3,8 +3,10 @@ import { QuerySchema, querySchema } from './schema/query-schema.js';
 import { WsException } from '../exceptions/ws-exception.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { OnWsReq } from '../decorators/on-ws-req.js';
+import { OnWsSub } from '../decorators/on-ws-sub.js';
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryService } from './query.service.js';
+import { WsSub } from '../uws/ws-sub.js';
 import { WsReq } from '../types/ws-req';
 
 @Injectable()
@@ -56,5 +58,30 @@ export class QueryListener {
       jti: ws.jti,
       rol: ws.rol,
     });
+  }
+
+  @OnWsSub('mutation')
+  async onMutationSub(wsSub: WsSub<MutationSchema>) {
+    let mutation: MutationSchema;
+
+    try {
+      mutation = await mutationSchema.validateAsync(wsSub.data);
+    } catch (e) {
+      this.logger.error(e);
+      // Rethrow error with code and message
+      throw new WsException(e.message, 'MUTATION_INVALID');
+    }
+
+    return this.queryService.mutate(
+      mutation,
+      {
+        knd: wsSub.ws.knd,
+        iid: wsSub.ws.iid,
+        uid: wsSub.ws.uid,
+        jti: wsSub.ws.jti,
+        rol: wsSub.ws.rol,
+      },
+      wsSub,
+    );
   }
 }

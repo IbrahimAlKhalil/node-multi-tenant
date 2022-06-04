@@ -22,6 +22,15 @@ export class WsSub<T = any> {
     );
   }
 
+  public finish(): void {
+    this.ws.send(
+      JSON.stringify({
+        id: this.id,
+        finish: true,
+      }),
+    );
+  }
+
   public error(exception: WsException, finish = false): void {
     this.ws.send(
       JSON.stringify({
