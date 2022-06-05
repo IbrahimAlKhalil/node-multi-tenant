@@ -70,6 +70,12 @@
           ></component>
         </span>
       </li>
+      <li
+        v-show="options.length === 0"
+        class="text-red-500 font-bold text-lg text-center"
+      >
+        {{ message }}
+      </li>
     </ul>
     <p>{{ error }} &nbsp;</p>
   </div>
@@ -132,6 +138,10 @@ defineProps({
   color: {
     type: String,
     default: 'white',
+  },
+  message: {
+    type: String,
+    default: 'No options available',
   },
 });
 </script>

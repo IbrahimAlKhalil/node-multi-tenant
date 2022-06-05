@@ -8,7 +8,7 @@
       :name="name"
       :value="value"
       @input="$emit('on-input', $event)"
-      class="block px-3 py-2 rounded-md border-b-2 border-t border-t-transparent border-b-primary focus:border-primary-dark focus:border-x focus:border-t text-text dark:text-light outline-0 w-full bg-transparent transition duration-300 ease-in placeholder:text-gray-700 dark:placeholder:text-light dark:placeholder:opacity-60 placeholder:font-bold"
+      class="block px-3 py-2 rounded-md border-b-2 border-t border-t-transparent border-b-primary focus:border-primary-dark focus:border-x focus:border-t text-text dark:text-light outline-0 w-full bg-transparent transition duration-300 ease-in placeholder:text-gray-500 dark:placeholder:text-light dark:placeholder:opacity-60"
       :class="{
         'border-red-500 focus:border-red-500': error,
       }"

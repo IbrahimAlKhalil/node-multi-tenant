@@ -1,7 +1,7 @@
 <template>
   <h4 class="text-left self-start capitalize">{{ title }}</h4>
   <div
-    class="flex items-center gap-5 px-3 py-2 rounded-md border-b-2 border-t border-t-transparent border-b-white focus:border-primary focus:border-x focus:border-t text-white outline-0 w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
+    class="flex items-center gap-5 px-3 py-2 rounded-md border-b-2 border border-transparent border-b-primary hover:border-primary hover:border-x hover:border-t text-primary dark:text-secondary outline-0 w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
     :class="{
       'border-red-500 focus:border-red-500': error,
     }"
@@ -18,7 +18,7 @@
         class="w-5 h-5"
       />
       <label :for="option.label" class="font-bold">
-        <div class="pointer"></div>
+        <div class="pointer border-primary dark:border-secondary"></div>
         {{ option.label }}
       </label>
     </div>
@@ -66,7 +66,7 @@ label {
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  border: 2px solid #ccc;
+  border: 2px solid;
   transition: all 0.3s ease;
   position: relative;
 }
