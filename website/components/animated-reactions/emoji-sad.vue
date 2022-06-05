@@ -16,12 +16,12 @@ export default defineComponent({
 <style scoped>
 @import url('./common.css');
 
-.emoji--sad:after {
+/* .emoji--sad:after {
   content: 'Sad';
-}
+} */
 .emoji--sad .emoji__face {
-  -webkit-animation: sad-face 2s ease-in infinite;
-  animation: sad-face 2s ease-in infinite;
+  -webkit-animation: sad-face var(--animdu) ease-in infinite;
+  animation: sad-face var(--animdu) ease-in infinite;
 }
 .emoji--sad .emoji__eyebrows {
   left: calc(50% - 3px);
@@ -70,8 +70,8 @@ export default defineComponent({
   margin-left: 6px;
   border-radius: 0 100% 40% 50%/0 50% 40% 100%;
   transform-origin: 0% 0%;
-  -webkit-animation: tear-drop 2s ease-in infinite;
-  animation: tear-drop 2s ease-in infinite;
+  -webkit-animation: tear-drop var(--animdu) ease-in infinite;
+  animation: tear-drop var(--animdu) ease-in infinite;
 }
 .emoji--sad .emoji__mouth {
   width: 60px;
@@ -85,8 +85,8 @@ export default defineComponent({
   border-left-color: transparent;
   border-right-color: transparent;
   background: transparent;
-  -webkit-animation: sad-mouth 2s ease-in infinite;
-  animation: sad-mouth 2s ease-in infinite;
+  -webkit-animation: sad-mouth var(--animdu) ease-in infinite;
+  animation: sad-mouth var(--animdu) ease-in infinite;
 }
 .emoji--sad .emoji__mouth:after {
   width: 6px;
@@ -96,6 +96,18 @@ export default defineComponent({
   top: 4px;
   left: calc(50% - 3px);
   box-shadow: -18px 0 0 0 #000000, 18px 0 0 0 #000000;
+}
+
+.emoji--sad .emoji__face,
+.emoji--sad .emoji__eyes:after,
+.emoji--sad .emoji__mouth {
+  animation-play-state: paused;
+}
+.emoji--sad:hover .emoji__face,
+.emoji--sad:hover .emoji__eyes:after,
+.emoji--sad:hover .emoji__mouth {
+  --animdu: 2s;
+  animation-play-state: running;
 }
 
 @-webkit-keyframes sad-face {

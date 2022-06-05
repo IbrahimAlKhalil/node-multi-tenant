@@ -18,12 +18,12 @@ export default defineComponent({
 <style scoped>
 @import url('./common.css');
 
-.emoji--wow:after {
+/* .emoji--wow:after {
   content: 'Wow';
-}
+} */
 .emoji--wow .emoji__face {
-  -webkit-animation: wow-face 3s linear infinite;
-  animation: wow-face 3s linear infinite;
+  -webkit-animation: wow-face var(--animdu) linear infinite;
+  animation: wow-face var(--animdu) linear infinite;
 }
 .emoji--wow .emoji__eyebrows {
   left: calc(50% - 3px);
@@ -33,8 +33,8 @@ export default defineComponent({
   background: transparent;
   box-shadow: -18px 0 0 0 #000000, -33px 0 0 0 #000000, 18px 0 0 0 #000000,
     33px 0 0 0 #000000;
-  -webkit-animation: wow-brow 3s linear infinite;
-  animation: wow-brow 3s linear infinite;
+  -webkit-animation: wow-brow var(--animdu) linear infinite;
+  animation: wow-brow var(--animdu) linear infinite;
 }
 .emoji--wow .emoji__eyebrows:before,
 .emoji--wow .emoji__eyebrows:after {
@@ -71,8 +71,20 @@ export default defineComponent({
   top: 50%;
   border-radius: 50%;
   background: #000000;
-  -webkit-animation: wow-mouth 3s linear infinite;
-  animation: wow-mouth 3s linear infinite;
+  -webkit-animation: wow-mouth var(--animdu) linear infinite;
+  animation: wow-mouth var(--animdu) linear infinite;
+}
+
+.emoji--wow .emoji__face,
+.emoji--wow .emoji__eyebrows,
+.emoji--wow .emoji__mouth {
+  animation-play-state: paused;
+}
+.emoji--wow:hover .emoji__face,
+.emoji--wow:hover .emoji__eyebrows,
+.emoji--wow:hover .emoji__mouth {
+  --animdu: 3s;
+  animation-play-state: running;
 }
 
 @-webkit-keyframes wow-face {

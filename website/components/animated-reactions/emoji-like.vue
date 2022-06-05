@@ -15,11 +15,9 @@ export default defineComponent({
 
 <style scoped>
 @import url('./common.css');
+
 .emoji--like {
   background: #548dff;
-}
-.emoji--like:after {
-  content: 'Like';
 }
 .emoji--like .emoji__hand {
   left: 25px;
@@ -29,8 +27,8 @@ export default defineComponent({
   background: #ffffff;
   border-radius: 5px;
   z-index: 0;
-  -webkit-animation: hands-up 2s linear infinite;
-  animation: hands-up 2s linear infinite;
+  -webkit-animation: hands-up var(--animdu) linear infinite;
+  animation: hands-up var(--animdu) linear infinite;
 }
 .emoji--like .emoji__hand:before {
   left: 25px;
@@ -50,8 +48,8 @@ export default defineComponent({
   z-index: 2;
   transform: rotate(5deg);
   transform-origin: 0% 100%;
-  -webkit-animation: thumbs-up 2s linear infinite;
-  animation: thumbs-up 2s linear infinite;
+  -webkit-animation: thumbs-up var(--animdu) linear infinite;
+  animation: thumbs-up var(--animdu) linear infinite;
 }
 .emoji--like .emoji__thumb:before {
   border-radius: 50% 50% 0 0;
@@ -63,6 +61,16 @@ export default defineComponent({
   transform: rotate(-15deg);
   transform-origin: 100% 100%;
   box-shadow: -1px 4px 0 -1px #ffffff;
+}
+
+.emoji--like .emoji__hand,
+.emoji--like .emoji__thumb {
+  animation-play-state: paused;
+}
+.emoji--like:hover .emoji__hand,
+.emoji--like:hover .emoji__thumb {
+  --animdu: 2s;
+  animation-play-state: running;
 }
 
 @-webkit-keyframes hands-up {

@@ -21,15 +21,15 @@ export default defineComponent({
 .emoji--angry {
   background: linear-gradient(#d5234c -10%, #ffda6a);
   background-size: 100%;
-  -webkit-animation: angry-color 2s ease-in infinite;
-  animation: angry-color 2s ease-in infinite;
+  -webkit-animation: angry-color var(--animdu) ease-in infinite;
+  animation: angry-color var(--animdu) ease-in infinite;
 }
-.emoji--angry:after {
+/* .emoji--angry:after {
   content: 'Angry';
-}
+} */
 .emoji--angry .emoji__face {
-  -webkit-animation: angry-face 2s ease-in infinite;
-  animation: angry-face 2s ease-in infinite;
+  -webkit-animation: angry-face var(--animdu) ease-in infinite;
+  animation: angry-face var(--animdu) ease-in infinite;
 }
 .emoji--angry .emoji__eyebrows {
   left: calc(50% - 3px);
@@ -78,8 +78,19 @@ export default defineComponent({
   bottom: 15px;
   background: #000000;
   border-radius: 50%;
-  -webkit-animation: angry-mouth 2s ease-in infinite;
-  animation: angry-mouth 2s ease-in infinite;
+  -webkit-animation: angry-mouth var(--animdu) ease-in infinite;
+  animation: angry-mouth var(--animdu) ease-in infinite;
+}
+.emoji--angry,
+.emoji--angry .emoji__face,
+.emoji--angry .emoji__mouth {
+  animation-play-state: paused;
+}
+.emoji--angry:hover,
+.emoji--angry:hover .emoji__face,
+.emoji--angry:hover .emoji__mouth {
+  --animdu: 2s;
+  animation-play-state: running;
 }
 
 @-webkit-keyframes angry-color {

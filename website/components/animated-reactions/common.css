@@ -1,26 +1,14 @@
-body {
-    text-align: center;
-    margin: 80px auto 0;
-    font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+:root {
+    --animdu: 0s;
 }
 
 .emoji {
     width: 120px;
     height: 120px;
-    margin: 15px 15px 40px;
     background: #ffda6a;
     display: inline-block;
     border-radius: 50%;
     position: relative;
-}
-
-.emoji:after {
-    position: absolute;
-    bottom: -40px;
-    font-size: 18px;
-    width: 60px;
-    left: calc(50% - 30px);
-    color: #8a8a8a;
 }
 
 .emoji__face,
