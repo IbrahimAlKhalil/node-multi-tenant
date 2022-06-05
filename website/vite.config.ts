@@ -28,4 +28,7 @@ export default defineConfig({
       '#styles': __dirname + '/styles',
     },
   },
+  optimizeDeps: {
+    exclude: ['extensions'],
+  },
 });

@@ -1,9 +1,10 @@
 import { createPageRenderer } from 'vite-plugin-ssr';
 import express, { Express } from 'express';
+import pageRoutes from './page-routes';
 
 export async function initRenderer(app: Express) {
   const isProduction = process.env.NODE_ENV === 'production';
-  const root = `${__dirname}/../..`;
+  const root = `${__dirname}/../`;
 
   let viteDevServer;
   if (isProduction) {
@@ -19,7 +20,7 @@ export async function initRenderer(app: Express) {
 
   const renderPage = createPageRenderer({ viteDevServer, isProduction, root });
 
-  app.get('*', async (req, res, next) => {
+  app.get(pageRoutes, async (req, res, next) => {
     const url = req.originalUrl;
     const pageContextInit = {
       lang: req.query.lang ?? req.cookies.lang ?? 'bn',

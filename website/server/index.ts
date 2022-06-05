@@ -1,21 +1,16 @@
-import { initRenderer } from './middlewares/renderer';
-import institute from './controllers/institute';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import express from 'express';
-import path from 'path';
+import { initRenderer } from './renderer';
+// import { initRenderer } from './middlewares/renderer';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { startServer } from 'directus/server';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import emitter from 'directus/emitter';
+import { Express } from 'express';
 
-(async function startServer() {
-  const app = express();
-  const router = express.Router();
-
-  app.use(express.static(path.resolve(__dirname, '../public')));
-  app.use(compression());
-  app.use(cookieParser());
-
-  app.use('/api', router);
-  router.use('/institute', institute);
-
-  await initRenderer(app);
-  app.listen(process.env.WEBSITE_PORT || 6001);
+(async function () {
+  emitter.onInit('middlewares.after', async ({ app }: { app: Express }) => {
+    await initRenderer(app);
+  });
+  await startServer();
 })();

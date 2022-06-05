@@ -11,6 +11,9 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import fs from 'fs';
+import { getDirectusEnv } from './scripts/get-directus-env.mjs';
+import { snapshot } from './scripts/snapshot.mjs';
+import { restore } from './scripts/restore.mjs';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -45,7 +48,7 @@ function runInsideProjects(binPath, projectsToUse, env, extraArgs, excludedArgs 
 
   for (const projectToUse of projectsToUse) {
     // Execute the binary inside the project
-    execaSync(typeof binPath === 'function' ? binPath(projectToUse) : binPath, args, {
+    execaSync(typeof binPath === 'function' ? binPath(projectToUse) : binPath, args.concat(extraArgs), {
       stdio: 'inherit',
       shell: true,
       cwd: path.resolve(__dirname, `./${projectToUse}`),
@@ -75,12 +78,14 @@ program.addCommand(
     .option('-a, --api', 'Start API')
     .option('-w, --web', 'Start Web Client')
     .option('-W, --website', 'Start Website')
+    .option('-e, --extensions', 'Watch directus extensions')
     .action((_, p) => start(
       p.getOptionValue('postgres'),
       p.getOptionValue('minio'),
       p.getOptionValue('redis'),
       p.getOptionValue('api'),
       p.getOptionValue('web'),
+      p.getOptionValue('extensions'),
       p.getOptionValue('website'),
     ).catch(console.error)),
   {
@@ -262,10 +267,22 @@ const test = new Command('test');
   test.addCommand(testCommand);
 });
 
+// Create directus command wrapper
+const directusCommand = new Command('directus');
+const snapshotCommand = new Command('snapshot');
+const restoreCommand = new Command('restore');
+
+snapshotCommand.action(snapshot);
+restoreCommand.action(restore);
+
+directusCommand.addCommand(snapshotCommand);
+directusCommand.addCommand(restoreCommand);
+
 program.addCommand(lint);
 program.addCommand(nest);
 program.addCommand(prisma);
 program.addCommand(test);
+program.addCommand(directusCommand);
 
 // Create a wrapper for Vite CLI
 program.addCommand(
