@@ -1,15 +1,15 @@
 <template>
-  <h1 class="font-bold text-3xl lg:text-5xl text-center uppercase mb-5">
-    Password Reset
-  </h1>
-  <h2 class="text-lg lg:text-xl text-center">To login dashboard</h2>
+  <page-title title="Password Reset" />
+  <h2 class="text-lg text-center text-gray-400 lowercase">
+    To login dashboard
+  </h2>
   <div class="flex items-center justify-center gap-20 py-5">
     <div
-      class="email font-bold cursor-pointer"
+      class="email font-bold cursor-pointer before:text-white"
       :class="[
         selectedTab === 'email'
-          ? 'text-white before:bg-white'
-          : 'text-gray-500 before:bg-gray-500',
+          ? 'text-primary before:bg-primary dark:text-secondary dark:before:bg-secondary'
+          : 'text-gray-500 before:bg-gray-500 dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
       <p>Send verification code</p>
@@ -18,8 +18,8 @@
       class="company font-bold cursor-pointer"
       :class="[
         selectedTab === 'company'
-          ? 'text-white before:bg-white'
-          : 'text-gray-500 before:bg-gray-500',
+          ? 'text-primary before:bg-primary before:text-light dark:text-secondary dark:before:bg-secondary'
+          : 'text-gray-500 before:bg-gray-500 before:text-light dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
       <p>Reset Password</p>
@@ -53,7 +53,7 @@
       <input
         type="submit"
         :value="btnText"
-        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+        class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
   </form>
@@ -75,6 +75,7 @@
         @on-select="handleSelect"
         @on-remove="handleRemove"
         :error="companyInfoErrors.languages"
+        color="primary"
       />
       <SelectInput
         label="Default Language"
@@ -84,6 +85,7 @@
         @on-select="handleSingleSelect"
         :is-single-select="true"
         :error="companyInfoErrors.defaultLanguage"
+        color="primary"
       />
       <InputField
         name="instituteName"
@@ -166,10 +168,11 @@
   </form>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import SelectInput from '#components/form-components/select-input.vue';
 import RadioField from '#components/form-components/radio-field.vue';
 import InputField from '#components/form-components/input-field.vue';
+import PageTitle from '#components/ui/page-title.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
@@ -179,7 +182,7 @@ defineEmits(['update:search', 'update:category']);
 
 // states
 const showPassword = ref(false);
-const btnText = ref('Signup');
+const btnText = ref('Send Code');
 const selectedTab = ref('email');
 const values = ref({
   username: '',
@@ -315,7 +318,6 @@ const handleCompanySubmit = () => {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  color: black;
   font-weight: 700;
   text-align: center;
 }
