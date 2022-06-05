@@ -74,6 +74,7 @@
         @on-select="handleSingleSelect"
         :is-single-select="true"
         :error="companyInfoErrors.defaultLanguage"
+        message="Please select a language"
       />
       <InputField
         name="instituteName"
