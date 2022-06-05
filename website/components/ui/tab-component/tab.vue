@@ -5,10 +5,10 @@
       'border-b-2 border-b-primary dark:border-b-secondary text-primary dark:text-secondary':
         isActive,
     }"
-    @click="$emit('handle-change', id)"
+    @click="$emit('handle-change', title)"
     v-if="count > 0"
   >
-    <component :is="icon"></component>
+    <slot />
     <span class="font-bold uppercase">{{ title }}</span>
     <span class="text-sm bg-gray-300 dark:bg-dark rounded px-2">{{
       count
@@ -21,7 +21,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'the-tab',
-  props: ['id', 'icon', 'title', 'count', 'isActive'],
+  props: ['id', 'title', 'count', 'isActive'],
   emits: ['handle-change'],
   setup() {
     return {};
