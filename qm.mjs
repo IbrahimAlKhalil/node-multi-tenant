@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
 import { run as generatePrismaJson } from './scripts/gen-prisma-json.mjs';
+import { bootstrap } from './scripts/directus-bootstrap.mjs';
 import { run as formatSql } from './scripts/format-sql.mjs';
+import { snapshot } from './scripts/snapshot.mjs';
+import { restore } from './scripts/restore.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -11,9 +14,6 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import fs from 'fs';
-import { getDirectusEnv } from './scripts/get-directus-env.mjs';
-import { snapshot } from './scripts/snapshot.mjs';
-import { restore } from './scripts/restore.mjs';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -271,12 +271,15 @@ const test = new Command('test');
 const directusCommand = new Command('directus');
 const snapshotCommand = new Command('snapshot');
 const restoreCommand = new Command('restore');
+const bootstrapCommand = new Command('bootstrap');
 
 snapshotCommand.action(snapshot);
 restoreCommand.action(restore);
+bootstrapCommand.action(bootstrap);
 
 directusCommand.addCommand(snapshotCommand);
 directusCommand.addCommand(restoreCommand);
+directusCommand.addCommand(bootstrapCommand);
 
 program.addCommand(lint);
 program.addCommand(nest);
