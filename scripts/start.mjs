@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+import { getDirectusEnv } from './get-directus-env.mjs';
 import cliProgress from 'cli-progress';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import Docker from 'dockerode';
-import path, { dirname } from 'path';
 import { execa } from 'execa';
+import fs from 'fs/promises';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 
@@ -388,11 +390,41 @@ async function startWebsite() {
     stdio: 'pipe',
     env: {
       ...process.env,
+      ...getDirectusEnv(),
       FORCE_COLOR: true,
     },
   });
 
   logProcess(_process, 'Website');
+
+  console.log(chalk.greenBright.bold('Website started ✓'));
+}
+
+async function watchExtensions() {
+  const extensionsPath = path.join(__dirname, '../website/extensions');
+  const extensionTypes = await fs.readdir(extensionsPath);
+
+  for (const type of extensionTypes) {
+    const typePath = path.join(extensionsPath, type);
+    const extensions = await fs.readdir(typePath);
+
+    for (const extension of extensions) {
+      console.log(chalk.greenBright.bold('Watching extension:'), chalk.cyan(`${type}/${extension}`));
+
+      const dePath = path.join(__dirname, '../website/extensions', type, extension, 'node_modules/.bin/directus-extension');
+
+      const _process = execa(dePath, ['build', '-w', '--no-minify'], {
+        cwd: path.join(__dirname, '../website/extensions', type, extension),
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          FORCE_COLOR: true,
+        },
+      });
+
+      logProcess(_process, `${type}/${extension}`);
+    }
+  }
 
   console.log(chalk.greenBright.bold('Website started ✓'));
 }
@@ -420,7 +452,7 @@ async function close() {
   process.exit();
 }
 
-export async function start(postgres, minio, redis, api, web, website) {
+export async function start(postgres, minio, redis, api, web, extensions, website) {
   process.stdin.resume();
   process.on('exit', close);
   process.on('SIGINT', close);
@@ -458,16 +490,21 @@ export async function start(postgres, minio, redis, api, web, website) {
     await startWeb();
   }
 
+  if (extensions) {
+    await watchExtensions();
+  }
+
   if (website) {
     await startWebsite();
   }
 
-  if (!postgres && !minio && !redis && !api && !web && !website) {
+  if (!postgres && !minio && !redis && !api && !web && !website && !extensions) {
     await startPostgres();
     await startMinio();
     await startRedis();
     await startAPI();
     await startWeb();
+    await watchExtensions();
     await startWebsite();
   }
 

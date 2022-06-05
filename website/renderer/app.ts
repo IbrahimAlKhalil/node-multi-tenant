@@ -3,7 +3,6 @@ import { createSSRApp, defineComponent, h } from 'vue';
 import { PageContext } from '#types/page-context';
 import PageShell from './page-shell.vue';
 import { createI18n } from 'vue-i18n';
-import 'element-plus/dist/index.css';
 import { createPinia } from 'pinia';
 import en from '../locales/en';
 import bn from '../locales/bn';
