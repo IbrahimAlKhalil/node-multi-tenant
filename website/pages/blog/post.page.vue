@@ -6,6 +6,12 @@
     <post-description-section :post-description="test" />
     <post-tags-section :post="post" />
     <post-share-section />
+    <div>
+      <EmojiLike />
+      <EmojiWow />
+      <EmojiSad />
+      <EmojiAngry />
+    </div>
     <the-tabs
       :tab-data="tabData"
       :active-tab="activeTab"
@@ -40,6 +46,13 @@ import { comment } from '#types/comment-type';
 import LayoutMain from '#layouts/main.vue';
 import { defineComponent } from 'vue';
 
+import {
+  EmojiLike,
+  EmojiAngry,
+  EmojiSad,
+  EmojiWow,
+} from '#components/animated-reactions';
+
 export default defineComponent({
   name: 'blog-post',
   components: {
@@ -53,6 +66,11 @@ export default defineComponent({
     LayoutMain,
     TheTabs,
     TabBody,
+
+    EmojiLike,
+    EmojiAngry,
+    EmojiSad,
+    EmojiWow,
   },
 
   data() {
