@@ -90,7 +90,7 @@ const handleScroll = () => {
 
 <style scoped>
 .hero-section {
-  background: url('assets/images/HeroBackground.svg') no-repeat center;
+  background: url('resources/images/HeroBackground.svg') no-repeat center;
   background-size: cover;
 }
 </style>

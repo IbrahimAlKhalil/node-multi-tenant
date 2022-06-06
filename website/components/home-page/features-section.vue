@@ -42,19 +42,19 @@ export default defineComponent({
     const items = [
       {
         id: '1',
-        icon: '/assets/images/quran.svg',
+        icon: '/resources/images/quran.svg',
         title: "homePage['feature-section']['item-1']['title']",
         description: "homePage['feature-section']['item-1']['description']",
       },
       {
         id: '2',
-        icon: '/assets/images/quran.svg',
+        icon: '/resources/images/quran.svg',
         title: "homePage['feature-section']['item-2']['title']",
         description: "homePage['feature-section']['item-2']['description']",
       },
       {
         id: '3',
-        icon: '/assets/images/quran.svg',
+        icon: '/resources/images/quran.svg',
         title: "homePage['feature-section']['item-3']['title']",
         description: "homePage['feature-section']['item-3']['description']",
       },

@@ -158,7 +158,7 @@ const featuresBlogs = ref([
   background-blend-mode: multiply;
 }
 .blog-hero {
-  background: url('assets/images/HeroBackground.svg') no-repeat;
+  background: url('resources/images/HeroBackground.svg') no-repeat;
   background-size: cover;
   background-position: center;
 }

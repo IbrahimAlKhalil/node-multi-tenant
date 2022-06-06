@@ -85,42 +85,42 @@ export default defineComponent({
       {
         id: 1,
         title: 'Madrasha',
-        image: '/assets/images/client-1.jpg',
+        image: '/resources/images/client-1.jpg',
       },
       {
         id: 2,
         title: 'Madrasha',
-        image: '/assets/images/client-2.png',
+        image: '/resources/images/client-2.png',
       },
       {
         id: 3,
         title: 'Madrasha',
-        image: '/assets/images/client-1.jpg',
+        image: '/resources/images/client-1.jpg',
       },
       {
         id: 4,
         title: 'Madrasha',
-        image: '/assets/images/client-2.png',
+        image: '/resources/images/client-2.png',
       },
       {
         id: 5,
         title: 'Madrasha',
-        image: '/assets/images/client-1.jpg',
+        image: '/resources/images/client-1.jpg',
       },
       {
         id: 6,
         title: 'Madrasha',
-        image: '/assets/images/client-2.png',
+        image: '/resources/images/client-2.png',
       },
       {
         id: 7,
         title: 'Madrasha',
-        image: '/assets/images/client-1.jpg',
+        image: '/resources/images/client-1.jpg',
       },
       {
         id: 8,
         title: 'Madrasha',
-        image: '/assets/images/client-2.png',
+        image: '/resources/images/client-2.png',
       },
     ];
 

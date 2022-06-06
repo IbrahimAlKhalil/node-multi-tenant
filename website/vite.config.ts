@@ -18,9 +18,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '#icons': __dirname + '/assets/icons',
-      '#images': __dirname + '/assets/images',
-      '#videos': __dirname + '/assets/videos',
+      '#icons': __dirname + '/resources/icons',
+      '#images': __dirname + '/resources/images',
+      '#videos': __dirname + '/resources/videos',
       '#components': __dirname + '/components',
       '#modules': __dirname + '/modules',
       '#layouts': __dirname + '/layouts',
