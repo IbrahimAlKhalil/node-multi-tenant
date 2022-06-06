@@ -1,3 +1,4 @@
+import { directusRestore } from './directus-restore.mjs';
 import { getDirectusEnv } from './get-directus-env.mjs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -18,4 +19,6 @@ export async function bootstrap() {
       FORCE_COLOR: true,
     },
   });
+
+  await directusRestore();
 }
