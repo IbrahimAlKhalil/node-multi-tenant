@@ -1,14 +1,14 @@
 version: 1
 directus: 9.12.1
 collections:
-  - collection: Cluster
+  - collection: cluster
     meta:
       accountability: all
       archive_app_filter: true
       archive_field: null
       archive_value: null
       collapse: open
-      collection: Cluster
+      collection: cluster
       color: null
       display_template: null
       group: null
@@ -23,16 +23,16 @@ collections:
       unarchive_value: null
     schema:
       comment: null
-      name: Cluster
+      name: cluster
       schema: public
-  - collection: Institute
+  - collection: institute
     meta:
       accountability: all
       archive_app_filter: true
       archive_field: null
       archive_value: null
       collapse: open
-      collection: Institute
+      collection: institute
       color: null
       display_template: null
       group: null
@@ -47,19 +47,13 @@ collections:
       unarchive_value: null
     schema:
       comment: null
-      name: Institute
-      schema: public
-  - collection: _prisma_migrations
-    meta: null
-    schema:
-      comment: null
-      name: _prisma_migrations
+      name: institute
       schema: public
 fields:
-  - collection: Cluster
+  - collection: cluster
     field: description
     meta:
-      collection: Cluster
+      collection: cluster
       conditions: null
       display: null
       display_options: null
@@ -96,12 +90,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Cluster
+      table: cluster
     type: text
-  - collection: Cluster
+  - collection: cluster
     field: host
     meta:
-      collection: Cluster
+      collection: cluster
       conditions: null
       display: formatted-value
       display_options:
@@ -140,12 +134,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Cluster
+      table: cluster
     type: text
-  - collection: Cluster
+  - collection: cluster
     field: id
     meta:
-      collection: Cluster
+      collection: cluster
       conditions: null
       display: null
       display_options: null
@@ -184,12 +178,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Cluster
+      table: cluster
     type: uuid
-  - collection: Cluster
+  - collection: cluster
     field: institutes
     meta:
-      collection: Cluster
+      collection: cluster
       conditions: null
       display: null
       display_options: null
@@ -210,10 +204,10 @@ fields:
       width: full
     schema: null
     type: alias
-  - collection: Cluster
+  - collection: cluster
     field: name
     meta:
-      collection: Cluster
+      collection: cluster
       conditions: null
       display: null
       display_options: null
@@ -251,12 +245,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Cluster
+      table: cluster
     type: text
-  - collection: Institute
+  - collection: institute
     field: cluster
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -282,7 +276,7 @@ fields:
       default_value: null
       foreign_key_column: id
       foreign_key_schema: public
-      foreign_key_table: Cluster
+      foreign_key_table: cluster
       generation_expression: null
       has_auto_increment: false
       is_generated: false
@@ -294,12 +288,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: uuid
-  - collection: Institute
+  - collection: institute
     field: code
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -337,12 +331,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: text
-  - collection: Institute
+  - collection: institute
     field: database
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -381,12 +375,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: text
-  - collection: Institute
+  - collection: institute
     field: disabled
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: boolean
       display_options:
@@ -424,12 +418,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: boolean
-  - collection: Institute
+  - collection: institute
     field: email
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -467,12 +461,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: text
-  - collection: Institute
+  - collection: institute
     field: id
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -511,12 +505,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: uuid
-  - collection: Institute
+  - collection: institute
     field: mobile
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -554,12 +548,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: text
-  - collection: Institute
+  - collection: institute
     field: name
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -597,12 +591,12 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: text
-  - collection: Institute
+  - collection: institute
     field: slug
     meta:
-      collection: Institute
+      collection: institute
       conditions: null
       display: null
       display_options: null
@@ -641,192 +635,8 @@ fields:
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: Institute
+      table: institute
     type: text
-  - collection: _prisma_migrations
-    field: applied_steps_count
-    meta: null
-    schema:
-      comment: null
-      data_type: integer
-      default_value: 0
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: applied_steps_count
-      numeric_precision: 32
-      numeric_scale: 0
-      schema: public
-      table: _prisma_migrations
-    type: integer
-  - collection: _prisma_migrations
-    field: checksum
-    meta: null
-    schema:
-      comment: null
-      data_type: character varying
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: 64
-      name: checksum
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: string
-  - collection: _prisma_migrations
-    field: finished_at
-    meta: null
-    schema:
-      comment: null
-      data_type: timestamp with time zone
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: finished_at
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: timestamp
-  - collection: _prisma_migrations
-    field: id
-    meta: null
-    schema:
-      comment: null
-      data_type: character varying
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: true
-      is_unique: true
-      max_length: 36
-      name: id
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: string
-  - collection: _prisma_migrations
-    field: logs
-    meta: null
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: logs
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: text
-  - collection: _prisma_migrations
-    field: migration_name
-    meta: null
-    schema:
-      comment: null
-      data_type: character varying
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: 255
-      name: migration_name
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: string
-  - collection: _prisma_migrations
-    field: rolled_back_at
-    meta: null
-    schema:
-      comment: null
-      data_type: timestamp with time zone
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: rolled_back_at
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: timestamp
-  - collection: _prisma_migrations
-    field: started_at
-    meta: null
-    schema:
-      comment: null
-      data_type: timestamp with time zone
-      default_value: now()
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: started_at
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: _prisma_migrations
-    type: timestamp
   - collection: directus_dashboards
     field: color
     meta: null
@@ -874,25 +684,25 @@ fields:
       table: directus_flows
     type: text
 relations:
-  - collection: Institute
+  - collection: institute
     field: cluster
     meta:
       junction_field: null
-      many_collection: Institute
+      many_collection: institute
       many_field: cluster
       one_allowed_collections: null
-      one_collection: Cluster
+      one_collection: cluster
       one_collection_field: null
       one_deselect_action: nullify
       one_field: institutes
       sort_field: null
-    related_collection: Cluster
+    related_collection: cluster
     schema:
       column: cluster
       constraint_name: institute_cluster_foreign
       foreign_key_column: id
       foreign_key_schema: public
-      foreign_key_table: Cluster
+      foreign_key_table: cluster
       on_delete: CASCADE
       on_update: NO ACTION
-      table: Institute
+      table: institute
