@@ -25,7 +25,6 @@
     "execa": "^6.1.0"
   },
   "devDependencies": {
-    "@prisma/sdk": "^3.14.0",
     "@types/dockerode": "^3.3.9",
     "object-sizeof": "^1.6.3",
     "ts-morph": "^15.1.0"
