@@ -6,9 +6,6 @@ import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { Model } from './types/model';
 import { Field } from './types/field';
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
-import fs from 'fs/promises';
 
 @Injectable()
 export class PrismaService {
@@ -16,9 +13,6 @@ export class PrismaService {
     private readonly instituteService: InstituteService,
     private readonly config: Config,
   ) {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    // Remove old instances that are not used for a while
     setInterval(() => {
       const now = Date.now();
 
@@ -33,12 +27,7 @@ export class PrismaService {
       }
     }, 5 * 60 * 1000);
 
-    fs.readFile(
-      path.resolve(__dirname, '../../prisma/prisma.json'),
-      'utf-8',
-    ).then((data) => {
-      const models = JSON.parse(data) as Model[];
-
+    PrismaService.getModels().then((models) => {
       for (const model of models) {
         const camelCaseModelName = (model.name.charAt(0).toLowerCase() +
           model.name.slice(1)) as ModelNames;
@@ -110,5 +99,72 @@ export class PrismaService {
     }
 
     return prisma;
+  }
+
+  private static async getModels(): Promise<Model[]> {
+    const { PrismaClient } = await import('../../prisma/client/index.js');
+    const prisma = new PrismaClient({ datasources: { db: { url: `postgres://` } } });
+    const dmmf = (prisma as any)._dmmf;
+
+    await prisma.$disconnect();
+
+    const models: Model[] = [];
+
+    for (const model of dmmf.datamodel.models) {
+      models.push(model);
+
+      const primaryKey = [];
+      const uniqueFields = [];
+
+      // Find the primary key
+      if (model.primaryKey) {
+        for (const pKey of model.primaryKey.fields) {
+          primaryKey.push(pKey);
+        }
+      }
+
+      // Find the unique fields
+      if (model.uniqueFields.length > 0) {
+        for (const uniqueFieldGroup of model.uniqueFields) {
+          const group = [];
+
+          for (const uniqueField of uniqueFieldGroup) {
+            group.push(uniqueField);
+          }
+
+          uniqueFields.push(group);
+        }
+      }
+
+      for (const field of model.fields) {
+        if (field.isUnique) {
+          uniqueFields.push([field.name]);
+        }
+
+        if (field.isId) {
+          primaryKey.push(field.name);
+        }
+
+        delete field.isId;
+        delete field.isUnique;
+        delete field.dbNames;
+        delete field.isGenerated;
+        delete field.default;
+        delete field.documentation;
+        delete field.hasDefaultValue;
+        delete field.isReadOnly;
+        delete field.isUpdatedAt;
+        delete field.relationOnDelete;
+      }
+
+      delete model.dbName;
+      delete model.isGenerated;
+      delete model.uniqueIndexes;
+
+      model.primaryKey = primaryKey;
+      model.uniqueFields = uniqueFields;
+    }
+
+    return models;
   }
 }
