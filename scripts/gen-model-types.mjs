@@ -7,7 +7,7 @@ import fs from 'fs/promises';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export async function genPrismaTypes() {
+export async function genModelTypes() {
   const { PrismaClient } = await import('../api/prisma/client/index.js');
   const prisma = new PrismaClient({ datasources: { db: { url: `postgres://` } } });
   const dmmf = prisma._dmmf;
@@ -25,9 +25,9 @@ export async function genPrismaTypes() {
   const exports = `export interface ModelTypes {\n${types.join('\n')}\n}\n`;
   const file = imports + exports;
 
-  await fs.writeFile(path.resolve(__dirname, '../api/src/query/types/prisma-types.ts'), file, { encoding: 'utf8' });
+  await fs.writeFile(path.resolve(__dirname, '../api/src/query/types/model-types.ts'), file, { encoding: 'utf8' });
 }
 
-genPrismaTypes().then(() => {
+genModelTypes().then(() => {
   console.log('Done');
 })
