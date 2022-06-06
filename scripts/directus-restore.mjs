@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 export async function directusRestore() {
   const directusPath = path.join(__dirname, '../website/node_modules/.bin/directus');
 
-  await execa(directusPath, ['schema', 'apply', './directusSnapshot.yaml', '-y'], {
+  await execa(directusPath, ['schema', 'apply', './snapshot.yaml', '-y'], {
     cwd: path.join(__dirname, '../website'),
     stdio: 'pipe',
     env: {
