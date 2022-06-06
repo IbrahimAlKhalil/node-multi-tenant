@@ -660,6 +660,10 @@ export class QueryService {
       return true;
     }
 
+    if (!permission.permission) {
+      return true;
+    }
+
     let permissionQuery: any;
 
     if (typeof permission.permission === 'function') {
@@ -2379,6 +2383,8 @@ export class QueryService {
     session: Session,
     trx?: PrismaClient,
   ): Promise<any> {
+    debugger;
+
     const queue: QuerySchema[] = [rootQuery];
 
     for (let q = 0; q < queue.length; q++) {
