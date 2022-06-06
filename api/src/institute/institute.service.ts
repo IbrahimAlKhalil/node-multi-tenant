@@ -25,16 +25,17 @@ export class InstituteService {
     const { default: got } = await import('got');
 
     const host = `https://${this.config.app.websiteHost}`;
-    const path = `/api/institute/by-cluster-id/${this.config.app.clusterId}?secret=${this.config.app.clusterSecret}`;
+    const path = `/items/institute?access_token=${this.config.app.clusterSecret}&&filter[cluster][id][_eq]=${this.config.app.clusterId}&fields=id,cluster,name,slug,database`;
     const endpoint = `${host}${path}`;
-
-    const institutes: Institute[] = await got
+    const response: Record<string, any> = await got
       .get(endpoint, {
         https: {
           rejectUnauthorized: this.config.app.env === 'production',
         },
       })
       .json();
+
+    const institutes: Institute[] = response.data;
 
     for (const institute of institutes) {
       this.institutes[institute.id] = institute;

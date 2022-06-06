@@ -1,6 +1,6 @@
 export interface Institute {
   id: string;
-  clusterId: string;
+  cluster: string;
   name: string;
   slug: string;
   database: string;
