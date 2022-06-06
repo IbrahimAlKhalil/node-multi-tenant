@@ -1,19 +1,16 @@
-import { ChatMessage } from '../../../prisma/client';
 import { defineModel } from '../define-model.js';
 
-export default defineModel<ChatMessage, 'chatMessage'>({
+export default defineModel<'chatMessage'>({
   kinds: {
     POWER: {
       read: {
         fields: true,
         permission(session) {
           return {
-            where: {
-              Conversation: {
-                ConversationMembers: {
-                  some: {
-                    userId: session.uid,
-                  },
+            Conversation: {
+              ConversationMembers: {
+                some: {
+                  userId: session.uid,
                 },
               },
             },

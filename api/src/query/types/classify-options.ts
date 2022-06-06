@@ -8,5 +8,5 @@ export interface ClassifyOptions {
   fields?: string[];
   classes?: Partial<Record<FieldClass, true>>;
   session?: Session;
-  action?: Exclude<keyof Actions<any, any>, 'subscribe' | 'delete'>;
+  action?: Exclude<keyof Actions<any>, 'subscribe' | 'delete'>;
 }

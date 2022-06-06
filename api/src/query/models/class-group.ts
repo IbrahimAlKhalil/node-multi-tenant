@@ -1,7 +1,6 @@
-import { ClassGroup } from '../../../prisma/client';
 import { defineModel } from '../define-model.js';
 
-export default defineModel<ClassGroup, 'classGroup'>({
+export default defineModel<'classGroup'>({
   kinds: {
     ALL: {
       read: {

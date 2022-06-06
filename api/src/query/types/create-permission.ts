@@ -1,15 +1,24 @@
 import { PermissionDefinition as UpdatePermission } from './update-permission';
 import { ModelState } from './model-state';
 import { ModelNames } from './model-names';
+import { PrismaClient } from '../../../prisma/client';
 
 export type PermissionDefinition<
-  M,
   N extends ModelNames,
   S extends ModelState = 'processed',
-> = Omit<UpdatePermission<M, N, S>, 'permission'>;
+> = Omit<
+  UpdatePermission<
+    N,
+    S,
+    Partial<
+      | Parameters<PrismaClient[N]['create']>[0]
+      | Parameters<PrismaClient[N]['createMany']>[0]
+    >
+  >,
+  'permission'
+>;
 
 export type CreatePermission<
-  M,
   N extends ModelNames,
   S extends ModelState = 'processed',
-> = boolean | PermissionDefinition<M, N, S>;
+> = boolean | PermissionDefinition<N, S>;

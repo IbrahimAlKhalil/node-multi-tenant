@@ -1,7 +1,6 @@
-import { ClassI18n } from '../../../prisma/client';
 import { defineModel } from '../define-model.js';
 
-export default defineModel<ClassI18n, 'classI18n'>({
+export default defineModel<'classI18n'>({
   kinds: {
     ALL: {
       read: {
@@ -21,10 +20,8 @@ export default defineModel<ClassI18n, 'classI18n'>({
       },
       delete: {
         permission: {
-          where: {
-            classId: {
-              not: 27,
-            },
+          classId: {
+            not: 27,
           },
         },
       },

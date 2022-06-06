@@ -32,12 +32,12 @@ import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-type Permission<T extends keyof Actions<any, any>> = T extends 'read'
-  ? ReadPermission<any, any>
+type Permission<T extends keyof Actions<any>> = T extends 'read'
+  ? ReadPermission<any>
   : T extends 'create'
-  ? CreatePermission<any, any>
+  ? CreatePermission<any>
   : T extends 'update'
-  ? UpdatePermission<any, any>
+  ? UpdatePermission<any>
   : T extends 'delete'
   ? DeletePermission<any>
   : true | void;
@@ -88,9 +88,9 @@ export class QueryService {
   }
 
   private logger = new Logger(QueryService.name);
-  public models: Partial<Record<ModelNames, Model<any, ModelNames>>> = {};
+  public models: Partial<Record<ModelNames, Model<ModelNames>>> = {};
   public i18nModels: Partial<
-    Record<ModelNames, { name: ModelNames; model: Model<any, ModelNames> }>
+    Record<ModelNames, { name: ModelNames; model: Model<ModelNames> }>
   > = {};
   private orderByNestedFields = ['_count', '_sum', '_avg', '_min', '_max'];
 
@@ -297,7 +297,7 @@ export class QueryService {
   private static getActionPermission<T extends keyof Actions<any, any>>(
     action: T,
     modelName: ModelNames,
-    permissionModel: Model<any, ModelNames>,
+    permissionModel: Model<ModelNames>,
     session: Session,
   ): Permission<T> | true {
     let kind: typeof permissionModel.kinds.ALL = permissionModel.kinds.ALL;
@@ -688,21 +688,15 @@ export class QueryService {
     }
 
     const baseWhere = baseQuery.query.where;
-    const permissionWhere = permissionQuery.where;
 
-    if (baseWhere) {
-      delete baseQuery.query.where;
-
-      if (permissionWhere) {
-        permissionQuery.where = {
-          AND: [permissionWhere, baseWhere],
-        };
-      } else {
-        permissionQuery.where = baseWhere;
-      }
+    if (!baseWhere) {
+      baseQuery.query.where = permissionQuery;
+      return true;
     }
 
-    merge(baseQuery.query, permissionQuery);
+    baseQuery.query.where = {
+      AND: [permissionQuery, baseWhere],
+    };
 
     return true;
   }
@@ -1053,7 +1047,7 @@ export class QueryService {
           where: {
             AND: [
               pick(mutation.newData, mutation.model.primaryKey),
-              validationQuery.where,
+              validationQuery,
             ],
           },
         });

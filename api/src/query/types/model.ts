@@ -6,29 +6,25 @@ import { user_kind } from '../../../prisma/client';
 import { ModelNames } from './model-names';
 import { ModelState } from './model-state';
 import { ObjectSchema } from 'joi';
+import { ModelTypes } from './prisma-types';
 
 export interface Actions<
-  M,
   N extends ModelNames,
   S extends ModelState = 'processed',
 > {
-  read?: ReadPermission<M, N, S>;
-  create?: CreatePermission<M, N, S>;
-  update?: UpdatePermission<M, N, S>;
+  read?: ReadPermission<N, S>;
+  create?: CreatePermission<N, S>;
+  update?: UpdatePermission<N, S>;
   delete?: DeletePermission<N, S>;
   subscribe?: boolean;
 }
 
 export interface Model<
-  M,
   N extends ModelNames,
   S extends ModelState = 'processed',
 > {
-  schema?: ObjectSchema<M>;
+  schema?: ObjectSchema<ModelTypes[N]['model']>;
   kinds: Partial<
-    Record<
-      user_kind | 'ALL' | 'POWER' | 'NON_POWER',
-      boolean | Actions<M, N, S>
-    >
+    Record<user_kind | 'ALL' | 'POWER' | 'NON_POWER', boolean | Actions<N, S>>
   >;
 }

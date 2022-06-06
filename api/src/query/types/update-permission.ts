@@ -1,30 +1,30 @@
 import { PermissionReference } from './permission-reference';
 import { PermissionReturn } from './permission-return';
-import { PrismaClient } from '../../../prisma/client';
 import { PresetReference } from './preset-reference';
 import { FieldReference } from './field-reference';
 import { Session } from '../../types/session';
+import { ModelTypes } from './prisma-types';
 import { ModelState } from './model-state';
 import { ModelNames } from './model-names';
 import { ModuleRef } from '@nestjs/core';
 
 export interface PermissionDefinition<
-  M,
   N extends ModelNames,
   S extends ModelState = 'processed',
-  P = Partial<Parameters<PrismaClient[N]['updateMany']>[0]>,
-  T = Partial<Parameters<PrismaClient[N]['findFirst']>[0]>,
+  P = Record<string, any>,
+  I = Partial<ModelTypes[N]['whereInput']>,
+  Model = ModelTypes[N]['model'],
   PermissionFn = (
     session: Session,
     query: P,
     ioc: ModuleRef,
-  ) => PermissionReturn<P>,
+  ) => PermissionReturn<I>,
   ValidationFn = (
     session: Session,
-    query: T,
+    query: P,
     ioc: ModuleRef,
-  ) => PermissionReturn<T>,
-  PresetFields = Partial<M>,
+  ) => PermissionReturn<I>,
+  PresetFields = Partial<Model>,
   Preset =
     | ((
         session: Session,
@@ -34,19 +34,18 @@ export interface PermissionDefinition<
     | PresetFields,
 > {
   fields: S extends 'raw'
-    ? true | Set<keyof M> | FieldReference
-    : true | Set<keyof M>;
+    ? true | Set<keyof Model> | FieldReference
+    : true | Set<keyof Model>;
   permission?: S extends 'raw'
-    ? PermissionReference | PermissionFn | P
-    : PermissionFn | P;
+    ? PermissionReference | PermissionFn | I
+    : PermissionFn | I;
   preset?: S extends 'raw' ? Preset | PresetReference : Preset;
   validation?: S extends 'raw'
-    ? PermissionReference | ValidationFn | T
-    : ValidationFn | T;
+    ? PermissionReference | ValidationFn | I
+    : ValidationFn | I;
 }
 
 export type UpdatePermission<
-  M,
   N extends ModelNames,
   S extends ModelState = 'processed',
-> = boolean | PermissionDefinition<M, N, S>;
+> = boolean | PermissionDefinition<N, S>;

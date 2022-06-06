@@ -1,14 +1,2 @@
-import { PrismaClient } from '../../../prisma/client';
-
-export type ModelNames = keyof Omit<
-  PrismaClient,
-  | '$on'
-  | '$transaction'
-  | '$connect'
-  | '$disconnect'
-  | '$executeRaw'
-  | '$executeRawUnsafe'
-  | '$queryRaw'
-  | '$queryRawUnsafe'
-  | '$use'
->;
+import { ModelTypes } from './prisma-types';
+export type ModelNames = keyof ModelTypes;

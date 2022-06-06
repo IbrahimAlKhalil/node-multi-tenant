@@ -1,7 +1,6 @@
 import { defineModel } from '../define-model.js';
-import { Class } from '../../../prisma/client';
 
-export default defineModel<Class, 'class'>({
+export default defineModel<'class'>({
   kinds: {
     ALL: {
       read: {
