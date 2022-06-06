@@ -2378,13 +2378,7 @@ export class QueryService {
     };
   }
 
-  public async find(
-    rootQuery: QuerySchema,
-    session: Session,
-    trx?: PrismaClient,
-  ): Promise<any> {
-    debugger;
-
+  public async find(rootQuery: QuerySchema, session: Session): Promise<any> {
     const queue: QuerySchema[] = [rootQuery];
 
     for (let q = 0; q < queue.length; q++) {
@@ -2495,7 +2489,7 @@ export class QueryService {
       await this.applyPermissions('read', session, baseQuery, permissionModel);
     }
 
-    const prisma = trx ?? (await this.prismaService.getPrisma(session.iid));
+    const prisma = await this.prismaService.getPrisma(session.iid);
 
     if (!prisma) {
       throw new WsException(
@@ -2504,10 +2498,10 @@ export class QueryService {
       );
     }
 
+    const query = rootQuery.query;
+
     try {
-      return await (prisma[rootQuery.model][rootQuery.type] as any)(
-        rootQuery.query,
-      );
+      return await (prisma[rootQuery.model][rootQuery.type] as any)(query);
     } catch (e) {
       throw new WsException(
         'Something went wrong while executing query, please contact support',
