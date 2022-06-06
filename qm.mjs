@@ -3,8 +3,8 @@
 import { run as generatePrismaJson } from './scripts/gen-prisma-json.mjs';
 import { bootstrap } from './scripts/directus-bootstrap.mjs';
 import { run as formatSql } from './scripts/format-sql.mjs';
-import { snapshot } from './scripts/snapshot.mjs';
-import { restore } from './scripts/restore.mjs';
+import { directusSnapshot } from './scripts/directus-snapshot.mjs';
+import { directusRestore } from './scripts/directus-restore.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -273,8 +273,8 @@ const snapshotCommand = new Command('snapshot');
 const restoreCommand = new Command('restore');
 const bootstrapCommand = new Command('bootstrap');
 
-snapshotCommand.action(snapshot);
-restoreCommand.action(restore);
+snapshotCommand.action(directusSnapshot);
+restoreCommand.action(directusRestore);
 bootstrapCommand.action(bootstrap);
 
 directusCommand.addCommand(snapshotCommand);
