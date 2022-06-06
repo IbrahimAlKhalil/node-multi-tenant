@@ -35,8 +35,8 @@ export function getDirectusEnv() {
     // Mail
     EMAIL_FROM: env.MAIL_FROM,
     EMAIL_TRANSPORT: 'smtp',
-    EMAIL_SMTP_HOST: 'localhost',
-    EMAIL_SMTP_PORT: 465,
+    EMAIL_SMTP_HOST: env.MAIL_HOST,
+    EMAIL_SMTP_PORT: env.MAIL_PORT,
     EMAIL_SMTP_SECURE: false,
     EMAIL_SMTP_IGNORE_TLS: false,
     EMAIL_SMTP_USER: env.MAIL_USER,
