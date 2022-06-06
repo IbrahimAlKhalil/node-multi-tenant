@@ -66,7 +66,7 @@ fields:
         trim: true
       readonly: false
       required: false
-      sort: null
+      sort: 4
       special: null
       translations: null
       validation: null
@@ -110,7 +110,7 @@ fields:
         trim: true
       readonly: false
       required: false
-      sort: null
+      sort: 3
       special: null
       translations: null
       validation: null
@@ -153,7 +153,7 @@ fields:
         trim: true
       readonly: false
       required: false
-      sort: null
+      sort: 1
       special:
         - uuid
       translations: null
@@ -195,7 +195,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: null
+      sort: 5
       special:
         - o2m
       translations: null
@@ -221,7 +221,7 @@ fields:
         trim: true
       readonly: false
       required: false
-      sort: null
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -246,396 +246,6 @@ fields:
       numeric_scale: null
       schema: public
       table: cluster
-    type: text
-  - collection: institute
-    field: cluster
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: cluster
-      group: null
-      hidden: false
-      interface: select-dropdown-m2o
-      note: null
-      options:
-        template: "{{name}}\_-\_{{host}}"
-      readonly: false
-      required: true
-      sort: null
-      special:
-        - m2o
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: uuid
-      default_value: null
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: cluster
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: cluster
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: uuid
-  - collection: institute
-    field: code
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: code
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: code
-        trim: true
-      readonly: false
-      required: true
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: code
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: text
-  - collection: institute
-    field: database
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: database
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: storage
-        slug: true
-        trim: true
-      readonly: false
-      required: true
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: database
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: text
-  - collection: institute
-    field: disabled
-    meta:
-      collection: institute
-      conditions: null
-      display: boolean
-      display_options:
-        labelOff: Disabled
-        labelOn: Enabled
-      field: disabled
-      group: null
-      hidden: false
-      interface: boolean
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: boolean
-      default_value: false
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: disabled
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: boolean
-  - collection: institute
-    field: email
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: email
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: email
-        trim: true
-      readonly: false
-      required: false
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: email
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: text
-  - collection: institute
-    field: id
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: id
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: key
-        trim: true
-      readonly: false
-      required: false
-      sort: null
-      special:
-        - uuid
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: uuid
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: true
-      is_unique: true
-      max_length: null
-      name: id
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: uuid
-  - collection: institute
-    field: mobile
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: mobile
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: phone
-        trim: true
-      readonly: false
-      required: false
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: mobile
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: text
-  - collection: institute
-    field: name
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: name
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: title
-        trim: true
-      readonly: false
-      required: true
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: name
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
-    type: text
-  - collection: institute
-    field: slug
-    meta:
-      collection: institute
-      conditions: null
-      display: null
-      display_options: null
-      field: slug
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        iconLeft: public
-        slug: true
-        trim: true
-      readonly: false
-      required: true
-      sort: null
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: false
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: slug
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: institute
     type: text
   - collection: directus_dashboards
     field: color
@@ -682,6 +292,404 @@ fields:
       numeric_scale: null
       schema: public
       table: directus_flows
+    type: text
+  - collection: institute
+    field: cluster
+    meta:
+      collection: institute
+      conditions: null
+      display: related-values
+      display_options:
+        template: '{{host}}'
+      field: cluster
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: "\_{{host}}"
+      readonly: false
+      required: true
+      sort: 9
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: uuid
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: cluster
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: cluster
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: uuid
+  - collection: institute
+    field: code
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: code
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: code
+        trim: true
+      readonly: false
+      required: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: code
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: text
+  - collection: institute
+    field: database
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: database
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: storage
+        slug: true
+        trim: true
+      readonly: false
+      required: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: database
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: text
+  - collection: institute
+    field: disabled
+    meta:
+      collection: institute
+      conditions: null
+      display: boolean
+      display_options:
+        colorOff: '#2ECDA7'
+        colorOn: '#E35169'
+        iconOff: check_circle
+        iconOn: stop_circle
+        labelOff: 'No'
+        labelOn: 'Yes'
+      field: disabled
+      group: null
+      hidden: false
+      interface: boolean
+      note: null
+      options:
+        colorOff: '#2ECDA7'
+        colorOn: '#E35169'
+        label: Disabled
+      readonly: false
+      required: false
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: boolean
+      default_value: false
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: disabled
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: boolean
+  - collection: institute
+    field: email
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: email
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: email
+        trim: true
+      readonly: false
+      required: false
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: email
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: text
+  - collection: institute
+    field: id
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: key
+        trim: true
+      readonly: false
+      required: false
+      sort: 1
+      special:
+        - uuid
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: uuid
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: true
+      is_unique: true
+      max_length: null
+      name: id
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: uuid
+  - collection: institute
+    field: mobile
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: mobile
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: phone
+        trim: true
+      readonly: false
+      required: false
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: mobile
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: text
+  - collection: institute
+    field: name
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: title
+        trim: true
+      readonly: false
+      required: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: name
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
+    type: text
+  - collection: institute
+    field: slug
+    meta:
+      collection: institute
+      conditions: null
+      display: null
+      display_options: null
+      field: slug
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: public
+        slug: true
+        trim: true
+      readonly: false
+      required: true
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: slug
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: institute
     type: text
 relations:
   - collection: institute
