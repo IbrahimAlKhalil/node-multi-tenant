@@ -1,22 +1,2 @@
-import { defineModel } from '../define-model.js';
-
-export default defineModel<'class'>({
-  kinds: {
-    ALL: {
-      read: {
-        fields: true,
-      },
-    },
-    POWER: {
-      read: true,
-      create: {
-        fields: true,
-        preset: {
-          order: 10,
-        },
-      },
-      update: true,
-      delete: true,
-    },
-  },
-});
+import allReadPowerTrueAc from '../common/all-read-power-true-ac.js';
+export default allReadPowerTrueAc;
