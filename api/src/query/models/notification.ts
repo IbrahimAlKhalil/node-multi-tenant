@@ -1,6 +1,7 @@
 import { defineModel } from '../define-model.js';
 
 export default defineModel<'notification'>({
+  accessControl: true,
   kinds: {
     ALL: {
       read: {
