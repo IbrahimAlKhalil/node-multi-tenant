@@ -28,11 +28,20 @@ export default defineModel<'chatMessage'>({
       },
       update: {
         fields: new Set(),
-        preset() {
-          return {
-            deletedAt: new Date(),
-          };
+        preset: {
+          deletedAt: new Date(),
         },
+      },
+    },
+    ADMIN: {
+      read: true,
+      create: {
+        fields: 'POWER.read',
+        preset: 'POWER.create',
+      },
+      update: {
+        fields: 'POWER.update',
+        preset: 'POWER.update',
       },
     },
   },
