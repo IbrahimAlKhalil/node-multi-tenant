@@ -24,6 +24,7 @@ export interface Model<
   S extends ModelState = 'processed',
 > {
   schema?: ObjectSchema<ModelTypes[N]['model']>;
+  accessControl?: boolean;
   kinds: Partial<
     Record<user_kind | 'ALL' | 'POWER' | 'NON_POWER', boolean | Actions<N, S>>
   >;
