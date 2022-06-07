@@ -91,6 +91,13 @@ model Admission {
   @@unique([userId, sessionId, classId, groupId])
 }
 
+model Archive {
+  table    String @db.VarChar(100)
+  recordId String
+
+  @@id([table, recordId])
+}
+
 model Area {
   id        Int        @id @default(autoincrement())
   order     Int?       @unique
@@ -813,6 +820,14 @@ model Language {
   BuildingI18n        BuildingI18n[]
 }
 
+model Lock {
+  table    String @db.VarChar(100)
+  column   String @db.VarChar(100)
+  recordId String
+
+  @@id([table, column, recordId])
+}
+
 model MimeType {
   id Int @id @default(autoincrement())
 
@@ -1090,6 +1105,13 @@ model SubDistrictI18n {
   @@id([subDistrictId, languageId])
 }
 
+model Trash {
+  table    String @db.VarChar(100)
+  recordId String
+
+  @@id([table, recordId])
+}
+
 model User {
   id Int @id @default(autoincrement())
 
@@ -1177,12 +1199,9 @@ model ChatFile {
 model Conversation {
   id Int @id @default(autoincrement())
 
-  name            String  @db.VarChar(100)
-  description     String  @db.VarChar(600)
-  inviteOnly      Boolean @default(true)
-  canMemberInvite Boolean @default(false)
-  canLeave       Boolean @default(true)
-  private Boolean @default(true)
+  name        String  @db.VarChar(100)
+  description String  @db.VarChar(600)
+  inviteOnly  Boolean @default(true)
 
   ChatMessages        ChatMessage[]
   ConversationMembers ConversationMember[]
@@ -1226,10 +1245,14 @@ model RoleCrudPermission {
   roleId Int
   table  String @db.VarChar(100)
 
-  create Boolean
-  read   Boolean
-  update Boolean
-  delete Boolean
+  create           Boolean
+  read             Boolean
+  update           Boolean
+  delete           Boolean
+
+  trashRestore     Boolean
+  lockUnlock       Boolean
+  archiveUnarchive Boolean
 
   Role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
@@ -1250,6 +1273,15 @@ enum activity_action {
   CREATE
   UPDATE
   DELETE
+
+  TRASH
+  RESTORE
+
+  LOCK
+  UNLOCK
+
+  ARCHIVE
+  UNARCHIVE
 }
 
 enum address_type {
@@ -1260,13 +1292,13 @@ enum address_type {
 enum blood_type {
   A_POSITIVE
   A_NEGATIVE
-
+  
   B_POSITIVE
   B_NEGATIVE
-
+  
   AB_POSITIVE
   AB_NEGATIVE
-
+  
   O_POSITIVE
   O_NEGATIVE
 }
@@ -1285,17 +1317,17 @@ enum gender {
 enum guardian_relation_type {
   FA
   MO
-
+  
   BRO
   SIS
   COU
-
+  
   UN
   AU
-
+  
   GRF
   GRM
-
+  
   SON
   DAU
 }
