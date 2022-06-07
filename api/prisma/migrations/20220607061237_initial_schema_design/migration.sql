@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "activity_action" AS ENUM ('CREATE', 'UPDATE', 'DELETE', 'TRASH', 'RESTORE', 'LOCK', 'UNLOCK', 'ARCHIVE', 'REMOVE_ARCHIVE');
+CREATE TYPE "activity_action" AS ENUM ('CREATE', 'UPDATE', 'DELETE', 'TRASH', 'RESTORE', 'LOCK', 'UNLOCK', 'ARCHIVE', 'UNARCHIVE');
 
 -- CreateEnum
 CREATE TYPE "address_type" AS ENUM ('PRESENT', 'PERMANENT');
@@ -14,7 +14,7 @@ CREATE TYPE "exam_calc_method" AS ENUM ('AVERAGE', 'POINT');
 CREATE TYPE "gender" AS ENUM ('MALE', 'FEMALE', 'OTHER');
 
 -- CreateEnum
-CREATE TYPE "guardian_relation_type" AS ENUM ('FA', 'MO', 'BRO', 'SIS', 'UN', 'AU', 'GRF', 'GRM', 'SON', 'DAU', 'COU');
+CREATE TYPE "guardian_relation_type" AS ENUM ('FA', 'MO', 'BRO', 'SIS', 'COU', 'UN', 'AU', 'GRF', 'GRM', 'SON', 'DAU');
 
 -- CreateEnum
 CREATE TYPE "notification_link_type" AS ENUM ('INTERNAL', 'EXTERNAL');
@@ -56,7 +56,7 @@ CREATE TABLE "Activity" (
 CREATE TABLE "Address" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER,
-    "addressType" "address_type",
+    "addressType" "address_type" NOT NULL,
     "subDistrictId" INTEGER NOT NULL,
 
     CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
@@ -522,8 +522,8 @@ CREATE TABLE "FloorI18n" (
 -- CreateTable
 CREATE TABLE "Folder" (
     "id" SERIAL NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
     "parentId" INTEGER,
+    "name" VARCHAR(255) NOT NULL,
 
     CONSTRAINT "Folder_pkey" PRIMARY KEY ("id")
 );
@@ -632,7 +632,7 @@ CREATE TABLE "Notification" (
     "id" SERIAL NOT NULL,
     "baseId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
-    "picture" UUID,
+    "imageId" UUID,
     "vars" JSONB,
     "read" BOOLEAN NOT NULL DEFAULT false,
 
@@ -642,7 +642,7 @@ CREATE TABLE "Notification" (
 -- CreateTable
 CREATE TABLE "NotificationBase" (
     "id" SERIAL NOT NULL,
-    "picture" UUID,
+    "imageId" UUID,
     "link" VARCHAR(600),
     "linkType" "notification_link_type",
 
@@ -728,8 +728,8 @@ CREATE TABLE "SessionI18n" (
 CREATE TABLE "Setting" (
     "id" SERIAL NOT NULL,
     "languageId" INTEGER NOT NULL,
-    "smsApiToken" VARCHAR(300),
     "smsSenderId" VARCHAR(100),
+    "smsApiToken" VARCHAR(300),
 
     CONSTRAINT "Setting_pkey" PRIMARY KEY ("id")
 );
@@ -852,7 +852,7 @@ CREATE TABLE "User" (
     "type" "user_kind" NOT NULL,
     "mobile" VARCHAR(16),
     "email" VARCHAR(320),
-    "picture" UUID,
+    "pictureId" UUID,
     "dateOfBirth" DATE,
     "nid" VARCHAR(40),
     "gender" "gender" NOT NULL,
@@ -934,15 +934,18 @@ CREATE TABLE "RoleI18n" (
 );
 
 -- CreateTable
-CREATE TABLE "RolePermission" (
+CREATE TABLE "RoleCrudPermission" (
     "roleId" INTEGER NOT NULL,
     "table" VARCHAR(100) NOT NULL,
     "create" BOOLEAN NOT NULL,
     "read" BOOLEAN NOT NULL,
     "update" BOOLEAN NOT NULL,
     "delete" BOOLEAN NOT NULL,
+    "trashRestore" BOOLEAN NOT NULL,
+    "lockUnlock" BOOLEAN NOT NULL,
+    "archiveUnarchive" BOOLEAN NOT NULL,
 
-    CONSTRAINT "RolePermission_pkey" PRIMARY KEY ("roleId","table")
+    CONSTRAINT "RoleCrudPermission_pkey" PRIMARY KEY ("roleId","table")
 );
 
 -- CreateTable
@@ -1392,7 +1395,7 @@ ALTER TABLE "InstituteI18n" ADD CONSTRAINT "InstituteI18n_instituteId_fkey" FORE
 ALTER TABLE "InstituteI18n" ADD CONSTRAINT "InstituteI18n_languageId_fkey" FOREIGN KEY ("languageId") REFERENCES "Language"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_picture_fkey" FOREIGN KEY ("picture") REFERENCES "File"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_imageId_fkey" FOREIGN KEY ("imageId") REFERENCES "File"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_baseId_fkey" FOREIGN KEY ("baseId") REFERENCES "NotificationBase"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1401,7 +1404,7 @@ ALTER TABLE "Notification" ADD CONSTRAINT "Notification_baseId_fkey" FOREIGN KEY
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "NotificationBase" ADD CONSTRAINT "NotificationBase_picture_fkey" FOREIGN KEY ("picture") REFERENCES "File"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "NotificationBase" ADD CONSTRAINT "NotificationBase_imageId_fkey" FOREIGN KEY ("imageId") REFERENCES "File"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "NotificationContent" ADD CONSTRAINT "NotificationContent_languageId_fkey" FOREIGN KEY ("languageId") REFERENCES "Language"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1485,7 +1488,7 @@ ALTER TABLE "SubDistrictI18n" ADD CONSTRAINT "SubDistrictI18n_languageId_fkey" F
 ALTER TABLE "SubDistrictI18n" ADD CONSTRAINT "SubDistrictI18n_subDistrictId_fkey" FOREIGN KEY ("subDistrictId") REFERENCES "SubDistrict"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_picture_fkey" FOREIGN KEY ("picture") REFERENCES "File"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_pictureId_fkey" FOREIGN KEY ("pictureId") REFERENCES "File"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserI18n" ADD CONSTRAINT "UserI18n_languageId_fkey" FOREIGN KEY ("languageId") REFERENCES "Language"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1521,7 +1524,7 @@ ALTER TABLE "RoleI18n" ADD CONSTRAINT "RoleI18n_languageId_fkey" FOREIGN KEY ("l
 ALTER TABLE "RoleI18n" ADD CONSTRAINT "RoleI18n_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RolePermission" ADD CONSTRAINT "RolePermission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "RoleCrudPermission" ADD CONSTRAINT "RoleCrudPermission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RoleUser" ADD CONSTRAINT "RoleUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

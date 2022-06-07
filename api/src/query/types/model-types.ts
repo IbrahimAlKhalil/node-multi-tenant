@@ -1,22 +1,6 @@
 import Base from '../../../prisma/client';
 
 export interface ModelTypes {
-  anotherPost: {
-    model: Base.AnotherPost;
-    whereInput: Base.Prisma.AnotherPostWhereInput;
-  };
-  anotherUser: {
-    model: Base.AnotherUser;
-    whereInput: Base.Prisma.AnotherUserWhereInput;
-  };
-  post: {
-    model: Base.Post;
-    whereInput: Base.Prisma.PostWhereInput;
-  };
-  category: {
-    model: Base.Category;
-    whereInput: Base.Prisma.CategoryWhereInput;
-  };
   accessToken: {
     model: Base.AccessToken;
     whereInput: Base.Prisma.AccessTokenWhereInput;
@@ -401,9 +385,9 @@ export interface ModelTypes {
     model: Base.RoleI18n;
     whereInput: Base.Prisma.RoleI18nWhereInput;
   };
-  rolePermission: {
-    model: Base.RolePermission;
-    whereInput: Base.Prisma.RolePermissionWhereInput;
+  roleCrudPermission: {
+    model: Base.RoleCrudPermission;
+    whereInput: Base.Prisma.RoleCrudPermissionWhereInput;
   };
   roleUser: {
     model: Base.RoleUser;
