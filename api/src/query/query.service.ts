@@ -983,11 +983,7 @@ export class QueryService {
       if (typeof createPermission.preset === 'function') {
         merge(
           createData,
-          await createPermission.preset(
-            session,
-            mutation.query,
-            this.moduleRef,
-          ),
+          await createPermission.preset(session, createData, this.moduleRef),
         );
       } else if (typeof createPermission.preset === 'object') {
         merge(createData, createPermission.preset);
@@ -998,11 +994,7 @@ export class QueryService {
       if (typeof updatePermission.preset === 'function') {
         merge(
           updateData,
-          await updatePermission.preset(
-            session,
-            mutation.query,
-            this.moduleRef,
-          ),
+          await updatePermission.preset(session, updateData, this.moduleRef),
         );
       } else if (typeof updatePermission.preset === 'object') {
         merge(updateData, updatePermission.preset);

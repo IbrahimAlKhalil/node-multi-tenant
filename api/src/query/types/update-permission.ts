@@ -28,9 +28,9 @@ export interface PermissionDefinition<
   Preset =
     | ((
         session: Session,
-        query: P,
+        data: PresetFields,
         ioc: ModuleRef,
-      ) => PresetFields | Promise<PresetFields>)
+      ) => PresetFields | Promise<PresetFields> | void)
     | PresetFields,
 > {
   fields: S extends 'raw'
