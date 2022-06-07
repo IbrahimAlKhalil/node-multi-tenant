@@ -1129,22 +1129,21 @@ export class QueryService {
   }
 
   private static validateMutationData(
-    mutation: Mutation<'create' | 'update' | 'updateMany' | 'upsert'>,
+    mutation: Mutation<'create' | 'upsert'>,
   ): void {
     if (mutation.schema) {
-      const data: Record<string, any>[] =
+      const data: Record<string, any> =
         mutation.type === 'upsert'
-          ? [mutation.query.create, mutation.query.update]
-          : [mutation.query.data];
+          ? mutation.query.create
+          : mutation.query.data;
 
-      for (const d of data) {
-        const validation = mutation.schema.validate(d, {
-          abortEarly: true,
-        });
+      const validation = mutation.schema.validate(data, {
+        abortEarly: true,
+        allowUnknown: true,
+      });
 
-        if (validation.error) {
-          throw new WsException(validation.error.message, 'VALIDATION_FAILED');
-        }
+      if (validation.error) {
+        throw new WsException(validation.error.message, 'VALIDATION_FAILED');
       }
     }
   }
@@ -1407,8 +1406,10 @@ export class QueryService {
           model,
         };
 
-        // Validate schema
-        QueryService.validateMutationData(mutationObj);
+        if (mutationObj.type === 'create') {
+          // Validate schema
+          QueryService.validateMutationData(mutationObj as Mutation<'create'>);
+        }
 
         // Apply preset
         await this.applyPreset(mutationObj, session);
@@ -2530,16 +2531,71 @@ export class QueryService {
       return;
     }
 
+    let originalSelection: Set<string> | undefined;
+
+    // Add the scalar fields to the selection
+    if (mutation.query.select) {
+      originalSelection = new Set(Object.keys(mutation.query.select));
+
+      for (const field of mutation.model.scalarFields) {
+        mutation.query.select[field] = true;
+      }
+    } else if (mutation.query.include) {
+      // No selection specified, but include is specified
+
+      mutation.query.select = {};
+
+      for (const field of mutation.model.scalarFields) {
+        mutation.query.select[field] = true;
+      }
+    }
+
     mutation.newData = await (trx[mutation.target] as any).update(
       mutation.query,
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const newData = mutation.newData!;
+
+    const scalarData = pick(newData, mutation.model.scalarFields);
+
+    // Do joi validation
+    if (mutation.schema) {
+      try {
+        await mutation.schema.validateAsync(scalarData, {
+          abortEarly: true,
+          allowUnknown: true,
+        });
+      } catch (e) {
+        throw new WsException(e.message, 'VALIDATION_FAILED');
+      }
+    }
+
     // Apply validation
     await this.applyValidation(mutation, session, trx);
 
-    const eventPayload = pick(mutation, 'newData', 'oldData', 'target', 'type');
+    const eventPayload = pick(mutation, 'oldData', 'target', 'type');
     (eventPayload as any).session = session;
+    (eventPayload as any).newData = scalarData;
+
     this.eventEmitter.emitAsync(`${mutation.target}.update`, eventPayload);
+
+    if (!originalSelection && mutation.query.include) {
+      // Delete all fields that were not selected
+      for (const field of mutation.model.scalarFields) {
+        delete newData[field];
+      }
+    } else if (originalSelection) {
+      // Remove the scalar fields we added to the selection if they were not selected
+      for (const field of Object.keys(newData)) {
+        if (
+          mutation.model.scalarFieldsSet.has(field) ||
+          !originalSelection.has(field)
+        ) {
+          delete newData[field];
+        }
+      }
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return mutation.newData!;
@@ -2602,6 +2658,18 @@ export class QueryService {
       where: mutation.query.where,
       data: mutation.query.update,
     });
+
+    // Do joi validation
+    if (mutation.schema) {
+      try {
+        await mutation.schema.validateAsync(mutation.newData, {
+          abortEarly: true,
+          allowUnknown: true,
+        });
+      } catch (e) {
+        throw new WsException(e.message, 'VALIDATION_FAILED');
+      }
+    }
 
     // Apply validation
     await this.applyValidation(mutation, session, trx);
@@ -2666,19 +2734,21 @@ export class QueryService {
           where: {},
         };
 
+        // Note: Deep clone to avoid mutating the original
+
         // Add selection if exists
         if (mutation.query.select) {
-          mutationQuery.select = mutation.query.select;
+          mutationQuery.select = cloneDeep(mutation.query.select);
         }
 
         // Add include if exists
         if (mutation.query.include) {
-          mutationQuery.include = mutation.query.include;
+          mutationQuery.include = cloneDeep(mutation.query.include);
         }
 
         // Add data if exists
         if (mutation.query.data) {
-          mutationQuery.data = mutation.query.data;
+          mutationQuery.data = cloneDeep(mutation.query.data);
         }
 
         // Build where clause

@@ -1,2 +1,15 @@
-import allReadPowerTrueAc from '../common/all-read-power-true-ac.js';
-export default allReadPowerTrueAc;
+import { defineModel } from '../define-model.js';
+import Joi from 'joi';
+
+export default defineModel<'class'>({
+  schema: Joi.object({
+    order: Joi.number().integer().max(100),
+  }),
+  kinds: {
+    POWER: {
+      read: true,
+      create: true,
+      update: true,
+    },
+  },
+});
