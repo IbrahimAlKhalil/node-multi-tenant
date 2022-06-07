@@ -21,10 +21,6 @@ export interface ModelTypes {
     model: Base.Admission;
     whereInput: Base.Prisma.AdmissionWhereInput;
   };
-  archive: {
-    model: Base.Archive;
-    whereInput: Base.Prisma.ArchiveWhereInput;
-  };
   area: {
     model: Base.Area;
     whereInput: Base.Prisma.AreaWhereInput;
@@ -249,10 +245,6 @@ export interface ModelTypes {
     model: Base.Language;
     whereInput: Base.Prisma.LanguageWhereInput;
   };
-  lock: {
-    model: Base.Lock;
-    whereInput: Base.Prisma.LockWhereInput;
-  };
   mimeType: {
     model: Base.MimeType;
     whereInput: Base.Prisma.MimeTypeWhereInput;
@@ -348,10 +340,6 @@ export interface ModelTypes {
   subDistrictI18n: {
     model: Base.SubDistrictI18n;
     whereInput: Base.Prisma.SubDistrictI18nWhereInput;
-  };
-  trash: {
-    model: Base.Trash;
-    whereInput: Base.Prisma.TrashWhereInput;
   };
   user: {
     model: Base.User;
