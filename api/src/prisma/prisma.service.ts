@@ -1,6 +1,7 @@
 import { InstituteService } from '../institute/institute.service.js';
 import { PrismaInstance } from '../types/prisma-instance';
 import { ModelNames } from '../query/types/model-names';
+import { DMMFClass } from '../../prisma/client/runtime';
 import { PrismaClient } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
@@ -104,17 +105,14 @@ export class PrismaService {
   private static async getModels(): Promise<Model[]> {
     const { PrismaClient } = await import('../../prisma/client/index.js');
     const prisma = new PrismaClient({ datasources: { db: { url: `postgres://` } } });
-    const dmmf = (prisma as any)._dmmf;
+    const dmmf: DMMFClass = (prisma as any)._dmmf;
 
     await prisma.$disconnect();
 
-    const models: Model[] = [];
-
-    for (const model of dmmf.datamodel.models) {
-      models.push(model);
-
-      const primaryKey = [];
-      const uniqueFields = [];
+    return dmmf.datamodel.models.map((model) => {
+      const primaryKey: string[] = [];
+      const uniqueFields: string[][] = [];
+      const scalarFields: string[] = [];
 
       // Find the primary key
       if (model.primaryKey) {
@@ -126,7 +124,7 @@ export class PrismaService {
       // Find the unique fields
       if (model.uniqueFields.length > 0) {
         for (const uniqueFieldGroup of model.uniqueFields) {
-          const group = [];
+          const group: string[] = [];
 
           for (const uniqueField of uniqueFieldGroup) {
             group.push(uniqueField);
@@ -144,27 +142,16 @@ export class PrismaService {
         if (field.isId) {
           primaryKey.push(field.name);
         }
-
-        delete field.isId;
-        delete field.isUnique;
-        delete field.dbNames;
-        delete field.isGenerated;
-        delete field.default;
-        delete field.documentation;
-        delete field.hasDefaultValue;
-        delete field.isReadOnly;
-        delete field.isUpdatedAt;
-        delete field.relationOnDelete;
       }
 
-      delete model.dbName;
-      delete model.isGenerated;
-      delete model.uniqueIndexes;
-
-      model.primaryKey = primaryKey;
-      model.uniqueFields = uniqueFields;
-    }
-
-    return models;
+      return {
+        name: model.name,
+        fields: model.fields,
+        scalarFieldsSet: new Set(scalarFields),
+        scalarFields,
+        uniqueFields,
+        primaryKey,
+      };
+    });
   }
 }
