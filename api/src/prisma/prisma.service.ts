@@ -142,6 +142,10 @@ export class PrismaService {
         if (field.isId) {
           primaryKey.push(field.name);
         }
+
+        if (field.kind === 'scalar') {
+          scalarFields.push(field.name);
+        }
       }
 
       return {
