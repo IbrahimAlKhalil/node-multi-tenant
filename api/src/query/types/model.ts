@@ -5,8 +5,8 @@ import { ReadPermission } from './read-permission';
 import { user_kind } from '../../../prisma/client';
 import { ModelNames } from './model-names';
 import { ModelState } from './model-state';
+import { ModelTypes } from './model-types';
 import { ObjectSchema } from 'joi';
-import { ModelTypes } from './prisma-types';
 
 export interface Actions<
   N extends ModelNames,

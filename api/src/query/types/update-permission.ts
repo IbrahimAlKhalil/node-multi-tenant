@@ -3,7 +3,7 @@ import { PermissionReturn } from './permission-return';
 import { PresetReference } from './preset-reference';
 import { FieldReference } from './field-reference';
 import { Session } from '../../types/session';
-import { ModelTypes } from './prisma-types';
+import { ModelTypes } from './model-types';
 import { ModelState } from './model-state';
 import { ModelNames } from './model-names';
 import { ModuleRef } from '@nestjs/core';
