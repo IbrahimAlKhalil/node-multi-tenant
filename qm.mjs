@@ -115,7 +115,7 @@ const prisma = new Command('prisma');
 prisma.action((_, _program) => {
   runInsideProjects(
     (project) => path.resolve(__dirname, `./${project}/node_modules/.bin/prisma`),
-    ['api', 'website'],
+    ['api'],
     (project) => {
       const prefix = project === 'api' ? '' : 'WEBSITE_';
 
@@ -126,28 +126,6 @@ prisma.action((_, _program) => {
     },
   );
 });
-['W', 'a'].forEach(cmd => {
-  const prefix = cmd === 'W' ? 'WEBSITE_' : '';
-  const project = cmd === 'W' ? 'website' : 'api';
-
-  prisma.addCommand(
-    new Command(cmd)
-      .description(`Run prisma in the ${project} app`)
-      .option('-h, --help', 'Output usage information')
-      .action((_, _program) => {
-        runInsideProjects(
-          path.resolve(__dirname, `./${project}/node_modules/.bin/prisma`),
-          [project],
-          {
-            ...process.env,
-            DATABASE_URL: `postgres://${getEnv('POSTGRES_USER', prefix)}:${getEnv('POSTGRES_PASSWORD', prefix)}@${getEnv('POSTGRES_HOST', prefix)}:${getEnv('POSTGRES_PORT', prefix)}/${getEnv('POSTGRES_DATABASE', prefix)}`,
-          },
-          [],
-          ['W', 'a'],
-        );
-      }),
-  );
-});
 
 // Create a wrapper for NestJS CLI
 const nest = new Command('nest');
@@ -155,24 +133,6 @@ nest.action((_, _program) => {
   runInsideProjects(
     (project) => path.resolve(__dirname, `./${project}/node_modules/.bin/nest`),
     ['api'],
-  );
-});
-['a'].forEach(cmd => {
-  const project = 'api';
-
-  nest.addCommand(
-    new Command(cmd)
-      .description(`Run nest in the ${project} app`)
-      .option('-h, --help', 'Output usage information')
-      .action((_, _program) => {
-        runInsideProjects(
-          path.resolve(__dirname, `./${project}/node_modules/.bin/nest`),
-          [project],
-          process.env,
-          [],
-          ['a'],
-        );
-      }),
   );
 });
 
