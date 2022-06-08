@@ -6,5 +6,6 @@ export interface Model {
   uniqueFields: string[][];
   primaryKey: string[];
   scalarFields: string[];
+  foreignFields: string[];
   scalarFieldsSet: Set<string>;
 }

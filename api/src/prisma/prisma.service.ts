@@ -49,6 +49,10 @@ export class PrismaService {
             relations[field.relationName] = field;
           }
         }
+
+        if (model.foreignFields.length) {
+          console.log(model.name, model.foreignFields);
+        }
       }
     });
   }
@@ -113,6 +117,7 @@ export class PrismaService {
       const primaryKey: string[] = [];
       const uniqueFields: string[][] = [];
       const scalarFields: string[] = [];
+      const foreignFields: string[] = [];
 
       // Find the primary key
       if (model.primaryKey) {
@@ -146,12 +151,17 @@ export class PrismaService {
         if (field.kind === 'scalar') {
           scalarFields.push(field.name);
         }
+
+        if (field.relationName && field.relationFromFields?.length) {
+          foreignFields.push(...field.relationFromFields);
+        }
       }
 
       return {
         name: model.name,
         fields: model.fields,
         scalarFieldsSet: new Set(scalarFields),
+        foreignFields,
         scalarFields,
         uniqueFields,
         primaryKey,
