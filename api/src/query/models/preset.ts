@@ -22,10 +22,10 @@ export default defineModel<'preset'>({
       },
       update: {
         fields: new Set(['value']),
-        permission: 'ALL.read',
+        permission: 'POWER.read',
       },
       delete: {
-        permission: 'ALL.read',
+        permission: 'POWER.read',
       },
     },
   },
