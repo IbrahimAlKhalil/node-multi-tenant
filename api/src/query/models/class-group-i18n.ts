@@ -1,2 +1,2 @@
-import allReadPowerTrue from '../common/all-read-power-true.js';
-export default allReadPowerTrue;
+import allReadPowerTrueAc from '../common/all-read-power-true-ac.js';
+export default allReadPowerTrueAc;

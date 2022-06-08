@@ -1,22 +1,15 @@
 import { defineModel } from '../define-model.js';
+import Joi from 'joi';
 
 export default defineModel<'class'>({
+  schema: Joi.object({
+    order: Joi.number().integer().max(100),
+  }),
   kinds: {
-    ALL: {
-      read: {
-        fields: true,
-      },
-    },
     POWER: {
       read: true,
-      create: {
-        fields: true,
-        preset: {
-          order: 10,
-        },
-      },
+      create: true,
       update: true,
-      delete: true,
     },
   },
 });
