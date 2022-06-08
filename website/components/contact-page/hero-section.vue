@@ -63,7 +63,7 @@
       @on-keypress="validate"
     />
     <button type="submit">
-      <secondary-btn title="Send Message" />
+      <primary-btn title="Send Message" />
     </button>
   </form>
 </template>
@@ -71,7 +71,7 @@
 <script lang="ts" setup>
 import TextAreaField from '#components/form-components/textarea-field.vue';
 import InputField from '#components/form-components/input-field.vue';
-import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
+import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
