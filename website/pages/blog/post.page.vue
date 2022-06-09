@@ -1,12 +1,23 @@
 <template>
   <layout-main>
-    <post-hero-section :post="post" />
-    <post-intro-section :post="post" />
-    <post-page-meta-description-section />
-    <post-description-section :post-description="test" />
+    <post-hero-section
+      :image="post.featured_image"
+      :categoryName="primaryCategory.name"
+      :title="post.title"
+    />
+    <post-intro-section
+      :author="post.user_created"
+      :date="post.date_created.split('T')[0]"
+      :title="post.title"
+      :slug="post.slug"
+      :categoryName="primaryCategory.name"
+      :categorySlug="primaryCategory.slug"
+    />
+    <post-page-meta-description-section :short_content="post.short_content" />
+    <post-description-section :content="post.content" />
     <post-reactions-section @handle-click="handleReaction" />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">
-      <post-tags-section :post="post" />
+      <post-tags-section :tags="post.tags" />
       <post-share-section />
     </div>
     <the-tabs>
@@ -163,6 +174,7 @@ import {
 
 export default defineComponent({
   name: 'blog-post',
+  props: ['post'],
   components: {
     PostPageMetaDescriptionSection,
     PostDescriptionSection,
@@ -182,15 +194,8 @@ export default defineComponent({
     TabBody,
     TheTab,
   },
-
   data() {
     return {
-      post: {
-        title: 'This is blog post title',
-        author: 'This is author',
-        date: '2020-01-01',
-        slug: 'this-is-blog-post-title',
-      },
       commentsData: [] as comment[],
       test:
         '<div>' +
@@ -211,6 +216,22 @@ export default defineComponent({
       activeTab: 'comments',
     };
   },
+  computed: {
+    primaryCategory() {
+      const primaryCategory = this.post.primary_category
+        ? this.post.primary_category.name
+        : this.post.categories[0].post_category_id.name;
+
+      const primaryCategorySlug = this.post.primary_category
+        ? this.post.primary_category.slug
+        : this.post.categories[0].post_category_id.slug;
+
+      return {
+        name: primaryCategory,
+        slug: primaryCategorySlug,
+      };
+    },
+  },
   methods: {
     handleTabChange(title: string) {
       this.activeTab = title.toLocaleLowerCase();
@@ -225,11 +246,16 @@ export default defineComponent({
   },
 
   setup() {
-    const { urlPathname } = usePageContext();
+    const { urlPathname, pageProps } = usePageContext();
     const slug = urlPathname.split('/').pop();
+
+    const print = (post) => {
+      console.log(post);
+    };
 
     return {
       CommentIcon,
+      print,
       slug,
     };
   },

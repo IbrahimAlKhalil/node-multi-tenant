@@ -5,11 +5,13 @@
         <div
           class="category h-10 absolute -bottom-5 left-1/2 -translate-x-1/2 bg-primary text-white text-xl font-bold p-2 rounded"
         >
-          <h5>This is category</h5>
+          <h5>
+            {{ categoryName }}
+          </h5>
         </div>
         <img
-          :src="HeroImage"
-          :alt="post.title"
+          :src="'/assets/' + image"
+          :alt="title"
           class="w-full h-full object-cover rounded-lg"
         />
       </div>
@@ -25,9 +27,17 @@ export default defineComponent({
   name: 'post-hero-section',
 
   props: {
-    post: {
-      type: Object,
+    title: {
+      type: String,
       required: true,
+    },
+    image: {
+      type: String,
+      default: '',
+    },
+    categoryName: {
+      type: String,
+      default: '',
     },
   },
 

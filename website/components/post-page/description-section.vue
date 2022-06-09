@@ -1,9 +1,10 @@
 <template>
   <section
     id="description"
-    v-html="postDescription"
-    class="w-9/12 mx-auto text-justify text-text dark:text-light"
-  ></section>
+    class="w-9/12 mx-auto text-justify text-text dark:text-light my-10"
+  >
+    {{ content }}
+  </section>
 </template>
 
 <script lang="ts">
@@ -11,7 +12,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'post-description-section',
-  props: ['postDescription'],
+  props: ['content'],
   setup() {
     return {};
   },
