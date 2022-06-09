@@ -17,6 +17,22 @@
         <h5 class="font-bold text-xl text-primary mb-3">Category</h5>
         <ul>
           <li
+            :class="{ active: 'all' === activeCategory }"
+            @click="$emit('update:category', 'all')"
+          >
+            <span
+              class="flex items-center gap-2 my-1 cursor-pointer"
+              :class="{
+                'text-secondary-dark font-bold': 'all' === activeCategory,
+              }"
+            >
+              <component
+                :is="'all' === activeCategory ? CircleCheck : Circle"
+              />
+              All
+            </span>
+          </li>
+          <li
             v-for="category in categories"
             :key="category.id"
             :class="{ active: category.slug === activeCategory }"
@@ -32,7 +48,7 @@
               <component
                 :is="category.slug === activeCategory ? CircleCheck : Circle"
               />
-              {{ t(category.name) }}
+              {{ category.name }}
             </span>
           </li>
         </ul>
