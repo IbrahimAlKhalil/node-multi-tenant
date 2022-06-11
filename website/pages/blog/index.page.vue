@@ -40,79 +40,11 @@
     </layout-main>
   </div>
 </template>
-<!--
-<script setup>
-
-import { ref } from 'vue';
-
-// * Actions
-/**
- * @param {string} search value
- */
-const updateSidebarSearch = (search) => {
-  sidebarSearch.value = search;
-};
-
-/**
- * @param {string} category slug
- */
-const updateSidebarCategory = (category) => {
-  activeCategory.value = category;
-};
-
-/**
- * @param {string} tag slug
- */
-const updateSidebarTag = (tag) => {
-  activeTag.value = tag;
-};
-
-const categories = ref([
-  {
-    id: 0,
-    name: "blogPage['category-data']['all']",
-    slug: 'all',
-  },
-  {
-    id: 1,
-    name: "blogPage['category-data']['item-1']",
-    slug: 'category-1',
-  },
-  {
-    id: 2,
-    name: "blogPage['category-data']['item-2']",
-    slug: 'category-2',
-  },
-  {
-    id: 3,
-    name: "blogPage['category-data']['item-3']",
-    slug: 'category-3',
-  },
-]);
-
-</script> -->
-
-<!-- <template>
-<blog-layout>
-        
-        
-      </blog-layout>
-
-
-
-
-  <div>
-    {{ posts }}
-    <div class="border-b w-full"></div>
-    {{ categories }}
-  </div>
-</template> -->
 
 <script lang="ts">
 import SingleBlogCard from '#components/blog-page/single-blog-card.vue';
 import BlogSidebar from '#components/blog-page/blog-sidebar.vue';
 import BlogHero from '#components/blog-page/blog-hero.vue';
-import useJsonToHtml from '#modules/use-json-to-html';
 import Blogs from '#components/blog-page/blogs.vue';
 import BlogLayout from '#layouts/blog-page.vue';
 import LayoutMain from '#layouts/main.vue';
