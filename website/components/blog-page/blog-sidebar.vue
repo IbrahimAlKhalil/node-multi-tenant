@@ -57,19 +57,46 @@
         <h5 class="font-bold text-xl text-primary mb-3">Tags</h5>
         <ul>
           <li
-            v-for="tag in tags"
-            :key="tag.id"
-            :class="{ active: tag.slug === activeTag }"
-            @click="$emit('update:tag', tag.slug)"
+            :class="{
+              active: 'all' === activeTag.toLowerCase(),
+            }"
+            @click="$emit('update:tag', 'All')"
           >
             <span
               class="flex items-center gap-2 my-1 cursor-pointer"
               :class="{
-                'text-secondary-dark font-bold': tag.slug === activeTag,
+                'text-secondary-dark font-bold':
+                  'all' === activeTag.toLowerCase(),
               }"
             >
-              <component :is="tag.slug === activeTag ? CircleCheck : Circle" />
-              {{ t(tag.name) }}
+              <component
+                :is="'all' === activeTag.toLowerCase() ? CircleCheck : Circle"
+              />All
+            </span>
+          </li>
+          <li
+            v-for="tag in tags"
+            :key="tag.id"
+            :class="{
+              active: tag.name.toLowerCase() === activeTag.toLowerCase(),
+            }"
+            @click="$emit('update:tag', tag.name)"
+          >
+            <span
+              class="flex items-center gap-2 my-1 cursor-pointer"
+              :class="{
+                'text-secondary-dark font-bold':
+                  tag.name.toLowerCase() === activeTag.toLowerCase(),
+              }"
+            >
+              <component
+                :is="
+                  tag.name.toLowerCase() === activeTag.toLowerCase()
+                    ? CircleCheck
+                    : Circle
+                "
+              />
+              {{ tag.name }}
             </span>
           </li>
         </ul>

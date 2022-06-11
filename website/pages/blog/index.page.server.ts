@@ -10,6 +10,9 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
   const postService = new ItemsService('post', {
     schema: (pageContext as any)?.schema,
   });
+  const tagService = new ItemsService('tag', {
+    schema: (pageContext as any)?.schema,
+  });
 
   const categories = await postCategoryService.readByQuery({
     fields: ['id', 'name', 'slug', 'posts', 'parent'],
@@ -28,12 +31,16 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'primary_category',
     ],
   });
+  const tags = await tagService.readByQuery({
+    fields: ['id', 'name'],
+  });
 
   return {
     pageContext: {
       pageProps: {
-        posts,
         categories,
+        posts,
+        tags,
       },
     },
   };

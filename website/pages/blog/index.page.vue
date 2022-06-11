@@ -52,7 +52,7 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'BlogPage',
-  props: ['posts', 'categories'],
+  props: ['posts', 'categories', 'tags'],
   components: {
     SingleBlogCard,
     BlogSidebar,
@@ -69,40 +69,25 @@ export default defineComponent({
     const activeTag = ref('all');
     const sidebarSearch = ref('');
 
+    const updateSidebarCategory = (category: string) => {
+      activeCategory.value = category;
+    };
+    const updateSidebarTag = (tag: string) => {
+      activeTag.value = tag;
+    };
+
     const key = ref(
       '?key=system-medium-cover&modified=2022-06-06T07%3A42%3A51.185Z&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNhMzgzMmExLWM4NGYtNDI4Ny1iZTFhLTc2MDkyMDg1MWI4MiIsInJvbGUiOiIyZjQ4MDA0My05NjVhLTRiMjUtOTc5Yi1hMDhkNDgyYmQ2Y2UiLCJhcHBfYWNjZXNzIjp0cnVlLCJhZG1pbl9hY2Nlc3MiOnRydWUsImlhdCI6MTY1NDc1NTA2MSwiZXhwIjoxNjU0NzU1OTYxLCJpc3MiOiJkaXJlY3R1cyJ9.aA7p-jK82iT9TQPMlC-lbKWsdGU-3-LTrv47pVrZazE',
     );
 
-    const tags = ref([
-      {
-        id: 0,
-        name: "blogPage['tag-data']['all']",
-        slug: 'all',
-      },
-      {
-        id: 1,
-        name: "blogPage['tag-data']['item-1']",
-        slug: 'tag-1',
-      },
-      {
-        id: 2,
-        name: "blogPage['tag-data']['item-2']",
-        slug: 'tag-2',
-      },
-      {
-        id: 3,
-        name: "blogPage['tag-data']['item-3']",
-        slug: 'tag-3',
-      },
-    ]);
-
     return {
-      heroSearch,
+      updateSidebarCategory,
       heroSearchCategory,
+      updateSidebarTag,
       activeCategory,
-      activeTag,
       sidebarSearch,
-      tags,
+      heroSearch,
+      activeTag,
       key,
     };
   },
