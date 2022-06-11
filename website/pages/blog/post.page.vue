@@ -14,7 +14,8 @@
       :categorySlug="primaryCategory.slug"
     />
     <post-page-meta-description-section :short_content="post.short_content" />
-    <post-description-section :content="post.content" />
+    <post-description-section :content="jsonToHtml" />
+    <pre>{{ post.content }}</pre>
     <post-reactions-section @handle-click="handleReaction" />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">
       <post-tags-section :tags="post.tags" />
@@ -159,6 +160,7 @@ import PostHeroSection from '#components/post-page/hero-section.vue';
 import TabBody from '#components/ui/tab-component/tab-body.vue';
 import TheTabs from '#components/ui/tab-component/tabs.vue';
 import { usePageContext } from '#modules/use-page-context';
+import { useJsonToHtml } from '#modules/use-json-to-html';
 import TheTab from '#components/ui/tab-component/tab.vue';
 import CommentIcon from '#icons/regular/comments.svg';
 import { comment } from '#types/comment-type';
@@ -197,11 +199,7 @@ export default defineComponent({
   data() {
     return {
       commentsData: [] as comment[],
-      test:
-        '<div>' +
-        '<h3>This is test html data rendering</h3>' +
-        '<p>This is test html data rendering</p>' +
-        '</div>',
+      test: '<h2>This is heading</h2><p><b>Test post ctreate</b></p><ol><li>asdfdsa</li><li>dasf</li><li>sdsaffdas</li></ol><ul><li>asdfdsa</li><li>dasf<ul><li>asdfdas</li><li>dasfdsa</li><li>dasfdsa</li></ul></li><li>dsaf</li></ul><p>undefined</p><p>asfdasdasdfdafsfdsasdfadsaffas</p><pre><code>undefined</code></pre>',
       tabData: [
         {
           id: 1,
@@ -231,6 +229,9 @@ export default defineComponent({
         slug: primaryCategorySlug,
       };
     },
+    jsonToHtml() {
+      return useJsonToHtml(this.post.content.blocks);
+    },
   },
   methods: {
     handleTabChange(title: string) {
@@ -248,14 +249,8 @@ export default defineComponent({
   setup() {
     const { urlPathname, pageProps } = usePageContext();
     const slug = urlPathname.split('/').pop();
-
-    const print = (post) => {
-      console.log(post);
-    };
-
     return {
       CommentIcon,
-      print,
       slug,
     };
   },
