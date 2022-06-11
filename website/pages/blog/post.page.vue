@@ -15,7 +15,6 @@
     />
     <post-page-meta-description-section :short_content="post.short_content" />
     <post-description-section :content="jsonToHtml" />
-    <pre>{{ post.content }}</pre>
     <post-reactions-section @handle-click="handleReaction" />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">
       <post-tags-section :tags="post.tags" />
@@ -80,7 +79,11 @@
       </the-tab>
     </the-tabs>
     <tab-body v-show="activeTab === 'comments'">
-      <comment-section />
+      <pre>
+      {{ comments }}
+    </pre
+      >
+      <comment-section :data="comments" />
     </tab-body>
     <tab-body v-show="activeTab === 'like'">
       <tab-body-users-container>
@@ -176,7 +179,7 @@ import {
 
 export default defineComponent({
   name: 'blog-post',
-  props: ['post'],
+  props: ['post', 'comments'],
   components: {
     PostPageMetaDescriptionSection,
     PostDescriptionSection,
@@ -247,7 +250,7 @@ export default defineComponent({
   },
 
   setup() {
-    const { urlPathname, pageProps } = usePageContext();
+    const { urlPathname } = usePageContext();
     const slug = urlPathname.split('/').pop();
     return {
       CommentIcon,

@@ -4,11 +4,15 @@ import { ItemsService } from 'directus';
 export { onBeforeRender };
 
 const onBeforeRender: OnBeforeRender = async (pageContext) => {
-  const itemsService = new ItemsService('post', {
+  const postService = new ItemsService('post', {
     schema: (pageContext as any)?.schema,
   });
 
-  const post = await itemsService.readByQuery({
+  const commentsService = new ItemsService('comment', {
+    schema: (pageContext as any)?.schema,
+  });
+
+  const post = await postService.readByQuery({
     filter: {
       slug: {
         _eq: pageContext.urlPathname.split('/')[2],
@@ -26,6 +30,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'content',
       'featured_image',
       'categories.*.name',
+      'categories.*.slug',
       'primary_category.name',
       'primary_category.slug',
       'reactions',
@@ -35,12 +40,28 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'is_featured',
     ],
   });
-  console.log('Post.Page.Server : ', post);
+  const comments = await commentsService.readByQuery({
+    filter: {
+      post: {
+        _eq: post[0].id,
+      },
+    },
+    fields: [
+      'id',
+      'status',
+      'content',
+      'date_created',
+      'user_created.first_name',
+      'user_created.last_name',
+    ],
+  });
+  console.log('Post.Page.Server : ', comments);
 
   return {
     pageContext: {
       pageProps: {
         post: post[0],
+        comments,
       },
     },
   };
