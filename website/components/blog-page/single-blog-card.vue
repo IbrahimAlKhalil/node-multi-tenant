@@ -12,14 +12,16 @@
     <div style="flex: 1">
       <div class="single-blog__content">
         <h3 class="single-blog__title font-bold text-3xl text-primary mb-2">
-          {{ t(title) }}
+          <a :href="link">
+            {{ title }}
+          </a>
         </h3>
         <div class="single-blog__date text-sm text-gray-500 mb-4">
-          <span class="font-bold">{{ t(dateLabel) }}: </span>
-          <span class="italic">{{ t(date) }}</span>
+          <span class="font-bold">{{ dateLabel }}: </span>
+          <span class="italic">{{ date }}</span>
         </div>
         <p class="single-blog__text text-md text-text dark:text-light mb-5">
-          {{ t(text) }}
+          {{ text }}
         </p>
         <div class="single-blog__action-btn group">
           <a
@@ -27,7 +29,7 @@
             class="flex items-center gap-2 text-secondary transition group-hover:text-secondary-dark"
           >
             <span class="block font-bold text-lg">
-              {{ t(linkText) }}
+              {{ linkText }}
             </span>
             <component
               :is="RightArrow"
@@ -44,7 +46,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import RightArrow from '#icons/solid/long-arrow-right.svg';
-import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'single-blog',
@@ -83,9 +84,7 @@ export default defineComponent({
     },
   },
   setup: function () {
-    const i18n = useI18n();
     return {
-      t: i18n.t,
       RightArrow,
     };
   },
