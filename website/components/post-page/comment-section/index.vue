@@ -6,7 +6,8 @@
   />
   <comment-suggestion @select-suggestion="selectSuggestion" />
   <comment-group
-    v-for="comment in comments"
+    v-for="comment in data"
+    :reactions="reactions.filter((react) => react.comment.id === comment.id)"
     :key="comment.id"
     :comment="comment"
   />
@@ -31,6 +32,7 @@ export default defineComponent({
       comment: '',
     };
   },
+  props: ['data', 'reactions'],
   methods: {
     updateComment(value: string) {
       this.comment = value;

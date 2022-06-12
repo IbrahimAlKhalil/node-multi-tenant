@@ -2,13 +2,17 @@
   <div class="comment-group container my-10">
     <single-comment
       :handle-reply="handleReply"
-      :authorName="comment.author.name"
-      :publishedDate="comment.createdAt"
-      :avatar="comment.author.avatar"
+      :authorName="
+        comment?.user_created?.first_name +
+        ' ' +
+        comment?.user_created?.last_name
+      "
+      :publishedDate="comment.date_created.split('T')[0]"
+      :avatar="comment?.user_created?.avatar"
       :commentContent="comment.content"
-      :reactions="comment.reactions"
+      :reactions="reactions"
     />
-    <div
+    <!-- <div
       class="pl-10 py-3 border-l-2 border-l-gray-200 dark:border-l-black bg-gray-50 dark:bg-dark"
     >
       <single-comment
@@ -21,7 +25,7 @@
         :commentContent="reply.content"
         :reactions="reply.reactions"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -35,6 +39,10 @@ export default defineComponent({
   props: {
     comment: {
       type: Object,
+      required: true,
+    },
+    reactions: {
+      type: Array,
       required: true,
     },
   },
