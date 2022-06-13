@@ -1177,9 +1177,12 @@ model ChatFile {
 model Conversation {
   id Int @id @default(autoincrement())
 
-  name        String  @db.VarChar(100)
-  description String  @db.VarChar(600)
-  inviteOnly  Boolean @default(true)
+  name            String  @db.VarChar(100)
+  description     String  @db.VarChar(600)
+  inviteOnly      Boolean @default(true)
+  canMemberInvite Boolean @default(false)
+  canLeave       Boolean @default(true)
+  private Boolean @default(true)
 
   ChatMessages        ChatMessage[]
   ConversationMembers ConversationMember[]
@@ -1223,10 +1226,10 @@ model RoleCrudPermission {
   roleId Int
   table  String @db.VarChar(100)
 
-  create           Boolean
-  read             Boolean
-  update           Boolean
-  delete           Boolean
+  create Boolean
+  read   Boolean
+  update Boolean
+  delete Boolean
 
   Role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
@@ -1257,13 +1260,13 @@ enum address_type {
 enum blood_type {
   A_POSITIVE
   A_NEGATIVE
-  
+
   B_POSITIVE
   B_NEGATIVE
-  
+
   AB_POSITIVE
   AB_NEGATIVE
-  
+
   O_POSITIVE
   O_NEGATIVE
 }
@@ -1282,17 +1285,17 @@ enum gender {
 enum guardian_relation_type {
   FA
   MO
-  
+
   BRO
   SIS
   COU
-  
+
   UN
   AU
-  
+
   GRF
   GRM
-  
+
   SON
   DAU
 }

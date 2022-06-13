@@ -94,9 +94,9 @@ export class QueryService {
   > = {};
   private orderByNestedFields = ['_count', '_sum', '_avg', '_min', '_max'];
 
-  private classifyFields<O extends ClassifyOptions>(
+  private async classifyFields<O extends ClassifyOptions>(
     options: O,
-  ): ClassifyResult<O> {
+  ): Promise<ClassifyResult<O>> {
     const modelFields = this.prismaService.fields[options.model];
 
     if (!modelFields) {
@@ -220,7 +220,7 @@ export class QueryService {
 
         try {
           // Get permission for read action
-          const permission = QueryService.getActionPermission(
+          const permission = await this.getActionPermission(
             'read',
             modelName,
             permissionModel,
@@ -262,7 +262,7 @@ export class QueryService {
     }
 
     // Get action permission
-    const permission = QueryService.getActionPermission(
+    const permission = await this.getActionPermission(
       options.action,
       options.model,
       permissionModel,
@@ -294,12 +294,12 @@ export class QueryService {
     return classifications as ClassifyResult<O>;
   }
 
-  private static getActionPermission<T extends keyof Actions<any, any>>(
+  private async getActionPermission<T extends keyof Actions<any, any>>(
     action: T,
     modelName: ModelNames,
     permissionModel: Model<ModelNames>,
     session: Session,
-  ): Permission<T> | true {
+  ): Promise<Permission<T> | true> {
     let kind: typeof permissionModel.kinds.ALL = permissionModel.kinds.ALL;
 
     if (permissionModel.kinds.hasOwnProperty(session.knd)) {
@@ -327,6 +327,28 @@ export class QueryService {
       );
     }
 
+    if (session.knd === 'STAFF' && action !== 'subscribe') {
+      const rolePermission = await this.prismaService.getRolePermissions(
+        session.iid,
+      );
+
+      const checker = (role: number) => {
+        const rp = rolePermission.get(role);
+        const rpm = rp?.[modelName];
+
+        return (
+          !rp || !rpm || !rpm[action as 'read' | 'create' | 'update' | 'delete']
+        );
+      };
+
+      if (!session.rol.some(checker)) {
+        throw new WsException(
+          `You don't have permission to perform action "${action}" on model "${modelName}".`,
+          'PERMISSION_DENIED',
+        );
+      }
+    }
+
     if (kind === true) {
       return true;
     }
@@ -343,18 +365,18 @@ export class QueryService {
     return actionPermission as any;
   }
 
-  private addDefaultSelects(
+  private async addDefaultSelects(
     queue: (MutationSchema | QuerySchema)[],
     baseQuery: MutationSchema | QuerySchema,
     session: Session,
     modelFields: Record<string, Field>,
-  ): void {
+  ): Promise<void> {
     // User did not specify any fields to select, so we will select default fields
     baseQuery.query.select = {};
 
     // Add included fields to queue if exists
     if (baseQuery.query.include) {
-      const fields = this.classifyFields({
+      const fields = await this.classifyFields({
         model: baseQuery.model,
         fields: Object.keys(baseQuery.query.include),
         classes: {
@@ -383,7 +405,7 @@ export class QueryService {
       }
     }
 
-    const fields = this.classifyFields({
+    const fields = await this.classifyFields({
       session,
       action: 'read',
       classes: {
@@ -427,11 +449,11 @@ export class QueryService {
     }
   }
 
-  private addDefaultCountSelects(
+  private async addDefaultCountSelects(
     baseQuery: MutationSchema | QuerySchema,
     session: Session,
-  ): void {
-    const fields = this.classifyFields({
+  ): Promise<void> {
+    const fields = await this.classifyFields({
       session,
       action: 'read',
       model: baseQuery.model,
@@ -482,11 +504,11 @@ export class QueryService {
     }
   }
 
-  private checkCountSelects(
+  private async checkCountSelects(
     baseQuery: MutationSchema | QuerySchema,
     session: Session,
-  ): void {
-    const fields = this.classifyFields({
+  ): Promise<void> {
+    const fields = await this.classifyFields({
       session,
       action: 'read',
       model: baseQuery.model,
@@ -518,10 +540,10 @@ export class QueryService {
     }
   }
 
-  private checkWhere(
+  private async checkWhere(
     rootWhere: { model: ModelNames; where: Record<string, any> },
     session: Session,
-  ): void {
+  ): Promise<void> {
     const queue: typeof rootWhere[] = [rootWhere];
 
     for (let q = 0; q < queue.length; q++) {
@@ -542,7 +564,7 @@ export class QueryService {
         );
       }
 
-      const specifiedFields = this.classifyFields({
+      const specifiedFields = await this.classifyFields({
         session,
         model: where.model,
         action: 'read',
@@ -649,7 +671,7 @@ export class QueryService {
     baseQuery: QuerySchema | MutationSchema,
     permissionModel: Model<any, any>,
   ): Promise<boolean> {
-    const permission = QueryService.getActionPermission(
+    const permission = await this.getActionPermission(
       action,
       baseQuery.model,
       permissionModel,
@@ -701,7 +723,10 @@ export class QueryService {
     return true;
   }
 
-  private checkOrderBy(baseQuery: QuerySchema, session: Session): void {
+  private async checkOrderBy(
+    baseQuery: QuerySchema,
+    session: Session,
+  ): Promise<void> {
     const orderBys = Array.isArray(baseQuery.query.orderBy)
       ? baseQuery.query.orderBy
       : [baseQuery.query.orderBy];
@@ -739,7 +764,7 @@ export class QueryService {
         }
       }
 
-      const fields = this.classifyFields({
+      const fields = await this.classifyFields({
         session,
         action: 'read',
         model: orderBy.model,
@@ -780,14 +805,14 @@ export class QueryService {
     }
   }
 
-  private processSelect(
+  private async processSelect(
     queue: (MutationSchema | QuerySchema)[],
     baseQuery: MutationSchema | QuerySchema,
     session: Session,
     modelFields: Record<string, Field>,
-  ): void {
+  ): Promise<void> {
     // Classify fields
-    const fields = this.classifyFields({
+    const fields = await this.classifyFields({
       session,
       classes: {
         scalar: true,
@@ -809,12 +834,12 @@ export class QueryService {
 
     if (countQuery) {
       if (countQuery === true) {
-        this.addDefaultCountSelects(baseQuery, session);
+        await this.addDefaultCountSelects(baseQuery, session);
       } else if (typeof countQuery === 'object' && !Array.isArray(countQuery)) {
         if (isEmpty(countQuery.select)) {
-          this.addDefaultCountSelects(baseQuery, session);
+          await this.addDefaultCountSelects(baseQuery, session);
         } else {
-          this.checkCountSelects(baseQuery, session);
+          await this.checkCountSelects(baseQuery, session);
         }
       } else {
         throw new WsException(
@@ -918,11 +943,11 @@ export class QueryService {
     return flattenWhere as T;
   }
 
-  private checkUniqueWhere(
+  private async checkUniqueWhere(
     where: Record<string, any>,
     session: Session,
     modelName: ModelNames,
-  ): Record<string, any> {
+  ): Promise<Record<string, any>> {
     const model = this.prismaService.models[modelName];
 
     if (!model) {
@@ -950,7 +975,7 @@ export class QueryService {
       );
     }
 
-    const specifiedFields = this.classifyFields({
+    const specifiedFields = await this.classifyFields({
       session,
       model: modelName,
       action: 'read',
@@ -1167,7 +1192,7 @@ export class QueryService {
 
     /** Handle delete mutation */
     if (mutation.type === 'delete' || mutation.type === 'deleteMany') {
-      const permission = await QueryService.getActionPermission(
+      const permission = await this.getActionPermission(
         'delete',
         mutation.model,
         permissionModel,
@@ -1176,13 +1201,13 @@ export class QueryService {
 
       if (mutation.query.where) {
         if (mutation.type === 'delete') {
-          mutation.query.where = this.checkUniqueWhere(
+          mutation.query.where = await this.checkUniqueWhere(
             mutation.query.where,
             session,
             mutation.model,
           );
         } else {
-          this.checkWhere(
+          await this.checkWhere(
             {
               model: mutation.model,
               where: mutation.query.where,
@@ -1264,7 +1289,7 @@ export class QueryService {
 
     /** Check permission for each data object and classify fields */
     for (const dataObj of dataObjs) {
-      dataObj.permission = await QueryService.getActionPermission(
+      dataObj.permission = await this.getActionPermission(
         dataObj.action,
         mutation.model,
         permissionModel,
@@ -1275,7 +1300,7 @@ export class QueryService {
         continue;
       }
 
-      const fields = this.classifyFields({
+      const fields = await this.classifyFields({
         session,
         classes,
         action: dataObj.action,
@@ -1318,7 +1343,7 @@ export class QueryService {
 
       // Check where
       if (mutation.query.where) {
-        mutation.query.where = this.checkUniqueWhere(
+        mutation.query.where = await this.checkUniqueWhere(
           mutation.query.where,
           session,
           mutation.model,
@@ -1364,13 +1389,13 @@ export class QueryService {
 
         if (mutation.query.where) {
           if (mutation.type === 'update') {
-            mutation.query.where = this.checkUniqueWhere(
+            mutation.query.where = await this.checkUniqueWhere(
               mutation.query.where,
               session,
               mutation.model,
             );
           } else if (mutation.type === 'updateMany') {
-            this.checkWhere(
+            await this.checkWhere(
               {
                 model: mutation.model,
                 where: mutation.query.where,
@@ -1555,7 +1580,7 @@ export class QueryService {
               relation.left.type === 'one' &&
               relation.fKeyHolder === relation.right
             ) {
-              const flattenWhere = this.checkUniqueWhere(
+              const flattenWhere = await this.checkUniqueWhere(
                 connect,
                 session,
                 relation.fKeyHolder.target,
@@ -1563,7 +1588,7 @@ export class QueryService {
 
               QueryService.checkFieldPermissions(
                 relation.fKeyHolder.target,
-                this.classifyFields({
+                await this.classifyFields({
                   session,
                   action: 'update',
                   model: relation.fKeyHolder.target,
@@ -1608,7 +1633,7 @@ export class QueryService {
                 newData: null,
                 schema: relPermModel.schema,
                 permission: {
-                  update: QueryService.getActionPermission(
+                  update: await this.getActionPermission(
                     'update',
                     relation.fKeyHolder.target,
                     relPermModel,
@@ -1631,11 +1656,15 @@ export class QueryService {
               relation.left === relation.fKeyHolder &&
               relation.right.type === 'one'
             ) {
-              this.checkUniqueWhere(connect, session, relation.right.target);
+              await this.checkUniqueWhere(
+                connect,
+                session,
+                relation.right.target,
+              );
 
               QueryService.checkFieldPermissions(
                 relation.left.target,
-                this.classifyFields({
+                await this.classifyFields({
                   session,
                   action: dataObj.action,
                   model: relation.left.target,
@@ -1757,7 +1786,7 @@ export class QueryService {
               relation.left === relation.fKeyHolder &&
               relation.right.type === 'one'
             ) {
-              this.checkUniqueWhere(
+              await this.checkUniqueWhere(
                 connectOrCreate,
                 session,
                 relation.right.target,
@@ -1765,7 +1794,7 @@ export class QueryService {
 
               QueryService.checkFieldPermissions(
                 relation.left.target,
-                this.classifyFields({
+                await this.classifyFields({
                   session,
                   action: dataObj.action,
                   model: relation.left.target,
@@ -1872,7 +1901,7 @@ export class QueryService {
                 );
               }
 
-              const flattenWhere = this.checkUniqueWhere(
+              const flattenWhere = await this.checkUniqueWhere(
                 disconnect,
                 session,
                 relation.right.target,
@@ -1880,7 +1909,7 @@ export class QueryService {
 
               QueryService.checkFieldPermissions(
                 relation.left.target,
-                this.classifyFields({
+                await this.classifyFields({
                   session,
                   action: 'update',
                   model: relation.fKeyHolder.target,
@@ -1929,7 +1958,7 @@ export class QueryService {
                 oldData: null,
                 schema: relPermModel.schema,
                 permission: {
-                  update: QueryService.getActionPermission(
+                  update: await this.getActionPermission(
                     'update',
                     relation.fKeyHolder.target,
                     relPermModel,
@@ -1953,7 +1982,7 @@ export class QueryService {
           ) {
             QueryService.checkFieldPermissions(
               relation.right.target,
-              this.classifyFields({
+              await this.classifyFields({
                 session,
                 action: 'update',
                 model: relation.right.target,
@@ -1966,7 +1995,7 @@ export class QueryService {
               }),
             );
 
-            const permission = QueryService.getActionPermission(
+            const permission = await this.getActionPermission(
               'update',
               relation.right.target,
               relPermModel,
@@ -2026,7 +2055,7 @@ export class QueryService {
                 );
               }
 
-              const flattenWhere = this.checkUniqueWhere(
+              const flattenWhere = await this.checkUniqueWhere(
                 set,
                 session,
                 relation.right.target,
@@ -2388,7 +2417,7 @@ export class QueryService {
 
       // Check if user has permission to subscribe to this model
       /*if (baseQuery.subscribe) {
-        QueryService.getActionPermission(
+        await this.getActionPermission(
           'subscribe',
           baseQuery.model,
           permissionModel,
@@ -2400,11 +2429,11 @@ export class QueryService {
         this.processSelect(queue, baseQuery, session, modelFields);
       } else {
         // Add default fields to select
-        this.addDefaultSelects(queue, baseQuery, session, modelFields);
+        await this.addDefaultSelects(queue, baseQuery, session, modelFields);
       }
 
       if (baseQuery.query.orderBy) {
-        this.checkOrderBy(baseQuery, session);
+        await this.checkOrderBy(baseQuery, session);
       }
 
       // Check permission for orderBy and cursor fields
@@ -2437,7 +2466,7 @@ export class QueryService {
       if (fieldSetToCheck.length) {
         QueryService.checkFieldPermissions(
           baseQuery.model,
-          this.classifyFields({
+          await this.classifyFields({
             session,
             action: 'read',
             model: baseQuery.model,
@@ -2453,7 +2482,7 @@ export class QueryService {
 
       // Check permission for fields specified in where clause
       if (baseQuery.query.where) {
-        this.checkWhere(
+        await this.checkWhere(
           {
             model: baseQuery.model,
             where: baseQuery.query.where,
@@ -2463,7 +2492,7 @@ export class QueryService {
       }
 
       if (baseQuery.query.having) {
-        this.checkWhere(
+        await this.checkWhere(
           {
             model: baseQuery.model,
             where: baseQuery.query.having,
@@ -2831,7 +2860,12 @@ export class QueryService {
           this.processSelect(selectQueue, baseQuery, session, modelFields);
         } else {
           // Add default fields to select
-          this.addDefaultSelects(selectQueue, baseQuery, session, modelFields);
+          await this.addDefaultSelects(
+            selectQueue,
+            baseQuery,
+            session,
+            modelFields,
+          );
         }
       }
 

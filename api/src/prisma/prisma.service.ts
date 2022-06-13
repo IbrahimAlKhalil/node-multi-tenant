@@ -1,8 +1,8 @@
+import { PrismaClient, RoleCrudPermission } from '../../prisma/client';
 import { InstituteService } from '../institute/institute.service.js';
 import { PrismaInstance } from '../types/prisma-instance';
 import { ModelNames } from '../query/types/model-names';
 import { DMMFClass } from '../../prisma/client/runtime';
-import { PrismaClient } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { Model } from './types/model';
@@ -113,6 +113,7 @@ export class PrismaService {
       const primaryKey: string[] = [];
       const uniqueFields: string[][] = [];
       const scalarFields: string[] = [];
+      const foreignFields: string[] = [];
 
       // Find the primary key
       if (model.primaryKey) {
@@ -146,16 +147,54 @@ export class PrismaService {
         if (field.kind === 'scalar') {
           scalarFields.push(field.name);
         }
+
+        if (field.relationName && field.relationFromFields?.length) {
+          foreignFields.push(...field.relationFromFields);
+        }
       }
 
       return {
         name: model.name,
         fields: model.fields,
         scalarFieldsSet: new Set(scalarFields),
+        foreignFields,
         scalarFields,
         uniqueFields,
         primaryKey,
       };
     });
+  }
+
+  public async getRolePermissions(instituteId: string): Promise<Required<PrismaInstance>['rolePermissions']> {
+    const prisma = await this.getPrisma(instituteId);
+
+    if (!prisma) {
+      return new Map();
+    }
+
+    if (this.instances[instituteId].rolePermissions) {
+      return this.instances[instituteId].rolePermissions as Required<PrismaInstance>['rolePermissions'];
+    }
+
+    const map: PrismaInstance['rolePermissions'] = new Map();
+    const roles = await prisma.role.findMany({
+      include: {
+        RolePermissions: true,
+      }
+    });
+
+    for (const role of roles) {
+      const permissions: Partial<Record<ModelNames, RoleCrudPermission>> = {};
+
+      for (const permission of role.RolePermissions) {
+        permissions[permission.table as ModelNames] = permission;
+      }
+
+      map.set(role.id, permissions);
+    }
+
+    this.instances[instituteId].rolePermissions = map;
+
+    return map;
   }
 }
