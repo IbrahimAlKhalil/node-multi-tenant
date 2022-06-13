@@ -6,7 +6,18 @@
   <form @submit.prevent="handleSubmit">
     <div class="w-1/2 mx-auto flex flex-col gap-3 items-center p-5">
       <InputField
-        placeholder="Email"
+        placeholder="Institute Code"
+        name="code"
+        type="text"
+        v-model="values.code"
+        :value="values.code"
+        :error="errors.code"
+        @on-input="handleInput"
+        @on-blur="validate"
+        @on-keypress="validate"
+      />
+      <InputField
+        placeholder="Email / Username / Mobile"
         name="username"
         type="text"
         v-model="values.username"
@@ -74,24 +85,29 @@ defineEmits(['update:search', 'update:category']);
 const btnText = ref('Login');
 const showPassword = ref(false);
 const values = ref<{
+  code: string;
   username: string;
   password: string;
   remember: boolean;
 }>({
+  code: '',
   username: '',
   password: '',
   remember: false,
 });
 
 const errors = ref<{
+  code: string;
   username: string;
   password: string;
 }>({
+  code: '',
   username: '',
   password: '',
 });
 
 const schema = Yup.object().shape({
+  code: Yup.string().required('Institute Code is required'),
   username: Yup.string()
     .required('Username is required')
     .email('Invalid email'),
