@@ -39,7 +39,7 @@ export default defineComponent({
       required: true,
     },
     reactions: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },

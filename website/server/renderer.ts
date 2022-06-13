@@ -23,6 +23,7 @@ export async function initRenderer(app: Express) {
   app.get(pageRoutes, async (req, res, next) => {
     const url = req.originalUrl;
     const pageContextInit = {
+      schema: (req as any).schema,
       lang: req.query.lang ?? req.cookies.lang ?? 'bn',
       url,
     };

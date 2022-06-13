@@ -3,27 +3,36 @@
     <h1
       class="text-5xl font-bold capitalize mt-10 mb-5 text-primary dark:text-secondary"
     >
-      {{ post.title }}
+      {{ title }}
     </h1>
     <p class="text-gray-500 dark:text-inherit">
       <span class="font-bold"> Author: </span>
       <span>
-        {{ post.author }}
+        {{ author?.first_name || '' }}
+        {{ author?.last_name || '' }}
       </span>
     </p>
     <div class="flex justify-between items-center">
       <p class="text-gray-500 dark:text-inherit">
         <span class="font-bold">Published at: </span>
         <span>
-          {{ post.date }}
+          {{ date }}
         </span>
       </p>
       <p class="text-gray-500 dark:text-inherit flex items-center gap-1">
-        <component :is="HomeIcon"></component>
-        <span>Blog/</span>
-        <span>Category Name/</span>
-        <span class="text-primary dark:text-secondary">
-          {{ post.slug }}
+        <a href="/">
+          <component :is="HomeIcon" class="px-1 hover:text-primary"></component>
+        </a>
+        <span class="hover:text-primary"><a href="/blog">Blog/</a></span>
+        <span class="hover:text-primary">
+          <a :href="'/' + categorySlug">{{ categoryName }}/</a></span
+        >
+        <span
+          class="text-primary hover:text-primary-dark dark:text-secondary dark:hover:text-secondary-dark"
+        >
+          <a :href="'/blog/' + slug">
+            {{ slug }}
+          </a>
         </span>
       </p>
     </div>
@@ -37,7 +46,27 @@ import HomeIcon from '#icons/solid/home-alt.svg';
 export default defineComponent({
   name: 'post-intro-section',
   props: {
-    post: {
+    title: {
+      type: String,
+      required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+    },
+    categoryName: {
+      type: String,
+      required: true,
+    },
+    categorySlug: {
+      type: String,
+      required: true,
+    },
+    date: {
+      type: String,
+      required: true,
+    },
+    author: {
       type: Object,
       required: true,
     },

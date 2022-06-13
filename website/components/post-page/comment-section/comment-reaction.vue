@@ -6,55 +6,109 @@
         class="text-3xl text-gray-500 dark:text-light group-hover:text-text dark:group-hover:text-light transition cursor-pointer"
       ></component>
       <template #tooltip>
-        <ul class="flex items-center gap-2">
-          <li class="py-2 px-1 hover:scale-110 cursor-pointer">
-            <component :is="ThumbsUp"></component>
+        <ul class="flex items-center gap-2 pt-1./">
+          <li class="hover:scale-110 cursor-pointer">
+            <div
+              class="w-8 h-8 flex justify-center items-center overflow-hidden"
+            >
+              <span>
+                <EmojiLike
+                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
+                />
+              </span>
+            </div>
           </li>
-          <li class="py-2 px-1 hover:scale-110 cursor-pointer">
-            <component :is="ThumbsDown"></component>
+          <li class="hover:scale-110 cursor-pointer">
+            <div
+              class="w-8 h-8 flex justify-center items-center overflow-hidden"
+            >
+              <span>
+                <EmojiWow
+                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
+                />
+              </span>
+            </div>
           </li>
-          <li class="py-2 px-1 hover:scale-110 cursor-pointer">
-            <component :is="SadIcon"></component>
+          <li class="hover:scale-110 cursor-pointer">
+            <div
+              class="w-8 h-8 flex justify-center items-center overflow-hidden"
+            >
+              <span>
+                <EmojiSad
+                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
+                />
+              </span>
+            </div>
           </li>
-          <li class="py-2 px-1 hover:scale-110 cursor-pointer">
-            <component :is="AngryIcon"></component>
+          <li class="hover:scale-110 cursor-pointer">
+            <div
+              class="w-8 h-8 flex justify-center items-center overflow-hidden"
+            >
+              <span>
+                <EmojiAngry
+                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
+                />
+              </span>
+            </div>
           </li>
         </ul>
       </template>
     </the-tooltip>
     <ul
-      class="flex items-center bg-gray-200 dark:bg-dark-light border border-transparent dark:border-dark"
+      class="flex items-center bg-gray-200 dark:bg-dark-light border border-transparent dark:border-dark rounded"
     >
       <li
-        v-for="(reaction, name) in reactions"
-        :key="reaction"
+        v-for="(reaction, key) in reactionsCount"
+        :key="reaction.id"
+        class="flex items-center gap-2 px-2 pt-1 pb-0 border-r border-r-gray-50 dark:border-r-gray-700"
         v-show="reaction > 0"
-        class="flex items-center gap-2 px-2 py-1 border-r border-r-gray-50 dark:border-r-gray-700"
       >
-        <span v-show="name === 'like'">
-          <component :is="ThumbsUp" class="text-blue-500 text-lg"></component>
-        </span>
-        <span v-show="name === 'dislike'">
-          <component
-            :is="ThumbsDown"
-            class="text-stone-500 text-lg"
-          ></component>
-        </span>
-        <span v-show="name === 'sad'">
-          <component
-            v-show="name === 'sad'"
-            :is="SadIcon"
-            class="text-orange-400 text-lg"
-          ></component>
-        </span>
-        <span v-show="name === 'angry'">
-          <component
-            v-show="name === 'angry'"
-            :is="AngryIcon"
-            class="text-red-500 text-lg"
-          ></component>
-        </span>
-        <span class="text-text dark:text-light">{{ reaction }}</span>
+        <div
+          v-show="key === 'likes'"
+          class="w-8 h-8 flex justify-center items-center overflow-hidden"
+        >
+          <span>
+            <EmojiLike
+              class="scale-[18%] transition duration-300 cursor-pointer"
+            />
+          </span>
+        </div>
+
+        <div
+          v-show="key === 'wows'"
+          class="w-8 h-8 flex justify-center items-center overflow-hidden"
+        >
+          <span>
+            <EmojiWow
+              class="scale-[18%] transition duration-300 cursor-pointer"
+            />
+          </span>
+        </div>
+
+        <div
+          v-show="key === 'sads'"
+          class="w-8 h-8 flex justify-center items-center overflow-hidden"
+        >
+          <span>
+            <EmojiSad
+              class="scale-[18%] transition duration-300 cursor-pointer"
+            />
+          </span>
+        </div>
+
+        <div
+          v-show="key === 'angries'"
+          class="w-8 h-8 flex justify-center items-center overflow-hidden"
+        >
+          <span>
+            <EmojiAngry
+              class="scale-[18%] transition duration-300 cursor-pointer"
+            />
+          </span>
+        </div>
+        <span class="text-text font-bold text-sm dark:text-light pb-1">{{
+          reaction
+        }}</span>
       </li>
     </ul>
     <button
@@ -67,22 +121,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import ReactionIcon from '#icons/regular/smile-plus.svg';
 import ThumbsDown from '#icons/solid/thumbs-down.svg';
 import TheTooltip from '#components/ui/tooltip.vue';
 import ThumbsUp from '#icons/solid/thumbs-up.svg';
 import AngryIcon from '#icons/regular/angry.svg';
 import SadIcon from '#icons/regular/sad-cry.svg';
+import { defineComponent } from 'vue';
+import {
+  EmojiLike,
+  EmojiAngry,
+  EmojiSad,
+  EmojiWow,
+} from '#components/animated-reactions';
 
 export default defineComponent({
   name: 'comment-reaction',
-  components: { TheTooltip },
+  components: { TheTooltip, EmojiLike, EmojiAngry, EmojiSad, EmojiWow },
   emits: ['handle-reply'],
   props: {
     reactions: {
-      type: Object,
+      type: Array,
       required: true,
+    },
+  },
+  computed: {
+    reactionsCount() {
+      return this.reactions.reduce(
+        (acc, reaction) => {
+          if (reaction.reaction.value === 'like') {
+            acc.likes++;
+          } else if (reaction.reaction.value === 'wow') {
+            acc.wows++;
+          } else if (reaction.reaction.value === 'sad') {
+            acc.sads++;
+          } else if (reaction.reaction.value === 'angry') {
+            acc.angries++;
+          }
+          return acc;
+        },
+        { likes: 0, wows: 0, sads: 0, angries: 0 },
+      );
     },
   },
   setup() {
