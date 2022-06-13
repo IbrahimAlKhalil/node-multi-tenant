@@ -49,10 +49,6 @@ export class PrismaService {
             relations[field.relationName] = field;
           }
         }
-
-        if (model.foreignFields.length) {
-          console.log(model.name, model.foreignFields);
-        }
       }
     });
   }
