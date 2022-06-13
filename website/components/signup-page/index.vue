@@ -41,7 +41,7 @@
       <input
         type="submit"
         :value="btnText"
-        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+        class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
   </form>
@@ -157,7 +157,9 @@
   </form>
   <p class="text-center italic">
     Already have an account?
-    <a href="/login" class="font-bold text-secondary">Login here</a>
+    <a href="/login" class="font-bold text-primary` dark:text-secondary"
+      >Login here</a
+    >
   </p>
 </template>
 

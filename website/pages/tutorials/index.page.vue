@@ -8,7 +8,7 @@
       </h1>
       <the-list>
         <list-item
-          v-for="item of leftNavigation"
+          v-for="item of tutorialCategories"
           :key="item.slug"
           :data="item"
         ></list-item>
@@ -26,6 +26,7 @@
       <div class="content w-11/12 mx-auto flex">
         <div class="grow pt-10" style="flex: 2">
           <section class="intro-meta pb-8 border-b border-b-gray-200">
+            {{ tutorials }}
             <h3 class="font-bold text-5xl mb-3">Students Administration</h3>
             <p class="text-gray-500 mb-5">
               <span>Last update at: </span> <span>28-05-2022</span>
@@ -123,6 +124,7 @@ export default defineComponent({
     ListItem,
     TheList,
   },
+  props: ['tutorialCategories', 'tutorials'],
   data() {
     return {
       leftNavigation: [

@@ -9,11 +9,11 @@
         <component :is="AngleDown" v-show="isFolder && isOpen"> </component>
         <component :is="AngleUp" v-show="isFolder && !isOpen"> </component>
       </span>
-      <span>{{ data.title }}</span>
+      <span>{{ data.name }}</span>
     </span>
     <the-list v-show="isOpen" v-if="isFolder">
       <list-item
-        v-for="item of data.subCategories"
+        v-for="item of data.children"
         :key="item.slug"
         :data="item"
       ></list-item>
@@ -37,7 +37,7 @@ export default defineComponent({
   props: {
     spacing: {
       type: String,
-      default: 'px-5 py-3',
+      default: 'px-5 py-1',
     },
     data: {
       type: Object,
@@ -53,7 +53,7 @@ export default defineComponent({
 
   computed: {
     isFolder() {
-      return this.data.subCategories && this.data.subCategories.length;
+      return this.data.children && this.data.children.length;
     },
   },
   methods: {
