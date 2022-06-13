@@ -13,7 +13,14 @@ export async function initRenderer(app: Express) {
     const vite = await import('vite');
     viteDevServer = await vite.createServer({
       root,
-      server: { middlewareMode: 'ssr' },
+      server: {
+        middlewareMode: 'ssr',
+        hmr: {
+          clientPort: 24678,
+          host: '127.0.0.1',
+          protocol: 'ws',
+        },
+      },
     });
     app.use(viteDevServer.middlewares);
   }
