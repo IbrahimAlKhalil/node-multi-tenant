@@ -14,6 +14,8 @@
       :categorySlug="primaryCategory.slug"
     />
     <post-page-meta-description-section :short_content="post.short_content" />
+    <pre>{{ post.content }}</pre>
+
     <post-description-section :content="jsonToHtml" />
     <post-reactions-section @handle-click="handleReaction" />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">

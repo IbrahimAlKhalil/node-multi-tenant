@@ -1,4 +1,7 @@
 <template>
+  <div>
+    <the-header text="This is test" />
+  </div>
   <section
     id="description"
     class="w-9/12 mx-auto text-justify text-text dark:text-light my-10"
@@ -7,11 +10,15 @@
 </template>
 
 <script lang="ts">
+import Header from '#components/editor-js-components/header.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'post-description-section',
   props: ['content'],
+  components: {
+    'the-header': Header,
+  },
   setup() {
     return {};
   },
@@ -30,6 +37,7 @@ export default defineComponent({
   line-height: 1.2;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  font-size: 3rem;
 }
 .qmm_heading_1 {
   font-size: 3rem;
