@@ -1,8 +1,5 @@
 <template>
-  <p class="font-bold tex-lg text-center uppercase">Shahara It</p>
-  <h1 class="font-bold text-5xl text-center capitalize my-8">
-    We're here to support you!
-  </h1>
+  <PageTitle title="We're here to support you!" />
   <form class="flex flex-col gap-4 w-4/5 mx-auto">
     <div class="flex justify-between gap-10">
       <InputField
@@ -72,6 +69,7 @@
 import TextAreaField from '#components/form-components/textarea-field.vue';
 import InputField from '#components/form-components/input-field.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
+import PageTitle from '#components/ui/page-title.vue';
 import * as Yup from 'yup';
 import { ref } from 'vue';
 
