@@ -1,6 +1,6 @@
 <template>
   <h1
-    class="font-bold text-2xl lg:text-5xl text-center uppercase mb-3 text-primary dark:text-secondary"
+    class="font-bold text-2xl lg:text-4xl text-center uppercase mb-2 text-primary dark:text-secondary"
     style="font-family: 'times new roman', serif"
   >
     {{ title }}
