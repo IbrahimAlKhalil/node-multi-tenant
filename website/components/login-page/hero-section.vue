@@ -4,7 +4,7 @@
     To access you dashboard
   </h2>
   <form @submit.prevent="handleSubmit">
-    <div class="w-1/2 mx-auto flex flex-col gap-3 items-center p-5">
+    <div class="w-1/2 mx-auto flex flex-col gap-2 items-center p-5">
       <InputField
         placeholder="Institute Code"
         name="code"
