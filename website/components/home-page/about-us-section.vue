@@ -1,17 +1,24 @@
 <template>
   <section id="about" class="about-us-section">
-    <div class="video-wrapper">
-      <video autoplay muted loop class="video">
+    <div class="video-wrapper min-h-[70vh] border border-red-500">
+      <video
+        autoplay
+        muted
+        loop
+        class="video w-full h-full object-cover scale-[3.7] sm:scale-[2.5]"
+      >
         <source :src="backgroundVideo" type="video/mp4" />
       </video>
     </div>
 
-    <div class="text-container py-10">
+    <div class="text-container py-2 md:py-10">
       <div
-        class="info bg-white/80 dark:bg-black/80 text-black dark:text-light w-4/5 lg:w-1/2"
+        class="info p-5 md:px-10 lg:p-14 bg-white/80 dark:bg-black/80 text-black dark:text-light w-11/12 lg:w-4/5 xl:w-1/2"
       >
-        <p class="font-bold text-md lg:text-lg">SAHARA IT</p>
-        <h2 class="font-bold text-3xl lg:text-5xl text-primary my-5">
+        <p class="hidden md:visible font-bold text-md lg:text-lg">SAHARA IT</p>
+        <h2
+          class="font-bold text-2xl md:text-3xl lg:text-5xl text-primary my-2 md:my-5"
+        >
           A short introduction about us
         </h2>
         <p class="text-xs md:text-md lg:text-lg">
@@ -22,7 +29,7 @@
           text of the printing and typesetting industry. Lorem
         </p>
         <div
-          class="actions flex flex-col md:flex-row justify-center items-center gap-5 my-10"
+          class="actions flex flex-col md:flex-row justify-center items-center gap-2 md:gap-5 my-5 lg:my-10"
         >
           <primary-btn title="VISIT SERVICES" :icon="GiftIcon" />
           <a href="/contact">
@@ -38,8 +45,8 @@
 import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import PhonePlus from '#icons/duotone/phone-plus.svg';
-import GiftIcon from '#icons/solid/gift.svg';
 import backgroundVideo from '#videos/background.mp4';
+import GiftIcon from '#icons/solid/gift.svg';
 </script>
 
 <style scoped>
@@ -49,14 +56,7 @@ import backgroundVideo from '#videos/background.mp4';
 }
 .video-wrapper {
   width: 100%;
-  min-height: 70vh;
-  max-height: 80vh;
   overflow: hidden;
-}
-.video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .text-container {
   width: 100%;
@@ -70,7 +70,6 @@ import backgroundVideo from '#videos/background.mp4';
   align-items: center;
 }
 .info {
-  padding: 25px 50px 10px;
   border-radius: 1rem;
   text-align: center;
   text-shadow: 0 0 1px;

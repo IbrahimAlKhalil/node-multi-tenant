@@ -4,11 +4,9 @@
       <!--   ============== Start Text Content =================   -->
       <div class="md:w-4/5 mb-10">
         <p class="font-bold text-xl">{{ t(subTitle) }}</p>
-        <h3
-          class="text-5xl leading-[1.5] font-bold text-primary dark:text-secondary my-3"
-        >
+        <SectionTitle>
           {{ t(title) }}
-        </h3>
+        </SectionTitle>
         <p>{{ t(description) }}</p>
       </div>
       <!--  End  Text Content   -->
@@ -27,11 +25,15 @@
 
 <script lang="ts">
 import KeyFeaturesImage from '#images/key-features.svg?url';
+import SectionTitle from '#components/ui/section-title.vue';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'features-section',
+  components: {
+    SectionTitle,
+  },
   setup() {
     const i18n = useI18n();
     return {

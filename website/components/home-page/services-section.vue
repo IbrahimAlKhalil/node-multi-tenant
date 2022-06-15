@@ -10,11 +10,9 @@
         <p class="text__subtitle font-bold">
           {{ t("homePage['services-section']['sub-title']") }}
         </p>
-        <h3
-          class="text__heading text-5xl leading-[1.5] font-bold text-primary dark:text-secondary my-5"
-        >
+        <section-title>
           {{ t("homePage['services-section']['title']") }}
-        </h3>
+        </section-title>
         <p class="text__para text-sm lg:text-justify mb-5">
           {{ t("homePage['services-section']['description']") }}
         </p>
@@ -28,12 +26,12 @@
         <li
           v-for="(item, index) in items"
           :key="item.id"
-          class="info-box__item rounded-xl px-5 pt-[60px] pb-[30px] text-center relative bg-white drop-shadow-[0_48px_100px_rgba(17,12,46,0.15)]"
+          class="info-box__item rounded-xl px-5 pt-[60px] pb-[30px] text-center relative bg-white dark:bg-dark drop-shadow-[0_48px_100px_rgba(17,12,46,0.15)]"
           data-aos="zoom-in"
           :data-aos-delay="100 * index"
         >
           <div
-            class="info-box__icon w-[100px] h-[100px] rounded-full p-5 bg-white border-primary absolute -top-[50px] left-1/2 -translate-x-1/2"
+            class="info-box__icon w-[100px] h-[100px] rounded-full p-5 bg-white border border-gray-100 absolute -top-[50px] left-1/2 -translate-x-1/2"
           >
             <img :src="item.avatar" :alt="t(item.title)" />
           </div>
@@ -61,6 +59,7 @@
 <script lang="ts">
 import SecondaryBtnVue from '#components/ui/btn/secondary-btn.vue';
 import PrimaryBtnVue from '#components/ui/btn/primary-btn.vue';
+import SectionTitle from '#components/ui/section-title.vue';
 import ArrowRight from '#icons/solid/arrow-right.svg';
 import Item1 from '#images/quran.svg?url';
 import { useI18n } from 'vue-i18n';
@@ -70,6 +69,7 @@ export default {
   components: {
     'secondary-btn': SecondaryBtnVue,
     'primary-btn': PrimaryBtnVue,
+    'section-title': SectionTitle,
   },
   setup() {
     const i18n = useI18n();

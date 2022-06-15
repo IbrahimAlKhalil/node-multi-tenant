@@ -11,12 +11,11 @@
     >
       <div class="content flex-1 text-white text-center lg:text-left">
         <h1
-          class="leading-[1.5] font-bold text-inherit mb-5"
-          style="font-size: calc(2.5rem + 1.5vw)"
+          class="leading-[1.5] font-bold text-inherit mb-5 text-4xl leading-normal"
         >
           {{ t('homePage.hero-title') }}
         </h1>
-        <p class="text-2xl text-inherit mb-5">
+        <p class="text-xl text-inherit mb-5">
           {{ t('homePage.hero-description') }}
         </p>
         <div
@@ -37,7 +36,7 @@
         </div>
       </div>
       <div
-        class="media flex-1 -order-1 mt-10 lg:mt-0 lg:order-1 w-full h-full flex justify-center lg:justify-end items-center"
+        class="media flex-1 -order-1 mt-12 lg:mt-0 lg:order-1 w-full h-full flex justify-center lg:justify-end items-center"
         data-aos="zoom-in"
         data-aos-delay="200"
         data-aos-duration="1000"
@@ -45,7 +44,7 @@
         <img
           :src="VideoImage"
           :alt="t('homePage.hero-title')"
-          class="w-3/5 lg:w-4/5"
+          class="w-3/4 md:w-3/5 lg:w-4/5"
         />
       </div>
     </div>

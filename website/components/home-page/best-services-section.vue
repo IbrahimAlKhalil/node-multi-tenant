@@ -16,9 +16,9 @@
         }"
       >
         <p class="font-bold text-lg">{{ t(item.subTitle) }}</p>
-        <h3 class="font-bold text-5xl text-primary dark:text-secondary my-5">
+        <section-title>
           {{ t(item.title) }}
-        </h3>
+        </section-title>
         <p class="text-sm">
           {{ t(item.description) }}
         </p>
@@ -43,11 +43,15 @@
 <script lang="ts">
 import BestServices2 from '#images/services-section-2.svg?url';
 import BestServices from '#images/services-section-1.svg?url';
+import SectionTitle from '#components/ui/section-title.vue';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'best-services-section',
+  components: {
+    SectionTitle,
+  },
   setup() {
     const i18n = useI18n();
     const items = [

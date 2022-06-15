@@ -6,11 +6,7 @@
     <div class="container mx-auto">
       <div class="text-content text-center md:w-1/2 mx-auto mb-10">
         <p class="sub-heading font-bold">SAHARA IT</p>
-        <h3
-          class="heading text-5xl font-bold text-primary dark:text-secondary my-5"
-        >
-          We offering some awesome plans for you
-        </h3>
+        <SectionTitle> We offering some awesome plans for you </SectionTitle>
         <p class="text-sm">
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industry's standard dummy text ever
@@ -80,6 +76,7 @@
 
 <script lang="ts">
 import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
+import SectionTitle from '#components/ui/section-title.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import Check from '#icons/solid/check-circle.svg';
 import { defineComponent } from 'vue';
@@ -89,6 +86,7 @@ export default defineComponent({
   components: {
     'secondary-btn': SecondaryBtn,
     'primary-btn': PrimaryBtn,
+    SectionTitle,
   },
   setup() {
     return {
