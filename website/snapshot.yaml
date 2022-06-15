@@ -41,7 +41,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 4
+      sort: 5
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -49,29 +49,29 @@ collections:
       comment: null
       name: comment
       schema: public
-  - collection: comment_reaction_pivot
+  - collection: comment_reaction
     meta:
       accountability: all
       archive_app_filter: true
       archive_field: null
       archive_value: null
       collapse: open
-      collection: comment_reaction_pivot
+      collection: comment_reaction
       color: null
       display_template: null
       group: comment
-      hidden: true
-      icon: import_export
+      hidden: false
+      icon: recommend
       item_duplication_fields: null
       note: null
       singleton: false
       sort: 1
-      sort_field: null
+      sort_field: sort
       translations: null
       unarchive_value: null
     schema:
       comment: null
-      name: comment_reaction_pivot
+      name: comment_reaction
       schema: public
   - collection: institute
     meta:
@@ -96,6 +96,30 @@ collections:
     schema:
       comment: null
       name: institute
+      schema: public
+  - collection: newsletter
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: newsletter
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: mark_email_read
+      item_duplication_fields: null
+      note: null
+      singleton: false
+      sort: null
+      sort_field: sort
+      translations: null
+      unarchive_value: null
+    schema:
+      comment: null
+      name: newsletter
       schema: public
   - collection: post
     meta:
@@ -173,29 +197,29 @@ collections:
       comment: null
       name: post_category_pivot
       schema: public
-  - collection: post_reaction_pivot
+  - collection: post_reaction
     meta:
       accountability: all
       archive_app_filter: true
       archive_field: null
       archive_value: null
       collapse: open
-      collection: post_reaction_pivot
+      collection: post_reaction
       color: null
       display_template: null
       group: post
-      hidden: true
-      icon: import_export
+      hidden: false
+      icon: stream
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 3
-      sort_field: null
+      sort: 5
+      sort_field: sort
       translations: null
       unarchive_value: null
     schema:
       comment: null
-      name: post_reaction_pivot
+      name: post_reaction
       schema: public
   - collection: post_tag_pivot
     meta:
@@ -213,7 +237,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 5
+      sort: 3
       sort_field: null
       translations: null
       unarchive_value: null
@@ -261,7 +285,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 6
+      sort: 7
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -351,14 +375,14 @@ collections:
       collection: reaction
       color: null
       display_template: null
-      group: post
+      group: null
       hidden: false
       icon: add_reaction
       item_duplication_fields: null
       note: null
       singleton: false
       sort: 4
-      sort_field: sort
+      sort_field: null
       translations: null
       unarchive_value: null
     schema:
@@ -381,7 +405,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 6
+      sort: 4
       sort_field: sort
       translations: null
       unarchive_value: null
@@ -405,7 +429,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 5
+      sort: 6
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -425,7 +449,7 @@ collections:
       display_template: null
       group: tutorial
       hidden: false
-      icon: list_alt
+      icon: donut_small
       item_duplication_fields: null
       note: null
       singleton: false
@@ -980,30 +1004,6 @@ fields:
       table: comment
     type: integer
   - collection: comment
-    field: reactions
-    meta:
-      collection: comment
-      conditions: null
-      display: related-values
-      display_options: null
-      field: reactions
-      group: null
-      hidden: false
-      interface: list-m2m
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: 10
-      special:
-        - m2m
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema: null
-    type: alias
-  - collection: comment
     field: sort
     meta:
       collection: comment
@@ -1234,23 +1234,25 @@ fields:
       schema: public
       table: comment
     type: uuid
-  - collection: comment_reaction_pivot
-    field: comment_id
+  - collection: comment_reaction
+    field: comment
     meta:
-      collection: comment_reaction_pivot
+      collection: comment_reaction
       conditions: null
-      display: null
+      display: related-values
       display_options: null
-      field: comment_id
+      field: comment
       group: null
-      hidden: true
-      interface: null
+      hidden: false
+      interface: select-dropdown-m2o
       note: null
-      options: null
+      options:
+        template: '{{content}}'
       readonly: false
-      required: false
-      sort: null
-      special: null
+      required: true
+      sort: 6
+      special:
+        - m2o
       translations: null
       validation: null
       validation_message: null
@@ -1269,28 +1271,71 @@ fields:
       is_primary_key: false
       is_unique: false
       max_length: null
-      name: comment_id
+      name: comment
       numeric_precision: 32
       numeric_scale: 0
       schema: public
-      table: comment_reaction_pivot
+      table: comment_reaction
     type: integer
-  - collection: comment_reaction_pivot
+  - collection: comment_reaction
+    field: date_created
+    meta:
+      collection: comment_reaction
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_created
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 4
+      special:
+        - date-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: timestamp with time zone
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: date_created
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: comment_reaction
+    type: timestamp
+  - collection: comment_reaction
     field: id
     meta:
-      collection: comment_reaction_pivot
+      collection: comment_reaction
       conditions: null
       display: null
       display_options: null
       field: id
       group: null
       hidden: true
-      interface: null
+      interface: input
       note: null
       options: null
-      readonly: false
+      readonly: true
       required: false
-      sort: null
+      sort: 1
       special: null
       translations: null
       validation: null
@@ -1299,7 +1344,7 @@ fields:
     schema:
       comment: null
       data_type: integer
-      default_value: nextval('comment_reaction_pivot_id_seq'::regclass)
+      default_value: nextval('comment_reaction_id_seq'::regclass)
       foreign_key_column: null
       foreign_key_schema: null
       foreign_key_table: null
@@ -1314,25 +1359,27 @@ fields:
       numeric_precision: 32
       numeric_scale: 0
       schema: public
-      table: comment_reaction_pivot
+      table: comment_reaction
     type: integer
-  - collection: comment_reaction_pivot
-    field: reaction_id
+  - collection: comment_reaction
+    field: reaction
     meta:
-      collection: comment_reaction_pivot
+      collection: comment_reaction
       conditions: null
-      display: null
+      display: related-values
       display_options: null
-      field: reaction_id
+      field: reaction
       group: null
-      hidden: true
-      interface: null
+      hidden: false
+      interface: select-dropdown-m2o
       note: null
-      options: null
+      options:
+        template: '{{type}}'
       readonly: false
-      required: false
-      sort: null
-      special: null
+      required: true
+      sort: 5
+      special:
+        - m2o
       translations: null
       validation: null
       validation_message: null
@@ -1351,29 +1398,28 @@ fields:
       is_primary_key: false
       is_unique: false
       max_length: null
-      name: reaction_id
+      name: reaction
       numeric_precision: 32
       numeric_scale: 0
       schema: public
-      table: comment_reaction_pivot
+      table: comment_reaction
     type: integer
-  - collection: comment_reaction_pivot
-    field: user
+  - collection: comment_reaction
+    field: sort
     meta:
-      collection: comment_reaction_pivot
+      collection: comment_reaction
       conditions: null
       display: null
       display_options: null
-      field: user
+      field: sort
       group: null
-      hidden: false
+      hidden: true
       interface: input
       note: null
-      options:
-        placeholder: User Id
+      options: null
       readonly: false
-      required: true
-      sort: null
+      required: false
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -1381,7 +1427,7 @@ fields:
       width: full
     schema:
       comment: null
-      data_type: character varying
+      data_type: integer
       default_value: null
       foreign_key_column: null
       foreign_key_schema: null
@@ -1392,13 +1438,56 @@ fields:
       is_nullable: true
       is_primary_key: false
       is_unique: false
-      max_length: 255
-      name: user
+      max_length: null
+      name: sort
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: comment_reaction
+    type: integer
+  - collection: comment_reaction
+    field: user_created
+    meta:
+      collection: comment_reaction
+      conditions: null
+      display: user
+      display_options: null
+      field: user_created
+      group: null
+      hidden: true
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+      readonly: true
+      required: false
+      sort: 3
+      special:
+        - user-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: uuid
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: directus_users
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: user_created
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: comment_reaction_pivot
-    type: string
+      table: comment_reaction
+    type: uuid
   - collection: directus_dashboards
     field: color
     meta: null
@@ -1867,6 +1956,300 @@ fields:
       schema: public
       table: institute
     type: text
+  - collection: newsletter
+    field: email
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: email
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Enter your email
+        trim: true
+      readonly: false
+      required: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: false
+      is_primary_key: false
+      is_unique: true
+      max_length: 255
+      name: email
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: newsletter
+    type: string
+  - collection: newsletter
+    field: first_name
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: first_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Enter your first name
+      readonly: false
+      required: false
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: first_name
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: newsletter
+    type: string
+  - collection: newsletter
+    field: id
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: nextval('newsletter_id_seq'::regclass)
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: true
+      is_generated: false
+      is_nullable: false
+      is_primary_key: true
+      is_unique: true
+      max_length: null
+      name: id
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: newsletter
+    type: integer
+  - collection: newsletter
+    field: is_blocked
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: is_blocked
+      group: null
+      hidden: false
+      interface: boolean
+      note: null
+      options:
+        label: Block
+      readonly: false
+      required: true
+      sort: 7
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: boolean
+      default_value: false
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: is_blocked
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: newsletter
+    type: boolean
+  - collection: newsletter
+    field: is_unsubscribe
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: is_unsubscribe
+      group: null
+      hidden: false
+      interface: boolean
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 6
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: boolean
+      default_value: false
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: is_unsubscribe
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: newsletter
+    type: boolean
+  - collection: newsletter
+    field: last_name
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: last_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Enter your last name
+      readonly: false
+      required: false
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: last_name
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: newsletter
+    type: string
+  - collection: newsletter
+    field: sort
+    meta:
+      collection: newsletter
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: sort
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: newsletter
+    type: integer
   - collection: post
     field: categories
     meta:
@@ -2174,6 +2557,30 @@ fields:
       table: post
     type: boolean
   - collection: post
+    field: posts
+    meta:
+      collection: post
+      conditions: null
+      display: null
+      display_options: null
+      field: posts
+      group: null
+      hidden: false
+      interface: list-o2m
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special:
+        - o2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema: null
+    type: alias
+  - collection: post
     field: primary_category
     meta:
       collection: post
@@ -2218,31 +2625,6 @@ fields:
       schema: public
       table: post
     type: integer
-  - collection: post
-    field: reactions
-    meta:
-      collection: post
-      conditions: null
-      display: related-values
-      display_options: null
-      field: reactions
-      group: null
-      hidden: false
-      interface: list-m2m
-      note: null
-      options:
-        template: '{{reaction_id.Type}}'
-      readonly: false
-      required: false
-      sort: 15
-      special:
-        - m2m
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema: null
-    type: alias
   - collection: post
     field: short_content
     meta:
@@ -3235,22 +3617,65 @@ fields:
       schema: public
       table: post_category_pivot
     type: integer
-  - collection: post_reaction_pivot
+  - collection: post_reaction
+    field: date_created
+    meta:
+      collection: post_reaction
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_created
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 4
+      special:
+        - date-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: timestamp with time zone
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: date_created
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: post_reaction
+    type: timestamp
+  - collection: post_reaction
     field: id
     meta:
-      collection: post_reaction_pivot
+      collection: post_reaction
       conditions: null
       display: null
       display_options: null
       field: id
       group: null
       hidden: true
-      interface: null
+      interface: input
       note: null
       options: null
-      readonly: false
+      readonly: true
       required: false
-      sort: null
+      sort: 1
       special: null
       translations: null
       validation: null
@@ -3259,7 +3684,7 @@ fields:
     schema:
       comment: null
       data_type: integer
-      default_value: nextval('post_reaction_pivot_id_seq'::regclass)
+      default_value: nextval('post_reaction_id_seq'::regclass)
       foreign_key_column: null
       foreign_key_schema: null
       foreign_key_table: null
@@ -3274,25 +3699,27 @@ fields:
       numeric_precision: 32
       numeric_scale: 0
       schema: public
-      table: post_reaction_pivot
+      table: post_reaction
     type: integer
-  - collection: post_reaction_pivot
-    field: post_id
+  - collection: post_reaction
+    field: post
     meta:
-      collection: post_reaction_pivot
+      collection: post_reaction
       conditions: null
-      display: null
+      display: related-values
       display_options: null
-      field: post_id
+      field: post
       group: null
-      hidden: true
-      interface: null
+      hidden: false
+      interface: select-dropdown-m2o
       note: null
-      options: null
+      options:
+        template: '{{title}}'
       readonly: false
-      required: false
-      sort: null
-      special: null
+      required: true
+      sort: 6
+      special:
+        - m2o
       translations: null
       validation: null
       validation_message: null
@@ -3311,29 +3738,31 @@ fields:
       is_primary_key: false
       is_unique: false
       max_length: null
-      name: post_id
+      name: post
       numeric_precision: 32
       numeric_scale: 0
       schema: public
-      table: post_reaction_pivot
+      table: post_reaction
     type: integer
-  - collection: post_reaction_pivot
-    field: reaction_id
+  - collection: post_reaction
+    field: reaction
     meta:
-      collection: post_reaction_pivot
+      collection: post_reaction
       conditions: null
-      display: null
+      display: related-values
       display_options: null
-      field: reaction_id
+      field: reaction
       group: null
-      hidden: true
-      interface: null
+      hidden: false
+      interface: select-dropdown-m2o
       note: null
-      options: null
+      options:
+        template: '{{type}}'
       readonly: false
-      required: false
-      sort: null
-      special: null
+      required: true
+      sort: 5
+      special:
+        - m2o
       translations: null
       validation: null
       validation_message: null
@@ -3352,28 +3781,28 @@ fields:
       is_primary_key: false
       is_unique: false
       max_length: null
-      name: reaction_id
+      name: reaction
       numeric_precision: 32
       numeric_scale: 0
       schema: public
-      table: post_reaction_pivot
+      table: post_reaction
     type: integer
-  - collection: post_reaction_pivot
-    field: user_id
+  - collection: post_reaction
+    field: sort
     meta:
-      collection: post_reaction_pivot
+      collection: post_reaction
       conditions: null
       display: null
       display_options: null
-      field: user_id
+      field: sort
       group: null
       hidden: true
       interface: input
       note: null
       options: null
-      readonly: true
-      required: true
-      sort: null
+      readonly: false
+      required: false
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -3381,7 +3810,7 @@ fields:
       width: full
     schema:
       comment: null
-      data_type: character varying
+      data_type: integer
       default_value: null
       foreign_key_column: null
       foreign_key_schema: null
@@ -3392,13 +3821,56 @@ fields:
       is_nullable: true
       is_primary_key: false
       is_unique: false
-      max_length: 255
-      name: user_id
+      max_length: null
+      name: sort
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: post_reaction
+    type: integer
+  - collection: post_reaction
+    field: user_created
+    meta:
+      collection: post_reaction
+      conditions: null
+      display: user
+      display_options: null
+      field: user_created
+      group: null
+      hidden: true
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+      readonly: true
+      required: false
+      sort: 3
+      special:
+        - user-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: uuid
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: directus_users
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: user_created
       numeric_precision: null
       numeric_scale: null
       schema: public
-      table: post_reaction_pivot
-    type: string
+      table: post_reaction
+    type: uuid
   - collection: post_tag_pivot
     field: id
     meta:
@@ -5036,200 +5508,6 @@ fields:
       table: question_priority_pivot
     type: integer
   - collection: reaction
-    field: Type
-    meta:
-      collection: reaction
-      conditions: null
-      display: null
-      display_options: null
-      field: Type
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        placeholder: Reaction Type Here
-      readonly: false
-      required: true
-      sort: 5
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: character varying
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: 255
-      name: Type
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: reaction
-    type: string
-  - collection: reaction
-    field: Value
-    meta:
-      collection: reaction
-      conditions: null
-      display: null
-      display_options: null
-      field: Value
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options:
-        placeholder: Reaction Value
-      readonly: false
-      required: true
-      sort: 6
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: character varying
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: 255
-      name: Value
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: reaction
-    type: string
-  - collection: reaction
-    field: comments
-    meta:
-      collection: reaction
-      conditions: null
-      display: null
-      display_options: null
-      field: comments
-      group: null
-      hidden: false
-      interface: list-m2m
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: 8
-      special:
-        - m2m
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema: null
-    type: alias
-  - collection: reaction
-    field: date_created
-    meta:
-      collection: reaction
-      conditions: null
-      display: datetime
-      display_options:
-        relative: true
-      field: date_created
-      group: null
-      hidden: true
-      interface: datetime
-      note: null
-      options: null
-      readonly: true
-      required: false
-      sort: 3
-      special:
-        - date-created
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      comment: null
-      data_type: timestamp with time zone
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: date_created
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: reaction
-    type: timestamp
-  - collection: reaction
-    field: date_updated
-    meta:
-      collection: reaction
-      conditions: null
-      display: datetime
-      display_options:
-        relative: true
-      field: date_updated
-      group: null
-      hidden: true
-      interface: datetime
-      note: null
-      options: null
-      readonly: true
-      required: false
-      sort: 4
-      special:
-        - date-updated
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      comment: null
-      data_type: timestamp with time zone
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: date_updated
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: reaction
-    type: timestamp
-  - collection: reaction
     field: id
     meta:
       collection: reaction
@@ -5271,45 +5549,22 @@ fields:
       table: reaction
     type: integer
   - collection: reaction
-    field: posts
+    field: type
     meta:
       collection: reaction
       conditions: null
       display: null
       display_options: null
-      field: posts
+      field: type
       group: null
       hidden: false
-      interface: list-m2m
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: 7
-      special:
-        - m2m
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema: null
-    type: alias
-  - collection: reaction
-    field: sort
-    meta:
-      collection: reaction
-      conditions: null
-      display: null
-      display_options: null
-      field: sort
-      group: null
-      hidden: true
       interface: input
       note: null
-      options: null
+      options:
+        placeholder: Reaction Type
       readonly: false
-      required: false
-      sort: 2
+      required: true
+      sort: 5
       special: null
       translations: null
       validation: null
@@ -5317,7 +5572,7 @@ fields:
       width: full
     schema:
       comment: null
-      data_type: integer
+      data_type: character varying
       default_value: null
       foreign_key_column: null
       foreign_key_schema: null
@@ -5328,13 +5583,55 @@ fields:
       is_nullable: true
       is_primary_key: false
       is_unique: false
-      max_length: null
-      name: sort
-      numeric_precision: 32
-      numeric_scale: 0
+      max_length: 255
+      name: type
+      numeric_precision: null
+      numeric_scale: null
       schema: public
       table: reaction
-    type: integer
+    type: string
+  - collection: reaction
+    field: value
+    meta:
+      collection: reaction
+      conditions: null
+      display: null
+      display_options: null
+      field: value
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Reaction Value
+      readonly: false
+      required: true
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: value
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: reaction
+    type: string
   - collection: tag
     field: date_created
     meta:
@@ -5584,7 +5881,7 @@ fields:
       options: null
       readonly: false
       required: true
-      sort: 11
+      sort: null
       special:
         - m2m
       translations: null
@@ -5758,6 +6055,49 @@ fields:
       is_unique: true
       max_length: null
       name: id
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: tutorial
+    type: integer
+  - collection: tutorial
+    field: primary
+    meta:
+      collection: tutorial
+      conditions: null
+      display: related-values
+      display_options: null
+      field: primary
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{name}}'
+      readonly: false
+      required: false
+      sort: null
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: tutorial_category
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: primary
       numeric_precision: 32
       numeric_scale: 0
       schema: public
@@ -6041,13 +6381,13 @@ fields:
       table: tutorial
     type: uuid
   - collection: tutorial_category
-    field: categoreis
+    field: children
     meta:
       collection: tutorial_category
       conditions: null
       display: null
       display_options: null
-      field: categoreis
+      field: children
       group: null
       hidden: false
       interface: list-o2m
@@ -6055,7 +6395,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 11
+      sort: null
       special:
         - o2m
       translations: null
@@ -6080,7 +6420,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 5
+      sort: null
       special:
         - date-created
       translations: null
@@ -6108,49 +6448,6 @@ fields:
       table: tutorial_category
     type: timestamp
   - collection: tutorial_category
-    field: date_updated
-    meta:
-      collection: tutorial_category
-      conditions: null
-      display: datetime
-      display_options:
-        relative: true
-      field: date_updated
-      group: null
-      hidden: true
-      interface: datetime
-      note: null
-      options: null
-      readonly: true
-      required: false
-      sort: 7
-      special:
-        - date-updated
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      comment: null
-      data_type: timestamp with time zone
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: date_updated
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: tutorial_category
-    type: timestamp
-  - collection: tutorial_category
     field: id
     meta:
       collection: tutorial_category
@@ -6165,7 +6462,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 1
+      sort: null
       special: null
       translations: null
       validation: null
@@ -6204,10 +6501,10 @@ fields:
       interface: input
       note: null
       options:
-        placeholder: Tutorial Category
+        placeholder: Tutorial Category Name
       readonly: false
-      required: false
-      sort: 8
+      required: true
+      sort: null
       special: null
       translations: null
       validation: null
@@ -6249,7 +6546,7 @@ fields:
         template: '{{name}}'
       readonly: false
       required: false
-      sort: 10
+      sort: null
       special:
         - m2o
       translations: null
@@ -6289,14 +6586,14 @@ fields:
       interface: extension-wpslug
       note: null
       options:
-        placeholder: tutorial-slug-url
+        placeholder: tutorial-category-slug
         template: '{{name}}'
         update:
           - create
           - update
       readonly: false
       required: true
-      sort: 9
+      sort: null
       special: null
       translations: null
       validation: null
@@ -6337,7 +6634,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 3
+      sort: null
       special: null
       translations: null
       validation: null
@@ -6399,7 +6696,7 @@ fields:
             value: archived
       readonly: false
       required: false
-      sort: 2
+      sort: null
       special: null
       translations: null
       validation: null
@@ -6440,7 +6737,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 12
+      sort: null
       special:
         - m2m
       translations: null
@@ -6465,7 +6762,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 4
+      sort: null
       special:
         - user-created
       translations: null
@@ -6487,49 +6784,6 @@ fields:
       is_unique: false
       max_length: null
       name: user_created
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: tutorial_category
-    type: uuid
-  - collection: tutorial_category
-    field: user_updated
-    meta:
-      collection: tutorial_category
-      conditions: null
-      display: user
-      display_options: null
-      field: user_updated
-      group: null
-      hidden: true
-      interface: select-dropdown-m2o
-      note: null
-      options:
-        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
-      readonly: true
-      required: false
-      sort: 6
-      special:
-        - user-updated
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      comment: null
-      data_type: uuid
-      default_value: null
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: user_updated
       numeric_precision: null
       numeric_scale: null
       schema: public
@@ -6747,50 +7001,72 @@ relations:
       on_delete: NO ACTION
       on_update: NO ACTION
       table: comment
-  - collection: comment_reaction_pivot
-    field: comment_id
+  - collection: comment_reaction
+    field: comment
     meta:
-      junction_field: reaction_id
-      many_collection: comment_reaction_pivot
-      many_field: comment_id
+      junction_field: null
+      many_collection: comment_reaction
+      many_field: comment
       one_allowed_collections: null
       one_collection: comment
       one_collection_field: null
-      one_deselect_action: delete
-      one_field: reactions
+      one_deselect_action: nullify
+      one_field: comments
       sort_field: null
     related_collection: comment
     schema:
-      column: comment_id
-      constraint_name: comment_reaction_pivot_comment_id_foreign
+      column: comment
+      constraint_name: comment_reaction_comment_foreign
       foreign_key_column: id
       foreign_key_schema: public
       foreign_key_table: comment
       on_delete: CASCADE
       on_update: NO ACTION
-      table: comment_reaction_pivot
-  - collection: comment_reaction_pivot
-    field: reaction_id
+      table: comment_reaction
+  - collection: comment_reaction
+    field: reaction
     meta:
-      junction_field: comment_id
-      many_collection: comment_reaction_pivot
-      many_field: reaction_id
+      junction_field: null
+      many_collection: comment_reaction
+      many_field: reaction
       one_allowed_collections: null
       one_collection: reaction
       one_collection_field: null
       one_deselect_action: nullify
-      one_field: comments
+      one_field: null
       sort_field: null
     related_collection: reaction
     schema:
-      column: reaction_id
-      constraint_name: comment_reaction_pivot_reaction_id_foreign
+      column: reaction
+      constraint_name: comment_reaction_reaction_foreign
       foreign_key_column: id
       foreign_key_schema: public
       foreign_key_table: reaction
-      on_delete: CASCADE
+      on_delete: SET NULL
       on_update: NO ACTION
-      table: comment_reaction_pivot
+      table: comment_reaction
+  - collection: comment_reaction
+    field: user_created
+    meta:
+      junction_field: null
+      many_collection: comment_reaction
+      many_field: user_created
+      one_allowed_collections: null
+      one_collection: directus_users
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    related_collection: directus_users
+    schema:
+      column: user_created
+      constraint_name: comment_reaction_user_created_foreign
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: directus_users
+      on_delete: NO ACTION
+      on_update: NO ACTION
+      table: comment_reaction
   - collection: institute
     field: cluster
     meta:
@@ -7011,50 +7287,72 @@ relations:
       on_delete: CASCADE
       on_update: NO ACTION
       table: post_category_pivot
-  - collection: post_reaction_pivot
-    field: post_id
+  - collection: post_reaction
+    field: post
     meta:
-      junction_field: reaction_id
-      many_collection: post_reaction_pivot
-      many_field: post_id
+      junction_field: null
+      many_collection: post_reaction
+      many_field: post
       one_allowed_collections: null
       one_collection: post
       one_collection_field: null
-      one_deselect_action: delete
-      one_field: reactions
+      one_deselect_action: nullify
+      one_field: posts
       sort_field: null
     related_collection: post
     schema:
-      column: post_id
-      constraint_name: post_reaction_pivot_post_id_foreign
+      column: post
+      constraint_name: post_reaction_post_foreign
       foreign_key_column: id
       foreign_key_schema: public
       foreign_key_table: post
       on_delete: CASCADE
       on_update: NO ACTION
-      table: post_reaction_pivot
-  - collection: post_reaction_pivot
-    field: reaction_id
+      table: post_reaction
+  - collection: post_reaction
+    field: reaction
     meta:
-      junction_field: post_id
-      many_collection: post_reaction_pivot
-      many_field: reaction_id
+      junction_field: null
+      many_collection: post_reaction
+      many_field: reaction
       one_allowed_collections: null
       one_collection: reaction
       one_collection_field: null
       one_deselect_action: nullify
-      one_field: posts
+      one_field: null
       sort_field: null
     related_collection: reaction
     schema:
-      column: reaction_id
-      constraint_name: post_reaction_pivot_reaction_id_foreign
+      column: reaction
+      constraint_name: post_reaction_reaction_foreign
       foreign_key_column: id
       foreign_key_schema: public
       foreign_key_table: reaction
       on_delete: CASCADE
       on_update: NO ACTION
-      table: post_reaction_pivot
+      table: post_reaction
+  - collection: post_reaction
+    field: user_created
+    meta:
+      junction_field: null
+      many_collection: post_reaction
+      many_field: user_created
+      one_allowed_collections: null
+      one_collection: directus_users
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    related_collection: directus_users
+    schema:
+      column: user_created
+      constraint_name: post_reaction_user_created_foreign
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: directus_users
+      on_delete: NO ACTION
+      on_update: NO ACTION
+      table: post_reaction
   - collection: post_tag_pivot
     field: post_id
     meta:
@@ -7254,6 +7552,28 @@ relations:
       on_update: NO ACTION
       table: question_priority_pivot
   - collection: tutorial
+    field: primary
+    meta:
+      junction_field: null
+      many_collection: tutorial
+      many_field: primary
+      one_allowed_collections: null
+      one_collection: tutorial_category
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    related_collection: tutorial_category
+    schema:
+      column: primary
+      constraint_name: tutorial_primary_foreign
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: tutorial_category
+      on_delete: CASCADE
+      on_update: NO ACTION
+      table: tutorial
+  - collection: tutorial
     field: user_created
     meta:
       junction_field: null
@@ -7307,7 +7627,7 @@ relations:
       one_collection: tutorial_category
       one_collection_field: null
       one_deselect_action: nullify
-      one_field: categoreis
+      one_field: children
       sort_field: null
     related_collection: tutorial_category
     schema:
@@ -7335,28 +7655,6 @@ relations:
     schema:
       column: user_created
       constraint_name: tutorial_category_user_created_foreign
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      on_delete: NO ACTION
-      on_update: NO ACTION
-      table: tutorial_category
-  - collection: tutorial_category
-    field: user_updated
-    meta:
-      junction_field: null
-      many_collection: tutorial_category
-      many_field: user_updated
-      one_allowed_collections: null
-      one_collection: directus_users
-      one_collection_field: null
-      one_deselect_action: nullify
-      one_field: null
-      sort_field: null
-    related_collection: directus_users
-    schema:
-      column: user_updated
-      constraint_name: tutorial_category_user_updated_foreign
       foreign_key_column: id
       foreign_key_schema: public
       foreign_key_table: directus_users
