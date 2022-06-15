@@ -2,7 +2,7 @@
   <layout-main>
     <div class="h-screen flex" style="margin-top: var(--header-height)">
       <div
-        class="w-max h-full bg-gray-200 dark:bg-dark text-text dark:text-light overflow-y-auto rt-scrollbar"
+        class="hidden md:block w-max h-full bg-gray-200 dark:bg-dark text-text dark:text-light overflow-y-auto rt-scrollbar"
       >
         <slot name="left-sidebar" />
       </div>
@@ -13,7 +13,7 @@
         <slot name="main" />
       </div>
       <div
-        class="h-full bg-blue-50 dark:bg-dark text-text dark:text-light"
+        class="hidden md:block h-full bg-blue-50 dark:bg-dark text-text dark:text-light"
         style="min-width: 250px"
       >
         <slot name="right-sidebar" />
