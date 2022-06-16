@@ -12,26 +12,12 @@
       :commentContent="comment.content"
       :reactions="reactions"
     />
-    <!-- <div
-      class="pl-10 py-3 border-l-2 border-l-gray-200 dark:border-l-black bg-gray-50 dark:bg-dark"
-    >
-      <single-comment
-        v-for="reply in comment.replies"
-        :key="reply.id"
-        :handle-reply="handleReply"
-        :authorName="reply.author.name"
-        :publishedDate="reply.createdAt"
-        :avatar="reply.author.avatar"
-        :commentContent="reply.content"
-        :reactions="reply.reactions"
-      />
-    </div> -->
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import SingleComment from '#components/post-page/comment-section/single-comment.vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'comment-group',

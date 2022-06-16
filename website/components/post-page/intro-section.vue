@@ -12,14 +12,16 @@
         {{ author?.last_name || '' }}
       </span>
     </p>
-    <div class="flex justify-between items-center">
+    <div class="flex flex-col md:flex-row justify-between items-center">
       <p class="text-gray-500 dark:text-inherit">
         <span class="font-bold">Published at: </span>
         <span>
           {{ date }}
         </span>
       </p>
-      <p class="text-gray-500 dark:text-inherit flex items-center gap-1">
+      <p
+        class="text-gray-500 dark:text-inherit flex items-center gap-1 pt-5 md:pt-0"
+      >
         <a href="/">
           <component :is="HomeIcon" class="px-1 hover:text-primary"></component>
         </a>
@@ -40,8 +42,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import HomeIcon from '#icons/solid/home-alt.svg';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'post-intro-section',
