@@ -5,7 +5,7 @@
       style="margin-top: calc(var(--header-height) + 50px)"
     >
       <div
-        class="bg-white/80 dark:bg-black/60 w-4/5 mx-auto h-full p-8 rounded-xl text-text dark:text-light shadow-lg"
+        class="bg-white/80 dark:bg-black/60 w-4/5 mx-auto h-full py-5 md:p-8 rounded-xl text-text dark:text-light shadow-lg"
       >
         <slot></slot>
       </div>
