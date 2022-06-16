@@ -2,7 +2,7 @@
   <TutorialPage>
     <template #left-sidebar>
       <h1
-        class="font-bold text-xl text-center text-primary border-b border-b-gray-300 p-5 uppercase"
+        class="font-bold text-xl text-center text-secondary md:text-primary border-b border-b-gray-300 p-5 uppercase"
       >
         Software Tutorial
       </h1>

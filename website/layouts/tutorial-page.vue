@@ -1,13 +1,13 @@
 <template>
   <layout-main>
-    <div class="h-screen flex" style="margin-top: var(--header-height)">
+    <div class="md:h-screen flex" style="margin-top: var(--header-height)">
       <div
         class="hidden md:block w-max h-full bg-gray-200 dark:bg-dark text-text dark:text-light overflow-y-auto rt-scrollbar"
       >
         <slot name="left-sidebar" />
       </div>
       <div
-        class="h-full max-w-full overflow-y-auto pr-5 scrollbar text-text dark:text-light"
+        class="h-full md:max-w-full md:overflow-y-auto pr-5 scrollbar text-text dark:text-light"
         style="flex: 2; scrollbar-width: 0"
       >
         <slot name="main" />
@@ -19,21 +19,50 @@
         <slot name="right-sidebar" />
       </div>
     </div>
+    <div
+      v-show="isExpanded"
+      class="md:hidden fixed top-0 left-0 w-full h-full bg-black/80 text-white text-xl"
+      style="margin-top: var(--header-height)"
+    >
+      <slot name="left-sidebar" />
+    </div>
+    <div
+      class="md:hidden fixed bottom-5 right-3 w-12 h-12 rounded-full transition-all duration-300 ease-out text-xl text-white flex justify-center items-center cursor-pointer"
+      :class="{
+        'bg-primary hover:bg-primary-dark': !isExpanded,
+        'bg-secondary hover:bg-secondary-dark': isExpanded,
+      }"
+      @click="isExpanded = !isExpanded"
+    >
+      <component
+        :is="Close"
+        class="text-3xl"
+        style="bottom: 0"
+        v-if="isExpanded"
+      ></component>
+      <component :is="LineHeight" style="bottom: 0" v-else></component>
+    </div>
   </layout-main>
 </template>
 
 <script lang="ts">
+import LineHeight from '#icons/solid/line-height.svg';
+import Close from '#icons/solid/times.svg';
 import LayoutMain from '#layouts/main.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'tutorial-page',
   components: {
     LayoutMain,
   },
-
   setup() {
-    return {};
+    const isExpanded = ref(false);
+    return {
+      isExpanded,
+      LineHeight,
+      Close,
+    };
   },
 });
 </script>

@@ -8,11 +8,11 @@
         <h2 class="font-bold text-xl lg:text-3xl text-center uppercase">
           Ask a Question
         </h2>
-        <p class="text-center mb-5 mt-3 w-1/2 mx-auto">
+        <p class="hidden md:block text-center mb-5 mt-3 w-1/2 mx-auto">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique
           nihil nam inventore porro eos voluptas.
         </p>
-        <div class="search-box my-2 w-1/2 mx-auto relative">
+        <div class="search-box my-2 md:w-1/2 mx-auto relative">
           <input
             type="text"
             :value="search"
@@ -37,7 +37,9 @@
             ></div>
           </div>
           <div class="blogs flex justify-between flex-wrap gap-8">
-            <ul class="grid grid-cols-3 gap-2 w-full list-disc text-lg">
+            <ul
+              class="grid grid-cols-2 md:grid-cols-3 gap-2 w-full list-disc text-lg"
+            >
               <li>Question 01</li>
               <li>Question 02</li>
               <li>Question 03</li>
