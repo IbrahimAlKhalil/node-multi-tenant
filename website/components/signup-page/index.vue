@@ -3,7 +3,7 @@
   <h2 class="text-lg text-center text-gray-400 lowercase">
     To access you dashboard
   </h2>
-  <div class="flex items-center justify-center gap-20 py-5">
+  <div class="flex items-center justify-center gap-5 md:gap-20 py-5">
     <div
       class="email font-bold cursor-pointer before:text-white"
       :class="[
@@ -26,7 +26,7 @@
     </div>
   </div>
   <form @submit.prevent="handleEmailSubmit" v-show="selectedTab === 'email'">
-    <div class="w-1/2 mx-auto flex flex-col gap-5 items-center p-5 my-5">
+    <div class="md:w-1/2 mx-auto flex flex-col gap-5 items-center p-5 md:my-5">
       <InputField
         name="username"
         type="text"
@@ -49,7 +49,7 @@
     @submit.prevent="handleCompanySubmit"
     v-show="selectedTab === 'company'"
   >
-    <div class="w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
+    <div class="md:w-1/2 mx-auto flex flex-col items-center gap-8 p-5 md:my-5">
       <SelectInput
         color="primary"
         label="Languages"
@@ -157,7 +157,8 @@
   </form>
   <p class="text-center italic">
     Already have an account?
-    <a href="/login" class="font-bold text-primary` dark:text-secondary"
+    <br />
+    <a href="/login" class="font-bold text-primary dark:text-secondary"
       >Login here</a
     >
   </p>
