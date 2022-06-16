@@ -3,7 +3,9 @@
   <h2 class="text-lg text-center text-gray-400 lowercase">
     To login dashboard
   </h2>
-  <div class="flex items-center justify-center gap-20 py-5">
+  <div
+    class="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-20 py-5"
+  >
     <div
       class="email font-bold cursor-pointer before:text-white"
       :class="[
@@ -26,7 +28,7 @@
     </div>
   </div>
   <form @submit.prevent="handleEmailSubmit" v-show="selectedTab === 'email'">
-    <div class="w-1/2 mx-auto flex flex-col gap-5 items-center p-5 my-5">
+    <div class="md:w-1/2 mx-auto flex flex-col gap-5 items-center p-5 md:my-5">
       <InputField
         name="username"
         type="text"
@@ -61,7 +63,7 @@
     @submit.prevent="handleCompanySubmit"
     v-show="selectedTab === 'company'"
   >
-    <div class="w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
+    <div class="md:w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
       <SelectInput
         label="Languages"
         :options="[
@@ -162,7 +164,7 @@
       <input
         type="submit"
         value="Update"
-        class="px-5 py-2 bg-secondary hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
+        class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
   </form>
