@@ -1,7 +1,7 @@
 <template>
   <header
     class="fixed top-0 w-full z-[99999] transition duration-300 ease-in-out b"
-    :class="{ 'bg-white dark:bg-dark shadow-md': isSticky }"
+    :class="{ 'bg-white dark:bg-black shadow-md': isSticky }"
     style="height: var(--header-height)"
   >
     <div
