@@ -212,9 +212,9 @@ export class AuthController {
 
     res.writeHeader(
       'Set-Cookie',
-      `${
-        this.config.auth.cookieKey
-      }=${token}; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
+      `${this.config.auth.cookieKey}=${token}; Domain=${
+        this.config.app.websiteHost
+      }; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
         expiresAt.getTime() / 1000,
       )}`,
     );
