@@ -21,13 +21,13 @@
     </div>
     <div
       v-show="isExpanded"
-      class="md:hidden fixed top-0 left-0 w-full h-full bg-black/80 text-white text-xl"
+      class="md:hidden fixed top-0 left-0 w-full h-full bg-black/80 text-white text-lg"
       style="margin-top: var(--header-height)"
     >
       <slot name="left-sidebar" />
     </div>
     <div
-      class="md:hidden fixed bottom-5 right-3 w-12 h-12 rounded-full transition-all duration-300 ease-out text-xl text-white flex justify-center items-center cursor-pointer"
+      class="md:hidden fixed bottom-10 right-3 w-12 h-12 rounded-full transition-all duration-300 ease-out text-xl text-white flex justify-center items-center cursor-pointer"
       :class="{
         'bg-primary hover:bg-primary-dark': !isExpanded,
         'bg-secondary hover:bg-secondary-dark': isExpanded,
@@ -57,7 +57,7 @@ export default defineComponent({
     LayoutMain,
   },
   setup() {
-    const isExpanded = ref(false);
+    const isExpanded = ref(true);
     return {
       isExpanded,
       LineHeight,
