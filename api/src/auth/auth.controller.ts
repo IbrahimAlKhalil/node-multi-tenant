@@ -22,6 +22,10 @@ export class AuthController {
     private readonly uws: Uws,
   ) {
     uws.post('/auth/login/:instituteId', this.login.bind(this));
+    uws.options('/auth/login/:instituteId', (res) => {
+      this.uwsService.setCorsHeaders(res);
+      res.end();
+    });
   }
 
   private readonly loginSchema = joi.object<LoginInput>({
@@ -31,6 +35,8 @@ export class AuthController {
   });
 
   private async login(res: HttpResponse, req: HttpRequest): Promise<void> {
+    this.uwsService.setCorsHeaders(res);
+
     let aborted = false;
 
     res.onAborted(() => {

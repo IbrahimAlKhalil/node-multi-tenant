@@ -1,11 +1,12 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from './auth/auth.service.js';
 import { Injectable, Logger } from '@nestjs/common';
+import { UwsService } from './uws/uws.service.js';
 import { WsMessage } from './types/ws-message';
 import { Config } from './config/config.js';
 import { WsSub } from './uws/ws-sub.js';
-import { Uws } from './uws/uws.js';
 
+import { Uws } from './uws/uws.js';
 import {
   us_socket_context_t,
   HttpResponse,
@@ -19,12 +20,16 @@ export class AppService {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly authService: AuthService,
+    private readonly uwsService: UwsService,
     private readonly config: Config,
     private readonly uws: Uws,
   ) {
     const { websocket } = config;
 
     import('uWebSockets.js').then(({ default: uwjs }) => {
+      uws.options('/ws/:csrfToken', (res) => {
+        this.uwsService.setCorsHeaders(res);
+      });
       uws.ws('/ws/:csrfToken', {
         /* Configurations */
 
