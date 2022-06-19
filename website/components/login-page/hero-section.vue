@@ -108,9 +108,7 @@ const errors = ref<{
 
 const schema = Yup.object().shape({
   code: Yup.string().required('Institute Code is required'),
-  username: Yup.string()
-    .required('Username is required')
-    .email('Invalid email'),
+  username: Yup.string().required('Username is required'),
   password: Yup.string()
     .required('Password is required')
     .min(4, 'Password must be at least 4 characters'),
@@ -131,17 +129,46 @@ const handleInput = (event) => {
   values.value[event.target.name] = event.target.value;
 };
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   schema
     .validate(values.value, { abortEarly: false })
     .then(() => {
       errors.value = {};
-      console.log(values.value);
     })
     .catch((err) => {
       err.inner.forEach((error) => {
         errors.value[error.path] = error.message;
       });
     });
+
+  const response = await fetch(
+    `${location.protocol}//${location.hostname}/items/institute?fields=cluster.*,code,id,name`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+  const result = await response.json();
+  console.log('Login Institute fetch: ', result);
+  const { data } = result;
+  if (data) {
+    const apiUrl = `https://${data[0].cluster.host}/auth/login/${data[0].id}`;
+    const loginResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'no-cors',
+      body: JSON.stringify({
+        username: values.value.username,
+        password: values.value.password,
+        rememberMe: values.value.remember,
+      }),
+    });
+    const loginResult = await loginResponse.json();
+    console.log('Login api response : ', loginResult);
+  }
 };
 </script>
