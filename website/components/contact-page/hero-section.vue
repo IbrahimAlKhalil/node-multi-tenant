@@ -1,7 +1,7 @@
 <template>
   <PageTitle title="We're here to support you!" />
   <form class="flex flex-col gap-4 w-4/5 mx-auto">
-    <div class="flex justify-between gap-10">
+    <div class="flex flex-col md:flex-row justify-between md:gap-10">
       <InputField
         placeholder="First Name"
         name="fName"
@@ -25,7 +25,7 @@
         @on-keypress="validate"
       />
     </div>
-    <div class="flex justify-between gap-10">
+    <div class="flex flex-col md:flex-row justify-between md:gap-10">
       <InputField
         placeholder="Institute Name"
         name="companyName"

@@ -1,6 +1,9 @@
 <template>
   <section id="hero">
-    <div class="w-9/12 mx-auto" style="padding-top: var(--header-height)">
+    <div
+      class="w-[95%] md:w-9/12 mx-auto"
+      style="padding-top: var(--header-height)"
+    >
       <div class="media my-10 relative">
         <div
           class="category h-10 absolute -bottom-5 left-1/2 -translate-x-1/2 bg-primary text-white text-xl font-bold p-2 rounded"

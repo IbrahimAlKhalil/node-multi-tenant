@@ -32,6 +32,7 @@
     </span>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent } from 'vue';
 import {
@@ -40,7 +41,6 @@ import {
   EmojiSad,
   EmojiWow,
 } from '#components/animated-reactions';
-import { number } from 'yup';
 
 export default defineComponent({
   name: 'tab-button',
