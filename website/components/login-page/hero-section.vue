@@ -85,8 +85,9 @@
 <script lang="ts" setup>
 import InputField from '#components/form-components/input-field.vue';
 import PageTitle from '#components/ui/page-title.vue';
+import loginFormType from '#types/login-form-type';
 import * as Yup from 'yup';
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 defineProps(['search', 'category', 'categories']);
 defineEmits(['update:search', 'update:category']);
@@ -100,26 +101,18 @@ defineEmits(['update:search', 'update:category']);
 const loginStage = ref('form');
 const btnText = ref('Login');
 const showPassword = ref(false);
-const values = ref<{
-  code: string;
-  username: string;
-  password: string;
-  remember: boolean;
-}>({
+const values = ref<loginFormType>({
   code: '',
   username: '',
   password: '',
-  remember: false,
+  rememberMe: false,
 });
 
-const errors = ref<{
-  code: string;
-  username: string;
-  password: string;
-}>({
+const errors = ref<loginFormType>({
   code: '',
   username: '',
   password: '',
+  rememberMe: false,
 });
 
 const schema = Yup.object().shape({
@@ -128,6 +121,7 @@ const schema = Yup.object().shape({
   password: Yup.string()
     .required('Password is required')
     .min(4, 'Password must be at least 4 characters'),
+  rememberMe: Yup.boolean().optional().default(false),
 });
 
 const validate = (field: string) => {
@@ -146,7 +140,22 @@ const handleInput = (event) => {
 };
 
 const handleSubmit = async () => {
-  loginStage.value = 'loading';
+  const response = await fetch(
+    `${location.protocol}//${location.hostname}/auth`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+  const result = await response.json();
+  console.log(result);
+};
+</script>
+<!-- 
+
+loginStage.value = 'loading';
   schema
     .validate(values.value, { abortEarly: false })
     .then(() => {
@@ -187,10 +196,8 @@ const handleSubmit = async () => {
     if (loginResult) {
       loginStage.value = 'success';
       // location.replace('/');
-      localStorage.setItem('auth_token', loginResult.csrfToken);
+      localStorage.setItem('crf_token', loginResult.csrfToken);
     } else {
       loginStage.value = 'form';
     }
-  }
-};
-</script>
+  } -->
