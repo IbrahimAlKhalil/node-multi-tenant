@@ -6,10 +6,10 @@
         <primary-btn title="Frequently Asked Questions" />
       </div>
       <the-accordion
-        v-for="question of topQuestions"
+        v-for="question of questions"
         :key="question.id"
         :title="question.title"
-        :description="question.description"
+        :description="question.content"
       />
       <the-pagination
         @change-page="handleChangePage"
@@ -21,10 +21,10 @@
 </template>
 
 <script lang="ts">
+import { Pagination as ThePagination } from '#components/ui/pagination';
 import HeroSection from '#components/faq-page/hero-section.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import TheAccordion from '#components/ui/accordion.vue';
-import { Pagination as ThePagination } from '#components/ui/pagination';
 import LayoutMain from '#layouts/main.vue';
 import { defineComponent } from 'vue';
 
@@ -37,6 +37,7 @@ export default defineComponent({
     LayoutMain,
     PrimaryBtn,
   },
+  props: ['questions'],
   data() {
     return {
       activePage: 1,
