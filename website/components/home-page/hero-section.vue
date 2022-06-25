@@ -11,7 +11,7 @@
     >
       <div class="content flex-1 text-white text-center lg:text-left">
         <h1
-          class="leading-[1.5] font-bold text-inherit mb-5 text-4xl leading-normal"
+          class="font-bold text-inherit mb-5 text-4xl lg:text-6xl leading-normal lg:leading-[1.7]"
         >
           {{ t('homePage.hero-title') }}
         </h1>
