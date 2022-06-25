@@ -5,6 +5,7 @@
         v-model:search="heroSearch"
         :categories="categories"
         :category="heroSearchCategory"
+        :featuredPosts="featuredPosts"
       />
       <blog-layout>
         <template #main>
@@ -52,7 +53,7 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'BlogPage',
-  props: ['posts', 'categories', 'tags'],
+  props: ['featuredPosts', 'posts', 'categories', 'tags'],
   components: {
     SingleBlogCard,
     BlogSidebar,

@@ -31,6 +31,27 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'primary_category',
     ],
   });
+  const featuredPosts = await postService.readByQuery({
+    filter: {
+      is_featured: {
+        _eq: true,
+      },
+    },
+    fields: [
+      'id',
+      'status',
+      'title',
+      'slug',
+      'short_content',
+      'date_created',
+      'content',
+      'featured_image',
+      'categories',
+      'primary_category',
+    ],
+  });
+  console.log('Featured Post: ', featuredPosts);
+
   const tags = await tagService.readByQuery({
     fields: ['id', 'name'],
   });
@@ -38,6 +59,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
   return {
     pageContext: {
       pageProps: {
+        featuredPosts,
         categories,
         posts,
         tags,

@@ -37,21 +37,27 @@
           </div>
           <div class="blogs flex justify-between flex-wrap gap-8 text-xs">
             <article
-              v-for="blog in featuresBlogs"
+              v-for="blog in featuredPosts"
               :key="blog.id"
               class="blog flex flex-col lg:flex-row text-center lg:text-left items-center gap-3 border border-secondary rounded-md p-2"
               style="flex: 1 1 300px"
             >
               <div class="media" style="flex: 1 1 40%">
-                <img :src="blog.image" class="rounded-md" :alt="blog.title" />
+                <img
+                  :src="'/assets/' + blog.featured_image"
+                  class="rounded-md"
+                  :alt="blog.title"
+                />
               </div>
               <div class="content" style="flex: 1 1 60%">
                 <h3 class="font-bold text-lg text-secondary">
                   {{ blog.title }}
                 </h3>
-                <p class="italic text-gray-500">Date: {{ blog.date }}</p>
+                <p class="italic text-gray-500">
+                  Date: {{ blog.date_created }}
+                </p>
                 <p class="description my-2 text-center lg:text-justify">
-                  {{ blog.description }}
+                  {{ blog.short_content }}
                 </p>
                 <a
                   href="#"
@@ -80,21 +86,27 @@
           </div>
           <div class="blogs flex justify-between flex-wrap gap-8 text-xs">
             <article
-              v-for="blog in featuresBlogs"
+              v-for="blog in featuredPosts"
               :key="blog.id"
               class="blog flex flex-col lg:flex-row text-center lg:text-left items-center gap-3 border border-secondary rounded-md p-2"
               style="flex: 1 1 300px"
             >
               <div class="media" style="flex: 1 1 40%">
-                <img :src="blog.image" class="rounded-md" :alt="blog.title" />
+                <img
+                  :src="'/assets/' + blog.featured_image"
+                  class="rounded-md"
+                  :alt="blog.title"
+                />
               </div>
               <div class="content" style="flex: 1 1 60%">
                 <h3 class="font-bold text-lg text-secondary">
                   {{ blog.title }}
                 </h3>
-                <p class="italic text-gray-500">Date: {{ blog.date }}</p>
+                <p class="italic text-gray-500">
+                  Date: {{ blog.date_created }}
+                </p>
                 <p class="description my-2 text-center lg:text-justify">
-                  {{ blog.description }}
+                  {{ blog.short_content }}
                 </p>
                 <a
                   href="#"
@@ -120,36 +132,9 @@ import RightArrow from '#icons/solid/long-arrow-right.svg';
 import Search from '#icons/solid/search.svg';
 import { ref } from 'vue';
 
-defineProps(['search', 'category', 'categories']);
+defineProps(['featuredPosts', 'search', 'category', 'categories']);
 
 defineEmits(['update:search', 'update:category']);
-
-const featuresBlogs = ref([
-  {
-    id: 1,
-    title: 'Feature Blog 1',
-    date: '22-04-2022',
-    description:
-      'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document.',
-    image: 'https://via.placeholder.com/150x140',
-  },
-  {
-    id: 2,
-    title: 'Feature Blog 2',
-    date: '22-04-2022',
-    description:
-      'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document.',
-    image: 'https://via.placeholder.com/150x140',
-  },
-  {
-    id: 3,
-    title: 'Feature Blog 3',
-    date: '22-04-2022',
-    description:
-      'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document.',
-    image: 'https://via.placeholder.com/150x140',
-  },
-]);
 </script>
 
 <style scoped>
