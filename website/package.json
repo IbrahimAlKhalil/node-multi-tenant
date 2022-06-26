@@ -20,7 +20,7 @@
     "@vue/server-renderer": "^3.2.33",
     "aos": "^2.3.4",
     "cross-env": "^7.0.3",
-    "directus": "^9.12.1",
+    "directus": "^9.12.2",
     "express": "^4.18.1",
     "node-fetch": "^3.2.6",
     "pg": "^8.7.3",
