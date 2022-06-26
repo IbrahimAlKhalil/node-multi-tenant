@@ -14,7 +14,6 @@
       :categorySlug="primaryCategory.slug"
     />
     <post-page-meta-description-section :short_content="post.short_content" />
-    <pre>{{ post.content }}</pre>
 
     <post-description-section :content="jsonToHtml" />
     <post-reactions-section @handle-click="handleReaction" />
@@ -53,7 +52,6 @@
       <comment-section :data="comments" :reactions="commentsReactions" />
     </tab-body>
     <tab-body v-show="activeTab === 'like'">
-      <pre>{{ postReactions }}</pre>
       <tab-body-users-container>
         <li
           v-for="item of postReactions.filter(

@@ -37,6 +37,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
         _eq: true,
       },
     },
+    limit: 2,
     fields: [
       'id',
       'status',
@@ -50,7 +51,6 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'primary_category',
     ],
   });
-  console.log('Featured Post: ', featuredPosts);
 
   const tags = await tagService.readByQuery({
     fields: ['id', 'name'],
