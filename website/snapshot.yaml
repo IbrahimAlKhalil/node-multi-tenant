@@ -4288,7 +4288,7 @@ fields:
       note: null
       options: null
       readonly: false
-      required: true
+      required: false
       sort: 13
       special:
         - m2m
@@ -5036,7 +5036,7 @@ fields:
       options:
         template: '{{name}}'
       readonly: false
-      required: true
+      required: false
       sort: null
       special:
         - m2o
