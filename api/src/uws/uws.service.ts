@@ -70,8 +70,8 @@ export class UwsService {
     res.end(JSON.stringify({ code, message }));
   }
 
-  public setCorsHeaders(res: HttpResponse): HttpResponse {
-    return res
+  public setCorsHeaders(res: HttpResponse, req?: HttpRequest): HttpResponse {
+    const _res = res
       .writeHeader('Access-Control-Allow-Origin', '*')
       .writeHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
       .writeHeader(
@@ -79,5 +79,11 @@ export class UwsService {
         'Content-Type, Authorization, Accept, Origin',
       )
       .writeHeader('Access-Control-Max-Age', '3600');
+
+    if (req) {
+      return _res.end('', true);
+    }
+
+    return res;
   }
 }
