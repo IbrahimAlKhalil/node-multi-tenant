@@ -2531,6 +2531,7 @@ export class QueryService {
     try {
       return await (prisma[rootQuery.model][rootQuery.type] as any)(query);
     } catch (e) {
+      this.logger.error(e);
       throw new WsException(
         'Something went wrong while executing query, please contact support',
         'PRISMA_ERROR',
