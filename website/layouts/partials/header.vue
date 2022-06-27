@@ -77,57 +77,84 @@
   </header>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import { usePageContext } from '#modules/use-page-context';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import { useNavData } from '#stores/navdata.store';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { defineComponent } from 'vue';
 import MenuBar from '#icons/light/bars.svg';
 import Cross from '#icons/light/times.svg';
 import Logo from '#images/logo.svg?url';
 import { useI18n } from 'vue-i18n';
 
-const { urlPathname } = usePageContext();
-const navData = useNavData();
-const i18n = useI18n();
+export default defineComponent({
+  name: 'the-header',
+  props: ['defaultSticky'],
+  components: {
+    PrimaryBtn,
+  },
+  data() {
+    return {
+      activeMenu: false,
+      headerHeight: 70,
+      isSticky: false,
+      isDefaultSticky: false,
+    };
+  },
+  mounted() {
+    this.isDefaultSticky = this.defaultSticky;
+    if (this.isDefaultSticky) {
+      this.isSticky = true;
+    } else {
+      window.addEventListener('scroll', () =>
+        this.updateScroll(window.scrollY),
+      );
+      this.isSticky = window.scrollY !== 0;
+    }
+  },
+  unmounted() {
+    window.removeEventListener('scroll', () =>
+      this.updateScroll(window.scrollY),
+    );
+  },
+  methods: {
+    updateScroll(value: number) {
+      if (value > this.headerHeight) {
+        this.isSticky = true;
+      }
+      if (value < this.headerHeight) {
+        this.isSticky = false;
+      }
+    },
+  },
+  setup() {
+    const { urlPathname } = usePageContext();
+    const navData = useNavData();
+    const i18n = useI18n();
 
-const activeMenu = ref(false);
-const headerHeight = ref(70);
-const isSticky = ref(false);
-const t = ref(i18n.t);
-
-if (navData.currentPath !== urlPathname) {
-  navData.currentPath = urlPathname;
-}
-
-function checkStickyHeader() {
-  return (
-    (navData.currentPath.split('/')[1] === 'blog' &&
-      navData.currentPath.split('/').length > 2) ||
-    navData.currentPath.split('/')[1] === 'tutorials' ||
-    navData.currentPath.split('/')[1] === 'admin'
-  );
-}
-
-onMounted(() => {
-  if (checkStickyHeader()) {
-    isSticky.value = true;
-  } else {
-    window.addEventListener('scroll', () => updateScroll(window.scrollY));
-    isSticky.value = window.scrollY !== 0;
-  }
+    return {
+      urlPathname,
+      navData,
+      t: i18n.t,
+      DoorOpen,
+      MenuBar,
+      Cross,
+      Logo,
+    };
+  },
 });
-onUnmounted(() => {
-  window.removeEventListener('scroll', () => updateScroll(window.scrollY));
-});
 
-const updateScroll = (value: number) => {
-  if (value > headerHeight.value) {
-    isSticky.value = true;
-  }
-  if (value < headerHeight.value) {
-    isSticky.value = false;
-  }
-};
+// if (navData.currentPath !== urlPathname) {
+//   navData.currentPath = urlPathname;
+// }
+
+// function checkStickyHeader() {
+//   return (
+//     (navData.currentPath.split('/')[1] === 'blog' &&
+//       navData.currentPath.split('/').length > 2) ||
+//     navData.currentPath.split('/')[1] === 'tutorials' ||
+//     navData.currentPath.split('/')[1] === 'admin'
+//   );
+// }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <the-header />
+  <the-header :defaultSticky="isSticky" />
   <floating-switch />
   <slot />
   <the-footer>
@@ -26,6 +26,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'layout-main',
+  props: ['isSticky'],
   components: {
     TheHeader,
     TheFooter,

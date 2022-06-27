@@ -40,6 +40,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     pageContext: {
       pageProps: {
         tutorialCategories,
+        isSticky: true,
         tutorials,
       },
     },

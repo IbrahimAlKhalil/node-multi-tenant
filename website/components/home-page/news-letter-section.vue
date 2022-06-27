@@ -16,7 +16,10 @@
             class="input"
           />
         </div>
-        <div class="common submit-area flex items-center">
+        <div
+          class="common submit-area flex items-center"
+          @click="() => handleSubscribe(email)"
+        >
           <input
             type="submit"
             value="Subscribe"
@@ -44,6 +47,33 @@ export default defineComponent({
   data: () => ({
     email: '',
   }),
+  methods: {
+    async handleSubscribe(email: string) {
+      const url = `/items/newsletter`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
+      const result = await response.json();
+      console.log(result);
+      if (result?.data?.id) {
+        this.$toast.success('Subscription successful!', {
+          dismissible: true,
+          duration: 1000 * 5,
+        });
+      } else {
+        this.$toast.error('Email not valid or already exist!', {
+          dismissible: true,
+          duration: 1000 * 5,
+        });
+      }
+    },
+  },
   setup() {
     const i18n = useI18n();
 
@@ -53,10 +83,10 @@ export default defineComponent({
       title: "homePage['news-letter-section']['title']",
       button: "homePage['news-letter-section']['button']",
       placeholder: "homePage['news-letter-section']['placeholder']",
-      t: i18n.t,
-      SendIcon,
       SubscriptionButton,
       PaperPlane,
+      t: i18n.t,
+      SendIcon,
     };
   },
 });

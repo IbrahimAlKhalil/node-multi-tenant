@@ -1,12 +1,15 @@
 import { setPageContext } from '#modules/use-page-context';
 import { createSSRApp, defineComponent, h } from 'vue';
 import { PageContext } from '#types/page-context';
+import VueToast from 'vue-toast-notification';
 import PageShell from './page-shell.vue';
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
 import en from '../locales/en';
 import bn from '../locales/bn';
 import AOS from 'aos';
+// CSS
+import 'vue-toast-notification/dist/theme-sugar.css';
 import 'aos/dist/aos.css';
 
 export { createApp };
@@ -41,6 +44,9 @@ function createApp(pageContext: PageContext) {
 
   app.use(i18n);
   app.use(pinia);
+  app.use(VueToast, {
+    position: 'bottom-right',
+  });
 
   pinia.use((ctx) => {
     if (typeof ctx.options.hydrate === 'function') {
