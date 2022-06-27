@@ -5,6 +5,7 @@
       :key="index"
       :title="item"
       :isActive="item === activePage"
+      :urlWithKey="urlWithKey"
       @change-pagination="handleChangePage"
     ></pagination-item>
   </div>
@@ -25,6 +26,10 @@ export default defineComponent({
     activePage: {
       type: Number,
       default: 1,
+    },
+    urlWithKey: {
+      type: String,
+      required: true,
     },
   },
   methods: {
