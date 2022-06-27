@@ -1,4 +1,6 @@
 import { PrismaService } from '../prisma/prisma.service.js';
+import { HttpResponse, HttpRequest } from 'uWebSockets.js';
+import { UwsService } from '../uws/uws.service.js';
 import { JwtPayload } from '../types/jwt-payload';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
@@ -9,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly uwsService: UwsService,
     private readonly jwtService: JwtService,
     private readonly config: Config,
   ) {}
@@ -80,5 +83,33 @@ export class AuthService {
       rol: jwtPayload.rol,
       jti: jwtPayload.jti,
     };
+  }
+
+  async authenticateReq(
+    res: HttpResponse,
+    req: HttpRequest,
+  ): Promise<Session | null> {
+    const cookie = req.getHeader('cookie');
+    const csrfToken = req.getHeader('x-csrf-token');
+
+    const session = await this.authenticate(cookie, csrfToken);
+
+    if (!session) {
+      res.cork(() => {
+        this.uwsService
+          .setCorsHeaders(res)
+          .writeStatus('401')
+          .writeHeader('Content-Type', 'application/json')
+          .end(
+            JSON.stringify({
+              code: 'UNAUTHORIZED',
+              error: 'You are not authorized to make this request',
+            }),
+            true,
+          );
+      });
+    }
+
+    return session;
   }
 }
