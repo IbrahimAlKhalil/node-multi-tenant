@@ -1537,23 +1537,35 @@ export class QueryService {
               },
               session,
               prisma,
+              relation.right === relation.fKeyHolder
+                ? [
+                    {
+                      mutation: mutationObj,
+                      relation,
+                    },
+                  ]
+                : undefined,
             );
 
-            if (!mutationObj.parents) {
-              mutationObj.parents = [];
+            if (relation.right === relation.fKeyHolder) {
+              mutations.push(...(_mutations.all as Mutation<M>[]));
+            } else {
+              if (!mutationObj.parents) {
+                mutationObj.parents = [];
+              }
+
+              mutationObj.parents.push({
+                mutation: _mutations.current[0],
+                relation,
+              });
+
+              // Add parent mutations before the current mutation
+              mutations.splice(
+                mutations.indexOf(mutationObj as Mutation<M>),
+                0,
+                ...(_mutations.all as Mutation<M>[]),
+              );
             }
-
-            mutationObj.parents.push({
-              mutation: _mutations.current[0],
-              relation,
-            });
-
-            // Add parent mutations before the current mutation
-            mutations.splice(
-              mutations.indexOf(mutationObj as Mutation<M>),
-              0,
-              ...(_mutations.all as Mutation<M>[]),
-            );
           }
           /** -------- End -------- */
         }
