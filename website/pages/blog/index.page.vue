@@ -9,6 +9,7 @@
           :featuredPosts="featuredPosts"
         />
       </common-scrollable-hero>
+      <div class="my-5"></div>
       <blog-layout>
         <template #main>
           <blogs>
@@ -25,18 +26,23 @@
               linkText="Read More"
               :isOdd="index % 2 === 0"
             />
+            <the-pagination
+              v-show="!isSearching"
+              @change-page="handleChangePage"
+              :total="totalPage"
+              :activePage="activePage"
+              urlWithKey="/blog?page="
+            />
           </blogs>
         </template>
         <template #sidebar>
           <blog-sidebar
             :categories="categories"
-            :active-category="activeCategory"
-            @update:category="updateSidebarCategory"
+            v-model:active-category="activeCategory"
             :tags="tags"
-            :active-tag="activeTag"
-            @update:tag="updateSidebarTag"
-            :sidebarSearch="sidebarSearch"
-            @update:search="updateSidebarSearch"
+            v-model:active-tag="activeTag"
+            v-model:search="sidebarSearch"
+            :searchText="searchText"
           />
         </template>
       </blog-layout>
@@ -45,6 +51,7 @@
 </template>
 
 <script lang="ts">
+import { Pagination as ThePagination } from '#components/ui/pagination';
 import SingleBlogCard from '#components/blog-page/single-blog-card.vue';
 import CommonScrollableHero from '#layouts/common-scrollable-hero.vue';
 import BlogSidebar from '#components/blog-page/blog-sidebar.vue';
@@ -52,44 +59,51 @@ import BlogHero from '#components/blog-page/blog-hero.vue';
 import Blogs from '#components/blog-page/blogs.vue';
 import BlogLayout from '#layouts/blog-page.vue';
 import LayoutMain from '#layouts/main.vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'BlogPage',
-  props: ['featuredPosts', 'posts', 'categories', 'tags'],
+  props: [
+    'featuredPosts',
+    'posts',
+    'searchPosts',
+    'searchText',
+    'categories',
+    'tags',
+    'blogsAggregate',
+  ],
   components: {
     CommonScrollableHero,
     SingleBlogCard,
+    ThePagination,
     BlogSidebar,
     LayoutMain,
     BlogLayout,
     BlogHero,
     Blogs,
   },
-  setup() {
-    const heroSearch = ref('');
-    const heroSearchCategory = ref('');
-
-    const activeCategory = ref('all');
-    const activeTag = ref('all');
-    const sidebarSearch = ref('');
-
-    const updateSidebarCategory = (category: string) => {
-      activeCategory.value = category;
-    };
-    const updateSidebarTag = (tag: string) => {
-      activeTag.value = tag;
-    };
-
+  data() {
     return {
-      updateSidebarCategory,
-      heroSearchCategory,
-      updateSidebarTag,
-      activeCategory,
-      sidebarSearch,
-      heroSearch,
-      activeTag,
+      totalPage: Math.ceil(Number(this.blogsAggregate[0].count) / 5),
+      isSearching: false,
+      activePage: 1,
+      sidebarSearch: '',
+      activeCategory: 'all',
+      activeTag: 'all',
     };
+  },
+  mounted() {
+    const currentPage = Number(location.search.split('=')[1]);
+    this.activePage = !isNaN(currentPage) ? currentPage : 1;
+    this.isSearching = !!this.searchText;
+  },
+  methods: {
+    handleChangePage(page: number) {
+      this.activePage = page;
+    },
+  },
+  setup() {
+    return {};
   },
 });
 </script>
