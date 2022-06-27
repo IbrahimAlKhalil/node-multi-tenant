@@ -214,7 +214,7 @@ export class AuthController {
       'Set-Cookie',
       `${this.config.auth.cookieKey}=${token}; Domain=${
         this.config.app.websiteHost
-      }; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
+      }; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
         expiresAt.getTime() / 1000,
       )}`,
     );
