@@ -16,10 +16,7 @@ export class QueryController {
     private readonly uws: Uws,
   ) {
     uws.get('/query', this.query.bind(this));
-    uws.options('/query', (res) => {
-      uwsService.setCorsHeaders(res);
-      res.end();
-    });
+    uws.options('/query', uwsService.setCorsHeaders);
   }
 
   private async query(res: HttpResponse, req: HttpRequest) {
@@ -29,31 +26,11 @@ export class QueryController {
       aborted = true;
     });
 
-    const cookie = req.getHeader('cookie');
-    const csrfToken = req.getHeader('x-csrf-token');
     const rawQuery = req.getQuery();
 
-    const session = await this.authService.authenticate(cookie, csrfToken);
+    const session = await this.authService.authenticateReq(res, req);
 
-    if (aborted) {
-      return;
-    }
-
-    if (!session) {
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res)
-          .writeHeader('Content-Type', 'application/json')
-          .writeStatus('401')
-          .end(
-            JSON.stringify({
-              code: 'UNAUTHORIZED',
-              error: 'You are not authorized to make this request',
-            }),
-            true,
-          );
-      });
-
+    if (aborted || !session) {
       return;
     }
 
