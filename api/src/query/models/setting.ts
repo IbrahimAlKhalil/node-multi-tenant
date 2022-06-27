@@ -1,7 +1,7 @@
 import { defineModel } from '../define-model.js';
 
 export default defineModel<'setting'>({
-  kinds: {
+  access: {
     ADMIN: true,
   },
 });

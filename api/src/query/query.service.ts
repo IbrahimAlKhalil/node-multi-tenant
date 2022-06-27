@@ -300,24 +300,24 @@ export class QueryService {
     permissionModel: Model<ModelNames>,
     session: Session,
   ): Promise<Permission<T> | true> {
-    let kind: typeof permissionModel.kinds.ALL = permissionModel.kinds.ALL;
+    let kind: typeof permissionModel.access.ALL = permissionModel.access.ALL;
 
-    if (permissionModel.kinds.hasOwnProperty(session.knd)) {
-      kind = permissionModel.kinds[session.knd];
+    if (permissionModel.access.hasOwnProperty(session.knd)) {
+      kind = permissionModel.access[session.knd];
     } else if (
       session.knd === 'STAFF' ||
       session.knd === 'ADMIN' ||
       session.knd === 'SUPPORTER'
     ) {
       // Power user
-      kind = permissionModel.kinds.POWER ?? permissionModel.kinds.ALL;
+      kind = permissionModel.access.POWER ?? permissionModel.access.ALL;
     } else if (
       session.knd === 'GUARDIAN' ||
       session.knd === 'STUDENT' ||
       session.knd === 'GENERAL'
     ) {
       // Non-power user
-      kind = permissionModel.kinds.NON_POWER ?? permissionModel.kinds.ALL;
+      kind = permissionModel.access.NON_POWER ?? permissionModel.access.ALL;
     }
 
     if (!kind) {

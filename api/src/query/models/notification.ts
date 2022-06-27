@@ -2,7 +2,7 @@ import { defineModel } from '../define-model.js';
 
 export default defineModel<'notification'>({
   accessControl: true,
-  kinds: {
+  access: {
     ALL: {
       read: {
         fields: true,

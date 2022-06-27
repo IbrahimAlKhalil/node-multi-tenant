@@ -1,7 +1,7 @@
 import { defineModel } from '../define-model.js';
 
 export default defineModel<'revision'>({
-  kinds: {
+  access: {
     POWER: {
       read: true,
     },

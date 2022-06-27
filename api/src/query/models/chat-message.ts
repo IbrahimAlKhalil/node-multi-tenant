@@ -1,7 +1,7 @@
 import { defineModel } from '../define-model.js';
 
 export default defineModel<'chatMessage'>({
-  kinds: {
+  access: {
     POWER: {
       read: {
         fields: true,

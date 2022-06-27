@@ -25,7 +25,7 @@ export interface Model<
 > {
   schema?: ObjectSchema<ModelTypes[N]['model']>;
   accessControl?: boolean;
-  kinds: Partial<
+  access: Partial<
     Record<user_kind | 'ALL' | 'POWER' | 'NON_POWER', boolean | Actions<N, S>>
   >;
 }
