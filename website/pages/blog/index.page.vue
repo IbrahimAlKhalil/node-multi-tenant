@@ -1,12 +1,14 @@
 <template>
   <div>
     <layout-main>
-      <blog-hero
-        v-model:search="heroSearch"
-        :categories="categories"
-        :category="heroSearchCategory"
-        :featuredPosts="featuredPosts"
-      />
+      <common-scrollable-hero>
+        <blog-hero
+          v-model:search="heroSearch"
+          :categories="categories"
+          :category="heroSearchCategory"
+          :featuredPosts="featuredPosts"
+        />
+      </common-scrollable-hero>
       <blog-layout>
         <template #main>
           <blogs>
@@ -44,6 +46,7 @@
 
 <script lang="ts">
 import SingleBlogCard from '#components/blog-page/single-blog-card.vue';
+import CommonScrollableHero from '#layouts/common-scrollable-hero.vue';
 import BlogSidebar from '#components/blog-page/blog-sidebar.vue';
 import BlogHero from '#components/blog-page/blog-hero.vue';
 import Blogs from '#components/blog-page/blogs.vue';
@@ -55,6 +58,7 @@ export default defineComponent({
   name: 'BlogPage',
   props: ['featuredPosts', 'posts', 'categories', 'tags'],
   components: {
+    CommonScrollableHero,
     SingleBlogCard,
     BlogSidebar,
     LayoutMain,
@@ -77,10 +81,6 @@ export default defineComponent({
       activeTag.value = tag;
     };
 
-    const key = ref(
-      '?key=system-medium-cover&modified=2022-06-06T07%3A42%3A51.185Z&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNhMzgzMmExLWM4NGYtNDI4Ny1iZTFhLTc2MDkyMDg1MWI4MiIsInJvbGUiOiIyZjQ4MDA0My05NjVhLTRiMjUtOTc5Yi1hMDhkNDgyYmQ2Y2UiLCJhcHBfYWNjZXNzIjp0cnVlLCJhZG1pbl9hY2Nlc3MiOnRydWUsImlhdCI6MTY1NDc1NTA2MSwiZXhwIjoxNjU0NzU1OTYxLCJpc3MiOiJkaXJlY3R1cyJ9.aA7p-jK82iT9TQPMlC-lbKWsdGU-3-LTrv47pVrZazE',
-    );
-
     return {
       updateSidebarCategory,
       heroSearchCategory,
@@ -89,7 +89,6 @@ export default defineComponent({
       sidebarSearch,
       heroSearch,
       activeTag,
-      key,
     };
   },
 });
