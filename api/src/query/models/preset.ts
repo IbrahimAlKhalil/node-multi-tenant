@@ -2,7 +2,7 @@ import { defineModel } from '../define-model.js';
 
 export default defineModel<'preset'>({
   accessControl: true,
-  kinds: {
+  access: {
     POWER: {
       read: {
         fields: true,

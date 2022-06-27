@@ -9,4 +9,4 @@ export const findMany = Joi.object({
   orderBy : Joi.object().optional(),
   skip    : Joi.number().optional(),
   take    : Joi.number().optional(),
-}).required();
+});

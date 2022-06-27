@@ -5,7 +5,7 @@ export default defineModel<'class'>({
   schema: Joi.object({
     order: Joi.number().integer().max(100),
   }),
-  kinds: {
+  access: {
     POWER: {
       read: true,
       create: true,

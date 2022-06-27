@@ -2,7 +2,7 @@ import { defineModel } from '../define-model.js';
 
 export default defineModel<'userI18n'>({
   accessControl: true,
-  kinds: {
+  access: {
     ALL: {
       read: {
         fields: true,

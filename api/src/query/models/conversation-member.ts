@@ -1,7 +1,7 @@
 import { defineModel } from '../define-model.js';
 
 export default defineModel<'conversationMember'>({
-  kinds: {
+  access: {
     POWER: {
       read: {
         fields: true,

@@ -70,13 +70,20 @@ export class UwsService {
     res.end(JSON.stringify({ code, message }));
   }
 
-  public setCorsHeaders(res: HttpResponse): void {
-    res.writeHeader('Access-Control-Allow-Origin', '*');
-    res.writeHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.writeHeader(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, Accept, Origin',
-    );
-    res.writeHeader('Access-Control-Max-Age', '3600');
+  public setCorsHeaders(res: HttpResponse, req?: HttpRequest): HttpResponse {
+    const _res = res
+      .writeHeader('Access-Control-Allow-Origin', '*')
+      .writeHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+      .writeHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, Accept, Origin',
+      )
+      .writeHeader('Access-Control-Max-Age', '3600');
+
+    if (req) {
+      return _res.end('', true);
+    }
+
+    return res;
   }
 }

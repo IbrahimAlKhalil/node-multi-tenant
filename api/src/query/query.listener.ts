@@ -30,6 +30,10 @@ export class QueryListener {
       throw new WsException(e.message, 'QUERY_INVALID');
     }
 
+    if (!query.query) {
+      query.query = {};
+    }
+
     return this.queryService.find(query, {
       knd: ws.knd,
       iid: ws.iid,

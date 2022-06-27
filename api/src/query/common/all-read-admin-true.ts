@@ -1,7 +1,7 @@
 import { defineModel } from '../define-model.js';
 
 export default defineModel({
-  kinds: {
+  access: {
     ALL: {
       read: {
         fields: true,

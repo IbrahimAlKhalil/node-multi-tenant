@@ -22,10 +22,7 @@ export class AuthController {
     private readonly uws: Uws,
   ) {
     uws.post('/auth/login/:instituteId', this.login.bind(this));
-    uws.options('/auth/login/:instituteId', (res) => {
-      this.uwsService.setCorsHeaders(res);
-      res.end();
-    });
+    uws.options('/auth/login/:instituteId', uwsService.setCorsHeaders);
   }
 
   private readonly loginSchema = joi.object<LoginInput>({
@@ -35,8 +32,6 @@ export class AuthController {
   });
 
   private async login(res: HttpResponse, req: HttpRequest): Promise<void> {
-    this.uwsService.setCorsHeaders(res);
-
     let aborted = false;
 
     res.onAborted(() => {
@@ -79,15 +74,20 @@ export class AuthController {
     if (error) {
       // Validation failed
 
-      res.writeStatus('400');
-      res.writeHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          code: 'INVALID_INPUT',
-          message: error.message,
-          details: error.details,
-        }),
-      );
+      res.cork(() => {
+        this.uwsService
+          .setCorsHeaders(res)
+          .writeStatus('400')
+          .writeHeader('Content-Type', 'application/json')
+          .end(
+            JSON.stringify({
+              code: 'INVALID_INPUT',
+              message: error.message,
+              details: error.details,
+            }),
+            true,
+          );
+      });
       return;
     }
 
@@ -103,14 +103,19 @@ export class AuthController {
       // No prisma client found
       // Which means the instituteId is invalid
 
-      res.writeStatus('404');
-      res.writeHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          code: 'INVALID_INPUT',
-          message: 'Invalid institute id',
-        }),
-      );
+      res.cork(() => {
+        this.uwsService
+          .setCorsHeaders(res)
+          .writeStatus('404')
+          .writeHeader('Content-Type', 'application/json')
+          .end(
+            JSON.stringify({
+              code: 'INVALID_INPUT',
+              message: 'Invalid institute id',
+            }),
+            true,
+          );
+      });
       return;
     }
 
@@ -137,14 +142,19 @@ export class AuthController {
         return;
       }
 
-      res.writeStatus('401');
-      res.writeHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          code: 'INVALID_CREDENTIALS',
-          message: 'Username or password is incorrect',
-        }),
-      );
+      res.cork(() => {
+        this.uwsService
+          .setCorsHeaders(res)
+          .writeStatus('401')
+          .writeHeader('Content-Type', 'application/json')
+          .end(
+            JSON.stringify({
+              code: 'INVALID_CREDENTIALS',
+              message: 'Username or password is incorrect',
+            }),
+            true,
+          );
+      });
       return;
     }
 
@@ -199,31 +209,26 @@ export class AuthController {
 
     // Everything is fine, so we can send the token to the user
 
-    res.writeStatus('200');
-    res.writeHeader('Content-Type', 'application/json');
-
-    // Send the token as a cookie
-    // The cookie should be accessible from all subdomains and top level domains
-    // The cookie must have these properties:
-    // - Secure: true
-    // - HttpOnly: true
-    // - Max-Age: the number of seconds until the cookie expires
-    // - SameSite: Strict
-
-    res.writeHeader(
-      'Set-Cookie',
-      `${this.config.auth.cookieKey}=${token}; Domain=${
-        this.config.app.websiteHost
-      }; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
-        expiresAt.getTime() / 1000,
-      )}`,
-    );
-
-    res.end(
-      JSON.stringify({
-        csrfToken,
-        expiresAt: expiresAt.toISOString(),
-      }),
-    );
+    res.cork(() => {
+      this.uwsService
+        .setCorsHeaders(res)
+        .writeStatus('200')
+        .writeHeader('Content-Type', 'application/json')
+        .writeHeader(
+          'Set-Cookie',
+          `${this.config.auth.cookieKey}=${token}; Domain=${
+            this.config.app.websiteHost
+          }; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
+            expiresAt.getTime() / 1000,
+          )}`,
+        )
+        .end(
+          JSON.stringify({
+            csrfToken,
+            expiresAt: expiresAt.toISOString(),
+          }),
+          true,
+        );
+    });
   }
 }
