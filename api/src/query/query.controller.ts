@@ -3,11 +3,11 @@ import { HttpRequest, HttpResponse } from 'uWebSockets.js';
 import { AuthService } from '../auth/auth.service.js';
 import { UwsService } from '../uws/uws.service.js';
 import { QueryService } from './query.service.js';
-import { Controller } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Uws } from '../uws/uws.js';
 import qs from 'qs';
 
-@Controller('query')
+@Injectable()
 export class QueryController {
   constructor(
     private readonly queryService: QueryService,
