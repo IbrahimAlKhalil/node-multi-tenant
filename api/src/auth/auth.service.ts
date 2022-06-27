@@ -17,7 +17,7 @@ export class AuthService {
     cookie: string,
     csrfToken: string,
   ): Promise<Session | null> {
-    if (!csrfToken) {
+    if (!csrfToken || !cookie) {
       // csrf token is not provided
       return null;
     }
