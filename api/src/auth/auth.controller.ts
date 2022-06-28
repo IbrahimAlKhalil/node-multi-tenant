@@ -21,11 +21,12 @@ export class AuthController {
     private readonly config: Config,
     private readonly uws: Uws,
   ) {
-    uws.post('/auth/login/:instituteId', this.login.bind(this));
-    uws.options('/auth/login/:instituteId', uwsService.setCorsHeaders);
+    uws.post('/auth/login', this.login.bind(this));
+    uws.options('/auth/login', uwsService.setCorsHeaders);
   }
 
   private readonly loginSchema = joi.object<LoginInput>({
+    code: joi.string().required(),
     username: joi.string().required(),
     password: joi.string().required(),
     rememberMe: joi.boolean().default(false),
@@ -38,8 +39,7 @@ export class AuthController {
       aborted = true;
     });
 
-    // Extract necessary data from request before calling any async functions
-    const instituteId = req.getParameter(0);
+    // Extract necessary data from request before calling any async functions;
     const ipAddress = Buffer.from(
       res.getProxiedRemoteAddressAsText(),
     ).toString();
@@ -92,7 +92,7 @@ export class AuthController {
     }
 
     const identity = this.helperService.getIdentityType(value.username);
-    const prisma = await this.prismaService.getPrisma(instituteId);
+    const prisma = await this.prismaService.getPrisma(value.code);
 
     // Request can be aborted while getting prisma client
     if (aborted) {
@@ -193,7 +193,7 @@ export class AuthController {
 
     const jwtPayload: JwtPayload = {
       uid: user.id,
-      iid: instituteId,
+      iid: value.code,
       knd: user.type,
       rol: roles.map((role) => role.roleId),
       jti: accessToken.id,
