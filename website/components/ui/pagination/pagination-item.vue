@@ -1,5 +1,5 @@
 <template>
-  <a :href="'/faq?page=' + Number(title)">
+  <a :href="urlWithKey + Number(title)">
     <div
       @click="$emit('change-pagination', Number(title))"
       :class="{
@@ -27,6 +27,10 @@ export default defineComponent({
       default: false,
     },
     title: {
+      type: String,
+      required: true,
+    },
+    urlWithKey: {
       type: String,
       required: true,
     },

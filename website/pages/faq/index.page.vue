@@ -38,6 +38,7 @@
         @change-page="handleChangePage"
         :total="totalPage"
         :activePage="activePage"
+        urlWithKey="/faq?page="
       />
     </div>
   </layout-main>
@@ -87,7 +88,6 @@ export default defineComponent({
   methods: {
     handleChangePage(page: number) {
       this.activePage = page;
-      console.log(page);
     },
     handleQuery(key: string, val: string) {
       const uri = window.location.href

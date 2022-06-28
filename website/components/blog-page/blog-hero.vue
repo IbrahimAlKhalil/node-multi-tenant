@@ -33,7 +33,11 @@
             </h3>
             <p class="italic text-gray-500">Date: {{ blog.date_created }}</p>
             <p class="description my-2 text-center lg:text-justify">
-              {{ blog.short_content }}
+              {{
+                blog.short_content.length > 50
+                  ? blog.short_content.slice(0, 50) + '...'
+                  : blog.short_content
+              }}
             </p>
             <a
               href="#"
