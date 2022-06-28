@@ -1,14 +1,12 @@
 import { ItemsService } from 'directus';
+import * as https from 'https';
 import express from 'express';
+import axios from 'axios';
 
-const login = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  if (!req.body) next();
-
-  const { code, username, password, rememberMe } = req.body;
+const login: express.RequestHandler = async (req, res, next) => {
+  if (typeof req.body.code !== 'string') {
+    return next();
+  }
 
   const instituteService = new ItemsService('institute', {
     schema: (req as any)?.schema,
@@ -16,31 +14,28 @@ const login = async (
   const institute = await instituteService.readByQuery({
     filter: {
       code: {
-        _eq: code,
+        _eq: req.body.code,
       },
     },
-    fields: ['cluster.host', 'cluster.id', 'id', 'name'],
+    fields: ['cluster.host'],
   });
   if (!institute) next();
 
   const data = institute[0];
-  const url = `https://${data.cluster.host}//auth/login/${data.id}`;
-  // Import node-fetch
-  const fetch = (await import('node-fetch')).default;
-  const response = await fetch(url, {
+
+  const loginRes = await axios.request({
+    url: `https://${data.cluster.host}/auth/login`,
+    data: req.body,
     method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      username,
-      password,
-      rememberMe,
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: process.env.NODE_ENV === 'production',
     }),
   });
-  const responseData = await response.json();
 
-  res.status(200).send({ data: responseData });
+  res
+    .status(loginRes.status)
+    .setHeader('set-cookie', loginRes.headers['set-cookie'] ?? '')
+    .json(loginRes.data);
 };
 
 export default login;

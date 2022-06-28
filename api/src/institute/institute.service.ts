@@ -25,7 +25,7 @@ export class InstituteService {
     const { default: got } = await import('got');
 
     const host = `https://${this.config.app.websiteHost}`;
-    const path = `/items/institute?access_token=${this.config.app.clusterSecret}&&filter[cluster][id][_eq]=${this.config.app.clusterId}&fields=id,cluster,name,slug,database`;
+    const path = `/items/institute?access_token=${this.config.app.clusterSecret}&&filter[cluster][id][_eq]=${this.config.app.clusterId}&fields=id,cluster,name,slug,database&alias[id]=code`;
     const endpoint = `${host}${path}`;
     const response: Record<string, any> = await got
       .get(endpoint, {
