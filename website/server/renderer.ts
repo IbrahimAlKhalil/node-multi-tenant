@@ -1,8 +1,7 @@
 import { createPageRenderer } from 'vite-plugin-ssr';
 import express, { Express } from 'express';
 import pageRoutes from './page-routes';
-import login from './login';
-import newsletter from './newsletter';
+import { ItemsService } from 'directus';
 
 export async function initRenderer(app: Express) {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -32,7 +31,7 @@ export async function initRenderer(app: Express) {
   app.get(pageRoutes, async (req, res, next) => {
     const url = req.originalUrl;
     const pageContextInit = {
-      schema: (req as any).schema,
+      schema: (req as unknown as { schema: ItemsService['schema'] }).schema,
       lang: req.query.lang ?? req.cookies.lang ?? 'bn',
       url,
     };
@@ -44,10 +43,4 @@ export async function initRenderer(app: Express) {
     const { body, statusCode, contentType } = httpResponse;
     res.status(statusCode).type(contentType).send(body);
   });
-  app.post('/auth', login, (req, res) =>
-    res.status(500).send('Something went wrong!'),
-  );
-  app.post('/newsletter', newsletter, (req, res) =>
-    res.status(500).send('Something went wrong!'),
-  );
 }
