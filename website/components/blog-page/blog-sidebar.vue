@@ -40,6 +40,7 @@
               id="all"
               value=""
               class="hidden"
+              @change="handleChangeCategory('')"
             />
             <label
               for="all"
@@ -63,7 +64,7 @@
               :id="category.slug"
               :value="category.id"
               class="hidden"
-              @change="handleQuery('category', model.category)"
+              @change="handleChangeCategory(model.category)"
             />
             <label
               :for="category.slug"
@@ -92,6 +93,7 @@
               id="tag-all"
               value=""
               class="hidden"
+              @change="handleChangeTag('')"
             />
             <label
               for="tag-all"
@@ -115,7 +117,7 @@
               :id="tag.name"
               :value="tag.id"
               class="hidden"
-              @change="handleQuery('tag', model.tag)"
+              @change="handleChangeTag(model.tag)"
             />
             <label
               :for="tag.name"
@@ -160,6 +162,14 @@ export default defineComponent({
     },
   },
   methods: {
+    handleChangeCategory(category: string) {
+      this.handleQuery('page', '1');
+      this.handleQuery('category', category);
+    },
+    handleChangeTag(tag: string) {
+      this.handleQuery('page', '1');
+      this.handleQuery('tag', tag);
+    },
     handleQuery(key: string, val: string) {
       const uri = window.location.href
         .replace(

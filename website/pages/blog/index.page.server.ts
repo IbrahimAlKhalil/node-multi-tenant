@@ -20,6 +20,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
   const postFields = [
     'id',
     'slug',
+    'tags.*',
     'title',
     'status',
     'content',
@@ -29,9 +30,41 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     'featured_image',
     'primary_category',
   ];
+  // Filter configuration
+  const postFilterScaffolding: any = {};
+  postFilterScaffolding.fields = postFields;
+  if (search?.sq) {
+    postFilterScaffolding.search = search.sq;
+  }
+
+  const filterScaffolding: any = {};
+  filterScaffolding._and = [];
+
+  if (search?.category) {
+    filterScaffolding._and.push({
+      categories: {
+        post_category_id: {
+          _eq: search.category,
+        },
+      },
+    });
+  }
+  if (search?.tag) {
+    filterScaffolding._and.push({
+      tags: {
+        tag_id: {
+          _eq: search.tag,
+        },
+      },
+    });
+  }
+  if (search?.category || search?.tag) {
+    postFilterScaffolding.filter = filterScaffolding;
+  }
 
   // blogsAggregate
   const blogsAggregate = await postService.readByQuery({
+    ...postFilterScaffolding,
     aggregate: {
       count: ['*'],
     },
@@ -41,13 +74,31 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     fields: ['id', 'name', 'slug', 'posts', 'parent'],
   });
   const posts = await postService.readByQuery({
+    ...postFilterScaffolding,
     limit: 5,
-    page: Number(search?.page),
-    fields: postFields,
+    page: Number(search?.page) ?? 1,
   });
   // TODO: add category filter
   // TODO: add tag filter
   const searchPosts = await postService.readByQuery({
+    filter: {
+      _or: [
+        {
+          categories: {
+            post_category_id: {
+              _eq: search?.category ?? 0,
+            },
+          },
+        },
+        {
+          tags: {
+            tag_id: {
+              _eq: search?.tag ?? 0,
+            },
+          },
+        },
+      ],
+    },
     search: search?.sq,
     fields: postFields,
   });
@@ -83,6 +134,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
         category: search?.category,
         searchText: search?.sq,
         tag: search?.tag,
+        page: search?.page,
         blogsAggregate,
         featuredPosts,
         searchPosts,

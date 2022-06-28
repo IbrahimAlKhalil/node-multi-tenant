@@ -27,7 +27,6 @@
               :isOdd="index % 2 === 0"
             />
             <the-pagination
-              v-show="!isSearching"
               @change-page="handleChangePage"
               :total="totalPage"
               :activePage="activePage"
@@ -64,12 +63,13 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'BlogPage',
   props: [
-    'featuredPosts',
-    'posts',
-    'searchPosts',
-    'searchText',
-    'categories',
+    'page',
     'tags',
+    'posts',
+    'categories',
+    'searchText',
+    'searchPosts',
+    'featuredPosts',
     'blogsAggregate',
   ],
   components: {
@@ -86,20 +86,33 @@ export default defineComponent({
     return {
       totalPage: Math.ceil(Number(this.blogsAggregate[0].count) / 5),
       isSearching: false,
-      activePage: 1,
+      activePage: !isNaN(Number(this.page)) ? Number(this.page) : 1,
       sidebarSearch: '',
-      activeCategory: 'all',
-      activeTag: 'all',
+      activeCategory: '',
+      activeTag: '',
     };
   },
   mounted() {
-    const currentPage = Number(location.search.split('=')[1]);
-    this.activePage = !isNaN(currentPage) ? currentPage : 1;
     this.isSearching = !!this.searchText;
   },
   methods: {
     handleChangePage(page: number) {
       this.activePage = page;
+      this.handleQuery('page', String(page));
+    },
+    handleQuery(key: string, val: string) {
+      const uri = window.location.href
+        .replace(
+          RegExp('([?&]' + key + '(?=[=&#]|$)[^#&]*|(?=#|$))'),
+          '&' + key + '=' + encodeURIComponent(val),
+        )
+        .replace(/^([^?&]+)&/, '$1?');
+      console.log({
+        url: uri,
+        key,
+        val,
+      });
+      window.location.href = uri;
     },
   },
   setup() {
