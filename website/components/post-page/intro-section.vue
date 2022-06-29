@@ -12,7 +12,7 @@
         {{ author?.last_name || '' }}
       </span>
     </p>
-    <div class="flex flex-col md:flex-row justify-between items-center">
+    <div class="flex flex-col md:flex-row justify-between items-center text-sm">
       <p class="text-gray-500 dark:text-inherit">
         <span class="font-bold">Published at: </span>
         <span>
@@ -25,15 +25,15 @@
         <a href="/">
           <component :is="HomeIcon" class="px-1 hover:text-primary"></component>
         </a>
-        <span class="hover:text-primary"><a href="/blog">Blog/</a></span>
+        <span class="hover:text-primary"><a href="/blog">Blog /</a></span>
         <span class="hover:text-primary">
-          <a :href="'/' + categorySlug">{{ categoryName }}/</a></span
+          <a :href="'/' + categorySlug">{{ categoryName }} /</a></span
         >
         <span
           class="text-primary hover:text-primary-dark dark:text-secondary dark:hover:text-secondary-dark"
         >
           <a :href="'/blog/' + slug">
-            {{ slug }}
+            {{ title }}
           </a>
         </span>
       </p>
