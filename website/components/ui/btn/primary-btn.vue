@@ -1,10 +1,13 @@
 <template>
   <button
-    class="group bg-primary hover:bg-primary-dark transition duration-300 text-white py-2 px-3 rounded-lg uppercase font-bold flex items-center gap-2"
+    :disabled="disabled"
+    class="group transition duration-300 text-white py-2 px-3 rounded-lg uppercase font-bold flex items-center gap-2"
     @click="$emit('handle-click')"
     :class="{
       'py-2 px-3 rounded-lg gap-2': size === 'medium',
       'py-1 px-3 rounded-md gap-1': size === 'small',
+      'bg-gray-600': disabled,
+      'bg-primary hover:bg-primary-dark cursor-pointer': !disabled,
     }"
   >
     <component
@@ -39,6 +42,10 @@ defineProps({
     type: String as () => Size,
     required: false,
     default: 'medium',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>
