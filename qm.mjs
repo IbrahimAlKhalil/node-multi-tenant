@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-import { directusSnapshot } from './scripts/directus-snapshot.mjs';
-import { directusRestore } from './scripts/directus-restore.mjs';
-import { bootstrap } from './scripts/directus-bootstrap.mjs';
+import { bootstrap, restore, snapshot, migrate } from './scripts/directus.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -210,14 +208,31 @@ const directusCommand = new Command('directus');
 const snapshotCommand = new Command('snapshot');
 const restoreCommand = new Command('restore');
 const bootstrapCommand = new Command('bootstrap');
+const migrateCommand = new Command('migrate');
 
-snapshotCommand.action(directusSnapshot);
-restoreCommand.action(directusRestore);
+snapshotCommand.action(snapshot);
+restoreCommand.action(restore);
 bootstrapCommand.action(bootstrap);
+
+migrateCommand.addCommand(
+  new Command('latest')
+    .action(() => migrate('latest'))
+);
+
+migrateCommand.addCommand(
+  new Command('up')
+    .action(() => migrate('up'))
+);
+
+migrateCommand.addCommand(
+  new Command('down')
+    .action(() => migrate('down'))
+);
 
 directusCommand.addCommand(snapshotCommand);
 directusCommand.addCommand(restoreCommand);
 directusCommand.addCommand(bootstrapCommand);
+directusCommand.addCommand(migrateCommand)
 
 program.addCommand(lint);
 program.addCommand(nest);
