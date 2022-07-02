@@ -75,6 +75,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
   });
   const posts = await postService.readByQuery({
     ...postFilterScaffolding,
+    sort: ['-date_created'],
     limit: 5,
     page: Number(search?.page) ?? 1,
   });
