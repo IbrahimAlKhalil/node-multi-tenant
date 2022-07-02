@@ -1,19 +1,16 @@
 <template>
-  <img :src="data.file.url" :alt="data.file.title" />
+  <hr />
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'editor-image',
+  name: 'editor-heading',
   props: {
     data: {
       type: Object,
-      required: true,
+      required: false,
     },
   },
 });
 </script>
-
-<style scoped></style>

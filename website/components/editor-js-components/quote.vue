@@ -22,4 +22,24 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Block Quote */
+.qmm_figure {
+  margin: 0;
+  margin-bottom: 1rem;
+}
+.qmm_blockquote {
+  border-left: 4px solid #0070f3;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  text-align: justify;
+}
+.qmm_figcaption {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+</style>

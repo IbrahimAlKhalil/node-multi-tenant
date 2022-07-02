@@ -1,17 +1,15 @@
 <template>
-  <p class="qmm_para">
-    {{ text }}
-  </p>
+  <p class="qmm_para" v-html="data.text"></p>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'the-paragraph',
+  name: 'editor-paragraph',
   props: {
-    text: {
-      type: String,
+    data: {
+      type: Object,
       required: true,
     },
   },
