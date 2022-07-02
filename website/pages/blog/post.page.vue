@@ -15,7 +15,7 @@
     />
     <post-page-meta-description-section :short_content="post.short_content" />
 
-    <post-description-section :content="jsonToHtml" />
+    <post-description-section :content="post.content" />
     <post-reactions-section @handle-click="handleReaction" />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">
       <post-tags-section :tags="post.tags" />

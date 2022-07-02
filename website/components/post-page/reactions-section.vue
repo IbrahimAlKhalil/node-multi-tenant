@@ -1,5 +1,5 @@
 <template>
-  <h3 class="text-text text-center text-lg font-bold">
+  <h3 class="text-text text-center text-lg font-bold mb-5">
     Was this article helpful?
   </h3>
   <div class="flex justify-center items-center">

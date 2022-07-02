@@ -5,6 +5,7 @@ export { onBeforeRender };
 
 const onBeforeRender: OnBeforeRender = async (pageContext) => {
   const { search } = pageContext.urlParsed;
+  console.log(pageContext.urlParsed);
 
   const postService = new ItemsService('post', {
     schema: (pageContext as any)?.schema,
