@@ -74,10 +74,11 @@ export class AuthController {
     if (error) {
       // Validation failed
 
+      res.writeStatus('400');
+
       res.cork(() => {
         this.uwsService
           .setCorsHeaders(res)
-          .writeStatus('400')
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -103,10 +104,11 @@ export class AuthController {
       // No prisma client found
       // Which means the instituteId is invalid
 
+      res.writeStatus('404');
+
       res.cork(() => {
         this.uwsService
           .setCorsHeaders(res)
-          .writeStatus('404')
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -142,10 +144,11 @@ export class AuthController {
         return;
       }
 
+      res.writeStatus('401');
+
       res.cork(() => {
         this.uwsService
           .setCorsHeaders(res)
-          .writeStatus('401')
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -209,16 +212,17 @@ export class AuthController {
 
     // Everything is fine, so we can send the token to the user
 
+    res.writeStatus('200');
+
     res.cork(() => {
       this.uwsService
         .setCorsHeaders(res)
-        .writeStatus('200')
         .writeHeader('Content-Type', 'application/json')
         .writeHeader(
           'Set-Cookie',
           `${this.config.auth.cookieKey}=${token}; Domain=${
             this.config.app.websiteHost
-          }; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
+          }; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${Math.round(
             expiresAt.getTime() / 1000,
           )}`,
         )

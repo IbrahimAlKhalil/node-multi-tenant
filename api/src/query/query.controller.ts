@@ -40,10 +40,10 @@ export class QueryController {
     try {
       query = await querySchema.validateAsync(parsedQuery);
     } catch (e) {
+      res.writeStatus('400');
       return res.cork(() => {
         this.uwsService
           .setCorsHeaders(res)
-          .writeStatus('400')
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -65,13 +65,12 @@ export class QueryController {
     const result = await this.queryService.find(query, session);
 
     if (!aborted) {
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res)
-          .writeHeader('Content-Type', 'application/json')
-          .writeStatus('200')
-          .end(JSON.stringify(result), true);
-      });
+      res.writeStatus('200');
+
+      this.uwsService
+        .setCorsHeaders(res)
+        .writeHeader('Content-Type', 'application/json')
+        .end(JSON.stringify(result), true);
     }
   }
 }

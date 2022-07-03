@@ -33,10 +33,11 @@ export class UserController {
     const prisma = await this.prismaService.getPrisma(session.iid);
 
     if (!prisma) {
+      res.writeStatus('400');
+
       return res.cork(() => {
         this.uwsService
           .setCorsHeaders(res)
-          .writeStatus('400')
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({

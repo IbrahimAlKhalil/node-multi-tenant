@@ -53,9 +53,6 @@ export class UwsService {
     let code: string;
     let message: string;
 
-    res.writeStatus('400');
-    res.writeHeader('Content-Type', 'application/json');
-
     if (error.message === 'INVALID_CONTENT_TYPE') {
       code = 'INVALID_CONTENT_TYPE';
       message = 'Content-Type must be application/json';
@@ -67,7 +64,10 @@ export class UwsService {
       message = 'Internal error';
     }
 
-    res.end(JSON.stringify({ code, message }));
+    res
+      .writeStatus('400')
+      .writeHeader('Content-Type', 'application/json')
+      .end(JSON.stringify({ code, message }), true);
   }
 
   public setCorsHeaders(res: HttpResponse, req?: HttpRequest): HttpResponse {
@@ -76,7 +76,7 @@ export class UwsService {
       .writeHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
       .writeHeader(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept, Origin',
+        'Content-Type, Authorization, Accept, Origin, X-Csrf-Token, Cookie',
       )
       .writeHeader('Access-Control-Max-Age', '3600');
 

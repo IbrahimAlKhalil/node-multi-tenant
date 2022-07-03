@@ -95,10 +95,11 @@ export class AuthService {
     const session = await this.authenticate(cookie, csrfToken);
 
     if (!session) {
+      res.writeStatus('401');
+
       res.cork(() => {
         this.uwsService
           .setCorsHeaders(res)
-          .writeStatus('401')
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
