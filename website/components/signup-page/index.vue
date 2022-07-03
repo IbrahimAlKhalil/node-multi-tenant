@@ -148,11 +148,12 @@
         @on-focus="validate"
         @on-keypress="validate"
       />
-      <input
+      <button
         type="submit"
-        value="Update"
         class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
-      />
+      >
+        Submit
+      </button>
     </div>
   </form>
   <p class="text-center italic">
