@@ -6,7 +6,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'the-image',
+  name: 'editor-image',
   props: {
     data: {
       type: Object,

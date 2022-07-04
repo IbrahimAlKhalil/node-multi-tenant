@@ -15,11 +15,14 @@
     />
     <post-page-meta-description-section :short_content="post.short_content" />
 
-    <post-description-section :content="jsonToHtml" />
+    <post-description-section :content="post.content" />
     <post-reactions-section @handle-click="handleReaction" />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">
       <post-tags-section :tags="post.tags" />
-      <post-share-section />
+      <post-share-section
+        :title="post.title"
+        :shortDetails="post.short_content.slice(0, 50)"
+      />
     </div>
     <the-tabs>
       <the-tab
@@ -211,7 +214,10 @@ export default defineComponent({
     },
     countPostReactions() {
       return this.postReactions.reduce(
-        (acc, reaction) => {
+        (
+          acc: { Like: number; Wow: number; Sad: number; Angry: number },
+          reaction: any,
+        ) => {
           if (reaction.reaction.value === 'like') {
             acc.Like++;
           } else if (reaction.reaction.value === 'wow') {

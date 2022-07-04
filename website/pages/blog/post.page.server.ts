@@ -4,6 +4,9 @@ import { ItemsService } from 'directus';
 export { onBeforeRender };
 
 const onBeforeRender: OnBeforeRender = async (pageContext) => {
+  const { search } = pageContext.urlParsed;
+  console.log(pageContext.urlParsed);
+
   const postService = new ItemsService('post', {
     schema: (pageContext as any)?.schema,
   });
@@ -102,6 +105,14 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'comment.post.id',
     ],
   });
+
+  // const createComment = await commentsService.createOne({
+  //   content: '',
+  //   mention: '',
+  //   parent: '',
+  //   post: '',
+  //   user: '',
+  // });
 
   return {
     pageContext: {

@@ -1,15 +1,19 @@
 <template>
-  <li>
-    {{ item.content }}
-    <ordered-list v-if="style === 'ordered'" v-show="item.items">
-      <list-item v-for="(item, index) of item.items" :key="index">{{
-        item.content
-      }}</list-item>
+  <li class="pl-3">
+    <span v-html="data.content"></span>
+    <ordered-list v-if="data.style === 'ordered'" v-show="data.items">
+      <list-item
+        v-for="(item, index) of data.items"
+        :key="index"
+        :data="item"
+      ></list-item>
     </ordered-list>
-    <un-ordered-list v-else v-show="item.items">
-      <list-item v-for="(item, index) of item.items" :key="index">{{
-        item.content
-      }}</list-item>
+    <un-ordered-list v-else v-show="data.items">
+      <list-item
+        v-for="(item, index) of data.items"
+        :key="index"
+        :data="item"
+      ></list-item>
     </un-ordered-list>
   </li>
 </template>
@@ -24,11 +28,10 @@ export default defineComponent({
     'un-ordered-list': UnOrdered,
   },
   props: {
-    item: {
+    data: {
       type: Object,
       required: true,
     },
   },
 });
 </script>
-<style scoped></style>

@@ -1,13 +1,16 @@
 <template>
-  <ol class="list-decimal list-inside">
-    <slot />
-  </ol>
+  <hr />
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'ordered-list',
+  name: 'editor-heading',
+  props: {
+    data: {
+      type: Object,
+      required: false,
+    },
+  },
 });
 </script>
-<style scoped></style>

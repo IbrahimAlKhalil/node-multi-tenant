@@ -23,80 +23,33 @@
     </template>
 
     <template #main>
-      <div class="pt-10 pl-5">
+      <pre>{{ tutorials }}</pre>
+      <div class="pt-10 pl-5 min-h-full flex flex-col justify-between">
         <section class="intro-meta pb-8 border-b border-b-gray-200">
-          <h3 class="font-bold text-5xl mb-3">Students Administration</h3>
-          <p class="text-gray-500 mb-5">
-            <span>Last update at: </span> <span>28-05-2022</span>
-          </p>
-          <p class="text-justify">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere,
-            fuga illum molestiae delectus hic repudiandae nobis distinctio
-            beatae, esse non nam facilis qui, et ullam.
-          </p>
+          <post-description-section
+            :content="tutorials[0].content"
+            class="w-full"
+          />
         </section>
-        <section class="my-10">
-          <h3 class="font-bold text-3xl mb-3">Students Administration</h3>
-          <p class="text-gray-500 dark:text-inherit mb-5">
-            <span>Last update at: </span> <span>28-05-2022</span>
-          </p>
-          <p class="text-justify mb-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-            fugit soluta placeat facilis, maxime aliquid omnis, corporis itaque
-            temporibus fugiat aperiam obcaecati sed enim. Ratione blanditiis sed
-            voluptas iste magni officiis officia commodi delectus quisquam
-            libero eveniet adipisci maiores suscipit tenetur, quis dicta odit
-            ipsum ipsam nihil voluptatum. Obcaecati, molestias!
-          </p>
-          <p class="text-justify mb-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-            fugit soluta placeat facilis, maxime aliquid omnis, corporis itaque
-            temporibus fugiat aperiam obcaecati sed enim. Ratione blanditiis sed
-            voluptas iste magni officiis officia commodi delectus quisquam
-            libero eveniet adipisci maiores suscipit tenetur, quis dicta odit
-            ipsum ipsam nihil voluptatum. Obcaecati, molestias!
-          </p>
-        </section>
-        <section class="my-10">
-          <h3 class="font-bold text-3xl mb-3">Students Administration</h3>
-          <p class="text-gray-500 dark:text-inherit mb-5">
-            <span>Last update at: </span> <span>28-05-2022</span>
-          </p>
-          <p class="text-justify mb-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-            fugit soluta placeat facilis, maxime aliquid omnis, corporis itaque
-            temporibus fugiat aperiam obcaecati sed enim. Ratione blanditiis sed
-            voluptas iste magni officiis officia commodi delectus quisquam
-            libero eveniet adipisci maiores suscipit tenetur, quis dicta odit
-            ipsum ipsam nihil voluptatum. Obcaecati, molestias!
-          </p>
-          <p class="text-justify mb-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-            fugit soluta placeat facilis, maxime aliquid omnis, corporis itaque
-            temporibus fugiat aperiam obcaecati sed enim. Ratione blanditiis sed
-            voluptas iste magni officiis officia commodi delectus quisquam
-            libero eveniet adipisci maiores suscipit tenetur, quis dicta odit
-            ipsum ipsam nihil voluptatum. Obcaecati, molestias!
-          </p>
-        </section>
+        <footer class="py-5 border-t border-t-gray-300">
+          <div class="w-11/12 mx-auto flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3 font-bold">
+              <component :is="ArrowLeft" style="bottom: 0"></component>
+              <span>Previous</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 font-bold">
+              <span>Next</span>
+              <component :is="ArrowRight" style="bottom: 0"></component>
+            </a>
+          </div>
+        </footer>
       </div>
-      <footer class="py-5 border-t border-t-gray-300">
-        <div class="w-11/12 mx-auto flex justify-between items-center">
-          <a href="#" class="flex items-center gap-3 font-bold">
-            <component :is="ArrowLeft" style="bottom: 0"></component>
-            <span>Previous</span>
-          </a>
-          <a href="#" class="flex items-center gap-3 font-bold">
-            <span>Next</span>
-            <component :is="ArrowRight" style="bottom: 0"></component>
-          </a>
-        </div>
-      </footer>
     </template>
   </TutorialPage>
 </template>
 
 <script lang="ts">
+import PostDescriptionSection from '#components/post-page/description-section.vue';
 import ArrowRight from '#icons/solid/arrow-right.svg';
 import TutorialPage from '#layouts/tutorial-page.vue';
 import ArrowLeft from '#icons/solid/arrow-left.svg';
@@ -112,6 +65,7 @@ export default defineComponent({
   name: 'tutorial-page',
   components: {
     'right-item': RightItem,
+    PostDescriptionSection,
     RightSectionContainer,
     TutorialPage,
     ListItem,

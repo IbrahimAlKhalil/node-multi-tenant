@@ -1,23 +1,48 @@
 <template>
-  <h1 v-if="level === 1" class="qmm_heading_1">{{ text }}</h1>
-  <h2 v-else-if="level === 2" class="qmm_heading_2">{{ text }}</h2>
-  <h4 v-else-if="level === 4" class="qmm_heading_4">{{ text }}</h4>
-  <h5 v-else-if="level === 5" class="qmm_heading_5">{{ text }}</h5>
-  <h6 v-else-if="level === 6" class="qmm_heading_6">{{ text }}</h6>
-  <h3 v-else class="qmm_heading_3">{{ text }}</h3>
+  <h1
+    v-if="data.level === 1"
+    class="qmm_heading_1"
+    v-html="data.text"
+    :id="id"
+  ></h1>
+  <h2
+    v-else-if="data.level === 2"
+    class="qmm_heading_2"
+    v-html="data.text"
+    :id="id"
+  ></h2>
+  <h4
+    v-else-if="data.level === 4"
+    class="qmm_heading_4"
+    v-html="data.text"
+    :id="id"
+  ></h4>
+  <h5
+    v-else-if="data.level === 5"
+    class="qmm_heading_5"
+    v-html="data.text"
+    :id="id"
+  ></h5>
+  <h6
+    v-else-if="data.level === 6"
+    class="qmm_heading_6"
+    v-html="data.text"
+    :id="id"
+  ></h6>
+  <h3 v-else class="qmm_heading_3" :id="id" v-html="data.text"></h3>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'the-heading',
+  name: 'editor-heading',
   props: {
-    level: {
-      type: Number,
-      required: true,
-    },
-    text: {
+    id: {
       type: String,
+      default: '',
+    },
+    data: {
+      type: Object,
       required: true,
     },
   },
