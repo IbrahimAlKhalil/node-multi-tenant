@@ -47,7 +47,7 @@ export default defineComponent({
 
   data() {
     return {
-      isOpen: false,
+      isOpen: true,
     };
   },
 
