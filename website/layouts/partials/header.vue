@@ -28,10 +28,10 @@
             class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
             :class="{
               'dark:text-light dark:hover:text-secondary': isSticky,
-              'text-primary': item.href === urlPathname && !isSticky,
+              'text-primary': item.href === myPath && !isSticky,
               'dark:text-secondary text-primary':
-                item.href === urlPathname && isSticky,
-              'text-white md:text-text': item.href !== urlPathname,
+                item.href === myPath && isSticky,
+              'text-white md:text-text': item.href !== myPath,
             }"
           >
             <a
@@ -40,7 +40,7 @@
             >
               <component
                 class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
-                :class="{ 'scale-125': item.href === urlPathname }"
+                :class="{ 'scale-125': item.href === myPath }"
                 :is="item.icon"
               />
 
@@ -130,11 +130,12 @@ export default defineComponent({
   },
   setup() {
     const { urlPathname } = usePageContext();
+    const myPath = '/' + urlPathname.split('/')[1];
     const navData = useNavData();
     const i18n = useI18n();
 
     return {
-      urlPathname,
+      myPath,
       t: i18n.t,
       DoorOpen,
       navData,
