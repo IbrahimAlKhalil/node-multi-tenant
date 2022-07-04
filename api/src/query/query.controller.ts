@@ -16,7 +16,7 @@ export class QueryController {
     private readonly uws: Uws,
   ) {
     uws.get('/query', this.query.bind(this));
-    uws.options('/query', uwsService.setCorsHeaders);
+    uws.options('/query', uwsService.setCorsHeaders.bind(uwsService));
   }
 
   private async query(res: HttpResponse, req: HttpRequest) {
@@ -27,6 +27,7 @@ export class QueryController {
     });
 
     const rawQuery = req.getQuery();
+    const origin = req.getHeader('origin');
 
     const session = await this.authService.authenticateReq(res, req);
 
@@ -40,10 +41,10 @@ export class QueryController {
     try {
       query = await querySchema.validateAsync(parsedQuery);
     } catch (e) {
+      res.writeStatus('400');
       return res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
-          .writeStatus('400')
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -65,13 +66,12 @@ export class QueryController {
     const result = await this.queryService.find(query, session);
 
     if (!aborted) {
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res)
-          .writeHeader('Content-Type', 'application/json')
-          .writeStatus('200')
-          .end(JSON.stringify(result), true);
-      });
+      res.writeStatus('200');
+
+      this.uwsService
+        .setCorsHeaders(res, origin, false)
+        .writeHeader('Content-Type', 'application/json')
+        .end(JSON.stringify(result), true);
     }
   }
 }

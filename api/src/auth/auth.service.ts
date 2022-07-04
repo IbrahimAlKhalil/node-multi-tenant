@@ -91,14 +91,18 @@ export class AuthService {
   ): Promise<Session | null> {
     const cookie = req.getHeader('cookie');
     const csrfToken = req.getHeader('x-csrf-token');
+    const origin = req.getHeader('origin');
+
+    console.log(cookie, csrfToken, req.getUrl());
 
     const session = await this.authenticate(cookie, csrfToken);
 
     if (!session) {
+      res.writeStatus('401');
+
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
-          .writeStatus('401')
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({

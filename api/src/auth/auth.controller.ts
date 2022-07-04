@@ -22,7 +22,7 @@ export class AuthController {
     private readonly uws: Uws,
   ) {
     uws.post('/auth/login', this.login.bind(this));
-    uws.options('/auth/login', uwsService.setCorsHeaders);
+    uws.options('/auth/login', uwsService.setCorsHeaders.bind(uwsService));
   }
 
   private readonly loginSchema = joi.object<LoginInput>({
@@ -44,6 +44,7 @@ export class AuthController {
       res.getProxiedRemoteAddressAsText(),
     ).toString();
     const userAgent = req.getHeader('user-agent');
+    const origin = req.getHeader('origin');
 
     let body: Record<string, any>;
 
@@ -74,10 +75,11 @@ export class AuthController {
     if (error) {
       // Validation failed
 
+      res.writeStatus('400');
+
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
-          .writeStatus('400')
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -103,10 +105,11 @@ export class AuthController {
       // No prisma client found
       // Which means the instituteId is invalid
 
+      res.writeStatus('404');
+
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
-          .writeStatus('404')
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -142,10 +145,11 @@ export class AuthController {
         return;
       }
 
+      res.writeStatus('401');
+
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
-          .writeStatus('401')
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -209,16 +213,17 @@ export class AuthController {
 
     // Everything is fine, so we can send the token to the user
 
+    res.writeStatus('200');
+
     res.cork(() => {
       this.uwsService
-        .setCorsHeaders(res)
-        .writeStatus('200')
+        .setCorsHeaders(res, origin, false)
         .writeHeader('Content-Type', 'application/json')
         .writeHeader(
           'Set-Cookie',
           `${this.config.auth.cookieKey}=${token}; Domain=${
             this.config.app.websiteHost
-          }; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${Math.round(
+          }; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${Math.round(
             expiresAt.getTime() / 1000,
           )}`,
         )

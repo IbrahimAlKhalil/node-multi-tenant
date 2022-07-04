@@ -1,6 +1,19 @@
 import { HttpRequest, HttpResponse } from 'uWebSockets.js';
+import { Config } from '../config/config.js';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UwsService {
+  constructor(private readonly config: Config) {}
+
+  private readonly origin = new URL(`https://${this.config.app.clusterHost}`)
+    .origin;
+
+  private readonly allowedOrigins = new Set([
+    new URL(`https://${this.config.app.websiteHost}`).origin,
+    this.origin,
+  ]);
+
   public readBodyAsJson(
     res: HttpResponse,
     req: HttpRequest,
@@ -53,9 +66,6 @@ export class UwsService {
     let code: string;
     let message: string;
 
-    res.writeStatus('400');
-    res.writeHeader('Content-Type', 'application/json');
-
     if (error.message === 'INVALID_CONTENT_TYPE') {
       code = 'INVALID_CONTENT_TYPE';
       message = 'Content-Type must be application/json';
@@ -67,20 +77,41 @@ export class UwsService {
       message = 'Internal error';
     }
 
-    res.end(JSON.stringify({ code, message }));
+    res
+      .writeStatus('400')
+      .writeHeader('Content-Type', 'application/json')
+      .end(JSON.stringify({ code, message }), true);
   }
 
-  public setCorsHeaders(res: HttpResponse, req?: HttpRequest): HttpResponse {
+  public setCorsHeaders(
+    res: HttpResponse,
+    reqOrOrigin: HttpRequest | string,
+    end = true,
+  ): HttpResponse {
+    const originFrom = !reqOrOrigin
+      ? this.origin
+      : typeof reqOrOrigin === 'string'
+      ? reqOrOrigin
+      : reqOrOrigin.getHeader('origin');
+
     const _res = res
-      .writeHeader('Access-Control-Allow-Origin', '*')
-      .writeHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+      .writeHeader(
+        'Access-Control-Allow-Origin',
+        this.allowedOrigins.has(originFrom) ? originFrom : this.origin,
+      )
+      .writeHeader(
+        'Access-Control-Allow-Methods',
+        'GET, POST, UPDATE, DELETE, OPTIONS',
+      )
       .writeHeader(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept, Origin',
+        'Content-Type, Authorization, Accept, Accept-Language, Origin, X-Csrf-Token, Cookie',
       )
+      .writeHeader('Access-Control-Expose-Headers', 'Content-Type')
+      .writeHeader('Access-Control-Allow-Credentials', 'true')
       .writeHeader('Access-Control-Max-Age', '3600');
 
-    if (req) {
+    if (end) {
       return _res.end('', true);
     }
 

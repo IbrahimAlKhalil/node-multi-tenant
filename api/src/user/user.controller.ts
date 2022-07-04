@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service.js';
 import { UwsService } from '../uws/uws.service.js';
 import { Injectable } from '@nestjs/common';
 import { Uws } from '../uws/uws.js';
+import pick from 'lodash/pick.js';
 
 @Injectable()
 export class UserController {
@@ -14,7 +15,7 @@ export class UserController {
     private readonly uws: Uws,
   ) {
     uws.get('/user/me', this.me.bind(this));
-    uws.options('/user/me', uwsService.setCorsHeaders);
+    uws.options('/user/me', uwsService.setCorsHeaders.bind(uwsService));
   }
 
   private async me(res: HttpResponse, req: HttpRequest) {
@@ -23,6 +24,8 @@ export class UserController {
     res.onAborted(() => {
       aborted = true;
     });
+
+    const origin = req.getHeader('origin');
 
     const session = await this.authService.authenticateReq(res, req);
 
@@ -33,10 +36,11 @@ export class UserController {
     const prisma = await this.prismaService.getPrisma(session.iid);
 
     if (!prisma) {
+      res.writeStatus('400');
+
       return res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
-          .writeStatus('400')
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -58,14 +62,32 @@ export class UserController {
         username: true,
         pictureId: true,
         type: true,
+
+        I18n: {
+          select: {
+            name: true,
+          },
+          take: 1,
+        },
       },
     });
 
+    const userDecorated: Record<string, any> = pick(
+      user,
+      'id',
+      'email',
+      'username',
+      'pictureId',
+      'type',
+    );
+
+    userDecorated.name = user?.I18n[0].name;
+
     res.cork(() => {
       this.uwsService
-        .setCorsHeaders(res)
+        .setCorsHeaders(res, origin, false)
         .writeHeader('Content-Type', 'application/json')
-        .end(JSON.stringify(user), true);
+        .end(JSON.stringify(userDecorated), true);
     });
   }
 }
