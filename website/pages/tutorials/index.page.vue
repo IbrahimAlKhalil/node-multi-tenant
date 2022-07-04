@@ -23,9 +23,13 @@
     </template>
 
     <template #main>
+      <pre>{{ tutorials }}</pre>
       <div class="pt-10 pl-5 min-h-full flex flex-col justify-between">
         <section class="intro-meta pb-8 border-b border-b-gray-200">
-          <post-description-section :content="tutorials[0].content" />
+          <post-description-section
+            :content="tutorials[0].content"
+            class="w-full"
+          />
         </section>
         <footer class="py-5 border-t border-t-gray-300">
           <div class="w-11/12 mx-auto flex justify-between items-center">
