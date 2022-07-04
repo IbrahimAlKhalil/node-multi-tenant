@@ -24,6 +24,8 @@ export class UserController {
       aborted = true;
     });
 
+    const origin = req.getHeader('origin');
+
     const session = await this.authService.authenticateReq(res, req);
 
     if (aborted || !session) {
@@ -37,7 +39,7 @@ export class UserController {
 
       return res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -64,7 +66,7 @@ export class UserController {
 
     res.cork(() => {
       this.uwsService
-        .setCorsHeaders(res)
+        .setCorsHeaders(res, origin, false)
         .writeHeader('Content-Type', 'application/json')
         .end(JSON.stringify(user), true);
     });

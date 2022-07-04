@@ -44,6 +44,7 @@ export class AuthController {
       res.getProxiedRemoteAddressAsText(),
     ).toString();
     const userAgent = req.getHeader('user-agent');
+    const origin = req.getHeader('origin');
 
     let body: Record<string, any>;
 
@@ -78,7 +79,7 @@ export class AuthController {
 
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -108,7 +109,7 @@ export class AuthController {
 
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -148,7 +149,7 @@ export class AuthController {
 
       res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -216,7 +217,7 @@ export class AuthController {
 
     res.cork(() => {
       this.uwsService
-        .setCorsHeaders(res)
+        .setCorsHeaders(res, origin, false)
         .writeHeader('Content-Type', 'application/json')
         .writeHeader(
           'Set-Cookie',

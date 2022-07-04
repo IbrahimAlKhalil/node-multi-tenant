@@ -27,6 +27,7 @@ export class QueryController {
     });
 
     const rawQuery = req.getQuery();
+    const origin = req.getHeader('origin');
 
     const session = await this.authService.authenticateReq(res, req);
 
@@ -43,7 +44,7 @@ export class QueryController {
       res.writeStatus('400');
       return res.cork(() => {
         this.uwsService
-          .setCorsHeaders(res)
+          .setCorsHeaders(res, origin, false)
           .writeHeader('Content-Type', 'application/json')
           .end(
             JSON.stringify({
@@ -68,7 +69,7 @@ export class QueryController {
       res.writeStatus('200');
 
       this.uwsService
-        .setCorsHeaders(res)
+        .setCorsHeaders(res, origin, false)
         .writeHeader('Content-Type', 'application/json')
         .end(JSON.stringify(result), true);
     }

@@ -1,6 +1,19 @@
 import { HttpRequest, HttpResponse } from 'uWebSockets.js';
+import { Config } from '../config/config.js';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UwsService {
+  constructor(private readonly config: Config) {}
+
+  private readonly origin = new URL(`https://${this.config.app.clusterHost}`)
+    .origin;
+
+  private readonly allowedOrigins = new Set([
+    new URL(`https://${this.config.app.websiteHost}`).origin,
+    this.origin,
+  ]);
+
   public readBodyAsJson(
     res: HttpResponse,
     req: HttpRequest,
@@ -70,17 +83,35 @@ export class UwsService {
       .end(JSON.stringify({ code, message }), true);
   }
 
-  public setCorsHeaders(res: HttpResponse, req?: HttpRequest): HttpResponse {
+  public setCorsHeaders(
+    res: HttpResponse,
+    reqOrOrigin: HttpRequest | string,
+    end = true,
+  ): HttpResponse {
+    const originFrom = !reqOrOrigin
+      ? this.origin
+      : typeof reqOrOrigin === 'string'
+      ? reqOrOrigin
+      : reqOrOrigin.getHeader('origin');
+
     const _res = res
-      .writeHeader('Access-Control-Allow-Origin', '*')
-      .writeHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+      .writeHeader(
+        'Access-Control-Allow-Origin',
+        this.allowedOrigins.has(originFrom) ? originFrom : this.origin,
+      )
+      .writeHeader(
+        'Access-Control-Allow-Methods',
+        'GET, POST, UPDATE, DELETE, OPTIONS',
+      )
       .writeHeader(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept, Origin, X-Csrf-Token, Cookie',
+        'Content-Type, Authorization, Accept, Accept-Language, Origin, X-Csrf-Token, Cookie',
       )
+      .writeHeader('Access-Control-Expose-Headers', 'Content-Type')
+      .writeHeader('Access-Control-Allow-Credentials', 'true')
       .writeHeader('Access-Control-Max-Age', '3600');
 
-    if (req) {
+    if (end) {
       return _res.end('', true);
     }
 
