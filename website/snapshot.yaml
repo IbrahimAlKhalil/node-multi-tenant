@@ -1,5 +1,5 @@
 version: 1
-directus: 9.12.1
+directus: 9.12.2
 collections:
   - collection: cluster
     meta:
@@ -72,6 +72,30 @@ collections:
     schema:
       comment: null
       name: comment_reaction
+      schema: public
+  - collection: contact
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: contact
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: alternate_email
+      item_duplication_fields: null
+      note: null
+      singleton: false
+      sort: null
+      sort_field: sort
+      translations: null
+      unarchive_value: null
+    schema:
+      comment: null
+      name: contact
       schema: public
   - collection: institute
     meta:
@@ -890,7 +914,7 @@ fields:
       options:
         placeholder: Mention to
       readonly: false
-      required: true
+      required: false
       sort: 11
       special: null
       translations: null
@@ -1488,6 +1512,389 @@ fields:
       schema: public
       table: comment_reaction
     type: uuid
+  - collection: contact
+    field: date_created
+    meta:
+      collection: contact
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_created
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: null
+      special:
+        - date-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: timestamp with time zone
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: date_created
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: timestamp
+  - collection: contact
+    field: date_updated
+    meta:
+      collection: contact
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_updated
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: null
+      special:
+        - date-updated
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: timestamp with time zone
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: date_updated
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: timestamp
+  - collection: contact
+    field: email
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: email
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Email address
+        trim: true
+      readonly: false
+      required: true
+      sort: null
+      special: null
+      translations: null
+      validation:
+        _and:
+          - email:
+              _regex: >-
+                /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      validation_message: Emai not valid
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: email
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: string
+  - collection: contact
+    field: first_name
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: first_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Enter your first name
+      readonly: false
+      required: true
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: first_name
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: string
+  - collection: contact
+    field: id
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: nextval('contact_id_seq'::regclass)
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: true
+      is_generated: false
+      is_nullable: false
+      is_primary_key: true
+      is_unique: true
+      max_length: null
+      name: id
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: contact
+    type: integer
+  - collection: contact
+    field: institute_name
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: institute_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Institute name
+      readonly: false
+      required: true
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: institute_name
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: string
+  - collection: contact
+    field: last_name
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: last_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Enter your last name
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: last_name
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: string
+  - collection: contact
+    field: message
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: message
+      group: null
+      hidden: false
+      interface: input-multiline
+      note: null
+      options:
+        placeholder: Your message
+      readonly: false
+      required: true
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: text
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: message
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: contact
+    type: text
+  - collection: contact
+    field: sort
+    meta:
+      collection: contact
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: sort
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: contact
+    type: integer
   - collection: directus_dashboards
     field: color
     meta: null
@@ -1535,29 +1942,6 @@ fields:
       width: full
     schema: null
     type: alias
-  - collection: directus_flows
-    field: description
-    meta: null
-    schema:
-      comment: null
-      data_type: text
-      default_value: null
-      foreign_key_column: null
-      foreign_key_schema: null
-      foreign_key_table: null
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: description
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: directus_flows
-    type: text
   - collection: institute
     field: cluster
     meta:
@@ -1976,8 +2360,12 @@ fields:
       sort: 5
       special: null
       translations: null
-      validation: null
-      validation_message: null
+      validation:
+        _and:
+          - email:
+              _regex: >-
+                /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      validation_message: Input a valid email
       width: full
     schema:
       comment: null
