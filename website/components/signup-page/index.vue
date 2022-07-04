@@ -22,7 +22,7 @@
           : 'text-gray-500 before:bg-gray-500 before:text-light dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
-      <p>Company Info</p>
+      <p>Institute Info</p>
     </div>
   </div>
   <form @submit.prevent="handleEmailSubmit" v-show="selectedTab === 'email'">
@@ -79,7 +79,7 @@
       <InputField
         name="instituteName"
         type="text"
-        placeholder="Enter your company name"
+        placeholder="Enter your institute name"
         v-model="companyInfo.instituteName"
         :error="companyInfoErrors.instituteName"
         :value="companyInfo.instituteName"
