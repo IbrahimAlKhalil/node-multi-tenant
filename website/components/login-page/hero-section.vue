@@ -8,46 +8,42 @@
       <div class="md:w-1/2 mx-auto flex flex-col gap-2 items-center p-5">
         <InputField
           placeholder="Institute Code"
-          name="code"
-          type="text"
-          v-model="values.code"
+          @on-keypress="validate"
+          @on-input="handleInput"
           :value="values.code"
           :error="errors.code"
-          @on-input="handleInput"
           @on-blur="validate"
-          @on-keypress="validate"
+          name="code"
+          type="text"
         />
         <InputField
           placeholder="Email / Username / Mobile"
-          name="username"
-          type="text"
-          v-model="values.username"
           :value="values.username"
           :error="errors.username"
           @on-input="handleInput"
-          @on-blur="validate"
           @on-keypress="validate"
+          @on-blur="validate"
+          name="username"
+          type="text"
         />
         <InputField
-          placeholder="Password"
-          name="password"
+          @on-toggle-password="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
-          v-model="values.password"
+          :show-password="showPassword"
           :value="values.password"
           :error="errors.password"
           :isPasswordField="true"
-          :show-password="showPassword"
           @on-input="handleInput"
+          placeholder="Password"
           @on-blur="validate"
-          @on-keypress="validate"
-          @on-toggle-password="showPassword = !showPassword"
+          name="password"
         />
         <div class="w-full">
           <input
+            v-model="values.remember"
             type="checkbox"
             name="remember"
             id="remember"
-            v-model="values.remember"
           />
           <label for="remember" class="text-text dark:text-light font-bold ml-2"
             >Remember me</label
@@ -86,118 +82,61 @@
 import InputField from '#components/form-components/input-field.vue';
 import PageTitle from '#components/ui/page-title.vue';
 import loginFormType from '#types/login-form-type';
+import { useAuth } from '#stores/auth.store';
+import { reactive, ref } from 'vue';
 import * as Yup from 'yup';
-import { ref } from 'vue';
 
 defineProps(['search', 'category', 'categories']);
 defineEmits(['update:search', 'update:category']);
 
-// onBeforeMount(() => {
-//   if (localStorage.getItem('auth_token')) {
-//     location.replace('/');
-//   }
-// });
-
 const loginStage = ref('form');
 const btnText = ref('Login');
 const showPassword = ref(false);
-const values = ref<loginFormType>({
+
+const values = reactive<loginFormType>({
   code: '',
   username: '',
   password: '',
   rememberMe: false,
 });
-
-const errors = ref<loginFormType>({
+const errors = reactive<Omit<loginFormType, 'rememberMe'>>({
   code: '',
   username: '',
   password: '',
-  rememberMe: false,
 });
 
 const schema = Yup.object().shape({
   code: Yup.string().required('Institute Code is required'),
   username: Yup.string().required('Username is required'),
-  password: Yup.string()
-    .required('Password is required')
-    .min(4, 'Password must be at least 4 characters'),
   rememberMe: Yup.boolean().optional().default(false),
 });
 
-const validate = (field: string) => {
+const authStore = useAuth();
+
+const validate = (field: keyof Omit<loginFormType, 'rememberMe'>) => {
   schema
-    .validateAt(field, values.value)
+    .validateAt(field, values)
     .then(() => {
-      errors.value[field] = '';
+      errors[field] = '';
     })
     .catch((err) => {
-      errors.value[field] = err.message;
+      errors[field] = err.message;
     });
 };
 
-const handleInput = (event) => {
-  values.value[event.target.name] = event.target.value;
+const handleInput = (event: any) => {
+  if (!event.target?.name) {
+    return;
+  }
+
+  (values as any)[event.target.name] = event.target.value;
 };
 
 const handleSubmit = async () => {
-  const response = await fetch(
-    `${location.protocol}//${location.hostname}/auth`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  );
-  const result = await response.json();
-  console.log(result);
+  const user = await authStore.login(values);
+
+  console.log(user);
+
+  // TODO: Show success/error message
 };
 </script>
-<!-- 
-
-loginStage.value = 'loading';
-  schema
-    .validate(values.value, { abortEarly: false })
-    .then(() => {
-      errors.value = {};
-    })
-    .catch((err) => {
-      err.inner.forEach((error) => {
-        errors.value[error.path] = error.message;
-      });
-    });
-
-  const response = await fetch(
-    `${location.protocol}//${location.hostname}/items/institute?fields=cluster.*,code,id,name`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  );
-  const result = await response.json();
-
-  const { data } = result;
-  if (data) {
-    const apiUrl = `https://${data[0].cluster.host}/auth/login/${data[0].id}`;
-    const loginResponse = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: values.value.username,
-        password: values.value.password,
-        rememberMe: values.value.remember,
-      }),
-    });
-    const loginResult = await loginResponse?.json();
-    if (loginResult) {
-      loginStage.value = 'success';
-      // location.replace('/');
-      localStorage.setItem('crf_token', loginResult.csrfToken);
-    } else {
-      loginStage.value = 'form';
-    }
-  } -->
