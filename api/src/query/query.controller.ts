@@ -16,7 +16,7 @@ export class QueryController {
     private readonly uws: Uws,
   ) {
     uws.get('/query', this.query.bind(this));
-    uws.options('/query', uwsService.setCorsHeaders);
+    uws.options('/query', uwsService.setCorsHeaders.bind(uwsService));
   }
 
   private async query(res: HttpResponse, req: HttpRequest) {

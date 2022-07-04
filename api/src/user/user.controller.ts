@@ -14,7 +14,7 @@ export class UserController {
     private readonly uws: Uws,
   ) {
     uws.get('/user/me', this.me.bind(this));
-    uws.options('/user/me', uwsService.setCorsHeaders);
+    uws.options('/user/me', uwsService.setCorsHeaders.bind(uwsService));
   }
 
   private async me(res: HttpResponse, req: HttpRequest) {

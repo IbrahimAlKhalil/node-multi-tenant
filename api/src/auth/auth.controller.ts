@@ -22,7 +22,7 @@ export class AuthController {
     private readonly uws: Uws,
   ) {
     uws.post('/auth/login', this.login.bind(this));
-    uws.options('/auth/login', uwsService.setCorsHeaders);
+    uws.options('/auth/login', uwsService.setCorsHeaders.bind(uwsService));
   }
 
   private readonly loginSchema = joi.object<LoginInput>({

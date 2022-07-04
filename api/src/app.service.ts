@@ -27,9 +27,7 @@ export class AppService {
     const { websocket } = config;
 
     import('uWebSockets.js').then(({ default: uwjs }) => {
-      uws.options('/ws/:csrfToken', (res) => {
-        this.uwsService.setCorsHeaders(res);
-      });
+      uws.options('/ws/:csrfToken', uwsService.setCorsHeaders.bind(uwsService));
       uws.ws('/ws/:csrfToken', {
         /* Configurations */
 
