@@ -23,16 +23,16 @@
       >
         <ul class="flex flex-col md:flex-row items-center justify-center">
           <li
+            v-for="item in navData.data"
+            :key="item.href"
             class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
             :class="{
               'dark:text-light dark:hover:text-secondary': isSticky,
-              'text-primary': item.href === navData.currentPath && !isSticky,
+              'text-primary': item.href === urlPathname && !isSticky,
               'dark:text-secondary text-primary':
-                item.href === navData.currentPath && isSticky,
-              'text-white md:text-text': item.href !== navData.currentPath,
+                item.href === urlPathname && isSticky,
+              'text-white md:text-text': item.href !== urlPathname,
             }"
-            v-for="item in navData.data"
-            :key="item.href"
           >
             <a
               :href="item.href"
@@ -40,7 +40,7 @@
             >
               <component
                 class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
-                :class="{ 'scale-125': item.href === navData.currentPath }"
+                :class="{ 'scale-125': item.href === urlPathname }"
                 :is="item.icon"
               />
 
@@ -82,10 +82,10 @@ import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import { usePageContext } from '#modules/use-page-context';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import { useNavData } from '#stores/navdata.store';
-import { defineComponent } from 'vue';
 import MenuBar from '#icons/light/bars.svg';
 import Cross from '#icons/light/times.svg';
 import Logo from '#images/logo.svg?url';
+import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -96,10 +96,10 @@ export default defineComponent({
   },
   data() {
     return {
+      isDefaultSticky: false,
       activeMenu: false,
       headerHeight: 70,
       isSticky: false,
-      isDefaultSticky: false,
     };
   },
   mounted() {
@@ -135,26 +135,13 @@ export default defineComponent({
 
     return {
       urlPathname,
-      navData,
       t: i18n.t,
       DoorOpen,
+      navData,
       MenuBar,
       Cross,
       Logo,
     };
   },
 });
-
-// if (navData.currentPath !== urlPathname) {
-//   navData.currentPath = urlPathname;
-// }
-
-// function checkStickyHeader() {
-//   return (
-//     (navData.currentPath.split('/')[1] === 'blog' &&
-//       navData.currentPath.split('/').length > 2) ||
-//     navData.currentPath.split('/')[1] === 'tutorials' ||
-//     navData.currentPath.split('/')[1] === 'admin'
-//   );
-// }
 </script>
