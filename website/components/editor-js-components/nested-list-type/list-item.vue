@@ -1,14 +1,14 @@
 <template>
-  <li class="pl-3">
+  <li class="pl-4">
     <span v-html="data.content"></span>
-    <ordered-list v-if="data.style === 'ordered'" v-show="data.items">
+    <ordered-list v-if="type === 'ordered'" v-show="data.items.length">
       <list-item
         v-for="(item, index) of data.items"
         :key="index"
         :data="item"
       ></list-item>
     </ordered-list>
-    <un-ordered-list v-else v-show="data.items">
+    <un-ordered-list v-else v-show="data.items.length">
       <list-item
         v-for="(item, index) of data.items"
         :key="index"
@@ -31,6 +31,10 @@ export default defineComponent({
     data: {
       type: Object,
       required: true,
+    },
+    type: {
+      type: String,
+      default: 'unordered',
     },
   },
 });
