@@ -129,20 +129,33 @@
           </li>
         </ul>
       </div>
+      <div>
+        <a href="/blog">
+          <button
+            class="w-full p-1 border border-secondary hover:border-secondary-dark hover:bg-secondary-dark text-secondary-dark hover:text-white rounded-md font-bold text-lg flex items-center justify-center gap-2"
+          >
+            <component :is="TrashIcon"></component>
+            Rest Filters
+          </button>
+        </a>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
+import { usePageContext } from '#modules/use-page-context';
 import CircleCheck from '#icons/solid/check-circle.svg';
+import TrashIcon from '#icons/solid/trash-alt.svg';
 import { defineComponent, reactive, watch } from 'vue';
 import SearchIcon from '#icons/solid/search.svg';
 import Circle from '#icons/light/circle.svg';
 import { useI18n } from 'vue-i18n';
-import { usePageContext } from '#modules/use-page-context';
 
 export default defineComponent({
   name: 'blog-sidebar',
+  components: { SecondaryBtn },
   props: {
     categories: {
       type: Array,
@@ -177,37 +190,29 @@ export default defineComponent({
           '&' + key + '=' + encodeURIComponent(val),
         )
         .replace(/^([^?&]+)&/, '$1?');
-      console.log({
-        url: uri,
-        key,
-        val,
-      });
       window.location.href = uri;
     },
   },
   emits: ['update:search', 'update:category', 'update:tag'],
   setup(_, { emit }) {
     const { pageProps } = usePageContext();
-    console.log('category from server: ', pageProps?.category);
     const i18n = useI18n();
     const model = reactive({
       search: pageProps?.searchText ?? '',
       category: pageProps?.category ?? '',
       tag: pageProps?.tag ?? '',
     });
-
     const keys = Object.keys(model) as (keyof typeof model)[];
-
     for (let key of keys) {
       watch(
         () => model[key],
         (value) => emit(`update:${key}`, value),
       );
     }
-
     return {
       CircleCheck,
       SearchIcon,
+      TrashIcon,
       t: i18n.t,
       Circle,
       model,

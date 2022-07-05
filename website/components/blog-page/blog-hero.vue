@@ -21,15 +21,19 @@
           style="flex: 1 1 300px"
         >
           <div class="media" style="flex: 1 1 40%">
-            <img
-              :src="'/assets/' + blog.featured_image"
-              class="rounded-md"
-              :alt="blog.title"
-            />
+            <a :href="'/blog/' + blog.slug">
+              <img
+                :src="'/assets/' + blog.featured_image"
+                class="rounded-md"
+                :alt="blog.title"
+              />
+            </a>
           </div>
           <div class="content" style="flex: 1 1 60%">
             <h3 class="font-bold text-lg text-primary dark:text-secondary">
-              {{ blog.title }}
+              <a :href="'/blog/' + blog.slug">
+                {{ blog.title }}
+              </a>
             </h3>
             <p class="italic text-gray-500">Date: {{ blog.date_created }}</p>
             <p class="description my-2 text-center lg:text-justify">
@@ -40,7 +44,7 @@
               }}
             </p>
             <a
-              href="#"
+              :href="'/blog/' + blog.slug"
               class="font-bold text-primary dark:text-secondary flex items-center justify-center lg:justify-start gap-2 uppercase transition hover:text-secondary-dark"
               >Read More
               <component

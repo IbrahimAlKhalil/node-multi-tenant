@@ -27,10 +27,10 @@
               :isOdd="index % 2 === 0"
             />
             <the-pagination
+              v-show="totalPage > 1"
               @change-page="handleChangePage"
               :total="totalPage"
               :activePage="activePage"
-              urlWithKey="/blog?page="
             />
           </blogs>
         </template>
