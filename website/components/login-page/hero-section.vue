@@ -1,11 +1,9 @@
 <template>
   <div class="form" v-if="loginStage === 'form'">
     <page-title title="Login" />
-    <h2 class="text-lg text-center text-gray-400 lowercase">
-      To access you dashboard
-    </h2>
+    <h2 class="text-lg text-center text-gray-400">To access you dashboard</h2>
     <form @submit.prevent="handleSubmit">
-      <div class="md:w-1/2 mx-auto flex flex-col gap-2 items-center p-5">
+      <div class="md:w-3/2 mx-auto flex flex-col gap-2 items-center p-5">
         <InputField
           placeholder="Institute Code"
           @on-keypress="validate"
@@ -45,15 +43,21 @@
             name="remember"
             id="remember"
           />
-          <label for="remember" class="text-text dark:text-light font-bold ml-2"
-            >Remember me</label
+          <label
+            class="text-text dark:text-light font-bold ml-2"
+            for="remember"
           >
+            Remember me
+          </label>
         </div>
-        <input
+        <br>
+        <button
           type="submit"
           :value="btnText"
           class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
-        />
+        >
+          {{ btnText }}
+        </button>
       </div>
     </form>
     <p class="text-center italic">
