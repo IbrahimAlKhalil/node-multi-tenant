@@ -23,7 +23,6 @@
     </template>
 
     <template #main>
-      <pre>{{ tutorials }}</pre>
       <div class="pt-10 pl-5 min-h-full flex flex-col justify-between">
         <section class="intro-meta pb-8 border-b border-b-gray-200">
           <post-description-section
@@ -72,90 +71,6 @@ export default defineComponent({
     TheList,
   },
   props: ['tutorialCategories', 'tutorials'],
-  data() {
-    return {
-      leftNavigation: [
-        {
-          type: 'category',
-          title: 'Students Administration',
-          slug: 'students-administration',
-          subCategories: [
-            {
-              title: 'Pre Requirements',
-              slug: 'pre-requirements',
-              subCategories: [
-                { title: 'Information', slug: 'information' },
-                { title: 'Photo', slug: 'photo' },
-                { title: 'Documents', slug: 'admission' },
-              ],
-            },
-            {
-              title: 'Registration',
-              slug: 'registration',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          title: 'Accounts',
-          slug: 'accounts',
-          subCategories: [
-            {
-              title: 'Admission',
-              slug: 'admission',
-              subCategories: [
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'category',
-          title: 'Students Administration',
-          slug: 'students-administration',
-          subCategories: [
-            {
-              title: 'Pre Requirements',
-              slug: 'pre-requirements',
-              subCategories: [
-                { title: 'Information', slug: 'information' },
-                { title: 'Photo', slug: 'photo' },
-                { title: 'Documents', slug: 'admission' },
-              ],
-            },
-            {
-              title: 'Registration',
-              slug: 'registration',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          title: 'Accounts',
-          slug: 'accounts',
-          subCategories: [
-            {
-              title: 'Admission',
-              slug: 'admission',
-              subCategories: [
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-                { title: 'Admission', slug: 'admission' },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-  },
   setup() {
     return {
       ArrowLeft,
