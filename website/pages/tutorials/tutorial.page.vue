@@ -122,7 +122,9 @@ export default defineComponent({
   },
   mounted() {
     this.headers = this.tutorial?.content?.blocks
-      ? this.tutorial.content.blocks.filter((block) => block.type === 'header')
+      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.tutorial.content.blocks.filter((block) => block.type === 'header')
       : [];
   },
   setup() {

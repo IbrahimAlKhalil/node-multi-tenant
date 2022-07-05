@@ -17,38 +17,50 @@
 
     <template #right-sidebar>
       <right-section-container>
-        <right-item title="Right Sidebar" slug="test" :isActive="true" />
-        <right-item title="Right Sidebar" slug="test" />
+        <right-item title="Right Sidebar" slug="#test" :isActive="true" />
+        <right-item title="Right Sidebar" slug="#test" />
       </right-section-container>
     </template>
 
     <template #main>
-      <div class="pt-10 pl-5 min-h-full flex flex-col justify-between">
-        <section class="intro-meta pb-8 border-b border-b-gray-200">
-          <post-description-section
-            :content="tutorials[0].content"
-            class="w-full"
-          />
+      <div class="pt-10 pl-5">
+        <section class="intro-meta py-5 border-b border-b-gray-200">
+          <h1
+            class="text-4xl font-bold text-primary dark:text-secondary text-center mb-5"
+          >
+            This is tutorial home page
+          </h1>
+          <p class="w-4/5 mx-auto text-gray-500 dark:text-light text-center">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis
+            voluptate recusandae corporis debitis soluta nemo, nulla eaque
+            maxime cumque eum neque sunt ipsum dolore molestias!
+          </p>
         </section>
-        <footer class="py-5 border-t border-t-gray-300">
-          <div class="w-11/12 mx-auto flex justify-between items-center">
-            <a href="#" class="flex items-center gap-3 font-bold">
-              <component :is="ArrowLeft" style="bottom: 0"></component>
-              <span>Previous</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 font-bold">
-              <span>Next</span>
-              <component :is="ArrowRight" style="bottom: 0"></component>
-            </a>
-          </div>
-        </footer>
+        <section
+          class="intro-meta py-5 border-b border-b-gray-200"
+          v-for="n of 3"
+          :key="n"
+        >
+          <h3 class="text-2xl font-bold text-primary dark:text-secondary mb-5">
+            This is title.
+          </h3>
+          <p class="text-text dark:text-light text-justify">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Consectetur modi architecto eius at natus similique. Velit, commodi
+            nostrum. Ducimus laboriosam aliquam culpa vitae facere qui expedita
+            architecto velit cum ullam.<br /><br />
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Consectetur modi architecto eius at natus similique. Velit, commodi
+            nostrum. Ducimus laboriosam aliquam culpa vitae facere qui expedita
+            architecto velit cum ullam.
+          </p>
+        </section>
       </div>
     </template>
   </TutorialPage>
 </template>
 
 <script lang="ts">
-import PostDescriptionSection from '#components/post-page/description-section.vue';
 import ArrowRight from '#icons/solid/arrow-right.svg';
 import TutorialPage from '#layouts/tutorial-page.vue';
 import ArrowLeft from '#icons/solid/arrow-left.svg';
@@ -64,7 +76,6 @@ export default defineComponent({
   name: 'tutorial-page',
   components: {
     'right-item': RightItem,
-    PostDescriptionSection,
     RightSectionContainer,
     TutorialPage,
     ListItem,
