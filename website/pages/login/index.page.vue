@@ -1,6 +1,6 @@
 <template>
   <layout-main>
-    <common-scrollable-hero>
+    <common-scrollable-hero :size="2">
       <HeroSection />
     </common-scrollable-hero>
   </layout-main>
