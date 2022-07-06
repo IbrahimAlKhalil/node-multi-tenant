@@ -61,7 +61,7 @@
             (react) => react.reaction.value === 'like',
           )"
           :key="item.id"
-          class="flex items-center gap-2 text-text text-lg"
+          class="flex items-center gap-2 text-text dark:text-light text-lg"
         >
           <div
             class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
@@ -90,7 +90,9 @@
     </tab-body>
     <tab-body v-show="activeTab === 'wow'">
       <tab-body-users-container
-        ><span class="text-center"> No users found</span>
+        ><span class="text-center font-bold dark:text-light">
+          No users found</span
+        >
       </tab-body-users-container>
     </tab-body>
     <tab-body v-show="activeTab === 'sad'">
@@ -98,7 +100,7 @@
         <li
           v-for="item of 15"
           :key="item"
-          class="flex items-center gap-2 text-text text-lg"
+          class="flex items-center gap-2 text-text dark:text-light text-lg"
         >
           <div class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden">
             <img
