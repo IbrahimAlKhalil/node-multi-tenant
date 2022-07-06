@@ -1,4 +1,3 @@
-import { AuthenticateInput } from './types/authenticate-input';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { HelperService } from '../helper/helper.service.js';
 import { HttpRequest, HttpResponse } from 'uWebSockets.js';
