@@ -11,6 +11,7 @@
           v-for="item of tutorialCategories"
           :key="item.slug"
           :data="item"
+          :currentSlug="currentSlug"
         ></list-item>
       </the-list>
     </template>
@@ -29,8 +30,14 @@
     </template>
 
     <template #main v-if="tutorial">
-      <div class="pt-10 pl-5 min-h-full flex flex-col justify-between">
-        <section class="intro-meta pb-8 border-b border-b-gray-200">
+      <div
+        class="pt-10 pl-5 flex flex-col justify-between"
+        style="min-height: 90vh"
+      >
+        <section
+          class="intro-meta pb-8 border-b border-b-gray-200"
+          style="flex: 2"
+        >
           <component
             v-for="block of tutorial?.content?.blocks"
             :key="block.id"
@@ -55,8 +62,13 @@
       </div>
     </template>
     <template #main v-else>
-      <div class="flex justify-center items-center h-full">
-        <p class="font-bold text-xl text-red-500">Not found!</p>
+      <div
+        class="flex flex-col justify-center items-center text-red-500 font-bold text-xl uppercase"
+        style="min-height: 90vh"
+      >
+        <span>🔍</span>
+        <span class="text-2xl">No tutorial</span>
+        <span class="text-gray-500 lowercase tracking-wide">available!</span>
       </div>
     </template>
   </TutorialPage>
@@ -71,9 +83,8 @@ import {
   RightSectionContainer,
   RightItem,
 } from '#components/tutorials-page/right-section';
-import { ListItem } from '#components/ui/list';
-import { TheList } from '#components/ui/list';
-import { defineComponent } from 'vue';
+import { TheList, ListItem } from '#components/ui/list';
+import { defineComponent, ref } from 'vue';
 import {
   NestedList,
   Delimiter,
@@ -83,6 +94,7 @@ import {
   Image,
   Quote,
 } from '#components/editor-js-components';
+import { usePageContext } from '#modules/use-page-context';
 
 export default defineComponent({
   name: 'the-tutorial',
@@ -110,11 +122,16 @@ export default defineComponent({
   },
   mounted() {
     this.headers = this.tutorial?.content?.blocks
-      ? this.tutorial.content.blocks.filter((block) => block.type === 'header')
+      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.tutorial.content.blocks.filter((block) => block.type === 'header')
       : [];
   },
   setup() {
+    const { urlPathname } = usePageContext();
+    const currentSlug = ref(urlPathname.split('/')[2]);
     return {
+      currentSlug,
       ArrowRight,
       ArrowLeft,
     };

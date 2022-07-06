@@ -4,6 +4,7 @@
       v-for="(item, index) of data.items"
       :key="index"
       :data="item"
+      :type="data.style"
     ></list-item>
   </ordered-list>
   <un-ordered-list v-else>
@@ -11,6 +12,7 @@
       v-for="(item, index) of data.items"
       :key="index"
       :data="item"
+      :type="data.style"
     ></list-item>
   </un-ordered-list>
 </template>

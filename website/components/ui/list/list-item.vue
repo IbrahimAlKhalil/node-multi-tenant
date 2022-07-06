@@ -1,21 +1,27 @@
 <template>
-  <li class="cursor-pointer" :class="spacing">
+  <li class="cursor-pointer ml-3">
     <span
-      @click="toggle"
-      class="flex items-center gap-3 w-full hover:text-primary"
-      :class="{ 'font-bold': isFolder }"
+      class="flex items-center gap-3 w-full py-1 px-2 rounded-l hover:bg-primary hover:text-white"
+      :class="[
+        isFolder ? 'font-bold' : '',
+        currentSlug == data.slug ? 'bg-primary text-white' : '',
+      ]"
     >
-      <span>
+      <span @click="toggle">
         <component :is="AngleDown" v-show="isFolder && isOpen"> </component>
         <component :is="AngleUp" v-show="isFolder && !isOpen"> </component>
       </span>
-      <span>{{ data.name }}</span>
+      <a :href="'/tutorials/' + data.slug" class="block w-full">
+        <span>{{ data.name }}</span>
+      </a>
     </span>
+
     <the-list v-show="isOpen" v-if="isFolder">
       <list-item
         v-for="item of data.children"
         :key="item.slug"
         :data="item"
+        :currentSlug="currentSlug"
       ></list-item>
     </the-list>
   </li>
@@ -42,6 +48,10 @@ export default defineComponent({
     data: {
       type: Object,
       default: () => ({}),
+    },
+    currentSlug: {
+      type: String,
+      default: '',
     },
   },
 

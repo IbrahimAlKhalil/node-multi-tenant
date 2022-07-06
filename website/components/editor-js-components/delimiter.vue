@@ -1,5 +1,5 @@
 <template>
-  <hr />
+  <hr class="my-5" />
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';

@@ -1,5 +1,5 @@
 <template>
-  <ul class="w-full mt-3">
+  <ul class="w-full mt-2">
     <slot />
   </ul>
 </template>
