@@ -4,7 +4,7 @@
     Please fill up the form, we will contact you as soon as possible.
   </h2>
   <form @submit.prevent="handleSubmit">
-    <div class="md:w-1/2 mx-auto flex flex-col items-center gap-8 p-5 md:my-5">
+    <div class="md:w-3/5 mx-auto flex flex-col items-center gap-8 p-5 md:my-5">
       <InputField
         name="instituteName"
         type="text"

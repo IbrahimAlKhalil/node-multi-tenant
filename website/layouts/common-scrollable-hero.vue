@@ -5,7 +5,7 @@
       style="margin-top: calc(var(--header-height) + 50px)"
     >
       <div
-        :class="`bg-white dark:bg-black/60 w-${size}/5 mx-auto h-full py-5 md:p-8 rounded-xl text-text dark:text-light shadow-lg`"
+        :class="`bg-white dark:bg-black/60 w-3/5 mx-auto h-full py-5 md:p-8 rounded-xl text-text dark:text-light shadow-lg`"
       >
         <slot></slot>
       </div>
@@ -13,16 +13,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { defineProps } from 'vue';
-
-defineProps({
-  size: {
-    type: Number,
-    default: 4,
-  },
-});
-</script>
+<script lang="ts" setup></script>
 
 <style scoped>
 .backdrop {

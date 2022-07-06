@@ -3,7 +3,7 @@
     <page-title title="Login" />
     <h2 class="text-lg text-center text-gray-400">To access you dashboard</h2>
     <form @submit.prevent="handleSubmit">
-      <div class="md:w-3/2 mx-auto flex flex-col gap-2 items-center p-5">
+      <div class="md:w-3/5 mx-auto flex flex-col gap-2 items-center p-5">
         <InputField
           placeholder="Institute Code"
           @on-keypress="validate"

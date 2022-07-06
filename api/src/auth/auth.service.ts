@@ -93,8 +93,6 @@ export class AuthService {
     const csrfToken = req.getHeader('x-csrf-token');
     const origin = req.getHeader('origin');
 
-    console.log(cookie, csrfToken, req.getUrl());
-
     const session = await this.authenticate(cookie, csrfToken);
 
     if (!session) {

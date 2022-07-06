@@ -6,5 +6,6 @@
   "search": "Search",
   "select": "Select",
   "exit": "Exit",
-  "login": "Login"
+  "login": "Login",
+  "go-to-dashboard": "Go to Dashboard"
 }

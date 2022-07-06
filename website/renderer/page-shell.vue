@@ -3,12 +3,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
+import { useAuth } from '#stores/auth.store';
 
-import '#styles/fonts.css';
 import '#styles/global.css';
+import '#styles/fonts.css';
 
 export default defineComponent({
   name: 'the-page-shell',
+  setup() {
+    onMounted(() => {
+      const auth = useAuth();
+
+      auth.getUserInfo();
+    });
+  },
 });
 </script>
