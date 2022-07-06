@@ -1,21 +1,25 @@
+import { AuthenticateInput } from './types/authenticate-input';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { HelperService } from '../helper/helper.service.js';
 import { HttpRequest, HttpResponse } from 'uWebSockets.js';
 import { UwsService } from '../uws/uws.service.js';
 import { JwtPayload } from '../types/jwt-payload';
 import { LoginInput } from './types/login-input';
+import { AuthService } from './auth.service.js';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Uws } from '../uws/uws.js';
 import argon2 from 'argon2';
 import joi from 'joi';
+// import { authenticate, Authenticate } from './auth.service.js';
 
 @Injectable()
 export class AuthController {
   constructor(
     private readonly helperService: HelperService,
     private readonly prismaService: PrismaService,
+    private readonly authService: AuthService,
     private readonly jwtService: JwtService,
     private readonly uwsService: UwsService,
     private readonly config: Config,
@@ -23,6 +27,11 @@ export class AuthController {
   ) {
     uws.post('/auth/login', this.login.bind(this));
     uws.options('/auth/login', uwsService.setCorsHeaders.bind(uwsService));
+    uws.get('/auth/authenticate', this.authenticate.bind(this));
+    uws.options(
+      '/auth/authenticate',
+      uwsService.setCorsHeaders.bind(uwsService),
+    );
   }
 
   private readonly loginSchema = joi.object<LoginInput>({
@@ -31,6 +40,32 @@ export class AuthController {
     password: joi.string().required(),
     rememberMe: joi.boolean().default(false),
   });
+
+  private async authenticate(
+    res: HttpResponse,
+    req: HttpRequest,
+  ): Promise<void> {
+    let aborted = false;
+
+    res.onAborted(() => {
+      aborted = true;
+    });
+
+    const origin = req.getHeader('origin');
+
+    const session = await this.authService.authenticateReq(res, req);
+
+    if (!session || aborted) return;
+
+    res.writeStatus('200');
+
+    res.cork(() => {
+      this.uwsService
+        .setCorsHeaders(res, origin, false)
+        .writeHeader('Content-Type', 'application/json')
+        .end(JSON.stringify(session), true);
+    });
+  }
 
   private async login(res: HttpResponse, req: HttpRequest): Promise<void> {
     let aborted = false;
