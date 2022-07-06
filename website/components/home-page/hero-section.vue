@@ -21,10 +21,16 @@
         <div
           class="flex flex-col md:flex-row justify-center items-center lg:justify-start gap-3"
         >
-          <a href="/login">
+          <a href="/login" v-if="!auth.user">
             <PrimaryBtn
               :title="t('homePage.hero-btn-primary')"
               :icon="DoorOpen"
+            />
+          </a>
+          <a href="/app" v-else>
+            <PrimaryBtn
+              :title="t('common.go-to-dashboard')"
+              :icon="TableColumns"
             />
           </a>
           <a href="/contact">
@@ -65,12 +71,15 @@
 import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import Down from '#icons/solid/chevron-circle-down.svg';
+import TableColumns from '#icons/duotone/columns.svg';
 import PhonePlus from '#icons/duotone/phone-plus.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import VideoImage from '#images/Video.svg?url';
+import { useAuth } from '#stores/auth.store';
 import { useI18n } from 'vue-i18n';
 
 const i18n = useI18n();
+const auth = useAuth();
 const t = i18n.t;
 
 defineProps({

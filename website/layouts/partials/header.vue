@@ -65,11 +65,18 @@
             :is="!activeMenu ? MenuBar : Cross"
           />
         </div>
-        <a href="/login">
+        <a href="/login" v-if="!isLoggedIn">
           <primary-btn
             :title="t('common.login')"
-            :icon="DoorOpen"
             class="hidden lg:block"
+            :icon="DoorOpen"
+          />
+        </a>
+        <a href="/app" v-else>
+          <primary-btn
+            :title="t('common.go-to-dashboard')"
+            class="hidden lg:block"
+            :icon="TableColumns"
           />
         </a>
       </div>
@@ -80,12 +87,14 @@
 <script lang="ts">
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import { usePageContext } from '#modules/use-page-context';
+import TableColumns from '#icons/duotone/columns.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import { useNavData } from '#stores/navdata.store';
+import { computed, defineComponent } from 'vue';
+import { useAuth } from '#stores/auth.store';
 import MenuBar from '#icons/light/bars.svg';
 import Cross from '#icons/light/times.svg';
 import Logo from '#images/logo.svg?url';
-import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -132,14 +141,19 @@ export default defineComponent({
     const { urlPathname } = usePageContext();
     const myPath = '/' + urlPathname.split('/')[1];
     const navData = useNavData();
+    const auth = useAuth();
     const i18n = useI18n();
 
+    const isLoggedIn = computed(() => !!auth.user);
+
     return {
-      myPath,
+      TableColumns,
+      isLoggedIn,
       t: i18n.t,
       DoorOpen,
       navData,
       MenuBar,
+      myPath,
       Cross,
       Logo,
     };
