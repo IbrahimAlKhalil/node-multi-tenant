@@ -33,7 +33,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
   });
 
   const tutorials = await tutorialsService.readByQuery({
-    fields: ['id', 'status', 'title', 'slug', 'content', 'categories'],
+    fields: ['id', 'status', 'title', 'slug', 'content', 'category'],
   });
 
   return {

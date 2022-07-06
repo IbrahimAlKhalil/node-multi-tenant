@@ -39,7 +39,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
         _eq: slug,
       },
     },
-    fields: ['id', 'status', 'title', 'slug', 'content', 'categories'],
+    fields: ['id', 'status', 'title', 'slug', 'content', 'category'],
   });
   return {
     pageContext: {
