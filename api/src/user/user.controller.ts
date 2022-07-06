@@ -81,7 +81,7 @@ export class UserController {
       'type',
     );
 
-    userDecorated.name = user?.I18n[0].name;
+    userDecorated.name = user?.I18n?.[0]?.name;
 
     res.cork(() => {
       this.uwsService
