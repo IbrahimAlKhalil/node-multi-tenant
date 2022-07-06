@@ -3,34 +3,19 @@
     Was this article helpful?
   </h3>
   <div class="flex justify-center items-center">
-    <emoji-frame :size="12">
-      <EmojiLike
+    <emoji-frame :size="12" v-for="emoji of reactions" :key="emoji.id">
+      <component
+        :is="'Emoji' + emoji.type"
+        :id="emoji.id"
         class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'like')"
-      />
-    </emoji-frame>
-    <emoji-frame :size="12">
-      <EmojiWow
-        class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'wow')"
-      />
-    </emoji-frame>
-    <emoji-frame :size="12">
-      <EmojiSad
-        class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'sad')"
-      />
-    </emoji-frame>
-    <emoji-frame :size="12">
-      <EmojiAngry
-        class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'angry')"
-      />
+        @handle-click="handleClick"
+      ></component>
     </emoji-frame>
   </div>
 </template>
 
 <script lang="ts">
+import { useAuth } from '#stores/auth.store';
 import {
   EmojiLike,
   EmojiAngry,
@@ -39,6 +24,7 @@ import {
   EmojiFrame,
 } from '#components/animated-reactions';
 import { defineComponent } from 'vue';
+import { usePageContext } from '#modules/use-page-context';
 
 export default defineComponent({
   name: 'reactions-section',
@@ -49,6 +35,43 @@ export default defineComponent({
     EmojiWow,
     EmojiFrame,
   },
-  emits: ['handleClick'],
+  props: ['reactions'],
+  setup() {
+    const auth = useAuth();
+    const { pageProps } = usePageContext();
+    const handleClick = async (reactionName: number | string) => {
+      const cluster = localStorage.getItem('cluster');
+      console.log('cluster in client: ', cluster);
+      if (!auth.user || !cluster) {
+        location.replace('/login');
+      }
+      const res = await fetch('/api/reaction', {
+        method: 'POST',
+        body: JSON.stringify({
+          reaction: reactionName,
+          post: pageProps?.postId,
+          cluster: cluster,
+        }),
+        headers: {
+          'X-Csrf-Token':
+            sessionStorage.getItem('csrfToken') ??
+            localStorage.getItem('csrfToken') ??
+            '',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (res.status > 299 || res.status < 200) {
+        return null;
+      }
+
+      const result = await res.json();
+      console.log(result);
+    };
+    return {
+      handleClick,
+    };
+  },
 });
 </script>
