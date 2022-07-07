@@ -15,10 +15,17 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     schema: (pageContext as any)?.schema,
   });
 
+  const reactionsService = new ItemsService('reaction', {
+    schema: (pageContext as any)?.schema,
+  });
+
   const commentsService = new ItemsService('comment', {
     schema: (pageContext as any)?.schema,
   });
   const commentsReactionsService = new ItemsService('comment_reaction', {
+    schema: (pageContext as any)?.schema,
+  });
+  const commentsSuggestionService = new ItemsService('suggestion', {
     schema: (pageContext as any)?.schema,
   });
 
@@ -51,6 +58,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'is_featured',
     ],
   });
+  const reactions = await reactionsService.readByQuery({});
   const postReactions = await postReactionsService.readByQuery({
     filter: {
       post: {
@@ -59,9 +67,9 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     },
     fields: [
       'id',
-      'user_created.first_name',
-      'user_created.last_name',
-      'user_created.avatar',
+      'user_created?.first_name',
+      'user_created?.last_name',
+      'user_created?.avatar',
       'user_created.email',
       'date_created',
       'reaction.value',
@@ -96,9 +104,9 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     },
     fields: [
       'id',
-      'user_created.first_name',
-      'user_created.last_name',
-      'user_created.avatar',
+      // 'user_created.first_name',
+      // 'user_created.last_name',
+      // 'user_created.avatar',
       'date_created',
       'reaction.value',
       'comment.id',
@@ -106,21 +114,35 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     ],
   });
 
-  // const createComment = await commentsService.createOne({
-  //   content: '',
-  //   mention: '',
-  //   parent: '',
-  //   post: '',
-  //   user: '',
-  // });
+  const commentsSuggestions = await commentsSuggestionService.readByQuery({
+    filter: {
+      _or: [
+        {
+          post: {
+            _null: true,
+          },
+        },
+        {
+          post: {
+            _eq: post[0].id,
+          },
+        },
+      ],
+    },
+  });
+
+  console.log('comments data: ', comments);
 
   return {
     pageContext: {
       pageProps: {
+        suggestions: commentsSuggestions,
+        postId: post[0].id,
+        commentsReactions,
         post: post[0],
         postReactions,
+        reactions,
         comments,
-        commentsReactions,
       },
     },
   };

@@ -8,14 +8,13 @@
         :is="'Emoji' + emoji.type"
         :id="emoji.id"
         class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @handle-click="handleClick"
+        @handle-click="handleClickReaction"
       ></component>
     </emoji-frame>
   </div>
 </template>
 
 <script lang="ts">
-import { useAuth } from '#stores/auth.store';
 import {
   EmojiLike,
   EmojiAngry,
@@ -24,7 +23,6 @@ import {
   EmojiFrame,
 } from '#components/animated-reactions';
 import { defineComponent } from 'vue';
-import { usePageContext } from '#modules/use-page-context';
 
 export default defineComponent({
   name: 'reactions-section',
@@ -35,43 +33,9 @@ export default defineComponent({
     EmojiWow,
     EmojiFrame,
   },
-  props: ['reactions'],
+  props: ['reactions', 'handleClickReaction'],
   setup() {
-    const auth = useAuth();
-    const { pageProps } = usePageContext();
-    const handleClick = async (reactionName: number | string) => {
-      const cluster = localStorage.getItem('cluster');
-      console.log('cluster in client: ', cluster);
-      if (!auth.user || !cluster) {
-        location.replace('/login');
-      }
-      const res = await fetch('/api/reaction', {
-        method: 'POST',
-        body: JSON.stringify({
-          reaction: reactionName,
-          post: pageProps?.postId,
-          cluster: cluster,
-        }),
-        headers: {
-          'X-Csrf-Token':
-            sessionStorage.getItem('csrfToken') ??
-            localStorage.getItem('csrfToken') ??
-            '',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (res.status > 299 || res.status < 200) {
-        return null;
-      }
-
-      const result = await res.json();
-      console.log(result);
-    };
-    return {
-      handleClick,
-    };
+    return {};
   },
 });
 </script>
