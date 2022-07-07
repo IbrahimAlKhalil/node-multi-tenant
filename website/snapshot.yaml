@@ -29,7 +29,7 @@ collections:
     meta:
       accountability: all
       archive_app_filter: true
-      archive_field: status
+      archive_field: null
       archive_value: archived
       collapse: open
       collection: comment
@@ -41,7 +41,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 5
+      sort: 6
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -89,7 +89,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: null
+      sort: 9
       sort_field: sort
       translations: null
       unarchive_value: null
@@ -137,7 +137,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: null
+      sort: 10
       sort_field: sort
       translations: null
       unarchive_value: null
@@ -161,7 +161,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 3
+      sort: 4
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -309,7 +309,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 7
+      sort: 8
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -405,7 +405,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 4
+      sort: 5
       sort_field: null
       translations: null
       unarchive_value: null
@@ -429,13 +429,37 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: null
+      sort: 3
       sort_field: null
       translations: null
       unarchive_value: null
     schema:
       comment: null
       name: registration
+      schema: public
+  - collection: suggestion
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: suggestion
+      color: null
+      display_template: null
+      group: comment
+      hidden: false
+      icon: add_comment
+      item_duplication_fields: null
+      note: null
+      singleton: false
+      sort: 2
+      sort_field: sort
+      translations: null
+      unarchive_value: null
+    schema:
+      comment: null
+      name: suggestion
       schema: public
   - collection: tag
     meta:
@@ -477,7 +501,7 @@ collections:
       item_duplication_fields: null
       note: null
       singleton: false
-      sort: 6
+      sort: 7
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -746,7 +770,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 13
+      sort: 10
       special:
         - o2m
       translations: null
@@ -770,7 +794,7 @@ fields:
       options: null
       readonly: false
       required: true
-      sort: 8
+      sort: 5
       special: null
       translations: null
       validation: null
@@ -812,7 +836,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 5
+      sort: 3
       special:
         - date-created
       translations: null
@@ -855,7 +879,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 7
+      sort: 4
       special:
         - date-updated
       translations: null
@@ -924,6 +948,49 @@ fields:
       table: comment
     type: integer
   - collection: comment
+    field: institute
+    meta:
+      collection: comment
+      conditions: null
+      display: related-values
+      display_options: null
+      field: institute
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{name}}'
+      readonly: false
+      required: true
+      sort: 7
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: uuid
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: institute
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: institute
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: comment
+    type: uuid
+  - collection: comment
     field: mention
     meta:
       collection: comment
@@ -939,7 +1006,7 @@ fields:
         placeholder: Mention to
       readonly: false
       required: false
-      sort: 11
+      sort: 8
       special: null
       translations: null
       validation: null
@@ -981,7 +1048,7 @@ fields:
         template: '{{id}}'
       readonly: false
       required: false
-      sort: 12
+      sort: 9
       special:
         - m2o
       translations: null
@@ -1023,8 +1090,8 @@ fields:
       options:
         template: '{{id}}'
       readonly: false
-      required: false
-      sort: 14
+      required: true
+      sort: 11
       special:
         - m2o
       translations: null
@@ -1066,7 +1133,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 3
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -1097,22 +1164,8 @@ fields:
     meta:
       collection: comment
       conditions: null
-      display: labels
-      display_options:
-        choices:
-          - text: $t:published
-            value: published
-            foreground: '#FFFFFF'
-            background: var(--primary)
-          - text: $t:draft
-            value: draft
-            foreground: '#18222F'
-            background: '#D3DAE4'
-          - text: $t:archived
-            value: archived
-            foreground: '#FFFFFF'
-            background: var(--warning)
-        showAsDot: true
+      display: null
+      display_options: null
       field: status
       group: null
       hidden: false
@@ -1120,15 +1173,19 @@ fields:
       note: null
       options:
         choices:
-          - text: $t:published
+          - text: Published
             value: published
-          - text: $t:draft
-            value: draft
-          - text: $t:archived
-            value: archived
+          - text: Hold
+            value: hold
+          - text: Review
+            value: review
+          - text: Trashed
+            value: trashed
+        icon: add_task
+        placeholder: Comment Status
       readonly: false
-      required: false
-      sort: 2
+      required: true
+      sort: 12
       special: null
       translations: null
       validation: null
@@ -1137,14 +1194,14 @@ fields:
     schema:
       comment: null
       data_type: character varying
-      default_value: draft
+      default_value: published
       foreign_key_column: null
       foreign_key_schema: null
       foreign_key_table: null
       generation_expression: null
       has_auto_increment: false
       is_generated: false
-      is_nullable: false
+      is_nullable: true
       is_primary_key: false
       is_unique: false
       max_length: 255
@@ -1170,7 +1227,7 @@ fields:
         placeholder: Uesr Id
       readonly: false
       required: true
-      sort: 9
+      sort: 6
       special: null
       translations: null
       validation: null
@@ -1196,92 +1253,6 @@ fields:
       schema: public
       table: comment
     type: string
-  - collection: comment
-    field: user_created
-    meta:
-      collection: comment
-      conditions: null
-      display: user
-      display_options: null
-      field: user_created
-      group: null
-      hidden: true
-      interface: select-dropdown-m2o
-      note: null
-      options:
-        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
-      readonly: true
-      required: false
-      sort: 4
-      special:
-        - user-created
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      comment: null
-      data_type: uuid
-      default_value: null
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: user_created
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: comment
-    type: uuid
-  - collection: comment
-    field: user_updated
-    meta:
-      collection: comment
-      conditions: null
-      display: user
-      display_options: null
-      field: user_updated
-      group: null
-      hidden: true
-      interface: select-dropdown-m2o
-      note: null
-      options:
-        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
-      readonly: true
-      required: false
-      sort: 6
-      special:
-        - user-updated
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      comment: null
-      data_type: uuid
-      default_value: null
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: user_updated
-      numeric_precision: null
-      numeric_scale: null
-      schema: public
-      table: comment
-    type: uuid
   - collection: comment_reaction
     field: comment
     meta:
@@ -4022,13 +3993,13 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 4
+      sort: 3
       special:
         - date-created
       translations: null
       validation: null
       validation_message: null
-      width: half
+      width: fill
     schema:
       comment: null
       data_type: timestamp with time zone
@@ -4091,6 +4062,49 @@ fields:
       table: post_reaction
     type: integer
   - collection: post_reaction
+    field: institute
+    meta:
+      collection: post_reaction
+      conditions: null
+      display: related-values
+      display_options: null
+      field: institute
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{name}}'
+      readonly: false
+      required: true
+      sort: null
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: uuid
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: institute
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: institute
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: post_reaction
+    type: uuid
+  - collection: post_reaction
     field: post
     meta:
       collection: post_reaction
@@ -4106,7 +4120,7 @@ fields:
         template: '{{title}}'
       readonly: false
       required: true
-      sort: 6
+      sort: 5
       special:
         - m2o
       translations: null
@@ -4149,7 +4163,7 @@ fields:
         template: '{{type}}'
       readonly: false
       required: true
-      sort: 5
+      sort: 4
       special:
         - m2o
       translations: null
@@ -4218,48 +4232,47 @@ fields:
       table: post_reaction
     type: integer
   - collection: post_reaction
-    field: user_created
+    field: user_id
     meta:
       collection: post_reaction
       conditions: null
-      display: user
+      display: null
       display_options: null
-      field: user_created
+      field: user_id
       group: null
-      hidden: true
-      interface: select-dropdown-m2o
+      hidden: false
+      interface: input
       note: null
       options:
-        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
-      readonly: true
-      required: false
-      sort: 3
-      special:
-        - user-created
+        placeholder: User Id
+      readonly: false
+      required: true
+      sort: 6
+      special: null
       translations: null
       validation: null
       validation_message: null
-      width: half
+      width: full
     schema:
       comment: null
-      data_type: uuid
+      data_type: character varying
       default_value: null
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
       generation_expression: null
       has_auto_increment: false
       is_generated: false
       is_nullable: true
       is_primary_key: false
       is_unique: false
-      max_length: null
-      name: user_created
+      max_length: 255
+      name: user_id
       numeric_precision: null
       numeric_scale: null
       schema: public
       table: post_reaction
-    type: uuid
+    type: string
   - collection: post_tag_pivot
     field: id
     meta:
@@ -6232,6 +6245,259 @@ fields:
       schema: public
       table: registration
     type: string
+  - collection: suggestion
+    field: content
+    meta:
+      collection: suggestion
+      conditions: null
+      display: null
+      display_options: null
+      field: content
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: Comment suggestion
+      readonly: false
+      required: true
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: character varying
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: 255
+      name: content
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: suggestion
+    type: string
+  - collection: suggestion
+    field: date_created
+    meta:
+      collection: suggestion
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_created
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: null
+      special:
+        - date-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: timestamp with time zone
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: date_created
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: suggestion
+    type: timestamp
+  - collection: suggestion
+    field: date_updated
+    meta:
+      collection: suggestion
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_updated
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: null
+      special:
+        - date-updated
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      comment: null
+      data_type: timestamp with time zone
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: date_updated
+      numeric_precision: null
+      numeric_scale: null
+      schema: public
+      table: suggestion
+    type: timestamp
+  - collection: suggestion
+    field: id
+    meta:
+      collection: suggestion
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: nextval('suggestion_id_seq'::regclass)
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: true
+      is_generated: false
+      is_nullable: false
+      is_primary_key: true
+      is_unique: true
+      max_length: null
+      name: id
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: suggestion
+    type: integer
+  - collection: suggestion
+    field: post
+    meta:
+      collection: suggestion
+      conditions: null
+      display: related-values
+      display_options: null
+      field: post
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{title}}'
+      readonly: false
+      required: false
+      sort: null
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: post
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: post
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: suggestion
+    type: integer
+  - collection: suggestion
+    field: sort
+    meta:
+      collection: suggestion
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      comment: null
+      data_type: integer
+      default_value: null
+      foreign_key_column: null
+      foreign_key_schema: null
+      foreign_key_table: null
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: false
+      max_length: null
+      name: sort
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: suggestion
+    type: integer
   - collection: tag
     field: date_created
     meta:
@@ -6467,29 +6733,48 @@ fields:
       table: tag
     type: integer
   - collection: tutorial
-    field: categories
+    field: category
     meta:
       collection: tutorial
       conditions: null
       display: related-values
       display_options: null
-      field: categories
+      field: category
       group: null
       hidden: false
-      interface: list-m2m
+      interface: select-dropdown-m2o
       note: null
-      options: null
+      options:
+        template: '{{name}}'
       readonly: false
       required: true
-      sort: null
+      sort: 11
       special:
-        - m2m
+        - m2o
       translations: null
       validation: null
       validation_message: null
       width: full
-    schema: null
-    type: alias
+    schema:
+      comment: null
+      data_type: integer
+      default_value: null
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: tutorial_category
+      generation_expression: null
+      has_auto_increment: false
+      is_generated: false
+      is_nullable: true
+      is_primary_key: false
+      is_unique: true
+      max_length: null
+      name: category
+      numeric_precision: 32
+      numeric_scale: 0
+      schema: public
+      table: tutorial
+    type: integer
   - collection: tutorial
     field: content
     meta:
@@ -6655,49 +6940,6 @@ fields:
       is_unique: true
       max_length: null
       name: id
-      numeric_precision: 32
-      numeric_scale: 0
-      schema: public
-      table: tutorial
-    type: integer
-  - collection: tutorial
-    field: primary
-    meta:
-      collection: tutorial
-      conditions: null
-      display: related-values
-      display_options: null
-      field: primary
-      group: null
-      hidden: false
-      interface: select-dropdown-m2o
-      note: null
-      options:
-        template: '{{name}}'
-      readonly: false
-      required: false
-      sort: null
-      special:
-        - m2o
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      comment: null
-      data_type: integer
-      default_value: null
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: tutorial_category
-      generation_expression: null
-      has_auto_increment: false
-      is_generated: false
-      is_nullable: true
-      is_primary_key: false
-      is_unique: false
-      max_length: null
-      name: primary
       numeric_precision: 32
       numeric_scale: 0
       schema: public
@@ -6995,7 +7237,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: null
+      sort: 8
       special:
         - o2m
       translations: null
@@ -7020,7 +7262,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: null
+      sort: 5
       special:
         - date-created
       translations: null
@@ -7062,7 +7304,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: null
+      sort: 1
       special: null
       translations: null
       validation: null
@@ -7104,7 +7346,7 @@ fields:
         placeholder: Tutorial Category Name
       readonly: false
       required: true
-      sort: null
+      sort: 6
       special: null
       translations: null
       validation: null
@@ -7146,7 +7388,7 @@ fields:
         template: '{{name}}'
       readonly: false
       required: false
-      sort: null
+      sort: 9
       special:
         - m2o
       translations: null
@@ -7193,7 +7435,7 @@ fields:
           - update
       readonly: false
       required: true
-      sort: null
+      sort: 7
       special: null
       translations: null
       validation: null
@@ -7234,7 +7476,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: null
+      sort: 3
       special: null
       translations: null
       validation: null
@@ -7296,7 +7538,7 @@ fields:
             value: archived
       readonly: false
       required: false
-      sort: null
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -7323,30 +7565,6 @@ fields:
       table: tutorial_category
     type: string
   - collection: tutorial_category
-    field: tutorials
-    meta:
-      collection: tutorial_category
-      conditions: null
-      display: null
-      display_options: null
-      field: tutorials
-      group: null
-      hidden: false
-      interface: list-m2m
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: null
-      special:
-        - m2m
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema: null
-    type: alias
-  - collection: tutorial_category
     field: user_created
     meta:
       collection: tutorial_category
@@ -7362,7 +7580,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: null
+      sort: 4
       special:
         - user-created
       translations: null
@@ -7514,6 +7732,28 @@ fields:
     type: integer
 relations:
   - collection: comment
+    field: institute
+    meta:
+      junction_field: null
+      many_collection: comment
+      many_field: institute
+      one_allowed_collections: null
+      one_collection: institute
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    related_collection: institute
+    schema:
+      column: institute
+      constraint_name: comment_institute_foreign
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: institute
+      on_delete: CASCADE
+      on_update: NO ACTION
+      table: comment
+  - collection: comment
     field: parent
     meta:
       junction_field: null
@@ -7555,50 +7795,6 @@ relations:
       foreign_key_schema: public
       foreign_key_table: post
       on_delete: CASCADE
-      on_update: NO ACTION
-      table: comment
-  - collection: comment
-    field: user_created
-    meta:
-      junction_field: null
-      many_collection: comment
-      many_field: user_created
-      one_allowed_collections: null
-      one_collection: directus_users
-      one_collection_field: null
-      one_deselect_action: nullify
-      one_field: null
-      sort_field: null
-    related_collection: directus_users
-    schema:
-      column: user_created
-      constraint_name: comment_user_created_foreign
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      on_delete: NO ACTION
-      on_update: NO ACTION
-      table: comment
-  - collection: comment
-    field: user_updated
-    meta:
-      junction_field: null
-      many_collection: comment
-      many_field: user_updated
-      one_allowed_collections: null
-      one_collection: directus_users
-      one_collection_field: null
-      one_deselect_action: nullify
-      one_field: null
-      sort_field: null
-    related_collection: directus_users
-    schema:
-      column: user_updated
-      constraint_name: comment_user_updated_foreign
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      on_delete: NO ACTION
       on_update: NO ACTION
       table: comment
   - collection: comment_reaction
@@ -7888,6 +8084,28 @@ relations:
       on_update: NO ACTION
       table: post_category_pivot
   - collection: post_reaction
+    field: institute
+    meta:
+      junction_field: null
+      many_collection: post_reaction
+      many_field: institute
+      one_allowed_collections: null
+      one_collection: institute
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    related_collection: institute
+    schema:
+      column: institute
+      constraint_name: post_reaction_institute_foreign
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: institute
+      on_delete: CASCADE
+      on_update: NO ACTION
+      table: post_reaction
+  - collection: post_reaction
     field: post
     meta:
       junction_field: null
@@ -7929,28 +8147,6 @@ relations:
       foreign_key_schema: public
       foreign_key_table: reaction
       on_delete: CASCADE
-      on_update: NO ACTION
-      table: post_reaction
-  - collection: post_reaction
-    field: user_created
-    meta:
-      junction_field: null
-      many_collection: post_reaction
-      many_field: user_created
-      one_allowed_collections: null
-      one_collection: directus_users
-      one_collection_field: null
-      one_deselect_action: nullify
-      one_field: null
-      sort_field: null
-    related_collection: directus_users
-    schema:
-      column: user_created
-      constraint_name: post_reaction_user_created_foreign
-      foreign_key_column: id
-      foreign_key_schema: public
-      foreign_key_table: directus_users
-      on_delete: NO ACTION
       on_update: NO ACTION
       table: post_reaction
   - collection: post_tag_pivot
@@ -8151,12 +8347,34 @@ relations:
       on_delete: CASCADE
       on_update: NO ACTION
       table: question_priority_pivot
+  - collection: suggestion
+    field: post
+    meta:
+      junction_field: null
+      many_collection: suggestion
+      many_field: post
+      one_allowed_collections: null
+      one_collection: post
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    related_collection: post
+    schema:
+      column: post
+      constraint_name: suggestion_post_foreign
+      foreign_key_column: id
+      foreign_key_schema: public
+      foreign_key_table: post
+      on_delete: CASCADE
+      on_update: NO ACTION
+      table: suggestion
   - collection: tutorial
-    field: primary
+    field: category
     meta:
       junction_field: null
       many_collection: tutorial
-      many_field: primary
+      many_field: category
       one_allowed_collections: null
       one_collection: tutorial_category
       one_collection_field: null
@@ -8165,8 +8383,8 @@ relations:
       sort_field: null
     related_collection: tutorial_category
     schema:
-      column: primary
-      constraint_name: tutorial_primary_foreign
+      column: category
+      constraint_name: tutorial_category_foreign
       foreign_key_column: id
       foreign_key_schema: public
       foreign_key_table: tutorial_category
@@ -8293,7 +8511,7 @@ relations:
       one_collection: tutorial
       one_collection_field: null
       one_deselect_action: delete
-      one_field: categories
+      one_field: null
       sort_field: null
     related_collection: tutorial
     schema:
