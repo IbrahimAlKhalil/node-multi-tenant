@@ -22,29 +22,29 @@
         }"
       >
         <ul class="flex flex-col md:flex-row items-center justify-center">
-          <li
-            v-for="item in navData.data"
-            :key="item.href"
-            class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
-            :class="{
-              'dark:text-light dark:hover:text-secondary': isSticky,
-              'text-primary': item.href === myPath && !isSticky,
-              'dark:text-secondary text-primary':
-                item.href === myPath && isSticky,
-              'text-white md:text-text': item.href !== myPath,
-            }"
-          >
+          <li v-for="item in navData.data" :key="item.href">
             <router-link
               :to="item.href"
               class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
+              v-slot="{ isExactActive }"
             >
-              <component
-                class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
-                :class="{ 'scale-125': item.href === myPath }"
-                :is="item.icon"
-              />
+              <span
+                class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
+                :class="{
+                  'dark:text-light dark:hover:text-secondary': isSticky,
+                  'text-primary': isExactActive && !isSticky,
+                  'dark:text-secondary text-primary': isExactActive && isSticky,
+                  'text-white md:text-text': !isExactActive,
+                }"
+              >
+                <component
+                  class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
+                  :class="{ 'scale-125': isExactActive }"
+                  :is="item.icon"
+                />
 
-              {{ t(item.text) }}
+                {{ t(item.text) }}
+              </span>
             </router-link>
           </li>
         </ul>
