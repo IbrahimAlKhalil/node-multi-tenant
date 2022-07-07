@@ -1,5 +1,5 @@
 <template>
-  <div class="emoji emoji--angry">
+  <div class="emoji emoji--angry" @click="$emit('handle-click', id)">
     <div class="emoji__face">
       <div class="emoji__eyebrows"></div>
       <div class="emoji__eyes"></div>
@@ -12,6 +12,7 @@
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'emoji-angry',
+  props: ['id'],
 });
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="emoji emoji--sad">
+  <div class="emoji emoji--sad" @click="$emit('handle-click', id)">
     <div class="emoji__face">
       <div class="emoji__eyebrows"></div>
       <div class="emoji__eyes"></div>
@@ -11,6 +11,7 @@
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'emoji-love',
+  props: ['id'],
 });
 </script>
 <style scoped>

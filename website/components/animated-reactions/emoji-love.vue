@@ -1,5 +1,5 @@
 <template>
-  <div class="emoji emoji--love">
+  <div class="emoji emoji--love" @click="$emit('handle-click', 'love')">
     <div class="emoji__heart"></div>
   </div>
 </template>

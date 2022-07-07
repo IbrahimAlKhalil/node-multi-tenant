@@ -60,7 +60,6 @@ export default defineComponent({
         }),
       });
       const result = await response.json();
-      console.log(result);
       if (result?.data?.id) {
         this.$toast.success('Subscription successful!', {
           dismissible: true,

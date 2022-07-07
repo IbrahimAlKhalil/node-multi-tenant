@@ -1,31 +1,15 @@
 <template>
-  <h3 class="text-text text-center text-lg font-bold mb-5">
+  <h3 class="text-text dark:text-light text-center text-lg font-bold mb-5">
     Was this article helpful?
   </h3>
   <div class="flex justify-center items-center">
-    <emoji-frame :size="12">
-      <EmojiLike
+    <emoji-frame :size="12" v-for="emoji of reactions" :key="emoji.id">
+      <component
+        :is="'Emoji' + emoji.type"
+        :id="emoji.id"
         class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'like')"
-      />
-    </emoji-frame>
-    <emoji-frame :size="12">
-      <EmojiWow
-        class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'wow')"
-      />
-    </emoji-frame>
-    <emoji-frame :size="12">
-      <EmojiSad
-        class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'sad')"
-      />
-    </emoji-frame>
-    <emoji-frame :size="12">
-      <EmojiAngry
-        class="scale-[30%] grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
-        @click="$emit('handleClick', 'angry')"
-      />
+        @handle-click="handleClickReaction"
+      ></component>
     </emoji-frame>
   </div>
 </template>
@@ -49,6 +33,9 @@ export default defineComponent({
     EmojiWow,
     EmojiFrame,
   },
-  emits: ['handleClick'],
+  props: ['reactions', 'handleClickReaction'],
+  setup() {
+    return {};
+  },
 });
 </script>
