@@ -2,9 +2,10 @@ import { ItemsService } from 'directus';
 import express from 'express';
 
 const reaction: express.RequestHandler = async (req, res, next) => {
-  const uid = (req as any).session.uid;
+  const { uid } = (req as any).session;
+  const { instituteId } = req as any;
 
-  if (!uid) {
+  if (!uid || !instituteId) {
     return res.status(400).json({ error: 'User not authenticated!' });
   }
 
@@ -21,6 +22,7 @@ const reaction: express.RequestHandler = async (req, res, next) => {
       reaction: Number(req.body.reaction),
       post: Number(req.body.post),
       user_id: uid,
+      institute: instituteId,
     });
   } catch (e) {
     return res.status(500).json({ error: 'Server error!' });
