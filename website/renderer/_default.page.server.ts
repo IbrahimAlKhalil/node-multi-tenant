@@ -11,7 +11,11 @@ export const passToClient = ['pageProps', 'urlPathname', 'lang'];
 async function render(
   pageContext: PageContextBuiltIn & PageContext,
 ): Promise<unknown> {
-  const app = createApp(pageContext);
+  const { app, router } = createApp(pageContext);
+
+  await router.push(pageContext.url);
+  await router.isReady();
+
   const appHtml = await renderToString(app);
 
   // See https://vite-plugin-ssr.com/head

@@ -1,27 +1,27 @@
 <template>
-  <li class="cursor-pointer ml-3">
+  <li class="cursor-pointer ml-3 mb-1">
     <span
-      class="flex items-center gap-3 w-full py-1 px-2 rounded-l hover:bg-primary hover:text-white"
+      class="flex items-center gap-3 w-full py-1 px-2 rounded-l hover:bg-primary hover:text-white transition"
       :class="[
         isFolder ? 'font-bold' : '',
-        currentSlug == data.slug ? 'bg-primary text-white' : '',
+        currentSlug === data.slug ? 'bg-primary text-white' : '',
       ]"
     >
       <span @click="toggle">
         <component :is="AngleDown" v-show="isFolder && isOpen"> </component>
         <component :is="AngleUp" v-show="isFolder && !isOpen"> </component>
       </span>
-      <a :href="'/tutorials/' + data.slug" class="block w-full">
-        <span>{{ data.name }}</span>
-      </a>
+      <router-link :to="'/tutorials/' + data.slug" class="block w-full">
+        {{ data.title }}
+      </router-link>
     </span>
 
     <the-list v-show="isOpen" v-if="isFolder">
       <list-item
         v-for="item of data.children"
+        :currentSlug="currentSlug"
         :key="item.slug"
         :data="item"
-        :currentSlug="currentSlug"
       ></list-item>
     </the-list>
   </li>

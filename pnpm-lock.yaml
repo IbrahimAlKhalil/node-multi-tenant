@@ -187,6 +187,7 @@ importers:
       '@types/editorjs__header': ^2.6.0
       '@types/express': ^4.17.13
       '@types/node': ^17.0.32
+      '@types/qs': ^6.9.7
       '@types/siema': ^1.4.8
       '@types/svgo': ^2.6.3
       '@vitejs/plugin-vue': ^2.3.3
@@ -206,6 +207,7 @@ importers:
       pinia: ^2.0.14
       postcss: ^8.4.13
       prettier: ^2.6.2
+      qs: ^6.11.0
       siema: ^1.5.1
       svgo: ^2.8.0
       tailwindcss: ^3.0.24
@@ -217,6 +219,7 @@ importers:
       vite-svg-loader: ^3.3.0
       vue: ^3.2.33
       vue-i18n: ^9.1.10
+      vue-router: ^4.0.15
       vue-toast-notification: ^3.0
       yup: ^0.32.11
     dependencies:
@@ -227,15 +230,17 @@ importers:
       aos: 2.3.4
       axios: 0.27.2
       cross-env: 7.0.3
-      directus: 9.13.0_rl7k5dyqyypme3t7v752rnfqvq
+      directus: 9.13.0_enq2arfjsiyx4k5iwqct733orq
       express: 4.18.1
       pg: 8.7.3
       pinia: 2.0.14_hxrfy3rdja4lhsamokddlc63fi
+      qs: 6.11.0
       siema: 1.5.1
       vite: 2.9.9
       vite-plugin-ssr: 0.3.64_vite@2.9.9
       vue: 3.2.36
       vue-i18n: 9.1.10_vue@3.2.36
+      vue-router: 4.0.16_vue@3.2.36
       vue-toast-notification: 3.0.4_vue@3.2.36
       yup: 0.32.11
     devDependencies:
@@ -251,6 +256,7 @@ importers:
       '@types/editorjs__header': 2.6.0
       '@types/express': 4.17.13
       '@types/node': 17.0.34
+      '@types/qs': 6.9.7
       '@types/siema': 1.4.8
       '@types/svgo': 2.6.3
       '@vue/eslint-config-prettier': 7.0.0_ddjd75dz7x3czaucyvuaamiqdi
@@ -1808,44 +1814,6 @@ packages:
       node-exceptions: 4.0.1
     dev: false
 
-  /@directus/extensions-sdk/9.13.0_nmyjgmnzrwufzdlbsckfdpc5ve:
-    resolution: {integrity: sha512-POxRZmXhL0pGRuMBjIbjOMkIXTRsfzA9Mug3tn3EL9m2wpVtx9hcJYViFmdi6Dhhaz/Yk9LMseyJofBIz825dA==}
-    engines: {node: '>=12.20.0'}
-    hasBin: true
-    dependencies:
-      '@directus/shared': 9.13.0_yqo4aqpmzlitv7ewfyt3ztm4jy
-      '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.5
-      '@rollup/plugin-json': 4.1.0_rollup@2.75.5
-      '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.5
-      '@rollup/plugin-replace': 3.1.0_rollup@2.75.5
-      '@vue/compiler-sfc': 3.2.36
-      chalk: 4.1.2
-      commander: 8.3.0
-      execa: 5.1.1
-      fs-extra: 10.1.0
-      ora: 5.4.1
-      rollup: 2.75.5
-      rollup-plugin-styles: 4.0.0_rollup@2.75.5
-      rollup-plugin-terser: 7.0.2_rollup@2.75.5
-      rollup-plugin-typescript2: 0.31.2_5tbauevimgxepjeo5powblb5xq
-      rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.36
-    transitivePeerDependencies:
-      - '@types/express'
-      - '@types/geojson'
-      - '@types/pino'
-      - axios
-      - express
-      - geojson
-      - knex
-      - knex-schema-inspector
-      - pino
-      - supports-color
-      - typescript
-      - vue
-      - vue-i18n
-      - vue-router
-    dev: false
-
   /@directus/extensions-sdk/9.13.0_typescript@4.7.3:
     resolution: {integrity: sha512-POxRZmXhL0pGRuMBjIbjOMkIXTRsfzA9Mug3tn3EL9m2wpVtx9hcJYViFmdi6Dhhaz/Yk9LMseyJofBIz825dA==}
     engines: {node: '>=12.20.0'}
@@ -1884,6 +1852,44 @@ packages:
       - vue-router
     dev: true
 
+  /@directus/extensions-sdk/9.13.0_yg75ncipik5shorapy5yusctn4:
+    resolution: {integrity: sha512-POxRZmXhL0pGRuMBjIbjOMkIXTRsfzA9Mug3tn3EL9m2wpVtx9hcJYViFmdi6Dhhaz/Yk9LMseyJofBIz825dA==}
+    engines: {node: '>=12.20.0'}
+    hasBin: true
+    dependencies:
+      '@directus/shared': 9.13.0_ok6ixq7s4l7d6tigkan6e2e64a
+      '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.5
+      '@rollup/plugin-json': 4.1.0_rollup@2.75.5
+      '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.5
+      '@rollup/plugin-replace': 3.1.0_rollup@2.75.5
+      '@vue/compiler-sfc': 3.2.36
+      chalk: 4.1.2
+      commander: 8.3.0
+      execa: 5.1.1
+      fs-extra: 10.1.0
+      ora: 5.4.1
+      rollup: 2.75.5
+      rollup-plugin-styles: 4.0.0_rollup@2.75.5
+      rollup-plugin-terser: 7.0.2_rollup@2.75.5
+      rollup-plugin-typescript2: 0.31.2_5tbauevimgxepjeo5powblb5xq
+      rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.36
+    transitivePeerDependencies:
+      - '@types/express'
+      - '@types/geojson'
+      - '@types/pino'
+      - axios
+      - express
+      - geojson
+      - knex
+      - knex-schema-inspector
+      - pino
+      - supports-color
+      - typescript
+      - vue
+      - vue-i18n
+      - vue-router
+    dev: false
+
   /@directus/format-title/9.13.0:
     resolution: {integrity: sha512-cZJCNnuV5WwqA2etx1+st6MifmOvS2vHYFf5qAIBjCU+PwrdMBRRhV5osov6Ql5DgX1o2OPjzZB1PwAlMXTB3w==}
     engines: {node: '>=6.0.0'}
@@ -1919,7 +1925,7 @@ packages:
       micromustache: 8.0.3
     dev: true
 
-  /@directus/shared/9.13.0_yqo4aqpmzlitv7ewfyt3ztm4jy:
+  /@directus/shared/9.13.0_ok6ixq7s4l7d6tigkan6e2e64a:
     resolution: {integrity: sha512-at4EE2bmP+p3KvDH1s4gJcloWCzi/PyMHed8Hmv9FBMLuoXn2nJDHgFqLdh6s8pFnBUSKsj0oPQzKpVPrM1msQ==}
     peerDependencies:
       '@types/express': '*'
@@ -1948,6 +1954,7 @@ packages:
       pino: 6.13.3
       vue: 3.2.36
       vue-i18n: 9.1.10_vue@3.2.36
+      vue-router: 4.0.16_vue@3.2.36
     dev: false
 
   /@directus/specs/9.13.0:
@@ -6118,7 +6125,7 @@ packages:
     dependencies:
       path-type: 4.0.0
 
-  /directus/9.13.0_rl7k5dyqyypme3t7v752rnfqvq:
+  /directus/9.13.0_enq2arfjsiyx4k5iwqct733orq:
     resolution: {integrity: sha512-+GPrU+xh1FUAyqqOxG6Ps88zTtqytJ3VYPmtf5mNFttsvzdyURZbM/e/3z8Y4F85/1UVz2o+WCJl7otoBBnhdA==}
     engines: {node: '>=12.20.0'}
     hasBin: true
@@ -6129,10 +6136,10 @@ packages:
       '@directus/drive-azure': 9.13.0
       '@directus/drive-gcs': 9.13.0
       '@directus/drive-s3': 9.13.0
-      '@directus/extensions-sdk': 9.13.0_nmyjgmnzrwufzdlbsckfdpc5ve
+      '@directus/extensions-sdk': 9.13.0_yg75ncipik5shorapy5yusctn4
       '@directus/format-title': 9.13.0
       '@directus/schema': 9.13.0
-      '@directus/shared': 9.13.0_yqo4aqpmzlitv7ewfyt3ztm4jy
+      '@directus/shared': 9.13.0_ok6ixq7s4l7d6tigkan6e2e64a
       '@directus/specs': 9.13.0
       '@godaddy/terminus': 4.10.2
       '@rollup/plugin-alias': 3.1.9_rollup@2.75.7

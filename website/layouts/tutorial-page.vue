@@ -1,5 +1,5 @@
 <template>
-  <layout-main :isFooterVisible="false">
+  <layout-main :isFooterVisible="false" :is-sticky="true">
     <div
       class="hidden md:block w-[20%] min-h-full bg-gray-200 dark:bg-dark text-text dark:text-light overflow-y-auto rt-scrollbar fixed left-0 pb-20"
       style="
@@ -49,7 +49,6 @@
     </div>
   </layout-main>
 </template>
-z
 
 <script lang="ts">
 import LineHeight from '#icons/solid/line-height.svg';
@@ -72,23 +71,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-/* Scrollbar Style */
-.scrollbar::-webkit-scrollbar {
-  width: 0.25rem;
-  height: 5px;
-}
-
-/* scrollbar-thumb */
-.scrollbar::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 10px;
-}
-
-/* scrollbar-track */
-.scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
-}
-</style>

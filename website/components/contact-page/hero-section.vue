@@ -1,5 +1,9 @@
 <template>
   <PageTitle title="We're here to support you!" />
+  <br />
+  <hr />
+  <br />
+  <br />
   <form
     class="flex flex-col gap-4 w-4/5 mx-auto"
     @submit.prevent="handleSubmit"
@@ -63,7 +67,7 @@ import TextAreaField from '#components/form-components/textarea-field.vue';
 import InputField from '#components/form-components/input-field.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import PageTitle from '#components/ui/page-title.vue';
-import { defineComponent, getCurrentInstance, reactive } from 'vue';
+import { defineComponent } from 'vue';
 import * as Yup from 'yup';
 
 export default defineComponent({

@@ -1,5 +1,6 @@
 import { OnBeforeRender } from '#types/on-before-render';
 import { ItemsService } from 'directus';
+import { loadData } from './load-data';
 import url from 'url';
 
 export { onBeforeRender };
@@ -8,57 +9,18 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
   const queryObj = url.parse(pageContext.url, true);
   const page = Number(queryObj.query?.page);
   const search =
-    typeof queryObj.query?.sq === 'object' &&
-    queryObj.query?.sq instanceof Array
+    typeof queryObj.query?.sq === 'object' && Array.isArray(queryObj.query?.sq)
       ? queryObj.query?.sq.toString()
       : queryObj.query?.sq;
   const questionService = new ItemsService('question', {
-    schema: (pageContext as any)?.schema,
-  });
-
-  const questionsAggregate = await questionService.readByQuery({
-    aggregate: {
-      count: ['*'],
-    },
-  });
-
-  const questions = await questionService.readByQuery({
-    limit: 10,
-    page,
-    fields: [
-      'id',
-      'title',
-      'slug',
-      'content',
-      'user.*',
-      'priorities',
-      'categories',
-      'is_featured',
-    ],
-  });
-
-  const questionsBySearch = await questionService.readByQuery({
-    search: search,
-    fields: [
-      'id',
-      'title',
-      'slug',
-      'content',
-      'user.*',
-      'priorities',
-      'categories',
-      'is_featured',
-    ],
+    schema: pageContext.schema,
   });
 
   return {
     pageContext: {
       pageProps: {
-        questionsAggregate,
+        ...(await loadData(questionService, page, search)),
         searchText: search,
-        isSticky: !!search,
-        questionsBySearch,
-        questions,
       },
     },
   };

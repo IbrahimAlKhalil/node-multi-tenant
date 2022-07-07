@@ -1,7 +1,7 @@
 import { createPageRenderer } from 'vite-plugin-ssr';
 import express, { Express } from 'express';
 import pageRoutes from './page-routes';
-import { ItemsService } from 'directus';
+import * as directus from 'directus';
 
 export async function initRenderer(app: Express) {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -31,7 +31,9 @@ export async function initRenderer(app: Express) {
   app.get(pageRoutes, async (req, res, next) => {
     const url = req.originalUrl;
     const pageContextInit = {
-      schema: (req as unknown as { schema: ItemsService['schema'] }).schema,
+      schema: (req as unknown as { schema: directus.ItemsService['schema'] })
+        .schema,
+      directus,
       lang: req.query.lang ?? req.cookies.lang ?? 'bn',
       url,
     };

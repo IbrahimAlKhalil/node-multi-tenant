@@ -26,7 +26,7 @@ export const useNavData = defineStore('navdata', {
       },
       {
         text: 'menu.tutorials',
-        href: '/tutorials',
+        href: '/tutorials/introduction',
         icon: IconBookOpen,
       },
       {

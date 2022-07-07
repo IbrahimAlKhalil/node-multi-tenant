@@ -8,9 +8,9 @@
       class="flex justify-between items-center container mx-auto py-3 h-full"
     >
       <div class="logo h-full z-[1]">
-        <a href="/" class="block h-full">
+        <router-link to="/" class="block h-full">
           <img class="h-full" :alt="t('common.app-title')" :src="Logo" />
-        </a>
+        </router-link>
       </div>
 
       <nav
@@ -34,8 +34,8 @@
               'text-white md:text-text': item.href !== myPath,
             }"
           >
-            <a
-              :href="item.href"
+            <router-link
+              :to="item.href"
               class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
             >
               <component
@@ -45,7 +45,7 @@
               />
 
               {{ t(item.text) }}
-            </a>
+            </router-link>
           </li>
         </ul>
       </nav>
@@ -65,13 +65,13 @@
             :is="!activeMenu ? MenuBar : Cross"
           />
         </div>
-        <a href="/login" v-if="!isLoggedIn">
+        <router-link to="/login" v-if="!isLoggedIn">
           <primary-btn
             :title="t('common.login')"
             class="hidden lg:block"
             :icon="DoorOpen"
           />
-        </a>
+        </router-link>
         <a href="/app" v-else>
           <primary-btn
             :title="t('common.go-to-dashboard')"

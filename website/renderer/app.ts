@@ -2,6 +2,7 @@ import { setPageContext } from '#modules/use-page-context';
 import { createSSRApp, defineComponent, h } from 'vue';
 import { PageContext } from '#types/page-context';
 import VueToast from 'vue-toast-notification';
+import { createRouter } from '../vue-router';
 import PageShell from './page-shell.vue';
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
@@ -15,7 +16,6 @@ import 'aos/dist/aos.css';
 export { createApp };
 
 function createApp(pageContext: PageContext) {
-  const { Page, pageProps } = pageContext;
   const PageWithLayout = defineComponent({
     mounted() {
       AOS.init();
@@ -26,7 +26,7 @@ function createApp(pageContext: PageContext) {
         {},
         {
           default() {
-            return h(Page, pageProps || {});
+            return h(pageContext.Page);
           },
         },
       );
@@ -48,6 +48,21 @@ function createApp(pageContext: PageContext) {
     position: 'bottom-right',
   });
 
+  const router = createRouter();
+  app.use(router);
+
+  let first = true;
+  router.beforeEach(() => {
+    if (!import.meta.env.SSR) {
+      if (first) {
+        first = false;
+        return;
+      }
+
+      pageContext.pageProps = undefined;
+    }
+  });
+
   pinia.use((ctx) => {
     if (typeof ctx.options.hydrate === 'function') {
       ctx.options.hydrate(ctx.store.$state, ctx.store.$state);
@@ -57,5 +72,5 @@ function createApp(pageContext: PageContext) {
   // Make `pageContext` available from any Vue component
   setPageContext(app, pageContext);
 
-  return app;
+  return { app, router };
 }
