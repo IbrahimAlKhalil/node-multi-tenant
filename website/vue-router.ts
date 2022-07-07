@@ -49,10 +49,23 @@ function createRouter() {
       {
         path: '/blog',
         component: () => import('./pages/blog/index.page.vue'),
+        beforeEnter() {
+          if (!import.meta.env.SSR && !location.pathname.startsWith('/blog')) {
+            window.open(`${location.protocol}//${location.host}/blog`, '_self');
+          }
+        },
       },
       {
         path: '/blog/:slug',
         component: () => import('./pages/blog/post.page.vue'),
+        beforeEnter(route) {
+          if (!import.meta.env.SSR && !location.pathname.startsWith('/blog')) {
+            window.open(
+              `${location.protocol}//${location.host}/${route.params.slug}`,
+              '_self',
+            );
+          }
+        },
       },
       {
         path: '/:pathMatch(.*)*',
