@@ -16,7 +16,20 @@ async function render(
   await router.push(pageContext.url);
   await router.isReady();
 
-  const appHtml = await renderToString(app);
+  let appHtml: string;
+
+  try {
+    appHtml = await renderToString(app);
+  } catch (e) {
+    console.error(e);
+
+    await router.push({
+      name: 'not-found',
+      path: 'not-found',
+    });
+
+    appHtml = await renderToString(app);
+  }
 
   // See https://vite-plugin-ssr.com/head
   const { documentProps } = pageContext;

@@ -49,12 +49,10 @@ function createRouter() {
       {
         path: '/blog',
         component: () => import('./pages/blog/index.page.vue'),
-        children: [
-          {
-            path: ':slug',
-            component: () => import('./pages/blog/post.page.vue'),
-          },
-        ],
+      },
+      {
+        path: '/blog/:slug',
+        component: () => import('./pages/blog/post.page.vue'),
       },
       {
         path: '/:pathMatch(.*)*',

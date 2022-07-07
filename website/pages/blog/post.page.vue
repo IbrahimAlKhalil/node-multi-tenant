@@ -238,7 +238,6 @@ import LayoutMain from '#layouts/main.vue';
 
 export default defineComponent({
   name: 'blog-post',
-  props: ['post', 'suggestions', 'commentsReactions'],
   components: {
     PostPageMetaDescriptionSection,
     PostDescriptionSection,
@@ -449,6 +448,7 @@ export default defineComponent({
       }
     };
     return {
+      ...pageProps,
       postReactions: postReactionsData.postReactions,
       countReaction: postReactionsData.countReaction,
       comments: commentsData.comments,

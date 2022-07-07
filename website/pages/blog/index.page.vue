@@ -55,6 +55,7 @@ import SingleBlogCard from '#components/blog-page/single-blog-card.vue';
 import CommonScrollableHero from '#layouts/common-scrollable-hero.vue';
 import BlogSidebar from '#components/blog-page/blog-sidebar.vue';
 import BlogHero from '#components/blog-page/blog-hero.vue';
+import { usePageContext } from '#modules/use-page-context';
 import Blogs from '#components/blog-page/blogs.vue';
 import BlogLayout from '#layouts/blog-page.vue';
 import LayoutMain from '#layouts/main.vue';
@@ -62,16 +63,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'BlogPage',
-  props: [
-    'page',
-    'tags',
-    'posts',
-    'categories',
-    'searchText',
-    'searchPosts',
-    'featuredPosts',
-    'blogsAggregate',
-  ],
   components: {
     CommonScrollableHero,
     SingleBlogCard,
@@ -116,7 +107,9 @@ export default defineComponent({
     },
   },
   setup() {
-    return {};
+    const ctx = usePageContext();
+
+    return ctx.pageProps;
   },
 });
 </script>
