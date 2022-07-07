@@ -1,20 +1,24 @@
 <template>
   <li class="cursor-pointer ml-3 mb-1">
-    <span
-      class="flex items-center gap-3 w-full py-1 px-2 rounded-l hover:bg-primary hover:text-white transition"
-      :class="[
-        isFolder ? 'font-bold' : '',
-        currentSlug === data.slug ? 'bg-primary text-white' : '',
-      ]"
+    <router-link
+      :to="'/tutorials/' + data.slug"
+      class="block w-full"
+      v-slot="{ isExactActive }"
     >
-      <span @click="toggle">
-        <component :is="AngleDown" v-show="isFolder && isOpen"> </component>
-        <component :is="AngleUp" v-show="isFolder && !isOpen"> </component>
-      </span>
-      <router-link :to="'/tutorials/' + data.slug" class="block w-full">
+      <span
+        class="flex items-center gap-3 w-full py-1 px-2 rounded-l hover:bg-primary hover:text-white transition"
+        :class="[
+          isFolder ? 'font-bold' : '',
+          isExactActive ? 'bg-primary text-white' : '',
+        ]"
+      >
+        <span @click="toggle">
+          <component :is="AngleDown" v-show="isFolder && isOpen"> </component>
+          <component :is="AngleUp" v-show="isFolder && !isOpen"> </component>
+        </span>
         {{ data.title }}
-      </router-link>
-    </span>
+      </span>
+    </router-link>
 
     <the-list v-show="isOpen" v-if="isFolder">
       <list-item
