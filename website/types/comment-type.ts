@@ -6,10 +6,11 @@ type author = {
 };
 
 export type comment = {
-  postId: number;
-  id: string;
+  post: number;
+  status: 'published' | 'hold' | 'review' | 'trashed';
+  id: number;
   author: author;
-  createdAt: string;
+  date_created: string;
   content: string;
   reactions: {
     like: number;
