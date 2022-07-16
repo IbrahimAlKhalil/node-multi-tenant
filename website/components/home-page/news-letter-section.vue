@@ -25,10 +25,7 @@
             value="Subscribe"
             class="input text-lg lg:text-2xl uppercase"
           />
-          <component
-            :is="PaperPlane"
-            class="text-xl lg:text-2xl px-3"
-          ></component>
+          <PaperPlane class="text-xl lg:text-2xl px-3" />
         </div>
       </div>
     </div>
@@ -38,12 +35,12 @@
 <script lang="ts">
 import SubscriptionButton from '#images/subscription-button.svg?url';
 import PaperPlane from '#icons/solid/paper-plane.svg';
-import SendIcon from '#icons/solid/paper-plane.svg';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'news-letter-section',
+  components: { PaperPlane },
   data: () => ({
     email: '',
   }),
@@ -83,9 +80,7 @@ export default defineComponent({
       button: "homePage['news-letter-section']['button']",
       placeholder: "homePage['news-letter-section']['placeholder']",
       SubscriptionButton,
-      PaperPlane,
       t: i18n.t,
-      SendIcon,
     };
   },
 });

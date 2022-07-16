@@ -10,7 +10,7 @@
             target="_blank"
             class="w-10 h-10 rounded-full bg-primary hover:bg-primary-dark dark:bg-secondary hover:dark:bg-secondary-dark text-light flex justify-center items-center cursor-pointer transition"
           >
-            <component :is="Facebook" style="bottom: 0"></component>
+            <Facebook style="bottom: 0" />
           </a>
         </li>
         <li>
@@ -19,7 +19,7 @@
             target="_blank"
             class="w-10 h-10 rounded-full bg-primary hover:bg-primary-dark dark:bg-secondary hover:dark:bg-secondary-dark text-light flex justify-center items-center cursor-pointer transition"
           >
-            <component :is="Twitter" style="bottom: 0"></component>
+            <Twitter style="bottom: 0" />
           </a>
         </li>
       </ul>
@@ -34,6 +34,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'post-share-section',
+  components: { Facebook, Twitter },
   props: {
     title: {
       type: String,
@@ -73,10 +74,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {
-      Facebook,
-      Twitter,
-    };
+    return {};
   },
 });
 </script>

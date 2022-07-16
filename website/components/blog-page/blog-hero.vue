@@ -47,11 +47,7 @@
               :href="'/blog/' + blog.slug"
               class="font-bold text-primary dark:text-secondary flex items-center justify-center lg:justify-start gap-2 uppercase transition hover:text-secondary-dark"
               >Read More
-              <component
-                :is="RightArrow"
-                class="text-xl"
-                style="bottom: 0"
-              ></component>
+              <RightArrow class="text-xl" style="bottom: 0" />
             </a>
           </div>
         </article>
@@ -67,18 +63,3 @@ import PageTitle from '#components/ui/page-title.vue';
 defineProps(['featuredPosts', 'search', 'category', 'categories']);
 defineEmits(['update:search', 'update:category']);
 </script>
-
-<!-- <div class="search-box my-2 w-1/2 mx-auto relative">
-          <input
-            type="text"
-            :value="search"
-            @input="$emit('update:search', $event.target.value)"
-            placeholder="Search Here..."
-            class="block w-full rounded-lg py-2 px-3 text-xl text-text outline-0 border-2 border-transparent focus:border-secondary"
-          />
-          <div
-            class="absolute top-1/2 right-5 -translate-y-1/2 text-text text-xl hidden md:block"
-          >
-            <component :is="Search"></component>
-          </div>
-        </div> -->

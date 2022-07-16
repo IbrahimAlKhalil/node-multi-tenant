@@ -3,7 +3,7 @@
     class="controller container flex items-center justify-center gap-2 text-2xl text-primary md:hidden cursor-pointer p-3"
     @click="toggleFilter"
   >
-    <component :is="FilterIcon"></component>
+    <FilterIcon />
     <span class="font-bold">Filter</span>
   </div>
   <div class="container flex gap-5 mb-10 relative">

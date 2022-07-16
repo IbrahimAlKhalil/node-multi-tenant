@@ -13,8 +13,8 @@
         ]"
       >
         <span @click="toggle">
-          <component :is="AngleDown" v-show="isFolder && isOpen"> </component>
-          <component :is="AngleUp" v-show="isFolder && !isOpen"> </component>
+          <AngleDown v-show="isFolder && isOpen" />
+          <AngleUp v-show="isFolder && !isOpen" />
         </span>
         {{ data.title }}
       </span>
@@ -41,6 +41,8 @@ export default defineComponent({
   name: 'list-item',
 
   components: {
+    AngleDown,
+    AngleUp,
     TheList,
   },
 
@@ -78,10 +80,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {
-      AngleDown,
-      AngleUp,
-    };
+    return {};
   },
 });
 </script>

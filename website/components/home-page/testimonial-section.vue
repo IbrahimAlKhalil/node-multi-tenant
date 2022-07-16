@@ -14,10 +14,9 @@
       </div>
       <div class="content-area flex items-center gap-5">
         <div class="prev-btn cursor-pointer" @click="slider.prev()">
-          <component
-            :is="LeftArrow"
+          <LeftArrow
             class="text-2xl lg:text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
-          ></component>
+          />
         </div>
         <div class="testimonial-slider testimonials">
           <div
@@ -51,23 +50,26 @@
                     {{ t(testimonial.author_position) }}
                   </p>
                 </div>
-                <div class="rating flex items-center gap-1">
-                  <component
-                    v-for="n in 5"
-                    :key="n"
-                    :is="testimonial.rating <= n ? StarRegular : StarSolid"
-                    class="text-secondary"
-                  ></component>
-                </div>
+                <ul class="rating flex items-center gap-1">
+                  <li v-for="n in 5" :key="n">
+                    <StarRegular
+                      v-show="testimonial.rating <= n"
+                      class="text-secondary"
+                    />
+                    <StarSolid
+                      v-show="testimonial.rating > n"
+                      class="text-secondary"
+                    />
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
         <div class="next-btn cursor-pointer" @click="slider.next()">
-          <component
-            :is="RightArrow"
+          <RightArrow
             class="text-2xl lg:text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
-          ></component>
+          />
         </div>
       </div>
       <div class="handler my-5">
@@ -97,6 +99,12 @@ import Siema from 'siema';
 
 export default defineComponent({
   name: 'testimonial-section',
+  components: {
+    StarRegular,
+    RightArrow,
+    LeftArrow,
+    StarSolid,
+  },
   data() {
     return {
       slider: {},
@@ -165,11 +173,7 @@ export default defineComponent({
     return {
       testimonials: items,
       textContent,
-      StarRegular,
-      RightArrow,
       t: i18n.t,
-      LeftArrow,
-      StarSolid,
       Icon,
     };
   },

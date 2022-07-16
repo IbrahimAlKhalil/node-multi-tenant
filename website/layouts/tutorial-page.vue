@@ -39,13 +39,8 @@
       }"
       @click="isExpanded = !isExpanded"
     >
-      <component
-        :is="Close"
-        class="text-3xl"
-        style="bottom: 0"
-        v-if="isExpanded"
-      ></component>
-      <component :is="LineHeight" style="bottom: 0" v-else></component>
+      <Close class="text-3xl" style="bottom: 0" v-if="isExpanded" />
+      <LineHeight style="bottom: 0" v-else />
     </div>
   </layout-main>
 </template>
@@ -60,13 +55,13 @@ export default defineComponent({
   name: 'tutorial-page',
   components: {
     LayoutMain,
+    LineHeight,
+    Close,
   },
   setup() {
     const isExpanded = ref(false);
     return {
       isExpanded,
-      LineHeight,
-      Close,
     };
   },
 });

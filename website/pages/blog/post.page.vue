@@ -36,7 +36,7 @@
         :count="10"
         :isActive="'comments' === activeTab"
       >
-        <component class="text-xl" :is="CommentIcon"></component>
+        <CommentIcon class="text-xl" />
       </the-tab>
 
       <the-tab
@@ -248,6 +248,7 @@ export default defineComponent({
     PostTagsSection,
     PostHeroSection,
     CommentSection,
+    CommentIcon,
     LayoutMain,
     TabButton,
     TheTabs,
@@ -259,6 +260,7 @@ export default defineComponent({
       activeTab: 'comments',
     };
   },
+  props: ['post'],
   computed: {
     primaryCategory() {
       const primaryCategory = this.post.primary_category
@@ -457,7 +459,6 @@ export default defineComponent({
       selectSuggestion,
       submitComment,
       updateComment,
-      CommentIcon,
       comment,
       slug,
     };

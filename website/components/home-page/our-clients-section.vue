@@ -15,10 +15,9 @@
       <!--   ===================== Start Clients Carousel ======================    -->
       <div class="clients-carousel flex items-center">
         <div @click="slider.prev()">
-          <component
-            :is="LeftArrow"
+          <LeftArrow
             class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
-          ></component>
+          />
         </div>
         <div class="swiper-wrapper grow w-4/5">
           <div class="clients">
@@ -41,10 +40,9 @@
           </div>
         </div>
         <div @click="slider.next">
-          <component
-            :is="RightArrow"
+          <RightArrow
             class="text-4xl text-gray-400 transition duration-300 hover:text-text hover:scale-150"
-          ></component>
+          />
         </div>
       </div>
       <!--   ===================== End Clients Carousel ======================    -->
@@ -53,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent } from 'vue';
 import RightArrow from '#icons/solid/angle-right.svg';
 import LeftArrow from '#icons/solid/angle-left.svg';
 import Siema from 'siema';
@@ -61,6 +59,10 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'our-clients-section',
+  components: {
+    RightArrow,
+    LeftArrow,
+  },
   mounted() {
     const slider = new Siema({
       selector: '.clients',
@@ -128,8 +130,6 @@ export default defineComponent({
       description: "homePage['our-clients-section']['description']",
       subTitle: "homePage['our-clients-section']['sub-title']",
       title: "homePage['our-clients-section']['title']",
-      RightArrow,
-      LeftArrow,
       t: i18n.t,
       clients,
     };

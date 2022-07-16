@@ -6,8 +6,8 @@
   >
     <p>{{ title }}</p>
     <span class="text-4xl px-3 text-secondary">
-      <component :is="AngleDown" v-show="!isOpen" style="bottom: 0"></component>
-      <component :is="AngleUp" v-show="isOpen" style="bottom: 0"></component>
+      <AngleDown v-show="!isOpen" style="bottom: 0" />
+      <AngleUp v-show="isOpen" style="bottom: 0" />
     </span>
   </div>
   <div
@@ -28,7 +28,10 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'the-accordion',
-
+  components: {
+    AngleDown,
+    AngleUp,
+  },
   data() {
     return {
       isOpen: false,
@@ -47,10 +50,7 @@ export default defineComponent({
   },
 
   setup() {
-    return {
-      AngleDown,
-      AngleUp,
-    };
+    return {};
   },
 });
 </script>

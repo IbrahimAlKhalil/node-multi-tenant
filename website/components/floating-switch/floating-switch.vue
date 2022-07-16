@@ -7,10 +7,8 @@
         class="absolute top-1/2 left-0 -translate-y-1/2 text-gray-400 text-2xl hover:text-text cursor-pointer"
         @click="toggleMinimize"
       >
-        <component
-          :is="isMinimized ? AngleLeft : AngleRight"
-          style="bottom: 0"
-        ></component>
+        <AngleLeft v-show="isMinimized" style="bottom: 0" />
+        <AngleRight v-show="!isMinimized" style="bottom: 0" />
       </div>
       <div
         class="mood-switch w-8 h-8 rounded-full p-1 mb-3 border flex justify-center items-center cursor-pointer"
@@ -21,27 +19,15 @@
         v-show="!isMinimized"
         @click="toggleDark"
       >
-        <component
-          :is="LightIcon"
-          v-show="isDark"
-          style="bottom: 0"
-        ></component>
-        <component
-          :is="DarkIcon"
-          v-show="!isDark"
-          style="bottom: 0"
-        ></component>
+        <LightIcon v-show="isDark" style="bottom: 0" />
+        <DarkIcon v-show="!isDark" style="bottom: 0" />
       </div>
       <div
         class="language-switch w-8 h-8 rounded-full p-1 border flex justify-center items-center cursor-pointer"
         v-show="!isMinimized"
         @click="handleLanguageChange"
       >
-        <component
-          :is="LanguageChange"
-          style="bottom: 0"
-          class="text-2xl"
-        ></component>
+        <LanguageChange style="bottom: 0" class="text-2xl" />
       </div>
     </div>
   </div>
@@ -58,6 +44,7 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'floating-switch',
+  components: { AngleRight, AngleLeft, LanguageChange, LightIcon, DarkIcon },
   setup() {
     const i18n = useI18n({
       useScope: 'global',
@@ -107,13 +94,8 @@ export default defineComponent({
     return {
       handleLanguageChange,
       toggleMinimize,
-      LanguageChange,
       isMinimized,
       toggleDark,
-      AngleRight,
-      AngleLeft,
-      LightIcon,
-      DarkIcon,
       isDark,
     };
   },

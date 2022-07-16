@@ -31,11 +31,8 @@
             <span class="block font-bold text-lg">
               {{ linkText }}
             </span>
-            <component
-              :is="RightArrow"
-              class="text-xl"
-              style="bottom: 0"
-            ></component>
+
+            <RightArrow class="text-xl" style="bottom: 0" />
           </a>
         </div>
       </div>
@@ -49,6 +46,7 @@ import RightArrow from '#icons/solid/long-arrow-right.svg';
 
 export default defineComponent({
   name: 'single-blog',
+  components: { RightArrow },
   props: {
     title: {
       type: String,
@@ -84,9 +82,7 @@ export default defineComponent({
     },
   },
   setup: function () {
-    return {
-      RightArrow,
-    };
+    return {};
   },
 });
 </script>

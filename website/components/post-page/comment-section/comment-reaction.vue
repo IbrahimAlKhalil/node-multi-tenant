@@ -1,10 +1,9 @@
 <template>
   <div class="flex items-center gap-3 my-3">
     <the-tooltip class="group">
-      <component
-        :is="ReactionIcon"
+      <ReactionIcon
         class="text-3xl text-gray-500 dark:text-light group-hover:text-text dark:group-hover:text-light transition cursor-pointer"
-      ></component>
+      />
       <template #tooltip>
         <ul class="flex items-center gap-2 pt-1./">
           <li class="hover:scale-110 cursor-pointer">
@@ -122,11 +121,7 @@
 
 <script lang="ts">
 import ReactionIcon from '#icons/regular/smile-plus.svg';
-import ThumbsDown from '#icons/solid/thumbs-down.svg';
 import TheTooltip from '#components/ui/tooltip.vue';
-import ThumbsUp from '#icons/solid/thumbs-up.svg';
-import AngryIcon from '#icons/regular/angry.svg';
-import SadIcon from '#icons/regular/sad-cry.svg';
 import { defineComponent } from 'vue';
 import {
   EmojiLike,
@@ -137,7 +132,14 @@ import {
 
 export default defineComponent({
   name: 'comment-reaction',
-  components: { TheTooltip, EmojiLike, EmojiAngry, EmojiSad, EmojiWow },
+  components: {
+    TheTooltip,
+    EmojiLike,
+    EmojiAngry,
+    EmojiSad,
+    EmojiWow,
+    ReactionIcon,
+  },
   emits: ['handle-reply'],
   props: {
     reactions: {
@@ -148,7 +150,10 @@ export default defineComponent({
   computed: {
     reactionsCount() {
       return this.reactions.reduce(
-        (acc, reaction) => {
+        (
+          acc: { likes: number; wows: number; sads: number; angries: number },
+          reaction: any,
+        ) => {
           if (reaction.reaction.value === 'like') {
             acc.likes++;
           } else if (reaction.reaction.value === 'wow') {
@@ -165,13 +170,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {
-      ReactionIcon,
-      ThumbsDown,
-      AngryIcon,
-      ThumbsUp,
-      SadIcon,
-    };
+    return {};
   },
 });
 </script>

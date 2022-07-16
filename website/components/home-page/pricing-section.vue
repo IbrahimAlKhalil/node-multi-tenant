@@ -48,15 +48,14 @@
               :key="feature.id"
               class="flex items-center gap-1 mb-3"
             >
-              <component
-                :is="Check"
+              <Check
                 class="text-xl"
                 :class="{
                   'text-secondary': feature.active && !item.isFeatured,
                   'text-gray-400': !feature.active,
                   'text-primary': item.isFeatured,
                 }"
-              ></component>
+              />
               <span
                 class="text-gray-400"
                 :class="{ 'text-text': feature.active }"
@@ -87,6 +86,7 @@ export default defineComponent({
     'secondary-btn': SecondaryBtn,
     'primary-btn': PrimaryBtn,
     SectionTitle,
+    Check,
   },
   setup() {
     return {
@@ -143,7 +143,6 @@ export default defineComponent({
           },
         },
       ],
-      Check,
     };
   },
 });

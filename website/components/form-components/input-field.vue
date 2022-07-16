@@ -21,18 +21,16 @@
       class="absolute right-2 top-[13px]"
       :class="[isPasswordField ? 'visible opacity-100' : 'invisible opacity-0']"
     >
-      <component
+      <EyeOpen
         v-show="showPassword"
-        :is="EyeOpen"
         class="text-2xl p-1 cursor-pointer"
         @click="$emit('on-toggle-password', name)"
-      ></component>
-      <component
+      />
+      <EyeClosed
         v-show="!showPassword"
-        :is="EyeClosed"
         class="text-2xl p-1 cursor-pointer"
         @click="$emit('on-toggle-password', name)"
-      ></component>
+      />
     </div>
   </div>
 </template>

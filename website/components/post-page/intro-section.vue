@@ -23,7 +23,7 @@
         class="text-gray-500 dark:text-inherit flex items-center gap-1 pt-5 md:pt-0"
       >
         <a href="/">
-          <component :is="HomeIcon" class="px-1 hover:text-primary"></component>
+          <HomeIcon class="px-1 hover:text-primary" />
         </a>
         <span class="hover:text-primary"><a href="/blog">Blog /</a></span>
         <span class="hover:text-primary">
@@ -47,6 +47,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'post-intro-section',
+  components: { HomeIcon },
   props: {
     title: {
       type: String,
@@ -74,9 +75,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {
-      HomeIcon,
-    };
+    return {};
   },
 });
 </script>

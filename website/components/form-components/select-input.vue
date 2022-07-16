@@ -21,7 +21,7 @@
         :class="[color === 'white' ? 'text-white' : 'text-primary']"
         @click="isDropdownOpen = !isDropdownOpen"
       >
-        <component :is="Down"></component>
+        <Down />
       </span>
       <div class="flex flex-wrap gap-2 w-4/5 relative left-0 p-3">
         <span
@@ -32,13 +32,12 @@
           <span>
             {{ item.label }}
           </span>
-          <component
-            :is="CrossIcon"
+          <CrossIcon
             style="bottom: 0"
             class="cursor-pointer"
             :class="{ hidden: isSingleSelect }"
             @click="$emit('on-remove', item.value)"
-          ></component>
+          />
         </span>
       </div>
     </div>
@@ -61,13 +60,12 @@
           {{ option.label }}
         </span>
         <span>
-          <component
-            :is="TickIcon"
+          <TickIcon
             v-show="
               selectedItems.findIndex((item) => item.value === option.value) !==
               -1
             "
-          ></component>
+          />
         </span>
       </li>
       <li
@@ -145,5 +143,3 @@ defineProps({
   },
 });
 </script>
-
-<style scoped></style>

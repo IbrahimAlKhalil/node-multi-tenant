@@ -9,11 +9,7 @@
       <span v-show="!isFolder">&ensp;&ensp;&ensp;</span>
       <span> {{ item.title }}</span>
       <span>
-        <component
-          :is="TickIcon"
-          style="bottom: 0"
-          v-show="isChecked"
-        ></component>
+        <TickIcon style="bottom: 0" v-show="isChecked" />
       </span>
     </span>
 
@@ -33,6 +29,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'list-item',
+  components: { TickIcon },
   data() {
     return {
       isCollapsed: true,
@@ -57,9 +54,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {
-      TickIcon,
-    };
+    return {};
   },
 });
 </script>

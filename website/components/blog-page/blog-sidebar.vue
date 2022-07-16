@@ -21,7 +21,7 @@
             @click="handleQuery('sq', model.search)"
             class="flex justify-center items-center p-3 text-xl md:block bg-primary text-white cursor-pointer"
           >
-            <component :is="SearchIcon" style="bottom: 0"></component>
+            <SearchIcon style="bottom: 0" />
           </div>
         </div>
       </div>
@@ -46,7 +46,8 @@
               for="all"
               class="flex items-center gap-2 cursor-pointer px-2"
             >
-              <component :is="'' === model.category ? CircleCheck : Circle" />
+              <CircleCheck v-show="'' === model.category" />
+              <Circle v-show="'' !== model.category" />
               All</label
             >
           </li>
@@ -70,9 +71,9 @@
               :for="category.slug"
               class="flex items-center gap-2 cursor-pointer px-2"
             >
-              <component
-                :is="category.id == model.category ? CircleCheck : Circle"
-              />
+              <CircleCheck v-show="category.id == model.category" />
+              <Circle v-show="category.id != model.category" />
+
               {{ category.name }}</label
             >
           </li>
@@ -99,7 +100,9 @@
               for="tag-all"
               class="flex items-center gap-2 cursor-pointer px-2"
             >
-              <component :is="'' == model.tag ? CircleCheck : Circle" />
+              <CircleCheck v-show="'' == model.tag" />
+              <Circle v-show="'' != model.tag" />
+
               All</label
             >
           </li>
@@ -123,7 +126,9 @@
               :for="tag.name"
               class="flex items-center gap-2 cursor-pointer px-2"
             >
-              <component :is="tag.id == model.tag ? CircleCheck : Circle" />
+              <CircleCheck v-show="tag.id == model.tag" />
+              <Circle v-show="tag.id != model.tag" />
+
               {{ tag.name }}</label
             >
           </li>
@@ -134,7 +139,7 @@
           <button
             class="w-full p-1 border border-secondary hover:border-secondary-dark hover:bg-secondary-dark text-secondary-dark hover:text-white rounded-md font-bold text-lg flex items-center justify-center gap-2"
           >
-            <component :is="TrashIcon"></component>
+            <TrashIcon />
             Rest Filters
           </button>
         </a>
@@ -144,7 +149,6 @@
 </template>
 
 <script lang="ts">
-import SecondaryBtn from '#components/ui/btn/secondary-btn.vue';
 import { usePageContext } from '#modules/use-page-context';
 import CircleCheck from '#icons/solid/check-circle.svg';
 import TrashIcon from '#icons/solid/trash-alt.svg';
@@ -155,7 +159,7 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'blog-sidebar',
-  components: { SecondaryBtn },
+  components: { SearchIcon, CircleCheck, Circle, TrashIcon },
   props: {
     categories: {
       type: Array,
@@ -210,11 +214,7 @@ export default defineComponent({
       );
     }
     return {
-      CircleCheck,
-      SearchIcon,
-      TrashIcon,
       t: i18n.t,
-      Circle,
       model,
     };
   },

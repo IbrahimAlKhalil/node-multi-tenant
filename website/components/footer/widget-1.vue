@@ -9,24 +9,23 @@
   <ul class="flex items-center gap-3 text-2xl">
     <li>
       <a href="#">
-        <component :is="Facebook"></component>
+        <Facebook />
       </a>
     </li>
     <li>
       <a href="#">
-        <component :is="Twitter"></component>
+        <Twitter />
       </a>
     </li>
     <li>
       <a href="#">
-        <component :is="Web"></component>
+        <Web />
       </a>
     </li>
   </ul>
 </template>
 
 <script lang="ts">
-import PreFooter from '#components/footer/pre-footer.vue';
 import LogoWhite from '#images/logo white.svg?url';
 import Facebook from '#icons/brands/facebook.svg';
 import Twitter from '#icons/brands/twitter.svg';
@@ -34,14 +33,14 @@ import Web from '#icons/solid/globe.svg';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  name: 'widget-1',
   components: {
-    'pre-footer': PreFooter,
+    Facebook,
+    Twitter,
+    Web,
   },
   setup() {
     return {
-      Facebook,
-      Twitter,
-      Web,
       LogoWhite,
     };
   },

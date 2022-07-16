@@ -58,11 +58,17 @@
           }"
           @click="activeMenu = !activeMenu"
         >
-          <component
+          <MenuBar
             class="transition duration-150 group-hover:text-white text-2xl md:text-4xl"
             :class="{ 'text-primary': !activeMenu, 'text-white': activeMenu }"
             style="bottom: 0"
-            :is="!activeMenu ? MenuBar : Cross"
+            v-show="!activeMenu"
+          />
+          <Cross
+            class="transition duration-150 group-hover:text-white text-2xl md:text-4xl"
+            :class="{ 'text-primary': !activeMenu, 'text-white': activeMenu }"
+            style="bottom: 0"
+            v-show="activeMenu"
           />
         </div>
         <router-link to="/login" v-if="!isLoggedIn">
@@ -102,6 +108,8 @@ export default defineComponent({
   props: ['defaultSticky'],
   components: {
     PrimaryBtn,
+    MenuBar,
+    Cross,
   },
   data() {
     return {
@@ -152,9 +160,7 @@ export default defineComponent({
       t: i18n.t,
       DoorOpen,
       navData,
-      MenuBar,
       myPath,
-      Cross,
       Logo,
     };
   },

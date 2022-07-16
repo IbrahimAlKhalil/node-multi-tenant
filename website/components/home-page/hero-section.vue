@@ -59,9 +59,8 @@
       :class="{ 'invisible opacity-0': isVisible }"
       @click="handleScroll"
     >
-      <component
+      <Down
         class="text-5xl text-white transition hover:scale-125 hover:text-secondary cursor-pointer"
-        :is="Down"
       />
     </div>
   </div>
