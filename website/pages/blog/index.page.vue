@@ -2,12 +2,7 @@
   <div>
     <layout-main>
       <common-scrollable-hero>
-        <blog-hero
-          v-model:search="heroSearch"
-          :categories="categories"
-          :category="heroSearchCategory"
-          :featuredPosts="featuredPosts"
-        />
+        <blog-hero :featuredPosts="featuredPosts" />
       </common-scrollable-hero>
       <div class="my-5"></div>
       <blog-layout>
@@ -63,6 +58,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'BlogPage',
+  props: ['blogsAggregate', 'searchText'],
   components: {
     CommonScrollableHero,
     SingleBlogCard,
