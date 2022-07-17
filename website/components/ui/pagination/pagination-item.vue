@@ -25,7 +25,7 @@ export default defineComponent({
       default: false,
     },
     title: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
