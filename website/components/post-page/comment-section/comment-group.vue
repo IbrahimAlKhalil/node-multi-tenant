@@ -1,7 +1,6 @@
 <template>
   <div class="comment-group container my-10">
     <single-comment
-      :handle-reply="handleReply"
       :authorName="
         comment?.user_created?.first_name +
         ' ' +

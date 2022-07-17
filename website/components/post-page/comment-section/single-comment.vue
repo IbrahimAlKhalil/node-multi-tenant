@@ -32,7 +32,7 @@ export default defineComponent({
     },
     avatar: {
       type: String,
-      required: true,
+      required: false,
     },
     commentContent: {
       type: String,

@@ -29,15 +29,49 @@ export default defineComponent({
     LeaveComment,
     CommentGroup,
   },
-  props: [
-    'data',
-    'reactions',
-    'suggestions',
-    'comment',
-    'updateComment',
-    'submitComment',
-    'selectSuggestion',
-  ],
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+    reactions: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    suggestions: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    comment: {
+      type: String,
+      required: true,
+      default: '',
+    },
+    updateComment: {
+      type: Function,
+      required: true,
+    },
+    submitComment: {
+      type: Function,
+      required: true,
+    },
+    selectSuggestion: {
+      type: Function,
+      required: true,
+    },
+  },
+
+  // [
+  //   'data',
+  //   'reactions',
+  //   'suggestions',
+  //   'comment',
+  //   'updateComment',
+  //   'submitComment',
+  //   'selectSuggestion',
+  // ],
   setup() {
     return {};
   },
