@@ -26,20 +26,26 @@
             <router-link
               :to="item.href"
               class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
-              v-slot="{ isExactActive }"
+              v-slot="{ route }"
             >
               <span
                 class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
                 :class="{
                   'dark:text-light dark:hover:text-secondary': isSticky,
-                  'text-primary': isExactActive && !isSticky,
-                  'dark:text-secondary text-primary': isExactActive && isSticky,
-                  'text-white md:text-text': !isExactActive,
+                  'text-primary':
+                    activeRoute.fullPath === route.fullPath && !isSticky,
+                  'dark:text-secondary text-primary':
+                    activeRoute.fullPath === route.fullPath && isSticky,
+                  'text-white md:text-text': !(
+                    activeRoute.fullPath === route.fullPath
+                  ),
                 }"
               >
                 <component
                   class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
-                  :class="{ 'scale-125': isExactActive }"
+                  :class="{
+                    'scale-125': activeRoute.fullPath === route.fullPath,
+                  }"
                   :is="item.icon"
                 />
 
@@ -95,6 +101,7 @@ import { useAuth } from '#stores/auth.store';
 import MenuBar from '#icons/light/bars.svg';
 import Cross from '#icons/light/times.svg';
 import Logo from '#images/logo.svg?url';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -138,8 +145,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { urlPathname } = usePageContext();
-    const myPath = '/' + urlPathname.split('/')[1];
+    const activeRoute = useRoute();
     const navData = useNavData();
     const auth = useAuth();
     const i18n = useI18n();
@@ -148,12 +154,12 @@ export default defineComponent({
 
     return {
       TableColumns,
+      activeRoute,
       isLoggedIn,
       t: i18n.t,
       DoorOpen,
       navData,
       MenuBar,
-      myPath,
       Cross,
       Logo,
     };
