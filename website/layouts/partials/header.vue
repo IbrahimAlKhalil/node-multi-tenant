@@ -24,9 +24,9 @@
         <ul class="flex flex-col md:flex-row items-center justify-center">
           <li v-for="item in navData.data" :key="item.href">
             <router-link
-              :to="item.href"
               class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
               v-slot="{ route }"
+              :to="item.href"
             >
               <span
                 class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
@@ -98,11 +98,10 @@
 
 <script lang="ts">
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
-import { usePageContext } from '#modules/use-page-context';
 import TableColumns from '#icons/duotone/columns.svg';
 import DoorOpen from '#icons/duotone/door-open.svg';
 import { useNavData } from '#stores/navdata.store';
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useAuth } from '#stores/auth.store';
 import MenuBar from '#icons/light/bars.svg';
 import Cross from '#icons/light/times.svg';
