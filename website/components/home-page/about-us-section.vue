@@ -1,6 +1,6 @@
 <template>
   <section id="about" class="about-us-section">
-    <div class="video-wrapper min-h-[70vh] border border-red-500">
+    <div class="video-wrapper min-h-[70vh]">
       <video
         autoplay
         muted
