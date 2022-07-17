@@ -27,7 +27,7 @@ export default defineComponent({
       required: true,
     },
     icon: {
-      type: String,
+      type: Object,
       required: false,
     },
     size: {

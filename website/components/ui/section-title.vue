@@ -10,11 +10,5 @@
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'section-title',
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-  },
 });
 </script>
