@@ -1,26 +1,28 @@
 <template>
-  <h4 class="text-left self-start capitalize">{{ title }}</h4>
-  <div
-    class="flex items-center gap-5 px-3 py-2 rounded-md border-b-2 border border-transparent border-b-primary hover:border-primary hover:border-x hover:border-t text-primary dark:text-secondary outline-0 w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
-    :class="{
-      'border-red-500 focus:border-red-500': error,
-    }"
-  >
-    <div v-for="option of options" :key="option.value">
-      <input
-        type="radio"
-        :name="name"
-        :value="option.value"
-        :id="option.label"
-        @input="$emit('on-input', $event)"
-        @focus="$emit('on-focus', name)"
-        @keypress="$emit('on-keypress', name)"
-        class="w-5 h-5"
-      />
-      <label :for="option.label" class="font-bold">
-        <div class="pointer border-primary dark:border-secondary"></div>
-        {{ option.label }}
-      </label>
+  <div>
+    <h4 class="text-left self-start capitalize">{{ title }}</h4>
+    <div
+      class="flex items-center gap-5 px-3 py-2 rounded-md border-b-2 border border-transparent border-b-primary hover:border-primary hover:border-x hover:border-t text-primary dark:text-secondary outline-0 w-full bg-transparent transition duration-300 ease-in placeholder-opacity-60"
+      :class="{
+        'border-red-500 focus:border-red-500': error,
+      }"
+    >
+      <div v-for="option of options" :key="option.value">
+        <input
+          type="radio"
+          :name="name"
+          :value="option.value"
+          :id="option.label"
+          @input="$emit('on-input', $event)"
+          @focus="$emit('on-focus', name)"
+          @keypress="$emit('on-keypress', name)"
+          class="w-5 h-5"
+        />
+        <label :for="option.label" class="font-bold">
+          <div class="pointer border-primary dark:border-secondary"></div>
+          {{ option.label }}
+        </label>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +44,10 @@ export default defineComponent({
     options: {
       type: Array,
       required: true,
+    },
+    error: {
+      type: String,
+      default: '',
     },
   },
   emits: ['on-input', 'on-keypress', 'on-focus'],
