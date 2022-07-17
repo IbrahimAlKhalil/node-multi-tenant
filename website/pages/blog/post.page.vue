@@ -222,16 +222,16 @@ import CommentSection from '#components/post-page/comment-section/index.vue';
 import TabBodyUsersContainer from '#components/blog-page/tab-body-users.vue';
 import PostShareSection from '#components/post-page/share-section.vue';
 import PostIntroSection from '#components/post-page/intro-section.vue';
+import { ReactionType, PostReactionType } from '#types/reaction-type';
 import PostTagsSection from '#components/post-page/tags-section.vue';
 import PostHeroSection from '#components/post-page/hero-section.vue';
 import TabBody from '#components/ui/tab-component/tab-body.vue';
 import TabButton from '#components/post-page/tab-button.vue';
-import { defineComponent, reactive, ref, inject, watch } from 'vue';
+import { defineComponent, reactive, ref, inject } from 'vue';
 import TheTabs from '#components/ui/tab-component/tabs.vue';
 import { usePageContext } from '#modules/use-page-context';
 import TheTab from '#components/ui/tab-component/tab.vue';
 import CommentIcon from '#icons/regular/comments.svg';
-import { ReactionType, PostReactionType } from '#types/reaction-type';
 import { comment } from '#types/comment-type';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
@@ -315,19 +315,6 @@ export default defineComponent({
       ? [...(pageProps.postReactions as PostReactionType[])]
       : [];
 
-    // const countReactionData = reactive({});
-    // const keys = Object.keys(
-    //   postReactionsData.postReactions,
-    // ) as (keyof typeof postReactionsData.postReactions)[];
-    // for (let key of keys) {
-    //   watch(
-    //     () => postReactionsData.postReactions[key],
-    //     (value) => {
-    //       countReactions(postReactionsData.postReactions);
-    //     },
-    //   );
-    // }
-
     const countReactions = (postReactions: PostReactionType[]) => {
       const array = postReactions ?? ([] as PostReactionType[]);
       postReactionsData.countReaction = array.reduce(
@@ -359,7 +346,10 @@ export default defineComponent({
     };
     const submitComment = async () => {
       const cluster = localStorage.getItem('cluster');
-      // if (!cluster || !user) location.replace('/login');
+      if (!cluster) {
+        location.replace('/login');
+        return;
+      }
       const response = await fetch('/api/comment', {
         method: 'POST',
         body: JSON.stringify({
