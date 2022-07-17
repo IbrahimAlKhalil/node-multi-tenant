@@ -29,10 +29,10 @@ export default defineComponent({
   name: 'layout-main',
   props: {
     isSticky: {
-      type: boolean,
+      type: Boolean,
     },
     isFooterVisible: {
-      type: boolean,
+      type: Boolean,
       default: true,
     },
   },
