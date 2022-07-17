@@ -154,24 +154,9 @@ export default defineComponent({
   },
   setup() {
     const activeRoute = useRoute();
-    const hash = computed(() => activeRoute.hash);
     const navData = useNavData();
     const auth = useAuth();
     const i18n = useI18n();
-
-    watch(hash, () => {
-      const elm = document.querySelector(hash.value);
-
-      if (!elm) {
-        return;
-      }
-
-      elm.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'start',
-      });
-    });
 
     const isLoggedIn = computed(() => !!auth.user);
 

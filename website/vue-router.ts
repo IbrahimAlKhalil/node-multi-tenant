@@ -73,5 +73,14 @@ function createRouter() {
         component: () => import('./renderer/_error.page.vue'),
       },
     ],
+    scrollBehavior(to) {
+      if (!to.hash || import.meta.env.SSR) {
+        return;
+      }
+
+      return {
+        el: to.hash,
+      };
+    },
   });
 }
