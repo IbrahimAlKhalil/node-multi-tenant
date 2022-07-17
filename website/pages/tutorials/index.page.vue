@@ -38,22 +38,30 @@
             <template #footer>
               <footer class="py-5 border-t border-t-gray-300">
                 <div class="w-11/12 mx-auto flex justify-between items-center">
-                  <a
+                  <router-link
+                    :class="{
+                      'pointer-events-none': !prevTutorial,
+                      'text-gray-400': !prevTutorial,
+                    }"
+                    :to="`/tutorials/${prevTutorial?.slug ?? ''}`"
                     class="flex items-center gap-3 font-bold"
-                    title="Prev Title"
-                    href="#"
+                    :title="prevTutorial?.title ?? ''"
                   >
                     <arrow-left style="bottom: 0" />
                     <span>Previous</span>
-                  </a>
-                  <a
+                  </router-link>
+                  <router-link
+                    :class="{
+                      'pointer-events-none': !nextTutorial,
+                      'text-gray-400': !nextTutorial,
+                    }"
+                    :to="`/tutorials/${nextTutorial?.slug ?? ''}`"
                     class="flex items-center gap-3 font-bold"
-                    title="Next Title"
-                    href="#"
+                    :title="nextTutorial?.title ?? ''"
                   >
                     <span>Next</span>
                     <arrow-right style="bottom: 0" />
-                  </a>
+                  </router-link>
                 </div>
               </footer>
             </template>
@@ -95,11 +103,11 @@ import {
 export default defineComponent({
   name: 'tutorial-page',
   components: {
-    TheLoading,
-    RightItem,
     RightSectionContainer,
     TutorialPage,
+    TheLoading,
     ArrowRight,
+    RightItem,
     ArrowLeft,
     ListItem,
     TheList,
@@ -131,8 +139,40 @@ export default defineComponent({
         (block: any) => block.type === 'header',
       );
     });
-
     const activeHash = ref('');
+
+    const nextTutorial = computed(() => {
+      if (!data.tutorials?.length) {
+        return '#';
+      }
+
+      let item: Record<string, any> | null = null;
+      const length = data.tutorials.length;
+
+      for (let i = 0; i < length; i++) {
+        if (data.tutorials[i].slug === route.params.slug) {
+          return data.tutorials[i + 1];
+        }
+      }
+
+      return item;
+    });
+    const prevTutorial = computed(() => {
+      if (!data.tutorials?.length) {
+        return '#';
+      }
+
+      let item: Record<string, any> | null = null;
+      const length = data.tutorials.length;
+
+      for (let i = 0; i < length; i++) {
+        if (data.tutorials[i].slug === route.params.slug) {
+          return data.tutorials[i + -1];
+        }
+      }
+
+      return item;
+    });
 
     onMounted(async () => {
       if (!data.tutorials) {
@@ -147,7 +187,9 @@ export default defineComponent({
     });
 
     return {
-      currentSlug: ctx.urlPathname.split('/')[2],
+      currentSlug: route.params.slug,
+      nextTutorial,
+      prevTutorial,
       activeHash,
       headers,
       data,
