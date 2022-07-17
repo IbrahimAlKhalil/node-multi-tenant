@@ -12,32 +12,32 @@ export const useNavData = defineStore('navdata', {
       {
         text: 'menu.features',
         href: '/#features',
-        icon: IconPhoneLaptop,
+        icon: Object.freeze(IconPhoneLaptop),
       },
       {
         text: 'menu.pricing',
         href: '/#pricing',
-        icon: IconMoneyCheck,
+        icon: Object.freeze(IconMoneyCheck),
       },
       {
         text: 'menu.about',
         href: '/#about',
-        icon: IconInfoCircle,
+        icon: Object.freeze(IconInfoCircle),
       },
       {
         text: 'menu.tutorials',
         href: '/tutorials/introduction',
-        icon: IconBookOpen,
+        icon: Object.freeze(IconBookOpen),
       },
       {
         text: 'menu.blog',
         href: '/blog',
-        icon: IconBlog,
+        icon: Object.freeze(IconBlog),
       },
       {
         text: 'menu.faq',
         href: '/faq',
-        icon: IconQuestionCircle,
+        icon: Object.freeze(IconQuestionCircle),
       },
     ],
     currentPath: '',
