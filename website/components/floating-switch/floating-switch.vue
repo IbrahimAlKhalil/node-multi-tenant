@@ -86,7 +86,6 @@ export default defineComponent({
       }
       isDark.value = localStorage.theme === 'dark';
       const minimized = localStorage.getItem('minimized');
-      console.log(minimized);
       if (minimized) {
         isMinimized.value = minimized === '1' ? true : false;
       }
