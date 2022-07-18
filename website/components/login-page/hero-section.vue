@@ -50,7 +50,7 @@
             Remember me
           </label>
         </div>
-        <br>
+        <br />
         <button
           type="submit"
           :value="btnText"
@@ -87,8 +87,11 @@ import InputField from '#components/form-components/input-field.vue';
 import PageTitle from '#components/ui/page-title.vue';
 import loginFormType from '#types/login-form-type';
 import { useAuth } from '#stores/auth.store';
-import { reactive, ref } from 'vue';
+import { inject, reactive, ref } from 'vue';
 import * as Yup from 'yup';
+
+// Toast
+const toast: any = inject('$toast');
 
 defineProps(['search', 'category', 'categories']);
 defineEmits(['update:search', 'update:category']);
@@ -139,7 +142,12 @@ const handleInput = (event: any) => {
 const handleSubmit = async () => {
   const user = await authStore.login(values);
 
-  console.log(user);
+  if (user?.id) {
+    toast.success('Logged In successfully!');
+    location.replace('/');
+  } else {
+    toast.error('Something went wrong!');
+  }
 
   // TODO: Show success/error message
 };
