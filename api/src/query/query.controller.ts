@@ -39,7 +39,9 @@ export class QueryController {
     let query: QuerySchema;
 
     try {
-      query = await querySchema.validateAsync(parsedQuery);
+      query = await querySchema.validateAsync(
+        JSON.parse(parsedQuery.query as string),
+      );
     } catch (e) {
       res.writeStatus('400');
       return res.cork(() => {
@@ -63,15 +65,33 @@ export class QueryController {
       return;
     }
 
-    const result = await this.queryService.find(query, session);
+    try {
+      const result = await this.queryService.find(query, session);
 
-    if (!aborted) {
-      res.writeStatus('200');
+      if (!aborted) {
+        res.writeStatus('200');
+
+        this.uwsService
+          .setCorsHeaders(res, origin, false)
+          .writeHeader('Content-Type', 'application/json')
+          .end(JSON.stringify(result), true);
+      }
+    } catch (e) {
+      console.error(e);
+
+      res.writeStatus('500');
 
       this.uwsService
         .setCorsHeaders(res, origin, false)
         .writeHeader('Content-Type', 'application/json')
-        .end(JSON.stringify(result), true);
+        .end(
+          JSON.stringify({
+            error: {
+              message: 'Something went wrong, please try again later.',
+              code: 'INTERNAL_ERROR',
+            },
+          }),
+        );
     }
   }
 }
