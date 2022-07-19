@@ -1,57 +1,54 @@
 <template>
-  <div>
-    <layout-main :is-sticky="true">
-      <common-scrollable-hero>
-        <hero-section />
-      </common-scrollable-hero>
-      <div class="container mb-10 mt-20">
-        <div
-          class="search-box flex my-5 md:w-1/2 mx-auto relative shadow-md border border-gray-50 rounded overflow-hidden"
-        >
-          <div class="grow">
-            <input
-              class="block w-full py-2 px-3 text-xl text-text outline-0 border-2 border-transparent focus:border-secondary"
-              placeholder="Search Here..."
-              @keyup.enter="doSearch"
-              v-model="search"
-              type="text"
-            />
-          </div>
-          <div
-            class="flex justify-center items-center p-3 text-xl md:block bg-primary text-white cursor-pointer"
-            @click="doSearch"
-          >
-            <search-icon></search-icon>
-          </div>
+  <layout-main :is-sticky="true">
+    <common-scrollable-hero>
+      <hero-section />
+    </common-scrollable-hero>
+    <div class="container mb-10 mt-20">
+      <div
+        class="search-box flex my-5 md:w-1/2 mx-auto relative shadow-md border border-gray-50 rounded overflow-hidden"
+      >
+        <div class="grow">
+          <input
+            class="block w-full py-2 px-3 text-xl text-text outline-0 border-2 border-transparent focus:border-secondary"
+            placeholder="Search Here..."
+            @keyup.enter="doSearch"
+            v-model="search"
+            type="text"
+          />
         </div>
-
-        <template v-if="data.questions">
-          <the-accordion
-            v-for="question of data.questions"
-            :description="question.content"
-            :title="question.title"
-            :key="question.id"
-            v-show="search"
-          />
-          <the-pagination
-            v-show="!search && filtered"
-            @change-page="changePage"
-            :activePage="activePage"
-            urlWithKey="/faq?page="
-            :total="totalPage"
-          />
-        </template>
-
-        <template v-else>
-          <div
-            class="font-bold p-4 bg-primary-dark text-white rounded text-center"
-          >
-            Loading...
-          </div>
-        </template>
+        <div
+          class="flex justify-center items-center p-3 text-xl md:block bg-primary text-white cursor-pointer"
+          @click="doSearch"
+        >
+          <search-icon></search-icon>
+        </div>
       </div>
-    </layout-main>
-  </div>
+
+      <template v-if="data.questions">
+        <the-accordion
+          v-for="question of data.questions"
+          :description="question.content"
+          :title="question.title"
+          :key="question.id"
+        />
+        <the-pagination
+          v-show="!search && filtered"
+          @change-page="changePage"
+          :activePage="activePage"
+          urlWithKey="/faq?page="
+          :total="totalPage"
+        />
+      </template>
+
+      <template v-else>
+        <div
+          class="font-bold p-4 bg-primary-dark text-white rounded text-center"
+        >
+          Loading...
+        </div>
+      </template>
+    </div>
+  </layout-main>
 </template>
 
 <script lang="ts">
