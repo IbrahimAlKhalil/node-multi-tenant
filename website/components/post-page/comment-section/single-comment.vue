@@ -5,10 +5,13 @@
   </p>
   <comment-reaction @handle-reply="handleReply" :reactions="reactions" />
   <leave-comment
-    v-show="isReplying"
-    :fluid="true"
-    submit-comment="submitComment"
+    :submitComment="submitComment"
     @update:input="updateComment"
+    :commentValue="commentValue"
+    v-show="isReplying"
+    :parent="commentId"
+    :mention="authorId"
+    :fluid="true"
   />
 </template>
 
@@ -22,6 +25,19 @@ export default defineComponent({
   name: 'single-comment',
   components: { CommentReaction, CommentAuthor, LeaveComment },
   props: {
+    commentValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    commentId: {
+      type: Number,
+      required: true,
+    },
+    authorId: {
+      type: Number,
+      required: true,
+    },
     authorName: {
       type: String,
       required: true,
@@ -42,6 +58,10 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    submitComment: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
     return {
@@ -54,11 +74,8 @@ export default defineComponent({
       this.replyComment = value;
     },
     handleReply() {
-      this.isReplying = !this.isReplying;
-    },
-    submitComment() {
       console.log(this.replyComment);
-      this.replyComment = '';
+      this.isReplying = !this.isReplying;
     },
   },
   setup() {

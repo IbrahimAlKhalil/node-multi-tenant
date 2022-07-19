@@ -8,7 +8,7 @@
         id="comment"
         rows="7"
         class="block w-full h-full border-none outline-none bg-transparent p-2"
-        :value="comment"
+        :value="commentValue"
         @input="$emit('update:comment', $event.target.value)"
         @keydown="$emit('handle-mention', $event)"
       ></textarea>
@@ -38,12 +38,24 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    comment: {
+    commentValue: {
       type: String,
+      required: false,
+      default: '',
     },
     submitComment: {
       type: Function,
       required: true,
+    },
+    parent: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    mention: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   setup() {
