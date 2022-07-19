@@ -2,7 +2,7 @@ import { defineModel } from '../define-model.js';
 
 export default defineModel<'accessToken'>({
   access: {
-    ALL: {
+    AUTHENTICATED: {
       read: {
         fields: true,
         permission(session) {
@@ -12,7 +12,7 @@ export default defineModel<'accessToken'>({
         },
       },
       delete: {
-        permission: 'ALL.read',
+        permission: 'AUTHENTICATED.read',
       },
     },
   },

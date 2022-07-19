@@ -29,10 +29,25 @@ export class QueryController {
     const rawQuery = req.getQuery();
     const origin = req.getHeader('origin');
 
-    const session = await this.authService.authenticateReq(res, req);
+    const session = await this.authService.authenticateReq(res, req, true);
 
-    if (aborted || !session) {
+    if (aborted) {
       return;
+    }
+
+    if (!session) {
+      res.writeStatus('400');
+      return res.cork(() => {
+        this.uwsService
+          .setCorsHeaders(res, origin, false)
+          .writeHeader('Content-Type', 'application/json')
+          .end(
+            JSON.stringify({
+              code: 'QUERY_INVALID',
+              error: 'Invalid institute id',
+            }),
+          );
+      });
     }
 
     const parsedQuery = qs.parse(rawQuery);

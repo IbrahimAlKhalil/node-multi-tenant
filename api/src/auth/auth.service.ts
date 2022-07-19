@@ -2,6 +2,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { HttpResponse, HttpRequest } from 'uWebSockets.js';
 import { UwsService } from '../uws/uws.service.js';
 import { JwtPayload } from '../types/jwt-payload';
+import { user_kind } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { Session } from '../types/session';
@@ -19,10 +20,19 @@ export class AuthService {
   async authenticate(
     cookie: string,
     csrfToken: string,
+    instituteId?: string,
   ): Promise<Session | null> {
     if (!csrfToken || !cookie) {
       // csrf token is not provided
-      return null;
+
+      if (!instituteId) {
+        return null;
+      }
+
+      return {
+        knd: 'PUBLIC',
+        iid: instituteId,
+      };
     }
 
     // Extract the jwt from the cookie
@@ -30,7 +40,14 @@ export class AuthService {
     const tokenKeyIndex = cookie.indexOf(`${this.config.auth.cookieKey}=`);
 
     if (tokenKeyIndex === -1) {
-      return null;
+      if (!instituteId) {
+        return null;
+      }
+
+      return {
+        knd: 'PUBLIC',
+        iid: instituteId,
+      };
     }
 
     const boundary = cookie.indexOf(';', tokenKeyIndex);
@@ -47,7 +64,14 @@ export class AuthService {
       jwtPayload = await this.jwtService.verifyAsync<JwtPayload>(token);
     } catch (e) {
       // Invalid jwt
-      return null;
+      if (!instituteId) {
+        return null;
+      }
+
+      return {
+        knd: 'PUBLIC',
+        iid: instituteId,
+      };
     }
 
     // Check token's existence in the database
@@ -56,7 +80,14 @@ export class AuthService {
 
     if (!prisma) {
       // Institute disabled or does not exist
-      return null;
+      if (!instituteId) {
+        return null;
+      }
+
+      return {
+        knd: 'PUBLIC',
+        iid: instituteId,
+      };
     }
 
     const tokenExistsInDB = await prisma.accessToken.findFirst({
@@ -71,7 +102,14 @@ export class AuthService {
 
     if (!tokenExistsInDB) {
       // Token does not exist
-      return null;
+      if (!instituteId) {
+        return null;
+      }
+
+      return {
+        knd: 'PUBLIC',
+        iid: instituteId,
+      };
     }
 
     // Everything is fine
@@ -85,17 +123,18 @@ export class AuthService {
     };
   }
 
-  async authenticateReq(
-    res: HttpResponse,
-    req: HttpRequest,
-  ): Promise<Session | null> {
+  async authenticateReq<
+    A = false,
+    S = A extends true | undefined ? Session : Session<user_kind>,
+  >(res: HttpResponse, req: HttpRequest, allowPublic?: A): Promise<S | null> {
     const cookie = req.getHeader('cookie');
     const csrfToken = req.getHeader('x-csrf-token');
     const origin = req.getHeader('origin');
+    const instituteId = req.getHeader('x-qm-institute-id');
 
-    const session = await this.authenticate(cookie, csrfToken);
+    const session = await this.authenticate(cookie, csrfToken, instituteId);
 
-    if (!session) {
+    if (!session || (!allowPublic && session.knd === 'PUBLIC')) {
       res.writeStatus('401');
 
       res.cork(() => {
@@ -112,6 +151,6 @@ export class AuthService {
       });
     }
 
-    return session;
+    return session as S | null;
   }
 }

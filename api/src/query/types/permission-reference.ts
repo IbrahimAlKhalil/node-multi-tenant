@@ -52,6 +52,18 @@ type NON_POWER =
   | 'NON_POWER.update.permission'
   | 'NON_POWER.update.validation'
   | 'NON_POWER.delete';
+type AUTHENTICATED =
+  | 'AUTHENTICATED.read'
+  | 'AUTHENTICATED.create'
+  | 'AUTHENTICATED.update.permission'
+  | 'AUTHENTICATED.update.validation'
+  | 'AUTHENTICATED.delete';
+type PUBLIC =
+  | 'PUBLIC.read'
+  | 'PUBLIC.create'
+  | 'PUBLIC.update.permission'
+  | 'PUBLIC.update.validation'
+  | 'PUBLIC.delete';
 
 export type PermissionReference =
   | ALL
@@ -62,4 +74,6 @@ export type PermissionReference =
   | SUPPORTER
   | GENERAL
   | POWER
-  | NON_POWER;
+  | NON_POWER
+  | AUTHENTICATED
+  | PUBLIC;

@@ -3,7 +3,7 @@ import { defineModel } from '../define-model.js';
 export default defineModel<'notification'>({
   accessControl: true,
   access: {
-    ALL: {
+    AUTHENTICATED: {
       read: {
         fields: true,
         permission(session) {
@@ -14,7 +14,7 @@ export default defineModel<'notification'>({
       },
       update: {
         fields: new Set(),
-        permission: 'ALL.read',
+        permission: 'AUTHENTICATED.read',
         preset: {
           read: true,
         },

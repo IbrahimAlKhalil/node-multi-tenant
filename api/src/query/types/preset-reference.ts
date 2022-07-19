@@ -7,6 +7,8 @@ type SUPPORTER = 'SUPPORTER.create' | 'SUPPORTER.update';
 type GENERAL = 'GENERAL.create' | 'GENERAL.update';
 type POWER = 'POWER.create' | 'POWER.update';
 type NONE_POWER = 'NONE_POWER.create' | 'NONE_POWER.update';
+type AUTHENTICATED = 'AUTHENTICATED.create' | 'AUTHENTICATED.update';
+type PUBLIC = 'PUBLIC.create' | 'PUBLIC.update';
 
 export type PresetReference =
   | ALL
@@ -17,4 +19,6 @@ export type PresetReference =
   | SUPPORTER
   | GENERAL
   | POWER
-  | NONE_POWER;
+  | NONE_POWER
+  | AUTHENTICATED
+  | PUBLIC;

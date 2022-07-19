@@ -80,7 +80,7 @@ export class AppService {
       return;
     }
 
-    if (session) {
+    if (session && session.knd !== 'PUBLIC') {
       // Authenticated and not aborted, upgrade the connection
 
       return res.upgrade(session, key, protocol, extensions, ctx);

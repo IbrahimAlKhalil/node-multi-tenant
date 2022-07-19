@@ -4,14 +4,7 @@ export default defineModel<'user'>({
   accessControl: true,
   access: {
     ALL: {
-      read: {
-        fields: true,
-        permission(session) {
-          return {
-            id: session.uid,
-          };
-        },
-      },
+      read: true,
     },
     POWER: true,
   },

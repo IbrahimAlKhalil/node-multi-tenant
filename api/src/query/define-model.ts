@@ -96,7 +96,7 @@ function resolveReference(
   const refererRoleValue = model.access[refererRole] as Actions<any, 'raw'>;
 
   if (referenceRoleValue === undefined) {
-    throw new Error(`Role "${refererRole}" is not defined`);
+    throw new Error(`Role "${referenceRole}" is not defined`);
   }
 
   if (typeof referenceRoleValue === 'boolean') {
