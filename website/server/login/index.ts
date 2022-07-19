@@ -19,7 +19,7 @@ const login: express.RequestHandler = async (req, res, next) => {
     },
     fields: ['cluster.host'],
   });
-  if (!institute) next();
+  if (!institute || !institute.length) return next();
 
   const data = institute[0];
 
