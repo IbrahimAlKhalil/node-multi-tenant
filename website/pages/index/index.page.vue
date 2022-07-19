@@ -57,12 +57,8 @@ export default defineComponent({
     let featureSectionElement: HTMLAnchorElement | null = null;
     let observer: IntersectionObserver | null = null;
 
-    let hashSections: NodeList | null = null;
-    let observerHashSections: IntersectionObserver;
-
     onMounted(() => {
       featureSectionElement = document.querySelector('#observer');
-      hashSections = document.querySelectorAll('.hash-section');
 
       observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -75,21 +71,6 @@ export default defineComponent({
           }
         });
       });
-      observerHashSections = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (entry.target.id) {
-              // location.hash = entry.target.id;
-              navData.setCurrentPath(`/#${entry.target.id}`);
-            }
-          }
-        });
-      });
-      if (observerHashSections && hashSections) {
-        hashSections.forEach((section) => {
-          observerHashSections.observe(section);
-        });
-      }
 
       if (featureSectionElement && observer) {
         observer.observe(featureSectionElement);
@@ -98,12 +79,6 @@ export default defineComponent({
     onUnmounted(() => {
       if (featureSectionElement && observer) {
         observer.unobserve(featureSectionElement);
-      }
-
-      if (observerHashSections && hashSections) {
-        hashSections.forEach((section) => {
-          observerHashSections.unobserve(section);
-        });
       }
     });
     return {

@@ -1,6 +1,6 @@
 <template>
   <leave-comment
-    :comment="comment"
+    :commentValue="commentValue"
     @update:comment="updateComment"
     :submit-comment="submitComment"
   />
@@ -9,10 +9,13 @@
     @select-suggestion="selectSuggestion"
   />
   <comment-group
-    v-for="comment in data"
-    :reactions="reactions.filter((react) => react.comment.id === comment.id)"
-    :key="comment.id"
-    :comment="comment"
+    v-for="singleCommentData in data"
+    :reactions="
+      reactions.filter((react) => react.comment.id === singleCommentData.id)
+    "
+    :key="singleCommentData.id"
+    :singleCommentData="singleCommentData"
+    :submitComment="submitComment"
   />
 </template>
 
@@ -44,7 +47,7 @@ export default defineComponent({
       required: true,
       default: () => [],
     },
-    comment: {
+    commentValue: {
       type: String,
       required: true,
       default: '',
@@ -61,19 +64,6 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-  },
-
-  // [
-  //   'data',
-  //   'reactions',
-  //   'suggestions',
-  //   'comment',
-  //   'updateComment',
-  //   'submitComment',
-  //   'selectSuggestion',
-  // ],
-  setup() {
-    return {};
   },
 });
 </script>

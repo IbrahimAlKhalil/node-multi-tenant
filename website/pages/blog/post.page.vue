@@ -59,7 +59,7 @@
     <tab-body v-show="activeTab === 'comments'">
       <comment-section
         :data="comments"
-        :comment="comment"
+        :commentValue="commentValue"
         :suggestions="suggestions"
         :submitComment="submitComment"
         :reactions="commentsReactions"
@@ -232,7 +232,7 @@ import TheTabs from '#components/ui/tab-component/tabs.vue';
 import { usePageContext } from '#modules/use-page-context';
 import TheTab from '#components/ui/tab-component/tab.vue';
 import CommentIcon from '#icons/regular/comments.svg';
-import { comment } from '#types/comment-type';
+import { comment as CommentType } from '#types/comment-type';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
 
@@ -298,12 +298,14 @@ export default defineComponent({
       Angry: number;
     };
     // States
-    const comment = ref('');
+    const commentValue = ref('');
 
-    const commentsData = reactive<{ comments: comment[] }>({ comments: [] });
+    const commentsData = reactive<{ comments: CommentType[] }>({
+      comments: [],
+    });
 
     commentsData.comments =
-      (pageProps?.comments as comment[]) ?? ([] as comment[]);
+      (pageProps?.comments as CommentType[]) ?? ([] as CommentType[]);
     const postReactionsData = reactive<{
       postReactions: PostReactionType[];
       countReaction: ReactionCountType;
@@ -338,23 +340,40 @@ export default defineComponent({
 
     const selectSuggestion = (value: string) => {
       console.log('Select Suggestion called: ', value);
-      comment.value = comment.value + ' ' + value;
+      commentValue.value = commentValue.value + ' ' + value;
     };
-
+    /**
+     * Update Comment
+     * @param value : string
+     */
     const updateComment = (value: string) => {
-      comment.value = value;
+      commentValue.value = value;
     };
-    const submitComment = async () => {
+    /**
+     * Submit Comment
+     * @param { mention: number | null; parent: number | null;}
+     */
+    const submitComment = async (
+      extraData: {
+        mention: number | null;
+        parent: number | null;
+      } = {
+        mention: null,
+        parent: null,
+      },
+    ) => {
       const cluster = localStorage.getItem('cluster');
-      if (!cluster) {
+      if (!auth.user || !cluster) {
         location.replace('/login');
         return;
       }
       const response = await fetch('/api/comment', {
         method: 'POST',
         body: JSON.stringify({
+          mention: extraData.mention,
+          parent: extraData.parent,
           post: pageProps?.postId,
-          content: comment.value,
+          content: commentValue.value,
           cluster,
         }),
         headers: {
@@ -375,10 +394,10 @@ export default defineComponent({
         commentsData.comments.push({
           id: 6,
           status: 'published',
-          content: comment.value,
+          content: commentValue.value,
           date_created: new Date().toISOString(),
-        } as comment);
-        comment.value = '';
+        } as CommentType);
+        commentValue.value = '';
       } else {
         toast.error('Something went wrong!', {
           dismissible: true,
@@ -386,6 +405,10 @@ export default defineComponent({
         });
       }
     };
+    /**
+     * Handle Reaction
+     * @param reactionId
+     */
     const handleClickReaction = async (reactionId: number) => {
       const cluster = localStorage.getItem('cluster');
       if (!auth.user || !cluster) {
@@ -449,7 +472,7 @@ export default defineComponent({
       selectSuggestion,
       submitComment,
       updateComment,
-      comment,
+      commentValue,
       slug,
     };
   },

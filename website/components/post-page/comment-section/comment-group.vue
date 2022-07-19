@@ -2,14 +2,18 @@
   <div class="comment-group container my-10">
     <single-comment
       :authorName="
-        comment?.user_created?.first_name +
+        singleCommentData?.user_created?.first_name +
         ' ' +
-        comment?.user_created?.last_name
+        singleCommentData?.user_created?.last_name
       "
-      :publishedDate="comment.date_created.split('T')[0]"
-      :avatar="comment?.user_created?.avatar"
-      :commentContent="comment.content"
+      :publishedDate="singleCommentData.date_created.split('T')[0]"
+      :avatar="singleCommentData?.user_created?.avatar"
+      :commentContent="singleCommentData.content"
       :reactions="reactions"
+      :commentId="singleCommentData.id"
+      :authorId="singleCommentData.user"
+      :submitComment="submitComment"
+      :commentValue="commentValue"
     />
   </div>
 </template>
@@ -22,12 +26,21 @@ export default defineComponent({
   name: 'comment-group',
   components: { SingleComment },
   props: {
-    comment: {
+    commentValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    singleCommentData: {
       type: Object,
       required: true,
     },
     reactions: {
       type: Array,
+      required: true,
+    },
+    submitComment: {
+      type: Function,
       required: true,
     },
   },
