@@ -37,7 +37,6 @@ import {
   RightSectionContainer,
   RightItem,
 } from '#components/tutorials-page/right-section';
-import { defineComponent } from 'vue';
 import {
   NestedList,
   Delimiter,
@@ -47,6 +46,7 @@ import {
   Image,
   Quote,
 } from '#components/editor-js-components';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'the-tutorial',

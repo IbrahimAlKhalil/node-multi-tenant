@@ -14,9 +14,9 @@
 
     <template #right-sidebar>
       <right-section-container v-if="headers">
+        <!-- header.data.text -->
         <right-item
-          :isActive="activeHash === header.id"
-          @click="activeHash = header.id"
+          :isActive="hashActive === header.id"
           v-for="header of headers"
           :title="header.data.text"
           :slug="'#' + header.id"
@@ -91,6 +91,7 @@ import {
   computed,
   defineComponent,
   onMounted,
+  onUnmounted,
   reactive,
   ref,
   watch,
@@ -116,6 +117,8 @@ export default defineComponent({
   async setup() {
     const ctx = usePageContext();
     const route = useRoute();
+
+    const hashActive = ref('');
 
     const data = reactive<Record<string, any>>(
       ctx.pageProps
@@ -174,6 +177,8 @@ export default defineComponent({
       return item;
     });
 
+    let io: IntersectionObserver | null;
+
     onMounted(async () => {
       if (!data.tutorials) {
         await reloadTutorials();
@@ -183,17 +188,46 @@ export default defineComponent({
         await reloadTutorial();
       }
 
-      watch(route, reloadTutorial);
+      watch(route, async () => {
+        await reloadTutorial();
+        initSectionRouting();
+      });
+
+      initSectionRouting();
+    });
+
+    onUnmounted(() => {
+      if (io) {
+        io.disconnect();
+      }
     });
 
     return {
       currentSlug: route.params.slug,
+      activeRoute: route,
+
       nextTutorial,
       prevTutorial,
+      hashActive,
       activeHash,
       headers,
       data,
     };
+
+    function initSectionRouting() {
+      if (io) {
+        io.disconnect();
+      }
+
+      io = new IntersectionObserver((entries) => {
+        const [entry] = entries;
+        if (entry.intersectionRatio > 0) {
+          hashActive.value = entry.target.id;
+        }
+      });
+
+      document.querySelectorAll('.qmm_heading').forEach(io.observe.bind(io));
+    }
 
     async function reloadTutorials() {
       const itemService = useItem('tutorial');
