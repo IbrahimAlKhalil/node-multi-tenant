@@ -78,6 +78,8 @@ model Admission {
   sessionId Int
   userId    Int
 
+  status content_status
+
   roll    Int?
   closed  Boolean? @default(false)
   comment String?  @db.VarChar(350)
@@ -92,7 +94,10 @@ model Admission {
 }
 
 model Area {
-  id        Int        @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  status content_status
+
   order     Int?       @unique
   I18n      AreaI18n[]
   Buildings Building[]
@@ -113,6 +118,8 @@ model AreaI18n {
 model Bench {
   id           Int @id
   benchGroupId Int
+
+  status content_status
 
   order Int
 
@@ -140,6 +147,8 @@ model Book {
   groupId    Int?
   categoryId Int?
 
+  status content_status
+
   Class     Class      @relation(fields: [classId], references: [id], onDelete: Cascade)
   BookGroup BookGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
@@ -155,7 +164,10 @@ model Book {
 }
 
 model BookCategory {
-  id   Int                @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  status content_status
+
   I18n BookCategoryI18n[]
 }
 
@@ -172,9 +184,11 @@ model BookCategoryI18n {
 }
 
 model BookGroup {
-  id   Int    @id @default(autoincrement())
-  Book Book[]
+  id Int @id @default(autoincrement())
 
+  status content_status
+
+  Book               Book[]
   I18n               BookGroupI18n[]
   ExamResults        ExamResult[]
   ExamBookGroupGrade ExamBookGroupGrade[]
@@ -207,6 +221,8 @@ model Building {
   id     Int  @id @default(autoincrement())
   areaId Int?
 
+  status content_status
+
   order Int?
 
   Area   Area?          @relation(fields: [areaId], references: [id], onDelete: Cascade)
@@ -231,6 +247,8 @@ model BuildingI18n {
 model Class {
   id Int @id @default(autoincrement())
 
+  status content_status
+
   order Int
 
   Admissions  Admission[]
@@ -243,6 +261,8 @@ model Class {
 model ClassGroup {
   id      Int @id @default(autoincrement())
   classId Int
+
+  status content_status
 
   Class           Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
   Admissions      Admission[]
@@ -280,6 +300,8 @@ model ClassI18n {
 model Country {
   id Int @id @default(autoincrement())
 
+  status content_status
+
   I18n   CountryI18n[]
   States State[]
 }
@@ -298,6 +320,8 @@ model CountryI18n {
 
 model Designation {
   id Int @id @default(autoincrement())
+
+  status content_status
 
   order Int?
 
@@ -321,6 +345,8 @@ model District {
   id         Int @id @default(autoincrement())
   divisionId Int
 
+  status content_status
+
   Division     Division       @relation(fields: [divisionId], references: [id], onDelete: Cascade)
   I18n         DistrictI18n[]
   SubDistricts SubDistrict[]
@@ -343,6 +369,8 @@ model DistrictI18n {
 model Division {
   id      Int @id @default(autoincrement())
   stateId Int
+
+  status content_status
 
   State     State          @relation(fields: [stateId], references: [id], onDelete: Cascade)
   Districts District[]
@@ -368,6 +396,8 @@ model Exam {
   presetId  Int
   sessionId Int
   classId   Int
+
+  status content_status
 
   published Boolean? @default(false)
 
@@ -470,6 +500,8 @@ model ExamGrade {
 model ExamHall {
   id Int @id
 
+  status content_status
+
   columns Int @db.SmallInt
   benches Int @db.SmallInt
 
@@ -482,8 +514,10 @@ model ExamHall {
 model ExamMethod {
   id Int @id @default(autoincrement())
 
+  status content_status
+
   ExamBookMethods ExamBookMethod[]
-  ExamMethodI18ns ExamMethodI18n[]
+  I18n            ExamMethodI18n[]
   ExamRawResults  ExamRawResult[]
   ExamRoutines    ExamRoutine[]
 }
@@ -510,7 +544,8 @@ model ExamPreset {
   customGroups     Json             @default(dbgenerated("json_build_array()")) @db.Json
   averageCondition Json             @default(dbgenerated("json_build_array()")) @db.Json
   failGradeId      Int
-  published        Boolean?         @default(false)
+
+  status content_status
 
   Grade           Grade            @relation(fields: [failGradeId], references: [id], onDelete: Cascade)
   ExamBooks       ExamBook[]
@@ -598,6 +633,8 @@ model ExamRoutine {
   bookId   Int
   methodId Int?
 
+  status content_status
+
   start DateTime @db.Timestamptz(6)
   end   DateTime @db.Timestamptz(6)
 
@@ -630,6 +667,8 @@ model File {
   folderId   Int?
   mimeTypeId Int
 
+  status content_status
+
   name String @db.VarChar(255)
   size BigInt
 
@@ -648,6 +687,8 @@ model File {
 model Floor {
   id         Int  @id @default(autoincrement())
   buildingId Int?
+
+  status content_status
 
   order Int?
 
@@ -674,6 +715,8 @@ model Folder {
   id       Int  @id @default(autoincrement())
   parentId Int?
 
+  status content_status
+
   name String @db.VarChar(255)
 
   Parent   Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -685,6 +728,8 @@ model Folder {
 
 model Grade {
   id Int @id @default(autoincrement())
+
+  status content_status
 
   point Float? @db.Real
 
@@ -781,6 +826,8 @@ model InstituteI18n {
 model Language {
   id Int @id @default(autoincrement())
 
+  status content_status
+
   name                String                @db.VarChar(100)
   AddressI18n         AddressI18n[]
   AreaI18n            AreaI18n[]
@@ -847,6 +894,9 @@ model NotificationBase {
   imageId  String?                 @db.Uuid
   link     String?                 @db.VarChar(600)
   linkType notification_link_type?
+  internal Boolean @default(false)
+
+  status content_status
 
   Image                File?                 @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Notifications        Notification[]
@@ -898,6 +948,8 @@ model Room {
   id      Int  @id @default(autoincrement())
   floorId Int?
 
+  status content_status
+
   order Int?
 
   Floor    Floor?     @relation(fields: [floorId], references: [id], onDelete: Cascade)
@@ -932,7 +984,10 @@ model Seat {
 }
 
 model Session {
-  id         Int           @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  status content_status
+
   active     Boolean?      @default(false)
   Admissions Admission[]
   Exams      Exam[]
@@ -970,7 +1025,10 @@ model Sms {
 }
 
 model SmsTemplate {
-  id   Int    @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  status content_status
+
   name String @db.VarChar(100)
 
   I18n SmsTemplateI18n[]
@@ -992,6 +1050,8 @@ model Staff {
   id            Int @id @default(autoincrement())
   designationId Int
 
+  status content_status
+
   joiningDate DateTime? @db.Date
   order       Int?
 
@@ -1004,6 +1064,8 @@ model Staff {
 
 model StaffGroup {
   id Int @id @default(autoincrement())
+
+  status content_status
 
   I18n             GroupI18n[]
   StaffGroupPivots StaffGroupPivot[]
@@ -1034,6 +1096,8 @@ model StaffI18n {
 model State {
   id        Int @id @default(autoincrement())
   countryId Int
+
+  status content_status
 
   Country   Country     @relation(fields: [countryId], references: [id], onDelete: Cascade)
   Divisions Division[]
@@ -1071,6 +1135,8 @@ model SubDistrict {
   id         Int @id @default(autoincrement())
   districtId Int
 
+  status content_status
+
   District District          @relation(fields: [districtId], references: [id], onDelete: Cascade)
   Addresss Address[]
   I18n     SubDistrictI18n[]
@@ -1097,6 +1163,8 @@ model User {
   mobile    String?   @unique @db.VarChar(16)
   email     String?   @unique @db.VarChar(320)
   pictureId String?   @db.Uuid
+
+  status content_status
 
   dateOfBirth DateTime?   @db.Date
   nid         String?     @db.VarChar(40)
@@ -1177,6 +1245,8 @@ model ChatFile {
 model Conversation {
   id Int @id @default(autoincrement())
 
+  status content_status
+
   name        String  @db.VarChar(100)
   description String  @db.VarChar(600)
   inviteOnly  Boolean @default(true)
@@ -1200,6 +1270,8 @@ model ConversationMember {
 
 model Role {
   id Int @id @default(autoincrement())
+
+  status content_status
 
   I18n            RoleI18n[]
   RolePermissions RoleCrudPermission[]
@@ -1241,6 +1313,12 @@ model RoleUser {
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, roleId])
+}
+
+enum content_status {
+  LOCKED
+  ARCHIVED
+  TRASHED
 }
 
 enum activity_action {
