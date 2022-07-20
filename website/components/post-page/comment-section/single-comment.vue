@@ -1,16 +1,27 @@
 <template>
-  <comment-author :name="authorName" :date="publishedDate" :avatar="avatar" />
+  <comment-author
+    :data="{
+      date: singleCommentData.date_created,
+      authorId: singleCommentData.user,
+      institute: singleCommentData.institute,
+    }"
+  />
   <p class="p-2 text-justify text-text dark:text-light">
-    {{ commentContent }}
+    {{ singleCommentData.content }}
   </p>
-  <comment-reaction @handle-reply="handleReply" :reactions="reactions" />
+  <comment-reaction
+    @handle-reply="handleReply"
+    :reactions="reactions"
+    :commentsReactions="commentsReactions"
+    :commentId="singleCommentData.id"
+  />
   <leave-comment
     :submitComment="submitComment"
     @update:input="updateComment"
     :commentValue="commentValue"
     v-show="isReplying"
-    :parent="commentId"
-    :mention="authorId"
+    :parent="singleCommentData.id"
+    :mention="singleCommentData.user"
     :fluid="true"
   />
 </template>
@@ -25,34 +36,18 @@ export default defineComponent({
   name: 'single-comment',
   components: { CommentReaction, CommentAuthor, LeaveComment },
   props: {
+    singleCommentData: {
+      type: Object,
+    },
+    commentsReactions: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
     commentValue: {
       type: String,
       required: false,
       default: '',
-    },
-    commentId: {
-      type: Number,
-      required: true,
-    },
-    authorId: {
-      type: Number,
-      required: true,
-    },
-    authorName: {
-      type: String,
-      required: true,
-    },
-    publishedDate: {
-      type: String,
-      required: true,
-    },
-    avatar: {
-      type: String,
-      required: false,
-    },
-    commentContent: {
-      type: String,
-      required: true,
     },
     reactions: {
       type: Array,

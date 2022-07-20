@@ -10,7 +10,6 @@
         class="block w-full h-full border-none outline-none bg-transparent p-2"
         :value="commentValue"
         @input="$emit('update:comment', $event.target.value)"
-        @keydown="$emit('handle-mention', $event)"
       ></textarea>
       <div
         class="action-buttons absolute bottom-2 right-5 flex items-center gap-5"
@@ -53,7 +52,7 @@ export default defineComponent({
       default: null,
     },
     mention: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },

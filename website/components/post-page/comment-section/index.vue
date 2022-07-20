@@ -10,8 +10,11 @@
   />
   <comment-group
     v-for="singleCommentData in data"
-    :reactions="
-      reactions.filter((react) => react.comment.id === singleCommentData.id)
+    :reactions="reactions"
+    :commentsReactions="
+      commentsReactions.filter(
+        (react) => react.comment.id === singleCommentData.id,
+      )
     "
     :key="singleCommentData.id"
     :singleCommentData="singleCommentData"
@@ -38,6 +41,10 @@ export default defineComponent({
       required: true,
     },
     reactions: {
+      type: Array,
+      required: true,
+    },
+    commentsReactions: {
       type: Array,
       required: true,
       default: () => [],

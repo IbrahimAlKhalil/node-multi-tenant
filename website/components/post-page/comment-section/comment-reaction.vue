@@ -6,49 +6,19 @@
       />
       <template #tooltip>
         <ul class="flex items-center gap-2 pt-1./">
-          <li class="hover:scale-110 cursor-pointer">
-            <div
-              class="w-8 h-8 flex justify-center items-center overflow-hidden"
-            >
-              <span>
-                <EmojiLike
-                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
-                />
-              </span>
-            </div>
-          </li>
-          <li class="hover:scale-110 cursor-pointer">
-            <div
-              class="w-8 h-8 flex justify-center items-center overflow-hidden"
-            >
-              <span>
-                <EmojiWow
-                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
-                />
-              </span>
-            </div>
-          </li>
-          <li class="hover:scale-110 cursor-pointer">
-            <div
-              class="w-8 h-8 flex justify-center items-center overflow-hidden"
-            >
-              <span>
-                <EmojiSad
-                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
-                />
-              </span>
-            </div>
-          </li>
-          <li class="hover:scale-110 cursor-pointer">
-            <div
-              class="w-8 h-8 flex justify-center items-center overflow-hidden"
-            >
-              <span>
-                <EmojiAngry
-                  class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
-                />
-              </span>
-            </div>
+          <li
+            class="hover:scale-110 cursor-pointer"
+            v-for="emoji of reactions"
+            :key="emoji.id"
+          >
+            <emoji-frame :size="8">
+              <component
+                :is="'Emoji' + emoji.type"
+                :id="emoji.id"
+                class="scale-[18%] transition duration-300 cursor-pointer grayscale hover:grayscale-0"
+                @handle-click="handleClickReaction"
+              ></component>
+            </emoji-frame>
           </li>
         </ul>
       </template>
@@ -122,17 +92,21 @@
 <script lang="ts">
 import ReactionIcon from '#icons/regular/smile-plus.svg';
 import TheTooltip from '#components/ui/tooltip.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, defineProps, inject, toRefs } from 'vue';
 import {
   EmojiLike,
   EmojiAngry,
   EmojiSad,
   EmojiWow,
+  EmojiFrame,
 } from '#components/animated-reactions';
+import { useAuth } from '#stores/auth.store';
+import { usePageContext } from '#modules/use-page-context';
 
 export default defineComponent({
   name: 'comment-reaction',
   components: {
+    EmojiFrame,
     TheTooltip,
     EmojiLike,
     EmojiAngry,
@@ -142,6 +116,11 @@ export default defineComponent({
   },
   emits: ['handle-reply'],
   props: {
+    commentsReactions: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
     reactions: {
       type: Array,
       required: true,
@@ -149,7 +128,7 @@ export default defineComponent({
   },
   computed: {
     reactionsCount() {
-      return this.reactions.reduce(
+      return this.commentsReactions.reduce(
         (
           acc: { likes: number; wows: number; sads: number; angries: number },
           reaction: any,
@@ -170,7 +149,62 @@ export default defineComponent({
     },
   },
   setup() {
-    return {};
+    // Context
+    const auth = useAuth();
+    const { pageProps } = usePageContext();
+
+    // Toast
+    const toast: any = inject('$toast');
+
+    const props = defineProps<{
+      commentId: number;
+    }>();
+    const { commentId } = toRefs(props);
+
+    const handleClickReaction = async (reactionId: number) => {
+      const cluster = localStorage.getItem('cluster');
+      if (!auth.user || !cluster) {
+        location.replace('/login');
+      }
+      const data = {
+        reactionId,
+        commentId,
+        cluster: cluster,
+      };
+      console.log(data);
+      const res = await fetch('/api/comment-reaction', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'X-Csrf-Token':
+            sessionStorage.getItem('csrfToken') ??
+            localStorage.getItem('csrfToken') ??
+            '',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (res.status > 299 || res.status < 200) {
+        return null;
+      }
+
+      const result = await res.json();
+      if (result?.message) {
+        toast.success('Your reaction added!', {
+          dismissible: true,
+          duration: 1000 * 5,
+        });
+      } else {
+        toast.error('Something went wrong!', {
+          dismissible: true,
+          duration: 1000 * 5,
+        });
+      }
+    };
+    return {
+      handleClickReaction,
+    };
   },
 });
 </script>
