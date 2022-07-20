@@ -11,6 +11,7 @@ import { Express } from 'express';
 import reaction from './reaction';
 import login from './login';
 import comment from './comment';
+import commentReactionApi from './comment/comment-reaction';
 
 (async function () {
   emitter.onInit('middlewares.after', async ({ app }: { app: Express }) => {
@@ -19,6 +20,7 @@ import comment from './comment';
     app.use('/api/login', login);
     app.use('/api/reaction', authCheck, reaction);
     app.use('/api/comment', authCheck, comment);
+    app.use('/api/comment-reaction', authCheck, commentReactionApi);
   });
   await startServer();
 })();
