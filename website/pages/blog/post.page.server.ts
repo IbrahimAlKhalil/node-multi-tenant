@@ -5,7 +5,6 @@ export { onBeforeRender };
 
 const onBeforeRender: OnBeforeRender = async (pageContext) => {
   const { search } = pageContext.urlParsed;
-  console.log(pageContext.urlParsed);
 
   const postService = new ItemsService('post', {
     schema: (pageContext as any)?.schema,
@@ -108,9 +107,6 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     },
     fields: [
       'id',
-      // 'user_created.first_name',
-      // 'user_created.last_name',
-      // 'user_created.avatar',
       'date_created',
       'reaction.value',
       'comment.id',
@@ -135,16 +131,14 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     },
   });
 
-  console.log('comments data: ', comments);
-
   return {
     pageContext: {
       pageProps: {
         suggestions: commentsSuggestions,
         postId: post[0].id,
         commentsReactions,
-        post: post[0],
         postReactions,
+        post: post[0],
         reactions,
         comments,
       },

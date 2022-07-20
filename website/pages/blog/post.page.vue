@@ -16,8 +16,9 @@
     <post-page-meta-description-section :short_content="post.short_content" />
 
     <post-description-section :content="post.content" />
-    <pre> postReactions: {{ postReactions }}</pre>
-    <pre> countReaction: {{ countReaction }}</pre>
+    <!-- <pre> postReactions: {{ postReactions }}</pre>
+    <pre> countReaction: {{ countReaction }}</pre> -->
+    <pre>{{ comments }}</pre>
     <post-reactions-section
       :reactions="reactions"
       :handleClickReaction="handleClickReaction"
@@ -62,9 +63,11 @@
         :commentValue="commentValue"
         :suggestions="suggestions"
         :submitComment="submitComment"
-        :reactions="commentsReactions"
+        :reactions="reactions"
+        :commentsReactions="commentsReactions"
         :updateComment="updateComment"
         :selectSuggestion="selectSuggestion"
+        :groupComments="groupComments"
       />
     </tab-body>
     <tab-body v-show="activeTab === 'like'">
@@ -225,16 +228,17 @@ import PostIntroSection from '#components/post-page/intro-section.vue';
 import { ReactionType, PostReactionType } from '#types/reaction-type';
 import PostTagsSection from '#components/post-page/tags-section.vue';
 import PostHeroSection from '#components/post-page/hero-section.vue';
+import { defineComponent, reactive, ref, inject, watch, computed } from 'vue';
 import TabBody from '#components/ui/tab-component/tab-body.vue';
 import TabButton from '#components/post-page/tab-button.vue';
-import { defineComponent, reactive, ref, inject } from 'vue';
+import { comment as CommentType } from '#types/comment-type';
 import TheTabs from '#components/ui/tab-component/tabs.vue';
 import { usePageContext } from '#modules/use-page-context';
 import TheTab from '#components/ui/tab-component/tab.vue';
 import CommentIcon from '#icons/regular/comments.svg';
-import { comment as CommentType } from '#types/comment-type';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
+import _ from 'lodash';
 
 export default defineComponent({
   name: 'blog-post',
@@ -300,9 +304,15 @@ export default defineComponent({
     // States
     const commentValue = ref('');
 
-    const commentsData = reactive<{ comments: CommentType[] }>({
+    const commentsData = reactive<{
+      comments: CommentType[];
+    }>({
       comments: [],
     });
+
+    const groupComments = computed(() =>
+      _.groupBy(commentsData.comments, 'institute.code'),
+    );
 
     commentsData.comments =
       (pageProps?.comments as CommentType[]) ?? ([] as CommentType[]);
@@ -392,11 +402,28 @@ export default defineComponent({
           duration: 1000 * 5,
         });
         commentsData.comments.push({
-          id: 6,
+          id: Date.now(),
           status: 'published',
           content: commentValue.value,
           date_created: new Date().toISOString(),
         } as CommentType);
+
+        commentsData.comments.push({
+          id: 21,
+          status: 'published',
+          content: commentValue.value,
+          date_created: new Date().toISOString(),
+          user: Number(auth.user.id),
+          post: Number(pageProps?.postId) ?? 0,
+          parent: extraData.parent,
+          mention: extraData.mention,
+          institute: {
+            cluster: {
+              host: cluster,
+            },
+          },
+        });
+
         commentValue.value = '';
       } else {
         toast.error('Something went wrong!', {
@@ -442,7 +469,7 @@ export default defineComponent({
           duration: 1000 * 5,
         });
         postReactionsData.postReactions.push({
-          id: Math.random(),
+          id: Date.now(),
           date_created: new Date().toISOString(),
           reaction: {
             value:
@@ -470,6 +497,7 @@ export default defineComponent({
       reactions: pageProps?.reactions,
       handleClickReaction,
       selectSuggestion,
+      groupComments,
       submitComment,
       updateComment,
       commentValue,
