@@ -1,3 +1,4 @@
+import { Prisma, PrismaClient } from '../../../prisma/client';
 import { PermissionReference } from './permission-reference';
 import { Session, UserKind } from '../../types/session';
 import { PermissionReturn } from './permission-return';
@@ -11,43 +12,37 @@ import { ModuleRef } from '@nestjs/core';
 export interface PermissionDefinition<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  SS extends UserKind = UserKind,
-  P = Record<string, any>,
+  K extends UserKind = UserKind,
   I = Partial<ModelTypes[N]['whereInput']>,
-  Model = ModelTypes[N]['model'],
+  Model = Partial<ModelTypes[N]['model']>,
+  SessionK = Session<K>,
   PermissionFn = (
-    session: Session<SS>,
-    query: P,
+    session: SessionK,
+    prisma: PrismaClient | Prisma.TransactionClient,
     ioc: ModuleRef,
   ) => PermissionReturn<I>,
-  ValidationFn = (
-    session: Session<SS>,
-    query: P,
-    ioc: ModuleRef,
-  ) => PermissionReturn<I>,
-  PresetFields = Partial<Model>,
+  Permission = S extends 'raw'
+    ? PermissionReference | PermissionFn | I
+    : PermissionFn | I,
   Preset =
     | ((
-        session: Session<SS>,
-        data: PresetFields,
+        session: SessionK,
+        data: Model,
+        prisma: PrismaClient,
         ioc: ModuleRef,
-      ) => PresetFields | Promise<PresetFields> | void)
-    | PresetFields,
+      ) => Model | Promise<Model> | void)
+    | Model,
 > {
   fields: S extends 'raw'
     ? true | Set<keyof Model> | FieldReference
     : true | Set<keyof Model>;
-  permission?: S extends 'raw'
-    ? PermissionReference | PermissionFn | I
-    : PermissionFn | I;
   preset?: S extends 'raw' ? Preset | PresetReference : Preset;
-  validation?: S extends 'raw'
-    ? PermissionReference | ValidationFn | I
-    : ValidationFn | I;
+  permission?: Permission;
+  validation?: Permission;
 }
 
 export type UpdatePermission<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  SS extends UserKind = UserKind,
-> = boolean | PermissionDefinition<N, S, SS>;
+  K extends UserKind = UserKind,
+> = boolean | PermissionDefinition<N, S, K>;

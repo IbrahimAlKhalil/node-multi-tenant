@@ -679,6 +679,7 @@ export class QueryService {
     session: Session,
     baseQuery: QuerySchema | MutationSchema,
     permissionModel: Model<any, any>,
+    prisma: PrismaClient,
   ): Promise<boolean> {
     const permission = await this.getActionPermission(
       action,
@@ -700,7 +701,7 @@ export class QueryService {
     if (typeof permission.permission === 'function') {
       permissionQuery = await permission.permission(
         session,
-        baseQuery.query,
+        prisma,
         this.moduleRef,
       );
     } else {
@@ -1005,6 +1006,7 @@ export class QueryService {
   private async applyPreset(
     mutation: Mutation<'create' | 'update' | 'updateMany' | 'upsert'>,
     session: Session,
+    prisma: PrismaClient,
   ): Promise<void> {
     const createPermission = mutation.permission.create;
     const updatePermission = mutation.permission.update;
@@ -1017,7 +1019,12 @@ export class QueryService {
       if (typeof createPermission.preset === 'function') {
         merge(
           createData,
-          await createPermission.preset(session, createData, this.moduleRef),
+          await createPermission.preset(
+            session,
+            createData,
+            prisma,
+            this.moduleRef,
+          ),
         );
       } else if (typeof createPermission.preset === 'object') {
         merge(createData, createPermission.preset);
@@ -1028,7 +1035,12 @@ export class QueryService {
       if (typeof updatePermission.preset === 'function') {
         merge(
           updateData,
-          await updatePermission.preset(session, updateData, this.moduleRef),
+          await updatePermission.preset(
+            session,
+            updateData,
+            prisma,
+            this.moduleRef,
+          ),
         );
       } else if (typeof updatePermission.preset === 'object') {
         merge(updateData, updatePermission.preset);
@@ -1054,7 +1066,7 @@ export class QueryService {
       if (typeof permission.validation === 'function') {
         validationQuery = await permission.validation(
           session,
-          mutation.query,
+          trx,
           this.moduleRef,
         );
       } else {
@@ -1226,7 +1238,13 @@ export class QueryService {
         }
       }
 
-      await this.applyPermissions('delete', session, mutation, permissionModel);
+      await this.applyPermissions(
+        'delete',
+        session,
+        mutation,
+        permissionModel,
+        prisma,
+      );
 
       const _delete: Mutation = {
         type: mutation.type,
@@ -1362,7 +1380,13 @@ export class QueryService {
       }
 
       // Apply permission
-      await this.applyPermissions('update', session, mutation, permissionModel);
+      await this.applyPermissions(
+        'update',
+        session,
+        mutation,
+        permissionModel,
+        prisma,
+      );
 
       const mutationObj: Mutation<'upsert'> = {
         type: 'upsert',
@@ -1383,7 +1407,7 @@ export class QueryService {
       QueryService.validateMutationData(mutationObj);
 
       // Apply preset
-      await this.applyPreset(mutationObj, session);
+      await this.applyPreset(mutationObj, session, prisma);
 
       mutations.push(mutationObj as Mutation<M>);
       createObj.mutation = mutationObj;
@@ -1423,6 +1447,7 @@ export class QueryService {
             session,
             mutation,
             permissionModel,
+            prisma,
           );
         }
 
@@ -1446,7 +1471,7 @@ export class QueryService {
         }
 
         // Apply preset
-        await this.applyPreset(mutationObj, session);
+        await this.applyPreset(mutationObj, session, prisma);
 
         mutations.push(mutationObj as Mutation<M>);
         dataObj.mutation = mutationObj;
@@ -1637,6 +1662,7 @@ export class QueryService {
                 session,
                 mutationSchema,
                 relPermModel,
+                prisma,
               );
 
               const update: Mutation<'update'> = {
@@ -1664,7 +1690,7 @@ export class QueryService {
               };
 
               // Apply preset
-              await this.applyPreset(update, session);
+              await this.applyPreset(update, session, prisma);
 
               mutations.push(update as Mutation<M>);
 
@@ -1958,6 +1984,7 @@ export class QueryService {
                 session,
                 mutationSchema,
                 relPermModel,
+                prisma,
               );
 
               for (const fieldFrom of relation.fKeyHolder.fieldsFrom) {
@@ -1989,7 +2016,7 @@ export class QueryService {
               };
 
               // Apply preset
-              await this.applyPreset(update, session);
+              await this.applyPreset(update, session, prisma);
 
               mutations.push(update as Mutation<M>);
             }
@@ -2042,6 +2069,7 @@ export class QueryService {
               session,
               mutationSchema,
               relPermModel,
+              prisma,
             );
 
             const updateMany: Mutation<'updateMany'> = {
@@ -2064,7 +2092,7 @@ export class QueryService {
             };
 
             // Apply preset
-            await this.applyPreset(updateMany, session);
+            await this.applyPreset(updateMany, session, prisma);
 
             mutations.push(updateMany as Mutation<M>);
 
@@ -2097,6 +2125,7 @@ export class QueryService {
                 session,
                 mutationSchema,
                 relPermModel,
+                prisma,
               );
 
               const update: Mutation<'update'> = {
@@ -2119,7 +2148,7 @@ export class QueryService {
               };
 
               // Apply preset
-              await this.applyPreset(update, session);
+              await this.applyPreset(update, session, prisma);
 
               mutations.push(update as Mutation<M>);
             }
@@ -2418,6 +2447,15 @@ export class QueryService {
   public async find(rootQuery: QuerySchema, session: Session): Promise<any> {
     const queue: QuerySchema[] = [rootQuery];
 
+    const prisma = await this.prismaService.getPrisma(session.iid);
+
+    if (!prisma) {
+      throw new WsException(
+        `Institute #${session.iid} is either not found or not active`,
+        'UNAUTHORIZED',
+      );
+    }
+
     for (let q = 0; q < queue.length; q++) {
       const baseQuery = queue[q];
 
@@ -2447,7 +2485,7 @@ export class QueryService {
       }*/
 
       if (baseQuery.query.select) {
-        this.processSelect(queue, baseQuery, session, modelFields);
+        await this.processSelect(queue, baseQuery, session, modelFields);
       } else {
         // Add default fields to select
         await this.addDefaultSelects(queue, baseQuery, session, modelFields);
@@ -2523,15 +2561,12 @@ export class QueryService {
       }
 
       // Add permission query to base query
-      await this.applyPermissions('read', session, baseQuery, permissionModel);
-    }
-
-    const prisma = await this.prismaService.getPrisma(session.iid);
-
-    if (!prisma) {
-      throw new WsException(
-        `Institute #${session.iid} is either not found or not active`,
-        'UNAUTHORIZED',
+      await this.applyPermissions(
+        'read',
+        session,
+        baseQuery,
+        permissionModel,
+        prisma,
       );
     }
 
@@ -2557,6 +2592,60 @@ export class QueryService {
   ): Promise<void> {
     // Connect parent
     QueryService.connectMutationParent(mutation);
+
+    const createPermission = mutation.permission.create;
+
+    applyPermission: if (
+      createPermission &&
+      createPermission !== true &&
+      createPermission.permission
+    ) {
+      const permission = createPermission.permission;
+      let filter: Record<string, any> | true;
+
+      if (typeof permission.value === 'function') {
+        filter = await permission.value(session, trx, this.moduleRef);
+      } else {
+        filter = cloneDeep(permission.value);
+      }
+
+      if (!filter) {
+        throw new WsException(
+          `You don't have permission to perform "create" on "${mutation.target}".`,
+          'PERMISSION_DENIED',
+        );
+      }
+
+      if (filter === true) {
+        break applyPermission;
+      }
+
+      const query: Record<string, any> = {
+        where: {
+          AND: [filter],
+        },
+        select: {},
+      };
+
+      for (const pKey of mutation.model.primaryKey) {
+        query.select[pKey] = true;
+      }
+
+      if (permission.include) {
+        query.where.AND.push(
+          pick(mutation.query.data, Array.from(permission.include)),
+        );
+      }
+
+      const item = await (trx[mutation.target] as any).findFirst(query);
+
+      if (!item) {
+        throw new WsException(
+          `You don't have permission to perform "create" on "${mutation.target}".`,
+          'PERMISSION_DENIED',
+        );
+      }
+    }
 
     mutation.newData = await (trx[mutation.target] as any).create(
       mutation.query,

@@ -19,31 +19,33 @@ export default defineModel<'conversationMember'>({
       },
       create: {
         fields: new Set(['conversationId', 'userId']),
-        validation(session) {
-          return {
-            OR: [
-              {
-                Conversation: {
-                  ConversationMembers: {
-                    some: {
-                      // TODO: Fix this, this condition may allow a user invite themselves to a conversation when they are not supposed to
-                      userId: session.uid,
+        permission: {
+          include: new Set(['conversationId']),
+          value(session) {
+            return {
+              OR: [
+                {
+                  Conversation: {
+                    ConversationMembers: {
+                      some: {
+                        userId: session.uid,
+                      },
+                    },
+                    OR: {
+                      inviteOnly: false,
+                      canMemberInvite: true,
                     },
                   },
-                  OR: {
+                },
+                {
+                  Conversation: {
                     inviteOnly: false,
-                    canMemberInvite: true,
                   },
+                  userId: session.uid,
                 },
-              },
-              {
-                Conversation: {
-                  inviteOnly: false,
-                },
-                userId: session.uid,
-              },
-            ],
-          };
+              ],
+            };
+          },
         },
       },
       update: {
