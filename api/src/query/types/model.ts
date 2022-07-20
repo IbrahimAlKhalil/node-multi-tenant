@@ -12,12 +12,12 @@ import { ObjectSchema } from 'joi';
 export interface Actions<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  SS extends UserKind = UserKind,
+  K extends UserKind = UserKind,
 > {
-  read?: ReadPermission<N, S, SS>;
-  create?: CreatePermission<N, S, SS>;
-  update?: UpdatePermission<N, S, SS>;
-  delete?: DeletePermission<N, S, SS>;
+  read?: ReadPermission<N, S, K>;
+  create?: CreatePermission<N, S, K>;
+  update?: UpdatePermission<N, S, K>;
+  delete?: DeletePermission<N, S, K>;
   subscribe?: boolean;
 }
 

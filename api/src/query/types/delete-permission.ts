@@ -6,11 +6,11 @@ import { ModelNames } from './model-names';
 export type PermissionDefinition<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  SS extends UserKind = UserKind,
-> = Pick<UpdatePermission<N, S, SS>, 'permission'>;
+  K extends UserKind = UserKind,
+> = Pick<UpdatePermission<N, S, K>, 'permission'>;
 
 export type DeletePermission<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  SS extends UserKind = UserKind,
-> = boolean | PermissionDefinition<N, S, SS>;
+  K extends UserKind = UserKind,
+> = boolean | PermissionDefinition<N, S, K>;
