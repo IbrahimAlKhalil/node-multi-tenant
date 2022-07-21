@@ -105,7 +105,7 @@ export class UwsService {
       )
       .writeHeader(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept, Accept-Language, Origin, X-Csrf-Token, Cookie',
+        'Content-Type, Authorization, Accept, Accept-Language, Origin, X-Csrf-Token, Cookie, X-Qm-Institute-Id',
       )
       .writeHeader('Access-Control-Expose-Headers', 'Content-Type')
       .writeHeader('Access-Control-Allow-Credentials', 'true')

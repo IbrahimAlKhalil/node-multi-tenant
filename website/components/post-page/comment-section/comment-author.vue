@@ -1,8 +1,16 @@
 <template>
   <div class="flex items-center gap-2">
-    <the-avatar :size="40" :url="avatar" :text="name" />
-    <h5 class="font-bold text-text dark:text-light text-xl">{{ name }}</h5>
-    <p class="text-sm text-gray-500 dark:text-gray-200">{{ date }}</p>
+    <the-avatar
+      :size="40"
+      :url="authorInfo?.avatar"
+      :text="authorInfo?.I18n ? authorInfo?.I18n[0]['name'] : ''"
+    />
+    <h5 class="font-bold text-text dark:text-light text-xl">
+      {{ authorInfo?.I18n ? authorInfo?.I18n[0]['name'] : '' }}
+    </h5>
+    <p class="text-sm text-gray-500 dark:text-gray-200">
+      {{ data.date.split('T')[0] }}
+    </p>
   </div>
 </template>
 
@@ -14,18 +22,43 @@ export default defineComponent({
   name: 'comment-author',
   components: { TheAvatar },
   props: {
-    avatar: {
-      type: String,
-    },
-    name: {
-      type: String,
-    },
-    date: {
-      type: String,
+    data: {
+      type: Object,
     },
   },
-  setup() {
-    return;
+  data() {
+    return {
+      authorInfo: {},
+    };
+  },
+  methods: {
+    async findAuthor() {
+      this.authorInfo = await (
+        await fetch(
+          `https://${
+            this.data?.institute.cluster.host
+          }/query?query=${encodeURIComponent(
+            JSON.stringify({
+              type: 'findUnique',
+              model: 'user',
+              query: {
+                where: { id: Number(this.data?.authorId) },
+                include: { I18n: true },
+              },
+            }),
+          )}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-qm-institute-id': '100',
+            },
+          },
+        )
+      ).json();
+    },
+  },
+  mounted() {
+    this.findAuthor();
   },
 });
 </script>
