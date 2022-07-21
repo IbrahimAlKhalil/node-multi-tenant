@@ -1,10 +1,11 @@
 <template>
   <div
-    class="fixed top-20 right-0 z-[9999] rounded-l-md shadow-xl bg-light active:cursor-move"
+    class="fixed top-20 right-0 z-[9999] rounded-l-md shadow-xl bg-light active:cursor-move group"
   >
     <div class="relative px-2 py-3 min-h-[5rem] flex flex-col justify-between">
       <div
-        class="absolute top-1/2 left-0 -translate-y-1/2 text-gray-400 text-2xl hover:text-text cursor-pointer"
+        class="absolute top-1/2 left-0 -translate-y-1/2 text-gray-400 text-2xl hover:text-text cursor-pointer group-hover:opacity-100"
+        :class="{ 'opacity-0': !isMinimized }"
         @click="toggleMinimize"
       >
         <AngleLeft v-show="isMinimized" style="bottom: 0" />
