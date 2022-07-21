@@ -1,113 +1,168 @@
 {
-    "hero-title": "কওমি মাদারাসা ম্যানেজমেন্ট সফটওয়্যার",
-    "hero-description": "একটি ব্যাপক কওমি মাদ্রাসা সমাধান",
-    "hero-btn-primary": "লগইন/সাইন-আপ ",
-    "hero-btn-secondary": "যোগাযোগ করুন",
+  "hero-title": "কওমি মাদারাসা ম্যানেজমেন্ট সফটওয়্যার",
+  "hero-description": "একটি ব্যাপক কওমি মাদ্রাসা সমাধান",
+  "hero-btn-primary": "লগইন/সাইন-আপ ",
+  "hero-btn-secondary": "যোগাযোগ করুন",
 
-    "feature-section": {
-        "item-1": {
-            "title": "কম্পিউটারাইজড",
-            "description": "ডিজিটাল পদ্ধতিতে সমাধান কওমি মাদারাসার জন্য"
-        },
-        "item-2": {
-            "title": "ব্যবহার করা সহজ",
-            "description": "অতি সহজভাবে সমাধান করার প্রক্রিয়া"
-        },
-        "item-3": {
-            "title": "নমনীয় সমাধান",
-            "description": "কম্পিউটার মোবাইলের মাধ্যমে এক্সেস করা যায়"
-        }
+  "feature-section": {
+    "item-1": {
+      "title": "কম্পিউটারাইজড",
+      "description": "ডিজিটাল পদ্ধতিতে সমাধান কওমি মাদারাসার জন্য"
     },
-
-    "services-section": {
-        "sub-title": "সাহারা আইটির সমাধান সমূহ",
-        "title": "আমরা আপনার জন্য যে সকল সেবা পরিসেবা অফার করি",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        "button": "সকল সেবা সমূহ",
-        "items": {
-            "item-1": {
-                "title": "সাইন-আপ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button": "আরো পড়ুন"
-            },
-            "item-2": {
-                "title": "সাইন-আপ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button":  "আরো পড়ুন"
-            },
-            "item-3": {
-                "title": "সাইন-আপ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button":  "আরো পড়ুন"
-            },
-            "item-4": {
-                "title": "সাইন-আপ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button":  "আরো পড়ুন"
-            }
-        }
+    "item-2": {
+      "title": "ব্যবহার করা সহজ",
+      "description": "অতি সহজভাবে সমাধান করার প্রক্রিয়া"
     },
-
-    "best-services-section": {
-        "items": {
-            "item-1": {
-                "sub-title": "SAHARA IT SOLUTIONS",
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button": "Read More"
-            },
-            "item-2": {
-                "sub-title": "SAHARA IT SOLUTIONS",
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button": "Read More"
-            }
-        }
-    },
-
-    "key-features-section": {
-        "sub-title": "আমাদের প্রাথমিক উপাদান",
-        "title": "আমরা আপনার জন্য যে সকল সেবা পরিসেবা অফার করি",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-    },
-
-    "our-clients-section": {
-        "sub-title": "সাহারা আইটি",
-        "title": "আমাদের খুশি গ্রাহক",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-    },
-
-    "news-letter-section": {
-        "sub-title": "SAHARA IT",
-        "title": "Subscribe Our Newsletter",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        "placeholder": "Enter Your Email Address",
-        "button": "Subscribe Now"
-    },
-
-    "testimonial-section": {
-        "sub-title": "SAHARA IT",
-        "title": "What Our Client Say",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        "items": {
-            "item-1": {
-                "company": "What Our Client Say 1",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "author": "John Doe",
-                "author_position": "XYZ Inc"
-            },
-            "item-2": {
-                "company": "What Our Client Say 2",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "author": "John Doe",
-                "author_position": "XYZ Inc"
-            },
-            "item-3": {
-                "company": "What Our Client Say 3",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "author": "John Doe",
-                "author_position": "XYZ Inc"
-            }
-        }
+    "item-3": {
+      "title": "নমনীয় সমাধান",
+      "description": "কম্পিউটার মোবাইলের মাধ্যমে এক্সেস করা যায়"
     }
+  },
+
+  "services-section": {
+    "sub-title": "সাহারা আইটির সমাধান সমূহ",
+    "title": "আমরা আপনার জন্য যে সকল সেবা পরিসেবা অফার করি",
+    "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+    "button": "সকল সেবা সমূহ",
+    "items": {
+      "item-1": {
+        "title": "সাইন-আপ",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "button": "আরো পড়ুন"
+      },
+      "item-2": {
+        "title": "সাইন-আপ",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "button": "আরো পড়ুন"
+      },
+      "item-3": {
+        "title": "সাইন-আপ",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "button": "আরো পড়ুন"
+      },
+      "item-4": {
+        "title": "সাইন-আপ",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "button": "আরো পড়ুন"
+      }
+    }
+  },
+
+  "best-services-section": {
+    "items": {
+      "item-1": {
+        "sub-title": "সাহারা আইটির সমাধান সমূহ",
+        "title": "আমাদের সেবা সমূহ",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "button": "আরো পড়ুন"
+      },
+      "item-2": {
+        "sub-title": "সাহারা আইটির সমাধান সমূহ",
+        "title": "আমাদের সেবা সমূহ",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "button": "আরো পড়ুন"
+      }
+    }
+  },
+
+  "key-features-section": {
+    "sub-title": "আমাদের প্রাথমিক উপাদান",
+    "title": "আমরা আপনার জন্য যে সকল সেবা পরিসেবা অফার করি",
+    "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।"
+  },
+
+  "our-clients-section": {
+    "sub-title": "সাহারা আইটি",
+    "title": "আমাদের খুশি গ্রাহক",
+    "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।"
+  },
+
+  "pricing-section": {
+    "intro": {
+      "sub-title": "সাহারা আইটি",
+      "title": "আমরা কিছু অসাধারন মূল্য তালিকা প্রদান করি",
+      "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।"
+    },
+    "basic": {
+      "price-time": "প্রতি মাসে",
+      "button": "নির্বাচন করুন"
+    },
+    "plans": {
+      "item-1": {
+        "name": "ব্যাসিক",
+        "price": "৳ ৩০০০",
+        "options": {
+          "option-1": "অপশন নাম্বার - 1",
+          "option-2": "অপশন নাম্বার - 2",
+          "option-3": "অপশন নাম্বার - 3",
+          "option-4": "অপশন নাম্বার - 4",
+          "option-5": "অপশন নাম্বার - 5"
+        }
+      },
+      "item-2": {
+        "name": "স্টান্ডার্ড",
+        "price": "৳ ২০০০",
+        "options": {
+          "option-1": "অপশন নাম্বার - 1",
+          "option-2": "অপশন নাম্বার - 2",
+          "option-3": "অপশন নাম্বার - 3",
+          "option-4": "অপশন নাম্বার - 4",
+          "option-5": "অপশন নাম্বার - 5"
+        }
+      },
+      "item-3": {
+        "name": "প্রিমিয়াম",
+        "price": "৳ ৩০০০",
+        "options": {
+          "option-1": "অপশন নাম্বার - 1",
+          "option-2": "অপশন নাম্বার - 2",
+          "option-3": "অপশন নাম্বার - 3",
+          "option-4": "অপশন নাম্বার - 4",
+          "option-5": "অপশন নাম্বার - 5"
+        }
+      }
+    }
+  },
+
+  "about-us-section": {
+    "sub-title": "সাহারা আইটি",
+    "title": "একটি সংক্ষিপ্ত পরিচিতি আমাদের সম্পর্কে",
+    "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+    "primary-btn": "সার্ভিস সমূহ দেখুন",
+    "secondary-btn": "যোগাযোগ করুন"
+  },
+
+  "news-letter-section": {
+    "sub-title": "সাহারা আইটি",
+    "title": "নিউজলেটার এ সাবস্ক্রাইব করুন",
+    "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+    "placeholder": "আরনার ইমেইল দিন",
+    "button": "সাবস্ক্রাইব করুন"
+  },
+
+  "testimonial-section": {
+    "sub-title": "সাহারা আইটি",
+    "title": "আমাদের গ্রাহকগন যা বলেছেন",
+    "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+    "items": {
+      "item-1": {
+        "company": "আমাদের গ্রাহকগন যা বলেছেন 1",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "author": "John Doe",
+        "author_position": "XYZ Inc"
+      },
+      "item-2": {
+        "company": "আমাদের গ্রাহকগন যা বলেছেন 2",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "author": "John Doe",
+        "author_position": "XYZ Inc"
+      },
+      "item-3": {
+        "company": "আমাদের গ্রাহকগন যা বলেছেন 3",
+        "description": "জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে। জীবের মধ্যে সবচেয়ে সম্পূর্ণতা মানুষের। কিন্তু সবচেয়ে অসম্পূর্ণ হয়ে সে জন্মগ্রহণ করে। বাঘ ভালুক তার জীবনযাত্রার পনেরো- আনা মূলধন নিয়ে আসে প্রকৃতির মালখানা থেকে। জীবরঙ্গভূমিতে মানুষ এসে দেখা দেয় দুই শূন্য হাতে মুঠো বেঁধে।",
+        "author": "John Doe",
+        "author_position": "XYZ Inc"
+      }
+    }
+  }
 }

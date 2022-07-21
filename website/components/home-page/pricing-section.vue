@@ -5,13 +5,14 @@
   >
     <div class="container mx-auto">
       <div class="text-content text-center md:w-1/2 mx-auto mb-10">
-        <p class="sub-heading font-bold">SAHARA IT</p>
-        <SectionTitle> We offering some awesome plans for you </SectionTitle>
+        <p class="sub-heading font-bold">
+          {{ t("homePage['pricing-section']['intro']['sub-title']") }}
+        </p>
+        <SectionTitle
+          >{{ t("homePage['pricing-section']['intro']['title']") }}
+        </SectionTitle>
         <p class="text-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book.
+          {{ t("homePage['pricing-section']['intro']['description']") }}
         </p>
       </div>
       <div
@@ -29,16 +30,18 @@
           <h3
             class="font-bold text-2xl text-center mt-5 mb-8 leading-10 uppercase"
           >
-            {{ item.title }}
+            {{ t(item.title) }}
             <span
               class="block text-5xl"
               :class="{
                 'text-primary': item.isFeatured,
                 'text-secondary': !item.isFeatured,
               }"
-              >{{ item.price
+              >{{ t(item.price)
               }}<span class="text-lg text-text dark:text-gray-300 lowercase"
-                >/month</span
+                >/{{
+                  t("homePage['pricing-section']['basic']['price-time']")
+                }}</span
               ></span
             >
           </h3>
@@ -60,12 +63,18 @@
                 class="text-gray-400"
                 :class="{ 'text-text': feature.active }"
               >
-                {{ feature.name }}
+                {{ t(feature.name) }}
               </span>
             </li>
           </ul>
-          <secondary-btn v-if="!item.isFeatured" title="Choose The Plan" />
-          <primary-btn v-if="item.isFeatured" title="Choose The Plan" />
+          <secondary-btn
+            v-if="!item.isFeatured"
+            :title="t(`homePage['pricing-section']['basic']['button']`)"
+          />
+          <primary-btn
+            v-if="item.isFeatured"
+            :title="t(`homePage['pricing-section']['basic']['button']`)"
+          />
         </div>
         <!--  Table End  -->
       </div>
@@ -79,6 +88,7 @@ import SectionTitle from '#components/ui/section-title.vue';
 import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import Check from '#icons/solid/check-circle.svg';
 import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'PricingSection.vue',
@@ -89,56 +99,118 @@ export default defineComponent({
     Check,
   },
   setup() {
+    const i18n = useI18n();
     return {
+      t: i18n.t,
       pricingData: [
         {
           id: 1,
-          title: 'Basic',
-          price: '৳ 1000',
+          title: "homePage['pricing-section']['plans']['item-1']['name']",
+          price: "homePage['pricing-section']['plans']['item-1']['price']",
           isFeatured: false,
           features: [
-            { id: 1, name: 'This is the Option', active: true },
-            { id: 2, name: 'This is the Option', active: true },
-            { id: 3, name: 'This is the Option', active: false },
-            { id: 4, name: 'This is the Option', active: false },
-            { id: 5, name: 'This is the Option', active: false },
+            {
+              id: 1,
+              name: "homePage['pricing-section']['plans']['item-1']['options']['option-1']",
+              active: true,
+            },
+            {
+              id: 2,
+              name: "homePage['pricing-section']['plans']['item-1']['options']['option-2']",
+              active: true,
+            },
+            {
+              id: 3,
+              name: "homePage['pricing-section']['plans']['item-1']['options']['option-3']",
+              active: false,
+            },
+            {
+              id: 4,
+              name: "homePage['pricing-section']['plans']['item-1']['options']['option-4']",
+              active: false,
+            },
+            {
+              id: 5,
+              name: "homePage['pricing-section']['plans']['item-1']['options']['option-5']",
+              active: false,
+            },
           ],
           button: {
-            title: 'Choose The Plan',
+            title: "homePage['pricing-section']['basic']['button']",
             link: '#',
           },
         },
         {
           id: 2,
-          title: 'Standard',
-          price: '৳ 2000',
+          title: "homePage['pricing-section']['plans']['item-2']['name']",
+          price: "homePage['pricing-section']['plans']['item-2']['price']",
           isFeatured: true,
           features: [
-            { id: 1, name: 'This is the Option', active: true },
-            { id: 2, name: 'This is the Option', active: true },
-            { id: 3, name: 'This is the Option', active: true },
-            { id: 4, name: 'This is the Option', active: true },
-            { id: 5, name: 'This is the Option', active: false },
+            {
+              id: 1,
+              name: "homePage['pricing-section']['plans']['item-2']['options']['option-1']",
+              active: true,
+            },
+            {
+              id: 2,
+              name: "homePage['pricing-section']['plans']['item-2']['options']['option-2']",
+              active: true,
+            },
+            {
+              id: 3,
+              name: "homePage['pricing-section']['plans']['item-2']['options']['option-3']",
+              active: true,
+            },
+            {
+              id: 4,
+              name: "homePage['pricing-section']['plans']['item-2']['options']['option-4']",
+              active: true,
+            },
+            {
+              id: 5,
+              name: "homePage['pricing-section']['plans']['item-2']['options']['option-5']",
+              active: false,
+            },
           ],
           button: {
-            title: 'Choose The Plan',
+            title: "homePage['pricing-section']['basic']['button']",
             link: '#',
           },
         },
         {
           id: 3,
-          title: 'Premium',
-          price: '৳ 3000',
+          title: "homePage['pricing-section']['plans']['item-3']['name']",
+          price: "homePage['pricing-section']['plans']['item-3']['price']",
           isFeatured: false,
           features: [
-            { id: 1, name: 'This is the Option', active: true },
-            { id: 2, name: 'This is the Option', active: true },
-            { id: 3, name: 'This is the Option', active: true },
-            { id: 4, name: 'This is the Option', active: true },
-            { id: 5, name: 'This is the Option', active: true },
+            {
+              id: 1,
+              name: "homePage['pricing-section']['plans']['item-3']['options']['option-1']",
+              active: true,
+            },
+            {
+              id: 2,
+              name: "homePage['pricing-section']['plans']['item-3']['options']['option-2']",
+              active: true,
+            },
+            {
+              id: 3,
+              name: "homePage['pricing-section']['plans']['item-3']['options']['option-3']",
+              active: true,
+            },
+            {
+              id: 4,
+              name: "homePage['pricing-section']['plans']['item-3']['options']['option-4']",
+              active: true,
+            },
+            {
+              id: 5,
+              name: "homePage['pricing-section']['plans']['item-3']['options']['option-5']",
+              active: true,
+            },
           ],
           button: {
-            title: 'Choose The Plan',
+            title: "homePage['pricing-section']['basic']['button']",
             link: '#',
           },
         },
