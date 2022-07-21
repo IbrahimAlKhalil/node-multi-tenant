@@ -1,12 +1,33 @@
 <template>
-  <div class="comment-group container my-10">
+  <div class="comment-group container my-14">
     <single-comment
       :singleCommentData="singleCommentData"
-      :commentsReactions="commentsReactions"
+      :commentsReactions="
+        commentsReactions.filter(
+          (react) => react.comment.id === singleCommentData.id,
+        )
+      "
+      :updateComment="updateComment"
       :submitComment="submitComment"
       :commentValue="commentValue"
       :reactions="reactions"
     />
+    <div class="ml-5 mt-8" v-if="singleCommentData.comments">
+      <single-comment
+        v-for="subCommentData of singleCommentData.comments"
+        :key="subCommentData.id"
+        :singleCommentData="subCommentData"
+        :commentsReactions="
+          commentsReactions.filter(
+            (reaction) => reaction.comment.id === subCommentData.id,
+          )
+        "
+        :updateComment="updateComment"
+        :submitComment="submitComment"
+        :commentValue="commentValue"
+        :reactions="reactions"
+      />
+    </div>
   </div>
 </template>
 
@@ -22,6 +43,10 @@ export default defineComponent({
       type: String,
       required: false,
       default: '',
+    },
+    updateComment: {
+      type: Function,
+      required: true,
     },
     singleCommentData: {
       type: Object,
@@ -40,9 +65,6 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-  },
-  setup() {
-    return {};
   },
 });
 </script>

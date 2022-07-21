@@ -16,9 +16,7 @@
     <post-page-meta-description-section :short_content="post.short_content" />
 
     <post-description-section :content="post.content" />
-    <!-- <pre> postReactions: {{ postReactions }}</pre>
-    <pre> countReaction: {{ countReaction }}</pre> -->
-    <pre>{{ comments }}</pre>
+
     <post-reactions-section
       :reactions="reactions"
       :handleClickReaction="handleClickReaction"
@@ -214,6 +212,7 @@
         </li>
       </tab-body-users-container>
     </tab-body>
+    <pre>{{ commentValue }}</pre>
   </layout-main>
 </template>
 
@@ -225,10 +224,10 @@ import CommentSection from '#components/post-page/comment-section/index.vue';
 import TabBodyUsersContainer from '#components/blog-page/tab-body-users.vue';
 import PostShareSection from '#components/post-page/share-section.vue';
 import PostIntroSection from '#components/post-page/intro-section.vue';
+import { defineComponent, reactive, ref, inject, computed } from 'vue';
 import { ReactionType, PostReactionType } from '#types/reaction-type';
 import PostTagsSection from '#components/post-page/tags-section.vue';
 import PostHeroSection from '#components/post-page/hero-section.vue';
-import { defineComponent, reactive, ref, inject, watch, computed } from 'vue';
 import TabBody from '#components/ui/tab-component/tab-body.vue';
 import TabButton from '#components/post-page/tab-button.vue';
 import { comment as CommentType } from '#types/comment-type';
@@ -264,7 +263,7 @@ export default defineComponent({
       activeTab: 'comments',
     };
   },
-  props: ['post'],
+  props: ['post', 'commentsReactions'],
   computed: {
     primaryCategory() {
       const primaryCategory = this.post.primary_category

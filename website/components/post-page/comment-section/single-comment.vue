@@ -9,6 +9,7 @@
   <p class="p-2 text-justify text-text dark:text-light">
     {{ singleCommentData.content }}
   </p>
+  <!-- <pre>{{ singleCommentData }}</pre> -->
   <comment-reaction
     @handle-reply="handleReply"
     :reactions="reactions"
@@ -17,7 +18,7 @@
   />
   <leave-comment
     :submitComment="submitComment"
-    @update:input="updateComment"
+    @update:comment="updateComment"
     :commentValue="commentValue"
     v-show="isReplying"
     :parent="singleCommentData.id"
@@ -49,6 +50,10 @@ export default defineComponent({
       required: false,
       default: '',
     },
+    updateComment: {
+      type: Function,
+      required: true,
+    },
     reactions: {
       type: Array,
       required: true,
@@ -65,16 +70,9 @@ export default defineComponent({
     };
   },
   methods: {
-    updateComment(value: string) {
-      this.replyComment = value;
-    },
     handleReply() {
-      console.log(this.replyComment);
       this.isReplying = !this.isReplying;
     },
-  },
-  setup() {
-    return;
   },
 });
 </script>
