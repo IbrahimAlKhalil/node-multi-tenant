@@ -663,7 +663,7 @@ model ExamRoutineSeat {
 }
 
 model File {
-  id         String @id @db.Uuid
+  id         String @id @default(uuid()) @db.Uuid
   folderId   Int?
   mimeTypeId Int
 
@@ -672,13 +672,13 @@ model File {
   name String @db.VarChar(255)
   size BigInt
 
-  Folder            Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  MimeType          MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  ChatFiles         ChatFile[]
-  I18n              InstituteI18n[]
-  Notifications     Notification[]
-  NotificationBases NotificationBase[]
-  Users             User[]
+  Folder              Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MimeType            MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ChatFiles           ChatFile[]
+  I18n                InstituteI18n[]
+  Notifications       Notification[]
+  NotificationBases   NotificationBase[]
+  ProfilePictureUsers User[]
 
   @@index([folderId])
   @@index([mimeTypeId])
