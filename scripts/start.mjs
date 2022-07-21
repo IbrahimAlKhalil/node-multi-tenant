@@ -25,7 +25,7 @@ const prefix = 'qmmsoft';
 const images = {
   postgres: 'postgis/postgis:14-3.2-alpine',
   minio: 'minio/minio:RELEASE.2022-07-17T15-43-14Z',
-  redis: 'eqalpha/keydb:alpine_x86_64_v6.2.2',
+  redis: 'eqalpha/keydb:alpine_x86_64_v6.3.1',
 };
 const containerNames = {
   postgres: `${prefix}-postgres`,
