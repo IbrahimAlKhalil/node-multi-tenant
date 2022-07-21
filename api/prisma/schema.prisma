@@ -717,7 +717,8 @@ model Folder {
 
   status content_status
 
-  name String @db.VarChar(255)
+  name     String  @db.VarChar(255)
+  internal Boolean @default(false)
 
   Parent   Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Files    File[]
