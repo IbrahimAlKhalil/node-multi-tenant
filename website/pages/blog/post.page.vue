@@ -28,6 +28,7 @@
         :shortDetails="post.short_content.slice(0, 50)"
       />
     </div>
+    <!-- Start Tab Section -->
     <the-tabs>
       <the-tab
         @handle-change="handleTabChange"
@@ -55,7 +56,7 @@
         />
       </the-tab>
     </the-tabs>
-    <tab-body v-show="activeTab === 'comments'">
+    <tab-body v-if="activeTab === 'comments'">
       <comment-section
         :data="comments"
         :commentValue="commentValue"
@@ -68,150 +69,43 @@
         :groupComments="groupComments"
       />
     </tab-body>
-    <tab-body v-show="activeTab === 'like'">
+    <tab-body v-else-if="activeTab === 'like'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactions.filter((react) => react.reaction.value === 'like')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
-    <tab-body v-show="activeTab === 'wow'">
+    <tab-body v-else-if="activeTab === 'wow'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactions.filter((react) => react.reaction.value === 'wow')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
-    <tab-body v-show="activeTab === 'sad'">
+    <tab-body v-else-if="activeTab === 'sad'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactions.filter((react) => react.reaction.value === 'sad')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
-    <tab-body v-show="activeTab === 'angry'">
+    <tab-body v-else-if="activeTab === 'angry'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactions.filter((react) => react.reaction.value === 'angry')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
+    <!-- End Tab Section -->
   </layout-main>
 </template>
 
@@ -220,7 +114,8 @@ import PostPageMetaDescriptionSection from '#components/post-page/meta-descripti
 import PostDescriptionSection from '#components/post-page/description-section.vue';
 import PostReactionsSection from '#components/post-page/reactions-section.vue';
 import CommentSection from '#components/post-page/comment-section/index.vue';
-import TabBodyUsersContainer from '#components/blog-page/tab-body-users.vue';
+import TabBodyUsersContainer from '#components/post-page/tab-body-users.vue';
+import TabBodyUserItem from '#components/post-page/tab-body-user-item.vue';
 import PostShareSection from '#components/post-page/share-section.vue';
 import PostIntroSection from '#components/post-page/intro-section.vue';
 import { defineComponent, reactive, ref, inject, computed } from 'vue';
@@ -237,7 +132,6 @@ import CommentIcon from '#icons/regular/comments.svg';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
 import _ from 'lodash';
-import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'blog-post',
@@ -249,6 +143,7 @@ export default defineComponent({
     PostShareSection,
     PostIntroSection,
     PostTagsSection,
+    TabBodyUserItem,
     PostHeroSection,
     CommentSection,
     CommentIcon,
@@ -293,7 +188,6 @@ export default defineComponent({
     const { urlPathname, pageProps } = usePageContext();
     const auth = useAuth();
     const slug = urlPathname.split('/').pop();
-    const router = useRoute();
     // Type
     type ReactionCountType = {
       Like: number;
