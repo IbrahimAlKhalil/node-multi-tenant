@@ -212,7 +212,6 @@
         </li>
       </tab-body-users-container>
     </tab-body>
-    <pre>{{ commentValue }}</pre>
   </layout-main>
 </template>
 
@@ -238,6 +237,7 @@ import CommentIcon from '#icons/regular/comments.svg';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
 import _ from 'lodash';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'blog-post',
@@ -293,6 +293,7 @@ export default defineComponent({
     const { urlPathname, pageProps } = usePageContext();
     const auth = useAuth();
     const slug = urlPathname.split('/').pop();
+    const router = useRoute();
     // Type
     type ReactionCountType = {
       Like: number;
@@ -400,12 +401,6 @@ export default defineComponent({
           dismissible: true,
           duration: 1000 * 5,
         });
-        commentsData.comments.push({
-          id: Date.now(),
-          status: 'published',
-          content: commentValue.value,
-          date_created: new Date().toISOString(),
-        } as CommentType);
 
         commentsData.comments.push({
           id: 21,
@@ -424,6 +419,7 @@ export default defineComponent({
         });
 
         commentValue.value = '';
+        location.reload();
       } else {
         toast.error('Something went wrong!', {
           dismissible: true,
