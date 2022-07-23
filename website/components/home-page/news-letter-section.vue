@@ -11,7 +11,7 @@
         <div class="common input-area">
           <input
             type="text"
-            placeholder="Enter email here"
+            :placeholder="t(placeholder)"
             v-model="email"
             class="input"
           />
@@ -22,7 +22,7 @@
         >
           <input
             type="submit"
-            value="Subscribe"
+            :value="t(button)"
             class="input text-lg lg:text-2xl uppercase"
           />
           <PaperPlane class="text-xl lg:text-2xl px-3" />
