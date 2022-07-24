@@ -26,8 +26,5 @@ export default defineComponent({
   components: {
     'pre-footer': PreFooter,
   },
-  setup() {
-    return {};
-  },
 });
 </script>

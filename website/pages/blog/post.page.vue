@@ -5,6 +5,7 @@
       :categoryName="primaryCategory.name"
       :title="post.title"
     />
+    <pre>{{ postReactionGroup }}</pre>
     <post-intro-section
       :author="post.user_created"
       :date="post.date_created.split('T')[0]"
@@ -28,6 +29,7 @@
         :shortDetails="post.short_content.slice(0, 50)"
       />
     </div>
+    <!-- Start Tab Section -->
     <the-tabs>
       <the-tab
         @handle-change="handleTabChange"
@@ -55,9 +57,9 @@
         />
       </the-tab>
     </the-tabs>
-    <tab-body v-show="activeTab === 'comments'">
+    <tab-body v-if="activeTab === 'comments'">
       <comment-section
-        :data="comments"
+        :data="commentsData"
         :commentValue="commentValue"
         :suggestions="suggestions"
         :submitComment="submitComment"
@@ -68,150 +70,43 @@
         :groupComments="groupComments"
       />
     </tab-body>
-    <tab-body v-show="activeTab === 'like'">
+    <tab-body v-else-if="activeTab === 'like'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactionsData.filter((react) => react.reaction.value === 'like')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
-    <tab-body v-show="activeTab === 'wow'">
+    <tab-body v-else-if="activeTab === 'wow'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactionsData.filter((react) => react.reaction.value === 'wow')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
-    <tab-body v-show="activeTab === 'sad'">
+    <tab-body v-else-if="activeTab === 'sad'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactions.filter((react) => react.reaction.value === 'sad')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
-    <tab-body v-show="activeTab === 'angry'">
+    <tab-body v-else-if="activeTab === 'angry'">
       <tab-body-users-container>
-        <li
-          v-for="item of postReactions.filter(
-            (react) => react.reaction.value === 'like',
-          )"
-          :key="item.id"
-          class="flex items-center gap-2 text-text dark:text-light text-lg"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex justify-center items-center"
-          >
-            <img
-              v-show="item?.user_created?.avatar"
-              :src="item?.user_created?.avatar"
-              :alt="item?.user_created?.first_name"
-            />
-            <span
-              v-show="!item?.user_created?.avatar"
-              class="text-center font-bold text-xl text-white"
-              >{{ item?.user_created?.first_name[0] }}</span
-            >
-          </div>
-          <span>
-            <span class="block font-bold">
-              {{
-                item?.user_created?.first_name +
-                ' ' +
-                item?.user_created?.last_name
-              }}</span
-            >
-            <span class="block text-sm text-gray-500">Lorem, ipsum dolor.</span>
-          </span>
-        </li>
+        <tab-body-user-item
+          :postReactions="
+            postReactions.filter((react) => react.reaction.value === 'angry')
+          "
+        />
       </tab-body-users-container>
     </tab-body>
+    <!-- End Tab Section -->
   </layout-main>
 </template>
 
@@ -220,7 +115,8 @@ import PostPageMetaDescriptionSection from '#components/post-page/meta-descripti
 import PostDescriptionSection from '#components/post-page/description-section.vue';
 import PostReactionsSection from '#components/post-page/reactions-section.vue';
 import CommentSection from '#components/post-page/comment-section/index.vue';
-import TabBodyUsersContainer from '#components/blog-page/tab-body-users.vue';
+import TabBodyUsersContainer from '#components/post-page/tab-body-users.vue';
+import TabBodyUserItem from '#components/post-page/tab-body-user-item.vue';
 import PostShareSection from '#components/post-page/share-section.vue';
 import PostIntroSection from '#components/post-page/intro-section.vue';
 import { defineComponent, reactive, ref, inject, computed } from 'vue';
@@ -237,7 +133,7 @@ import CommentIcon from '#icons/regular/comments.svg';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
 import _ from 'lodash';
-import { useRoute } from 'vue-router';
+import PostType from '#types/post-type';
 
 export default defineComponent({
   name: 'blog-post',
@@ -249,6 +145,7 @@ export default defineComponent({
     PostShareSection,
     PostIntroSection,
     PostTagsSection,
+    TabBodyUserItem,
     PostHeroSection,
     CommentSection,
     CommentIcon,
@@ -258,34 +155,6 @@ export default defineComponent({
     TabBody,
     TheTab,
   },
-  data() {
-    return {
-      activeTab: 'comments',
-    };
-  },
-  props: ['post', 'commentsReactions'],
-  computed: {
-    primaryCategory() {
-      const primaryCategory = this.post.primary_category
-        ? this.post.primary_category.name
-        : this.post.categories[0].post_category_id.name;
-
-      const primaryCategorySlug = this.post.primary_category
-        ? this.post.primary_category.slug
-        : this.post.categories[0].post_category_id.slug;
-
-      return {
-        name: primaryCategory,
-        slug: primaryCategorySlug,
-      };
-    },
-  },
-  methods: {
-    handleTabChange(title: string) {
-      this.activeTab = title.toLocaleLowerCase();
-    },
-  },
-
   setup() {
     // Toast
     const toast: any = inject('$toast');
@@ -293,7 +162,6 @@ export default defineComponent({
     const { urlPathname, pageProps } = usePageContext();
     const auth = useAuth();
     const slug = urlPathname.split('/').pop();
-    const router = useRoute();
     // Type
     type ReactionCountType = {
       Like: number;
@@ -302,6 +170,7 @@ export default defineComponent({
       Angry: number;
     };
     // States
+    const activeTab = ref('comments');
     const commentValue = ref('');
 
     const commentsData = reactive<{
@@ -316,6 +185,7 @@ export default defineComponent({
 
     commentsData.comments =
       (pageProps?.comments as CommentType[]) ?? ([] as CommentType[]);
+    // Post Reaction
     const postReactionsData = reactive<{
       postReactions: PostReactionType[];
       countReaction: ReactionCountType;
@@ -323,9 +193,45 @@ export default defineComponent({
       postReactions: [],
       countReaction: {} as ReactionCountType,
     });
+
+    const postReactionGroup = computed(() =>
+      _.groupBy(
+        postReactionsData.postReactions.map((item) => {
+          return {
+            code: item?.institute?.code,
+            cluster: item?.institute?.cluster?.host,
+            user: item?.user_id,
+          };
+        }),
+        'cluster',
+      ),
+    );
+
     postReactionsData.postReactions = pageProps?.postReactions
       ? [...(pageProps.postReactions as PostReactionType[])]
       : [];
+
+    const post: PostType = (pageProps?.post as PostType) ?? ({} as PostType);
+
+    const primaryCategory = computed(() => {
+      const name = post?.primary_category
+        ? post?.primary_category?.name
+        : post?.categories[0]?.post_category_id?.name;
+
+      const slug = post?.primary_category
+        ? post?.primary_category?.slug
+        : post?.categories[0]?.post_category_id?.slug;
+
+      return {
+        name,
+        slug,
+      };
+    });
+
+    // Actions
+    const handleTabChange = (title: string) => {
+      activeTab.value = title.toLocaleLowerCase();
+    };
 
     const countReactions = (postReactions: PostReactionType[]) => {
       const array = postReactions ?? ([] as PostReactionType[]);
@@ -463,19 +369,6 @@ export default defineComponent({
           dismissible: true,
           duration: 1000 * 5,
         });
-        postReactionsData.postReactions.push({
-          id: Date.now(),
-          date_created: new Date().toISOString(),
-          reaction: {
-            value:
-              (pageProps?.reactions as ReactionType[]).find(
-                (item) => item.id == reactionId,
-              )?.value ?? 'like',
-          },
-          post: {
-            id: pageProps?.postId as number,
-          },
-        });
         countReactions(postReactionsData.postReactions);
       } else {
         toast.error('Something went wrong!', {
@@ -486,16 +379,20 @@ export default defineComponent({
     };
     return {
       ...pageProps,
-      postReactions: postReactionsData.postReactions,
+      postReactionsData: postReactionsData.postReactions,
       countReaction: postReactionsData.countReaction,
-      comments: commentsData.comments,
+      commentsData: commentsData.comments,
       reactions: pageProps?.reactions,
       handleClickReaction,
+      postReactionGroup,
       selectSuggestion,
+      handleTabChange,
+      primaryCategory,
       groupComments,
       submitComment,
       updateComment,
       commentValue,
+      activeTab,
       slug,
     };
   },
