@@ -15,25 +15,31 @@
       <div
         class="info p-5 md:px-10 lg:p-14 bg-white/80 dark:bg-black/80 text-black dark:text-light w-11/12 lg:w-4/5 xl:w-1/2"
       >
-        <p class="hidden md:visible font-bold text-md lg:text-lg">SAHARA IT</p>
+        <p class="hidden md:visible font-bold text-md lg:text-lg">
+          {{ i18n.t("homePage['about-us-section']['sub-title']") }}
+        </p>
         <h2
           class="font-bold text-2xl md:text-3xl lg:text-5xl text-primary my-2 md:my-5"
         >
-          A short introduction about us
+          {{ i18n.t("homePage['about-us-section']['title']") }}
         </h2>
         <p class="text-xs md:text-md lg:text-lg">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. Lorem Ipsum is simply dummy
-          text of the printing and typesetting industry. Lorem
+          {{ i18n.t("homePage['about-us-section']['description']") }}
         </p>
         <div
           class="actions flex flex-col md:flex-row justify-center items-center gap-2 md:gap-5 my-5 lg:my-10"
         >
-          <primary-btn title="VISIT SERVICES" :icon="GiftIcon" />
+          <primary-btn
+            :title="i18n.t('homePage[\'about-us-section\'][\'primary-btn\']')"
+            :icon="GiftIcon"
+          />
           <a href="/contact">
-            <secondary-btn title="GET IN TOUCH" :icon="PhonePlus" />
+            <secondary-btn
+              :title="
+                i18n.t('homePage[\'about-us-section\'][\'secondary-btn\']')
+              "
+              :icon="PhonePlus"
+            />
           </a>
         </div>
       </div>
@@ -47,6 +53,9 @@ import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import PhonePlus from '#icons/duotone/phone-plus.svg';
 import backgroundVideo from '#videos/background.mp4';
 import GiftIcon from '#icons/solid/gift.svg';
+import { useI18n } from 'vue-i18n';
+
+const i18n = useI18n();
 </script>
 
 <style scoped>

@@ -1,113 +1,168 @@
 {
-    "hero-title": "Qawmi Madrasa Management Software",
-    "hero-description": "A comprehensive Qawmi Madrasa solution",
-    "hero-btn-primary": "Login/Siginup",
-    "hero-btn-secondary": "GET IN TOUCH",
+  "hero-title": "Qawmi Madrasa Management Software",
+  "hero-description": "A comprehensive Qawmi Madrasa solution",
+  "hero-btn-primary": "Login/Siginup",
+  "hero-btn-secondary": "GET IN TOUCH",
 
-    "feature-section": {
-        "item-1": {
-            "title": "Computerized",
-            "description": "Digital solutions for Qawmi Madrasa management"
-        },
-        "item-2": {
-            "title": "Easy to use",
-            "description": "The process of solving very easily"
-        },
-        "item-3": {
-            "title": "Flexible",
-            "description": "You can easily access by mobile or computer"
-        }
+  "feature-section": {
+    "item-1": {
+      "title": "Computerized",
+      "description": "Digital solutions for Qawmi Madrasa management"
     },
-
-    "services-section": {
-        "sub-title": "SAHARA IT SOLUTIONS",
-        "title": "We Offering The Best Services For You",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        "button": "SEE ALL SERVICES",
-        "items": {
-            "item-1": {
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button": "Read More"
-            },
-            "item-2": {
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button":  "Read More"
-            },
-            "item-3": {
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button":  "Read More"
-            },
-            "item-4": {
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button":  "Read More"
-            }
-        }
+    "item-2": {
+      "title": "Easy to use",
+      "description": "The process of solving very easily"
     },
-
-    "best-services-section": {
-        "items": {
-            "item-1": {
-                "sub-title": "SAHARA IT SOLUTIONS",
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button": "Read More"
-            },
-            "item-2": {
-                "sub-title": "SAHARA IT SOLUTIONS",
-                "title": "We Offering Best ",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
-                "button": "Read More"
-            }
-        }
-    },
-
-    "key-features-section": {
-        "sub-title": "SAHARA IT SOLUTIONS",
-        "title": "Key Features",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-    },
-
-    "our-clients-section": {
-        "sub-title": "SAHARA IT",
-        "title": "OUR HAPPY CLIENTS",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-    },
-
-    "news-letter-section": {
-        "sub-title": "SAHARA IT",
-        "title": "Subscribe Our Newsletter",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        "placeholder": "Enter Your Email Address",
-        "button": "Subscribe Now"
-    },
-
-    "testimonial-section": {
-        "sub-title": "SAHARA IT",
-        "title": "What Our Client Say 1",
-        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        "items": {
-            "item-1": {
-                "company": "What Our Client Say 2",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "author": "John Doe",
-                "author_position": "XYZ Inc"
-            },
-            "item-2": {
-                "company": "What Our Client Say 3",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "author": "John Doe",
-                "author_position": "XYZ Inc"
-            },
-            "item-3": {
-                "company": "What Our Client Say 4",
-                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "author": "John Doe",
-                "author_position": "XYZ Inc"
-            }
-        }
+    "item-3": {
+      "title": "Flexible",
+      "description": "You can easily access by mobile or computer"
     }
+  },
+
+  "services-section": {
+    "sub-title": "SAHARA IT SOLUTIONS",
+    "title": "We Offering The Best Services For You",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "button": "SEE ALL SERVICES",
+    "items": {
+      "item-1": {
+        "title": "We Offering Best ",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+        "button": "Read More"
+      },
+      "item-2": {
+        "title": "We Offering Best ",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+        "button": "Read More"
+      },
+      "item-3": {
+        "title": "We Offering Best ",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+        "button": "Read More"
+      },
+      "item-4": {
+        "title": "We Offering Best ",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+        "button": "Read More"
+      }
+    }
+  },
+
+  "best-services-section": {
+    "items": {
+      "item-1": {
+        "sub-title": "SAHARA IT SOLUTIONS",
+        "title": "We Offering Best ",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+        "button": "Read More"
+      },
+      "item-2": {
+        "sub-title": "SAHARA IT SOLUTIONS",
+        "title": "We Offering Best ",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the",
+        "button": "Read More"
+      }
+    }
+  },
+
+  "key-features-section": {
+    "sub-title": "SAHARA IT SOLUTIONS",
+    "title": "Key Features",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  },
+
+  "our-clients-section": {
+    "sub-title": "SAHARA IT",
+    "title": "OUR HAPPY CLIENTS",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  },
+
+  "pricing-section": {
+    "intro": {
+      "sub-title": "SAHARA IT",
+      "title": "We Offer Best Pricing",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+    },
+    "basic": {
+      "price-time": "Per Month",
+      "button": "Choose The Plan"
+    },
+    "plans": {
+      "item-1": {
+        "name": "Basic",
+        "price": "৳ 1000",
+        "options": {
+          "option-1": "This is option 1",
+          "option-2": "This is option 2",
+          "option-3": "This is option 3",
+          "option-4": "This is option 4",
+          "option-5": "This is option 5"
+        }
+      },
+      "item-2": {
+        "name": "Standard",
+        "price": "৳ 2000",
+        "options": {
+          "option-1": "This is option 1",
+          "option-2": "This is option 2",
+          "option-3": "This is option 3",
+          "option-4": "This is option 4",
+          "option-5": "This is option 5"
+        }
+      },
+      "item-3": {
+        "name": "Premium",
+        "price": "৳ 3000",
+        "options": {
+          "option-1": "This is option 1",
+          "option-2": "This is option 2",
+          "option-3": "This is option 3",
+          "option-4": "This is option 4",
+          "option-5": "This is option 5"
+        }
+      }
+    }
+  },
+
+  "about-us-section": {
+    "sub-title": "SAHARA IT",
+    "title": "A short introduction about us",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "primary-btn": "Visit Services",
+    "secondary-btn": "Get In Touch"
+  },
+
+  "news-letter-section": {
+    "sub-title": "SAHARA IT",
+    "title": "Subscribe Our Newsletter",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "placeholder": "Enter Your Email Address",
+    "button": "Subscribe Now"
+  },
+
+  "testimonial-section": {
+    "sub-title": "SAHARA IT",
+    "title": "What Our Client Say 1",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    "items": {
+      "item-1": {
+        "company": "What Our Client Say 2",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "author": "John Doe",
+        "author_position": "XYZ Inc"
+      },
+      "item-2": {
+        "company": "What Our Client Say 3",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "author": "John Doe",
+        "author_position": "XYZ Inc"
+      },
+      "item-3": {
+        "company": "What Our Client Say 4",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "author": "John Doe",
+        "author_position": "XYZ Inc"
+      }
+    }
+  }
 }

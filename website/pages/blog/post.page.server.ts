@@ -80,6 +80,9 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       post: {
         _eq: post[0].id,
       },
+      parent: {
+        _null: true,
+      },
     },
     fields: [
       'id',
@@ -94,6 +97,9 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'parent',
       'mention',
       'reactions.reaction_id.value',
+      'comments.*.institute.code',
+      'comments.*.institute.name',
+      'comments.*.cluster.host',
     ],
   });
 
@@ -113,6 +119,8 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       'comment.post.id',
     ],
   });
+
+  console.log({ commentsReactions });
 
   const commentsSuggestions = await commentsSuggestionService.readByQuery({
     filter: {

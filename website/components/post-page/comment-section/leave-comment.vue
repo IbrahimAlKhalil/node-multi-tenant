@@ -17,7 +17,7 @@
         <primary-btn
           title="submit"
           size="small"
-          @handle-click="submitComment"
+          @handle-click="handleSubmitComment"
         />
       </div>
     </div>
@@ -57,8 +57,10 @@ export default defineComponent({
       default: null,
     },
   },
-  setup() {
-    return {};
+  methods: {
+    handleSubmitComment() {
+      this.submitComment({ parent: this.parent, mention: this.mention });
+    },
   },
 });
 </script>

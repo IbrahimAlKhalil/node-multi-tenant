@@ -1,0 +1,19 @@
+{
+  "widget-1": {
+    "details": "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without"
+  },
+  "widget-2": {
+    "title": "Important Links",
+    "option-1": "About Us",
+    "option-2": "Contact Us",
+    "option-3": "Privacy Policy",
+    "option-4": "Terms of Use"
+  },
+  "widget-3": {
+    "title": "Useful Links",
+    "option-1": "About Us",
+    "option-2": "Contact Us",
+    "option-3": "Privacy Policy",
+    "option-4": "Terms of Use"
+  }
+}

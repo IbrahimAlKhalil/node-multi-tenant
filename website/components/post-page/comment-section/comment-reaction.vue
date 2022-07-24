@@ -102,6 +102,7 @@ import {
 } from '#components/animated-reactions';
 import { useAuth } from '#stores/auth.store';
 import { usePageContext } from '#modules/use-page-context';
+import { toRef } from 'vue';
 
 export default defineComponent({
   name: 'comment-reaction',
@@ -123,6 +124,10 @@ export default defineComponent({
     },
     reactions: {
       type: Array,
+      required: true,
+    },
+    commentId: {
+      type: Number,
       required: true,
     },
   },
@@ -148,7 +153,7 @@ export default defineComponent({
       );
     },
   },
-  setup() {
+  setup(props) {
     // Context
     const auth = useAuth();
     const { pageProps } = usePageContext();
@@ -156,10 +161,7 @@ export default defineComponent({
     // Toast
     const toast: any = inject('$toast');
 
-    const props = defineProps<{
-      commentId: number;
-    }>();
-    const { commentId } = toRefs(props);
+    // const commentIdRef = toRef(props, 'commentId');
 
     const handleClickReaction = async (reactionId: number) => {
       const cluster = localStorage.getItem('cluster');
@@ -168,7 +170,7 @@ export default defineComponent({
       }
       const data = {
         reactionId,
-        commentId,
+        commentId: props?.commentId,
         cluster: cluster,
       };
       console.log(data);
@@ -204,6 +206,7 @@ export default defineComponent({
     };
     return {
       handleClickReaction,
+      commentId: props?.commentId,
     };
   },
 });

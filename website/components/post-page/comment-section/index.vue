@@ -11,13 +11,11 @@
   <comment-group
     v-for="singleCommentData in data"
     :reactions="reactions"
-    :commentsReactions="
-      commentsReactions.filter(
-        (react) => react.comment.id === singleCommentData.id,
-      )
-    "
+    :commentsReactions="commentsReactions"
     :key="singleCommentData.id"
     :singleCommentData="singleCommentData"
+    :commentValue="commentValue"
+    :updateComment="updateComment"
     :submitComment="submitComment"
   />
 </template>

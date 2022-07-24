@@ -51,7 +51,7 @@ const authCheck: express.RequestHandler = async (req, res, next) => {
     console.error(e);
   }
 
-  return res.status(500).json({ error: 'Server error!' });
+  return res.status(500).json({ error: 'Server error in authenticate!' });
 };
 
 export default authCheck;

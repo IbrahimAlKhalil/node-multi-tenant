@@ -1,13 +1,14 @@
-import common from './common.json';
-import homePage from './home-page.json';
-import login from './login.json';
-import menu from './menu.json';
-import message from './message.json';
-import passReset from './pass-reset.json';
 import registration from './registration.json';
 import validation from './validation.json';
-import blogs from './blogs.json';
+import passReset from './pass-reset.json';
 import blogPage from './blog-page.json';
+import homePage from './home-page.json';
+import message from './message.json';
+import common from './common.json';
+import footer from './footer.json';
+import login from './login.json';
+import blogs from './blogs.json';
+import menu from './menu.json';
 
 export default {
   registration,
@@ -16,8 +17,9 @@ export default {
   blogPage,
   homePage,
   message,
+  footer,
   common,
+  blogs,
   login,
   menu,
-  blogs,
 };
