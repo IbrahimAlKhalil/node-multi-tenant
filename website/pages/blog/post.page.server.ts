@@ -66,11 +66,10 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     },
     fields: [
       'id',
-      'user_created?.first_name',
-      'user_created?.last_name',
-      'user_created?.avatar',
-      'user_created.email',
       'date_created',
+      'user_id',
+      'institute.code',
+      'institute.cluster.host',
       'reaction.value',
       'post.id',
     ],
@@ -120,8 +119,6 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
     ],
   });
 
-  console.log({ commentsReactions });
-
   const commentsSuggestions = await commentsSuggestionService.readByQuery({
     filter: {
       _or: [
@@ -138,7 +135,7 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       ],
     },
   });
-
+  console.log('post[0]', post[0]);
   return {
     pageContext: {
       pageProps: {

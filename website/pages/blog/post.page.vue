@@ -5,6 +5,7 @@
       :categoryName="primaryCategory.name"
       :title="post.title"
     />
+    <pre>{{ postReactionGroup }}</pre>
     <post-intro-section
       :author="post.user_created"
       :date="post.date_created.split('T')[0]"
@@ -58,7 +59,7 @@
     </the-tabs>
     <tab-body v-if="activeTab === 'comments'">
       <comment-section
-        :data="comments"
+        :data="commentsData"
         :commentValue="commentValue"
         :suggestions="suggestions"
         :submitComment="submitComment"
@@ -73,7 +74,7 @@
       <tab-body-users-container>
         <tab-body-user-item
           :postReactions="
-            postReactions.filter((react) => react.reaction.value === 'like')
+            postReactionsData.filter((react) => react.reaction.value === 'like')
           "
         />
       </tab-body-users-container>
@@ -82,7 +83,7 @@
       <tab-body-users-container>
         <tab-body-user-item
           :postReactions="
-            postReactions.filter((react) => react.reaction.value === 'wow')
+            postReactionsData.filter((react) => react.reaction.value === 'wow')
           "
         />
       </tab-body-users-container>
@@ -132,6 +133,7 @@ import CommentIcon from '#icons/regular/comments.svg';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
 import _ from 'lodash';
+import PostType from '#types/post-type';
 
 export default defineComponent({
   name: 'blog-post',
@@ -153,34 +155,6 @@ export default defineComponent({
     TabBody,
     TheTab,
   },
-  data() {
-    return {
-      activeTab: 'comments',
-    };
-  },
-  props: ['post', 'commentsReactions'],
-  computed: {
-    primaryCategory() {
-      const primaryCategory = this.post.primary_category
-        ? this.post.primary_category.name
-        : this.post.categories[0].post_category_id.name;
-
-      const primaryCategorySlug = this.post.primary_category
-        ? this.post.primary_category.slug
-        : this.post.categories[0].post_category_id.slug;
-
-      return {
-        name: primaryCategory,
-        slug: primaryCategorySlug,
-      };
-    },
-  },
-  methods: {
-    handleTabChange(title: string) {
-      this.activeTab = title.toLocaleLowerCase();
-    },
-  },
-
   setup() {
     // Toast
     const toast: any = inject('$toast');
@@ -196,6 +170,7 @@ export default defineComponent({
       Angry: number;
     };
     // States
+    const activeTab = ref('comments');
     const commentValue = ref('');
 
     const commentsData = reactive<{
@@ -210,6 +185,7 @@ export default defineComponent({
 
     commentsData.comments =
       (pageProps?.comments as CommentType[]) ?? ([] as CommentType[]);
+    // Post Reaction
     const postReactionsData = reactive<{
       postReactions: PostReactionType[];
       countReaction: ReactionCountType;
@@ -217,9 +193,45 @@ export default defineComponent({
       postReactions: [],
       countReaction: {} as ReactionCountType,
     });
+
+    const postReactionGroup = computed(() =>
+      _.groupBy(
+        postReactionsData.postReactions.map((item) => {
+          return {
+            code: item?.institute?.code,
+            cluster: item?.institute?.cluster?.host,
+            user: item?.user_id,
+          };
+        }),
+        'cluster',
+      ),
+    );
+
     postReactionsData.postReactions = pageProps?.postReactions
       ? [...(pageProps.postReactions as PostReactionType[])]
       : [];
+
+    const post: PostType = (pageProps?.post as PostType) ?? ({} as PostType);
+
+    const primaryCategory = computed(() => {
+      const name = post?.primary_category
+        ? post?.primary_category?.name
+        : post?.categories[0]?.post_category_id?.name;
+
+      const slug = post?.primary_category
+        ? post?.primary_category?.slug
+        : post?.categories[0]?.post_category_id?.slug;
+
+      return {
+        name,
+        slug,
+      };
+    });
+
+    // Actions
+    const handleTabChange = (title: string) => {
+      activeTab.value = title.toLocaleLowerCase();
+    };
 
     const countReactions = (postReactions: PostReactionType[]) => {
       const array = postReactions ?? ([] as PostReactionType[]);
@@ -357,19 +369,6 @@ export default defineComponent({
           dismissible: true,
           duration: 1000 * 5,
         });
-        postReactionsData.postReactions.push({
-          id: Date.now(),
-          date_created: new Date().toISOString(),
-          reaction: {
-            value:
-              (pageProps?.reactions as ReactionType[]).find(
-                (item) => item.id == reactionId,
-              )?.value ?? 'like',
-          },
-          post: {
-            id: pageProps?.postId as number,
-          },
-        });
         countReactions(postReactionsData.postReactions);
       } else {
         toast.error('Something went wrong!', {
@@ -380,16 +379,20 @@ export default defineComponent({
     };
     return {
       ...pageProps,
-      postReactions: postReactionsData.postReactions,
+      postReactionsData: postReactionsData.postReactions,
       countReaction: postReactionsData.countReaction,
-      comments: commentsData.comments,
+      commentsData: commentsData.comments,
       reactions: pageProps?.reactions,
       handleClickReaction,
+      postReactionGroup,
       selectSuggestion,
+      handleTabChange,
+      primaryCategory,
       groupComments,
       submitComment,
       updateComment,
       commentValue,
+      activeTab,
       slug,
     };
   },
