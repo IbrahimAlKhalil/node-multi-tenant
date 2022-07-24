@@ -1,7 +1,7 @@
 import { MinioController } from './minio.controller.js';
-import { MinioService } from './minio.service.js';
 import { Config } from '../config/config.js';
 import { Module } from '@nestjs/common';
+import { Minio } from './minio.js';
 import { Client } from 'minio';
 
 @Module({
@@ -16,11 +16,11 @@ import { Client } from 'minio';
           secretKey: config.minio.password,
         });
       },
-      provide: MinioService,
+      provide: Minio,
       inject: [Config],
     },
     MinioController,
   ],
-  exports: [MinioService],
+  exports: [Minio],
 })
 export class MinioModule {}

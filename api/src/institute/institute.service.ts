@@ -1,4 +1,4 @@
-import { MinioService } from '../minio/minio.service.js';
+import { Minio } from '../minio/minio.js';
 import { Institute } from '../types/institute';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
@@ -6,10 +6,7 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class InstituteService {
-  constructor(
-    private readonly minioService: MinioService,
-    private readonly config: Config,
-  ) {
+  constructor(private readonly config: Config, private readonly minio: Minio) {
     this.logger.log('Loading institutes...');
     this.loadInstitutes()
       .then(this.ensureMinioBuckets.bind(this))
@@ -55,11 +52,11 @@ export class InstituteService {
     for (const institute of institutes) {
       const bucketName = `qmmsoft-${institute.id}`;
 
-      if (await this.minioService.bucketExists(bucketName)) {
+      if (await this.minio.bucketExists(bucketName)) {
         continue;
       }
 
-      await this.minioService.makeBucket(bucketName, 'ap-southeast-1');
+      await this.minio.makeBucket(bucketName, 'ap-southeast-1');
     }
 
     return institutes;
