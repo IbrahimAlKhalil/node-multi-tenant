@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { LibPnModule } from './lib-pn/lib-pn.module.js';
 import { RedisModule } from './redis/redis.module.js';
 import { QueryModule } from './query/query.module.js';
+import { MinioModule } from './minio/minio.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UserModule } from './user/user.module.js';
 import { UwsModule } from './uws/uws.module.js';
@@ -21,6 +22,7 @@ import { Module } from '@nestjs/common';
     ConfigModule,
     PrismaModule,
     HelperModule,
+    MinioModule,
     LibPnModule,
     RedisModule,
     QueryModule,
