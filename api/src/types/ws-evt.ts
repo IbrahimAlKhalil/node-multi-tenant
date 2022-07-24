@@ -1,7 +1,7 @@
-import { WebSocket } from 'uWebSockets.js';
+import { Websocket } from 'hyper-express';
 
 export interface WsEvt<T = any> {
-  ws: WebSocket;
+  ws: Websocket;
   data: T;
   binary: boolean;
 }

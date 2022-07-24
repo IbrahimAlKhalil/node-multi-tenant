@@ -1,18 +1,14 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from './auth/auth.service.js';
 import { Injectable, Logger } from '@nestjs/common';
-import { UwsService } from './uws/uws.service.js';
+import { MiddlewareHandler } from 'hyper-express';
 import { WsMessage } from './types/ws-message';
 import { Config } from './config/config.js';
 import { WsSub } from './uws/ws-sub.js';
-
 import { Uws } from './uws/uws.js';
-import {
-  us_socket_context_t,
-  HttpResponse,
-  HttpRequest,
-  WebSocket,
-} from 'uWebSockets.js';
+import he from 'hyper-express';
+import helmet from 'helmet';
+import cors from 'cors';
 import Joi from 'joi';
 
 @Injectable()
@@ -20,27 +16,31 @@ export class AppService {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly authService: AuthService,
-    private readonly uwsService: UwsService,
     private readonly config: Config,
     private readonly uws: Uws,
   ) {
     const { websocket } = config;
+    const path = '/ws/:csrfToken';
 
-    import('uWebSockets.js').then(({ default: uwjs }) => {
-      uws.options('/ws/:csrfToken', uwsService.setCorsHeaders.bind(uwsService));
-      uws.ws('/ws/:csrfToken', {
+    uws.ws(
+      path,
+      {
         /* Configurations */
 
-        compression: uwjs.SHARED_COMPRESSOR,
-        maxPayloadLength: websocket.maxPayloadLength,
-        idleTimeout: websocket.idleTimeout,
-        maxBackpressure: websocket.maxBackpressure,
+        // compression: he.compressors.SHARED_COMPRESSOR,
+        max_payload_length: websocket.maxPayloadLength,
+        idle_timeout: websocket.idleTimeout,
+        max_backpressure: websocket.maxBackpressure,
+        message_type: 'String',
+      },
+      (ws) => {
+        ws.session = ws.context as any;
 
-        /* Handlers */
-        message: this.message.bind(this),
-        upgrade: this.upgrade.bind(this),
-      });
-    });
+        ws.on('message', this.message.bind(this, ws));
+      },
+    );
+
+    uws.upgrade(path, this.upgrade.bind(this));
   }
 
   private logger = new Logger(AppService.name);
@@ -57,48 +57,29 @@ export class AppService {
     data: Joi.any(),
   });
 
-  async upgrade(res: HttpResponse, req: HttpRequest, ctx: us_socket_context_t) {
+  async upgrade(req: he.Request, res: he.Response) {
     // Keep the headers before the request object is gone
-    const key = req.getHeader('sec-websocket-key');
-    const protocol = req.getHeader('sec-websocket-protocol');
-    const extensions = req.getHeader('sec-websocket-extensions');
-    const cookie = req.getHeader('cookie');
-    const csrfToken = req.getParameter(0);
-
-    // Handle aborting by the user
-    let aborted = false;
-    res.onAborted(() => {
-      aborted = true;
-    });
+    const token = req.cookies.token;
+    const csrfToken = req.params.csrfToken;
 
     // Authenticate the client
 
-    const session = await this.authService.authenticate(cookie, csrfToken);
-
-    // Request could be aborted while authenticating
-    if (aborted) {
-      return;
-    }
+    const session = await this.authService.authenticate(token, csrfToken);
 
     if (session && session.knd !== 'PUBLIC') {
       // Authenticated and not aborted, upgrade the connection
 
-      return res.upgrade(session, key, protocol, extensions, ctx);
+      return res.upgrade(session);
     }
 
     // Not authorized and not aborted, close the connection
-    res.writeStatus('401');
-    res.writeHeader('Content-Type', 'application/json');
-    res.end(
-      JSON.stringify({
-        code: 'UNAUTHORIZED',
-        message: 'Unauthorized',
-      }),
-      true,
-    );
+    res.status(401).json({
+      code: 'UNAUTHORIZED',
+      message: 'Unauthorized',
+    });
   }
 
-  async message(ws: WebSocket, msg: ArrayBuffer, isBinary: boolean) {
+  async message(ws: he.Websocket, msg: string, isBinary: boolean) {
     // Convert ArrayBuffer to string
     const msgTxt = Buffer.from(msg).toString('utf-8');
 

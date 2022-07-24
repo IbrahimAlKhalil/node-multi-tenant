@@ -1,7 +1,6 @@
 import { PrismaService } from '../prisma/prisma.service.js';
-import { HttpResponse, HttpRequest } from 'uWebSockets.js';
-import { UwsService } from '../uws/uws.service.js';
 import { JwtPayload } from '../types/jwt-payload';
+import { Request, Response } from 'hyper-express';
 import { user_kind } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
@@ -12,17 +11,16 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly uwsService: UwsService,
     private readonly jwtService: JwtService,
     private readonly config: Config,
   ) {}
 
   async authenticate(
-    cookie: string,
+    accessToken: string,
     csrfToken: string,
     instituteId?: string,
   ): Promise<Session | null> {
-    if (!csrfToken || !cookie) {
+    if (!csrfToken || !accessToken) {
       // csrf token is not provided
 
       if (!instituteId) {
@@ -35,33 +33,12 @@ export class AuthService {
       };
     }
 
-    // Extract the jwt from the cookie
-
-    const tokenKeyIndex = cookie.indexOf(`${this.config.auth.cookieKey}=`);
-
-    if (tokenKeyIndex === -1) {
-      if (!instituteId) {
-        return null;
-      }
-
-      return {
-        knd: 'PUBLIC',
-        iid: instituteId,
-      };
-    }
-
-    const boundary = cookie.indexOf(';', tokenKeyIndex);
-    const token = cookie.slice(
-      tokenKeyIndex + this.config.auth.cookieKey.length + 1,
-      boundary === -1 ? cookie.length : boundary,
-    );
-
     // Verify the jwt
 
     let jwtPayload: JwtPayload;
 
     try {
-      jwtPayload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      jwtPayload = await this.jwtService.verifyAsync<JwtPayload>(accessToken);
     } catch (e) {
       // Invalid jwt
       if (!instituteId) {
@@ -126,28 +103,20 @@ export class AuthService {
   async authenticateReq<
     A = false,
     S = A extends true | undefined ? Session : Session<user_kind>,
-  >(res: HttpResponse, req: HttpRequest, allowPublic?: A): Promise<S | null> {
-    const cookie = req.getHeader('cookie');
-    const csrfToken = req.getHeader('x-csrf-token');
-    const origin = req.getHeader('origin');
-    const instituteId = req.getHeader('x-qm-institute-id');
+  >(req: Request, res: Response, allowPublic?: A): Promise<S | null> {
+    const csrfToken = req.header('x-csrf-token');
+    const instituteId = req.header('x-qm-institute-id');
 
-    const session = await this.authenticate(cookie, csrfToken, instituteId);
+    const session = await this.authenticate(
+      req.cookies[this.config.auth.cookieKey],
+      csrfToken,
+      instituteId,
+    );
 
     if (!session || (!allowPublic && session.knd === 'PUBLIC')) {
-      res.writeStatus('401');
-
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(
-            JSON.stringify({
-              code: 'UNAUTHORIZED',
-              error: 'You are not authorized to make this request',
-            }),
-            true,
-          );
+      res.status(401).json({
+        code: 'UNAUTHORIZED',
+        error: 'You are not authorized to make this request',
       });
     }
 

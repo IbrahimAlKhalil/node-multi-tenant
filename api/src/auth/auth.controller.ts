@@ -1,8 +1,7 @@
 import { PrismaService } from '../prisma/prisma.service.js';
 import { HelperService } from '../helper/helper.service.js';
-import { HttpRequest, HttpResponse } from 'uWebSockets.js';
-import { UwsService } from '../uws/uws.service.js';
 import { JwtPayload } from '../types/jwt-payload';
+import { Request, Response } from 'hyper-express';
 import { LoginInput } from './types/login-input';
 import { AuthService } from './auth.service.js';
 import { Config } from '../config/config.js';
@@ -11,7 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Uws } from '../uws/uws.js';
 import argon2 from 'argon2';
 import joi from 'joi';
-// import { authenticate, Authenticate } from './auth.service.js';
 
 @Injectable()
 export class AuthController {
@@ -20,17 +18,11 @@ export class AuthController {
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
-    private readonly uwsService: UwsService,
     private readonly config: Config,
     private readonly uws: Uws,
   ) {
     uws.post('/auth/login', this.login.bind(this));
-    uws.options('/auth/login', uwsService.setCorsHeaders.bind(uwsService));
     uws.get('/auth/authenticate', this.authenticate.bind(this));
-    uws.options(
-      '/auth/authenticate',
-      uwsService.setCorsHeaders.bind(uwsService),
-    );
   }
 
   private readonly loginSchema = joi.object<LoginInput>({
@@ -40,119 +32,48 @@ export class AuthController {
     rememberMe: joi.boolean().default(false),
   });
 
-  private async authenticate(
-    res: HttpResponse,
-    req: HttpRequest,
-  ): Promise<void> {
-    let aborted = false;
+  private async authenticate(req: Request, res: Response): Promise<void> {
+    const session = await this.authService.authenticateReq(req, res);
 
-    res.onAborted(() => {
-      aborted = true;
-    });
+    if (!session) return;
 
-    const origin = req.getHeader('origin');
-
-    const session = await this.authService.authenticateReq(res, req);
-
-    if (!session || aborted) return;
-
-    res.writeStatus('200');
-
-    res.cork(() => {
-      this.uwsService
-        .setCorsHeaders(res, origin, false)
-        .writeHeader('Content-Type', 'application/json')
-        .end(JSON.stringify(session), true);
-    });
+    res.status(200).json(session);
   }
 
-  private async login(res: HttpResponse, req: HttpRequest): Promise<void> {
-    let aborted = false;
-
-    res.onAborted(() => {
-      aborted = true;
-    });
-
+  private async login(req: Request, res: Response): Promise<void> {
     // Extract necessary data from request before calling any async functions;
-    const ipAddress = Buffer.from(
-      res.getProxiedRemoteAddressAsText(),
-    ).toString();
-    const userAgent = req.getHeader('user-agent');
-    const origin = req.getHeader('origin');
-
-    let body: Record<string, any>;
-
-    try {
-      // Parse request body
-      body = await this.uwsService.readBodyAsJson(res, req);
-    } catch (e) {
-      if (!aborted) {
-        this.uwsService.handleJsonError(e, res);
-      }
-
-      return;
-    }
-
-    // Request can be aborted while parsing body
-    if (aborted) {
-      return;
-    }
+    const ipAddress = req.ip;
+    const userAgent = req.header('user-agent');
 
     // Validate user input
-    const { error, value } = await this.loginSchema.validate(body);
-
-    // Request can be aborted while validating user input
-    if (aborted) {
-      return;
-    }
+    const { error, value } = this.loginSchema.validate(await req.json(), {
+      convert: true,
+    });
 
     if (error) {
       // Validation failed
 
-      res.writeStatus('400');
-
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(
-            JSON.stringify({
-              code: 'INVALID_INPUT',
-              message: error.message,
-              details: error.details,
-            }),
-            true,
-          );
+      res.status(400).json({
+        code: 'INVALID_INPUT',
+        message: error.message,
+        details: error.details,
       });
+
       return;
     }
 
     const identity = this.helperService.getIdentityType(value.username);
     const prisma = await this.prismaService.getPrisma(value.code);
 
-    // Request can be aborted while getting prisma client
-    if (aborted) {
-      return;
-    }
-
     if (!prisma) {
       // No prisma client found
       // Which means the instituteId is invalid
 
-      res.writeStatus('404');
-
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(
-            JSON.stringify({
-              code: 'INVALID_INPUT',
-              message: 'Invalid institute id',
-            }),
-            true,
-          );
+      res.status(404).json({
+        code: 'INVALID_INPUT',
+        message: 'Invalid institute id',
       });
+
       return;
     }
 
@@ -162,42 +83,17 @@ export class AuthController {
       },
     });
 
-    // Request can be aborted while getting user
-    if (aborted) {
-      return;
-    }
-
     if (
       !user ||
       user.disabled ||
       !user.password ||
       !(await argon2.verify(user.password, value.password))
     ) {
-      // User not found or password is invalid or user is disabled
-
-      if (aborted) {
-        return;
-      }
-
-      res.writeStatus('401');
-
-      res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(
-            JSON.stringify({
-              code: 'INVALID_CREDENTIALS',
-              message: 'Username or password is incorrect',
-            }),
-            true,
-          );
+      res.status(401).json({
+        code: 'INVALID_CREDENTIALS',
+        message: 'Username or password is incorrect',
       });
-      return;
-    }
 
-    // Request can be aborted while verifying credentials
-    if (aborted) {
       return;
     }
 
@@ -240,34 +136,21 @@ export class AuthController {
 
     const token = await this.jwtService.signAsync(jwtPayload);
 
-    // Request can be aborted while signing token
-    if (aborted) {
-      return;
-    }
-
     // Everything is fine, so we can send the token to the user
 
-    res.writeStatus('200');
-
-    res.cork(() => {
-      this.uwsService
-        .setCorsHeaders(res, origin, false)
-        .writeHeader('Content-Type', 'application/json')
-        .writeHeader(
-          'Set-Cookie',
-          `${this.config.auth.cookieKey}=${token}; Domain=${
-            this.config.app.websiteHost
-          }; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${Math.round(
-            expiresAt.getTime() / 1000,
-          )}`,
-        )
-        .end(
-          JSON.stringify({
-            csrfToken,
-            expiresAt: expiresAt.toISOString(),
-          }),
-          true,
-        );
-    });
+    res
+      .status(200)
+      .setHeader(
+        'Set-Cookie',
+        `${this.config.auth.cookieKey}=${token}; Domain=${
+          this.config.app.websiteHost
+        }; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${Math.round(
+          expiresAt.getTime() / 1000,
+        )}`,
+      )
+      .json({
+        csrfToken,
+        expiresAt: expiresAt.toISOString(),
+      });
   }
 }

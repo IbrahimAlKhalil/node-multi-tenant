@@ -1,59 +1,40 @@
 import { QuerySchema, querySchema } from './schema/query-schema.js';
-import { HttpRequest, HttpResponse } from 'uWebSockets.js';
 import { AuthService } from '../auth/auth.service.js';
-import { UwsService } from '../uws/uws.service.js';
 import { QueryService } from './query.service.js';
+import { Request, Response } from 'hyper-express';
 import { Injectable } from '@nestjs/common';
 import { Uws } from '../uws/uws.js';
-import qs from 'qs';
 
 @Injectable()
 export class QueryController {
   constructor(
     private readonly queryService: QueryService,
     private readonly authService: AuthService,
-    private readonly uwsService: UwsService,
     private readonly uws: Uws,
   ) {
     uws.get('/query', this.query.bind(this));
-    uws.options('/query', uwsService.setCorsHeaders.bind(uwsService));
   }
 
-  private async query(res: HttpResponse, req: HttpRequest) {
-    let aborted = false;
+  private async query(req: Request, res: Response) {
+    const session = await this.authService.authenticateReq(req, res, true);
 
-    res.onAborted(() => {
-      aborted = true;
-    });
+    if (!session) return;
 
-    const rawQuery = req.getQuery();
-    const origin = req.getHeader('origin');
-
-    const session = await this.authService.authenticateReq(res, req, true);
-
-    if (aborted || !session) {
-      return;
-    }
-
-    const parsedQuery = qs.parse(rawQuery);
     let query: QuerySchema;
 
+    if (typeof req.query.query !== 'string') {
+      return res.status(400).json({
+        code: 'QUERY_INVALID',
+        error: 'You must provide a query',
+      });
+    }
+
     try {
-      query = await querySchema.validateAsync(
-        JSON.parse(parsedQuery.query as string),
-      );
+      query = await querySchema.validateAsync(JSON.parse(req.query.query));
     } catch (e) {
-      res.writeStatus('400');
-      return res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(
-            JSON.stringify({
-              code: 'QUERY_INVALID',
-              error: e.message,
-            }),
-          );
+      return res.status(400).json({
+        code: 'QUERY_INVALID',
+        error: e.message,
       });
     }
 
@@ -61,37 +42,17 @@ export class QueryController {
       query.query = {};
     }
 
-    if (aborted) {
-      return;
-    }
-
     try {
       const result = await this.queryService.find(query, session);
 
-      if (!aborted) {
-        res.writeStatus('200');
-
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(JSON.stringify(result), true);
-      }
+      return res.status(200).json(result);
     } catch (e) {
       console.error(e);
 
-      res.writeStatus('500');
-
-      this.uwsService
-        .setCorsHeaders(res, origin, false)
-        .writeHeader('Content-Type', 'application/json')
-        .end(
-          JSON.stringify({
-            error: {
-              message: 'Something went wrong, please try again later.',
-              code: 'INTERNAL_ERROR',
-            },
-          }),
-        );
+      res.status(500).json({
+        error: 'Something went wrong, please try again later.',
+        code: 'INTERNAL_ERROR',
+      });
     }
   }
 }

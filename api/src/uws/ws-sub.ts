@@ -1,10 +1,10 @@
 import { WsException } from '../exceptions/ws-exception.js';
-import { WebSocket } from 'uWebSockets.js';
+import { Websocket } from 'hyper-express';
 
 export class WsSub<T = any> {
   constructor(
     public readonly id: number,
-    public readonly ws: WebSocket,
+    public readonly ws: Websocket,
     public readonly isBinary: boolean,
     public readonly data?: T,
   ) {}

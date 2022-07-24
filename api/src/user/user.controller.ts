@@ -1,7 +1,6 @@
 import { PrismaService } from '../prisma/prisma.service.js';
-import { HttpRequest, HttpResponse } from 'uWebSockets.js';
 import { AuthService } from '../auth/auth.service.js';
-import { UwsService } from '../uws/uws.service.js';
+import { Request, Response } from 'hyper-express';
 import { Injectable } from '@nestjs/common';
 import { Uws } from '../uws/uws.js';
 import pick from 'lodash/pick.js';
@@ -11,44 +10,24 @@ export class UserController {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
-    private readonly uwsService: UwsService,
     private readonly uws: Uws,
   ) {
     uws.get('/user/me', this.me.bind(this));
-    uws.options('/user/me', uwsService.setCorsHeaders.bind(uwsService));
   }
 
-  private async me(res: HttpResponse, req: HttpRequest) {
-    let aborted = false;
+  private async me(req: Request, res: Response) {
+    const session = await this.authService.authenticateReq(req, res);
 
-    res.onAborted(() => {
-      aborted = true;
-    });
-
-    const origin = req.getHeader('origin');
-
-    const session = await this.authService.authenticateReq(res, req);
-
-    if (aborted || !session) {
+    if (!session) {
       return;
     }
 
     const prisma = await this.prismaService.getPrisma(session.iid);
 
     if (!prisma) {
-      res.writeStatus('400');
-
-      return res.cork(() => {
-        this.uwsService
-          .setCorsHeaders(res, origin, false)
-          .writeHeader('Content-Type', 'application/json')
-          .end(
-            JSON.stringify({
-              code: 'INSTITUTE_NOT_FOUND',
-              message: 'Institute not found or disabled',
-            }),
-            true,
-          );
+      return res.status(400).json({
+        code: 'INSTITUTE_NOT_FOUND',
+        message: 'Institute not found or disabled',
       });
     }
 
@@ -83,11 +62,6 @@ export class UserController {
 
     userDecorated.name = user?.I18n?.[0]?.name;
 
-    res.cork(() => {
-      this.uwsService
-        .setCorsHeaders(res, origin, false)
-        .writeHeader('Content-Type', 'application/json')
-        .end(JSON.stringify(userDecorated), true);
-    });
+    res.status(200).json(userDecorated);
   }
 }

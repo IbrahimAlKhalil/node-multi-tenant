@@ -7,6 +7,9 @@ import { Session } from './session';
  * Custom properties on the websocket object
  */
 
-declare module 'uWebSockets.js' {
-  export interface WebSocket extends Session<user_kind> {}
+declare module 'hyper-express' {
+  export interface Websocket {
+    get context(): Session<user_kind>;
+    session: Session<user_kind>;
+  }
 }

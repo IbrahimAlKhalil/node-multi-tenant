@@ -14,19 +14,19 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
-    ConfigModule,
-    PrismaModule,
-    LibPnModule,
-    HelperModule,
-    AuthModule,
-    UwsModule,
-    RedisModule,
-    InstituteModule,
-    QueryModule,
     EventEmitterModule.forRoot({
       global: true,
     }),
+    InstituteModule,
+    ConfigModule,
+    PrismaModule,
+    HelperModule,
+    LibPnModule,
+    RedisModule,
+    QueryModule,
+    AuthModule,
     UserModule,
+    UwsModule,
   ],
   providers: [AppService],
 })

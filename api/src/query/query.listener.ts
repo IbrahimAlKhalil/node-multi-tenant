@@ -34,13 +34,7 @@ export class QueryListener {
       query.query = {};
     }
 
-    return this.queryService.find(query, {
-      knd: ws.knd,
-      iid: ws.iid,
-      uid: ws.uid,
-      jti: ws.jti,
-      rol: ws.rol,
-    });
+    return this.queryService.find(query, ws.session);
   }
 
   @OnWsReq('mutation')
@@ -55,13 +49,7 @@ export class QueryListener {
       throw new WsException(e.message, 'MUTATION_INVALID');
     }
 
-    return this.queryService.mutate(mutation, {
-      knd: ws.knd,
-      iid: ws.iid,
-      uid: ws.uid,
-      jti: ws.jti,
-      rol: ws.rol,
-    });
+    return this.queryService.mutate(mutation, ws.session);
   }
 
   @OnWsSub('mutation')
@@ -76,16 +64,6 @@ export class QueryListener {
       throw new WsException(e.message, 'MUTATION_INVALID');
     }
 
-    return this.queryService.mutate(
-      mutation,
-      {
-        knd: wsSub.ws.knd,
-        iid: wsSub.ws.iid,
-        uid: wsSub.ws.uid,
-        jti: wsSub.ws.jti,
-        rol: wsSub.ws.rol,
-      },
-      wsSub,
-    );
+    return this.queryService.mutate(mutation, wsSub.ws.session, wsSub);
   }
 }
