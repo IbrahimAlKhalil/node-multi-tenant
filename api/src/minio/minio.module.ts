@@ -21,5 +21,6 @@ import { Client } from 'minio';
     },
     MinioController,
   ],
+  exports: [MinioService],
 })
 export class MinioModule {}
