@@ -33,6 +33,7 @@ export const useNavData = defineStore('navdata', {
         text: 'menu.blog',
         href: '/blog',
         icon: Object.freeze(IconBlog),
+        ssr: true,
       },
       {
         text: 'menu.faq',
