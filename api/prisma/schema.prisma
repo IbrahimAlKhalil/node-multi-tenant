@@ -663,7 +663,7 @@ model ExamRoutineSeat {
 }
 
 model File {
-  id         String @id @db.Uuid
+  id         String @id @default(uuid()) @db.Uuid
   folderId   Int?
   mimeTypeId Int
 
@@ -672,13 +672,13 @@ model File {
   name String @db.VarChar(255)
   size BigInt
 
-  Folder            Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  MimeType          MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  ChatFiles         ChatFile[]
-  I18n              InstituteI18n[]
-  Notifications     Notification[]
-  NotificationBases NotificationBase[]
-  Users             User[]
+  Folder              Folder?            @relation(fields: [folderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MimeType            MimeType           @relation(fields: [mimeTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ChatFiles           ChatFile[]
+  I18n                InstituteI18n[]
+  Notifications       Notification[]
+  NotificationBases   NotificationBase[]
+  ProfilePictureUsers User[]
 
   @@index([folderId])
   @@index([mimeTypeId])
@@ -717,7 +717,8 @@ model Folder {
 
   status content_status
 
-  name String @db.VarChar(255)
+  name     String  @db.VarChar(255)
+  internal Boolean @default(false)
 
   Parent   Folder?  @relation("FolderToFolder_parentId", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Files    File[]
@@ -799,12 +800,17 @@ model GuardianRoleUser {
 }
 
 model Institute {
-  id Int @id @default(autoincrement())
+  id              Int @id @default(autoincrement())
+  defaultLanguage Int
 
   mobile String @db.VarChar(16)
   email  String @db.VarChar(320)
 
-  I18n InstituteI18n[]
+  smsSenderId String? @db.VarChar(100)
+  smsApiToken String? @db.VarChar(300)
+
+  Language Language        @relation(fields: [defaultLanguage], references: [id])
+  I18n     InstituteI18n[]
 }
 
 model InstituteI18n {
@@ -851,13 +857,13 @@ model Language {
   RoleI18n            RoleI18n[]
   RoomI18n            RoomI18n[]
   SessionI18n         SessionI18n[]
-  Setting             Setting[]
   SmsTemplateI18n     SmsTemplateI18n[]
   StaffI18n           StaffI18n[]
   StateI18n           StateI18n[]
   SubDistrictI18n     SubDistrictI18n[]
   UserI18n            UserI18n[]
   BuildingI18n        BuildingI18n[]
+  Institute           Institute[]
 }
 
 model MimeType {
@@ -894,7 +900,7 @@ model NotificationBase {
   imageId  String?                 @db.Uuid
   link     String?                 @db.VarChar(600)
   linkType notification_link_type?
-  internal Boolean @default(false)
+  internal Boolean                 @default(false)
 
   status content_status
 
@@ -1004,16 +1010,6 @@ model SessionI18n {
   Session  Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@id([sessionId, languageId])
-}
-
-model Setting {
-  id         Int @id @default(autoincrement())
-  languageId Int
-
-  smsSenderId String? @db.VarChar(100)
-  smsApiToken String? @db.VarChar(300)
-
-  Language Language @relation(fields: [languageId], references: [id])
 }
 
 model Sms {

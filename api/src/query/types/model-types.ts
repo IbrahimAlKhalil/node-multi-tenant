@@ -289,10 +289,6 @@ export interface ModelTypes {
     model: Base.SessionI18n;
     whereInput: Base.Prisma.SessionI18nWhereInput;
   };
-  setting: {
-    model: Base.Setting;
-    whereInput: Base.Prisma.SettingWhereInput;
-  };
   sms: {
     model: Base.Sms;
     whereInput: Base.Prisma.SmsWhereInput;

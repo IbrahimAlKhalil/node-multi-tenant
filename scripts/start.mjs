@@ -24,8 +24,8 @@ const docker = new Docker(
 const prefix = 'qmmsoft';
 const images = {
   postgres: 'postgis/postgis:14-3.2-alpine',
-  minio: 'minio/minio:RELEASE.2022-02-18T01-50-10Z',
-  redis: 'eqalpha/keydb:alpine_x86_64_v6.2.2',
+  minio: 'minio/minio:RELEASE.2022-07-17T15-43-14Z',
+  redis: 'eqalpha/keydb:alpine_x86_64_v6.3.1',
 };
 const containerNames = {
   postgres: `${prefix}-postgres`,
@@ -243,31 +243,50 @@ async function startMinio() {
 
   console.log(chalk.whiteBright.bold('Creating container:'), chalk.cyan(containerNames.minio));
 
+  const { env } = process;
+
   const minio = await docker.createContainer({
     name: containerNames.minio,
     Image: images.minio,
     Hostname: containerNames.minio,
-    Cmd: ['server', '/data'],
+    Cmd: ['server', '/data', '--address', `:${env.MINIO_PORT}`, '--console-address', `:${env.MINIO_CONSOLE_PORT}`],
     Env: [
-      `MINIO_ROOT_USER=${process.env.MINIO_ROOT_USER}`,
-      `MINIO_ROOT_PASSWORD=${process.env.MINIO_ROOT_PASSWORD}`,
-      `MINIO_PORT=${process.env.MINIO_PORT}`,
+      `MINIO_ROOT_USER=${env.MINIO_ROOT_USER}`,
+      `MINIO_ROOT_PASSWORD=${env.MINIO_ROOT_PASSWORD}`,
     ],
     HostConfig: {
       PortBindings: {
-        '9000/tcp': [
+        [`${env.MINIO_PORT}/tcp`]: [
           {
             HostIp: '127.0.0.1',
-            HostPort: `${process.env.MINIO_PORT}/tcp`,
+            HostPort: `${env.MINIO_PORT}/tcp`,
           },
         ],
-        '9000/udp': [
+        [`${env.MINIO_PORT}/udp`]: [
           {
             HostIp: '127.0.0.1',
-            HostPort: `${process.env.MINIO_PORT}/udp`,
+            HostPort: `${env.MINIO_PORT}/udp`,
+          },
+        ],
+        [`${env.MINIO_CONSOLE_PORT}/tcp`]: [
+          {
+            HostIp: '127.0.0.1',
+            HostPort: `${env.MINIO_CONSOLE_PORT}/tcp`,
+          },
+        ],
+        [`${env.MINIO_CONSOLE_PORT}/udp`]: [
+          {
+            HostIp: '127.0.0.1',
+            HostPort: `${env.MINIO_CONSOLE_PORT}/udp`,
           },
         ],
       },
+    },
+    ExposedPorts: {
+      [`${env.MINIO_PORT}/tcp`]: {},
+      [`${env.MINIO_PORT}/udp`]: {},
+      [`${env.MINIO_CONSOLE_PORT}/tcp`]: {},
+      [`${env.MINIO_CONSOLE_PORT}/udp`]: {}
     },
     RestartPolicy: {
       Name: 'on-failure',

@@ -26,6 +26,7 @@
             <router-link
               class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
               v-slot="{ route }"
+              v-if="!item.ssr"
               :to="item.href"
             >
               <span
@@ -52,6 +53,35 @@
                 {{ t(item.text) }}
               </span>
             </router-link>
+            <a
+              class="ml-2 p-2 rounded-sm font-bold text-md transition-all duration-150"
+              :href="item.href"
+              v-else
+            >
+              <span
+                class="m-0 py-2 md:p-0 group hover:text-primary text-2xl md:text-base"
+                :class="{
+                  'dark:text-light dark:hover:text-secondary': isSticky,
+                  'text-primary':
+                    activeRoute.fullPath === item.href && !isSticky,
+                  'dark:text-secondary text-primary':
+                    activeRoute.fullPath === item.href && isSticky,
+                  'text-white md:text-text': !(
+                    activeRoute.fullPath === item.href
+                  ),
+                }"
+              >
+                <component
+                  class="mr-1 text-inherit group-hover:scale-110 transition-scale duration-300 hidden xl:inline-block"
+                  :class="{
+                    'scale-125': activeRoute.fullPath === item.href,
+                  }"
+                  :is="item.icon"
+                />
+
+                {{ t(item.text) }}
+              </span>
+            </a>
           </li>
         </ul>
       </nav>
