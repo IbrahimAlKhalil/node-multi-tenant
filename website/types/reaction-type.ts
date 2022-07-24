@@ -9,6 +9,13 @@ type ReactionType = {
 type PostReactionType = {
   id: number;
   date_created: string;
+  user_id: number;
+  institute: {
+    code: string | number;
+    cluster: {
+      host: string;
+    };
+  };
   reaction: {
     value: valueTypes;
   };
