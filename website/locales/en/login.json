@@ -2,9 +2,19 @@
   "remember-me": "Remember Me",
   "forgot-password": "Forget password?",
   "no-account": "Don't have an account?",
+  "have-account": "Already have an account?",
   "login": "Login",
+  "login-here": "Login Here",
   "logout": "Logout",
+  "signup": "Signup",
+  "submit": "Submit",
+  "code-l": "Institute Code",
+  "institute": "Institute Name",
+  "mobile": "Mobile Number",
+  "email": "Email Address",
   "username-l": "Username / Email / Mobile",
   "username": "Username",
-  "password": "Password"
+  "password": "Password",
+  "sub-title": "To access you dashboard",
+  "signup-sub-title": "Please fill-up the form, we will contact you as soon as possible."
 }

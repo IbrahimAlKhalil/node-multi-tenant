@@ -1,14 +1,14 @@
 <template>
-  <page-title title="Sign Up" />
+  <page-title :title="t('login.signup')" />
   <h2 class="text-lg text-center text-gray-400">
-    Please fill up the form, we will contact you as soon as possible.
+    {{ t("login['signup-sub-title']") }}
   </h2>
   <form @submit.prevent="handleSubmit">
     <div class="md:w-3/5 mx-auto flex flex-col items-center gap-8 p-5 md:my-5">
       <InputField
         name="instituteName"
         type="text"
-        placeholder="Institute name"
+        :placeholder="t('login.institute')"
         v-model="model.instituteName"
         :error="errors.instituteName"
         :value="model.instituteName"
@@ -19,7 +19,7 @@
       <InputField
         name="mobileNo"
         type="text"
-        placeholder="Mobile number"
+        :placeholder="t('login.mobile')"
         v-model="model.mobileNo"
         :error="errors.mobileNo"
         :value="model.mobileNo"
@@ -30,7 +30,7 @@
       <InputField
         name="email"
         type="text"
-        placeholder="Email address"
+        :placeholder="t('login.email')"
         v-model="model.email"
         :error="errors.email"
         :value="model.email"
@@ -42,16 +42,16 @@
         type="submit"
         class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       >
-        Submit
+        {{ t('login.submit') }}
       </button>
     </div>
   </form>
   <p class="text-center italic">
-    Already have an account?
+    {{ t("login['have-account']") }}
     <br />
-    <a href="/login" class="font-bold text-primary dark:text-secondary"
-      >Login here</a
-    >
+    <a href="/login" class="font-bold text-primary dark:text-secondary">{{
+      t("login['login-here']")
+    }}</a>
   </p>
 </template>
 
@@ -59,6 +59,7 @@
 import InputField from '#components/form-components/input-field.vue';
 import PageTitle from '#components/ui/page-title.vue';
 import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 import * as Yup from 'yup';
 
 const schema = Yup.object().shape({
@@ -129,6 +130,12 @@ export default defineComponent({
         });
       }
     },
+  },
+  setup() {
+    const i18n = useI18n();
+    return {
+      t: i18n.t,
+    };
   },
 });
 </script>

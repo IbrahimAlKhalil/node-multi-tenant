@@ -1,11 +1,13 @@
 <template>
   <div class="form" v-if="loginStage === 'form'">
-    <page-title title="Login" />
-    <h2 class="text-lg text-center text-gray-400">To access you dashboard</h2>
+    <page-title :title="i18n.t('login.login')" />
+    <h2 class="text-lg text-center text-gray-400">
+      {{ i18n.t("login['sub-title']") }}
+    </h2>
     <form @submit.prevent="handleSubmit">
       <div class="md:w-3/5 mx-auto flex flex-col gap-2 items-center p-5">
         <InputField
-          placeholder="Institute Code"
+          :placeholder="i18n.t('login[\'code-l\']')"
           @on-keypress="validate"
           @on-input="handleInput"
           :value="values.code"
@@ -15,7 +17,7 @@
           type="text"
         />
         <InputField
-          placeholder="Email / Username / Mobile"
+          :placeholder="i18n.t('login[\'username-l\']')"
           :value="values.username"
           :error="errors.username"
           @on-input="handleInput"
@@ -32,7 +34,7 @@
           :error="errors.password"
           :isPasswordField="true"
           @on-input="handleInput"
-          placeholder="Password"
+          :placeholder="i18n.t('login.password')"
           @on-blur="validate"
           name="password"
         />
@@ -47,7 +49,7 @@
             class="text-text dark:text-light font-bold ml-2"
             for="remember"
           >
-            Remember me
+            {{ i18n.t("login['remember-me']") }}
           </label>
         </div>
         <br />
@@ -61,16 +63,16 @@
       </div>
     </form>
     <p class="text-center italic">
-      Do not have account?
-      <a href="/signup" class="font-bold text-primary dark:text-secondary"
-        >Sign UP</a
-      >
+      {{ i18n.t("login['no-account']") }}
+      <a href="/signup" class="font-bold text-primary dark:text-secondary">{{
+        i18n.t('login.signup')
+      }}</a>
     </p>
     <p class="text-center italic">
       <a
         href="/password-reset"
         class="font-bold text-primary dark:text-secondary"
-        >Reset Password</a
+        >{{ i18n.t("login['forgot-password']") }}</a
       >
     </p>
   </div>
@@ -89,9 +91,12 @@ import loginFormType from '#types/login-form-type';
 import { useAuth } from '#stores/auth.store';
 import { inject, reactive, ref } from 'vue';
 import * as Yup from 'yup';
+import { useI18n } from 'vue-i18n';
 
 // Toast
 const toast: any = inject('$toast');
+
+const i18n = useI18n();
 
 defineProps(['search', 'category', 'categories']);
 defineEmits(['update:search', 'update:category']);
