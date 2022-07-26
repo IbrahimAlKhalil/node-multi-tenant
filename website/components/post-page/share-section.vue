@@ -2,7 +2,7 @@
 <template>
   <section class="py-8">
     <div class="container flex justify-center items-center gap-5">
-      <h5 class="font-bold text-xl text-text dark:text-light">Share With</h5>
+      <h5 class="font-bold text-xl text-text dark:text-light">শেয়ার করুন</h5>
       <ul class="flex items-center gap-3 text-2xl">
         <li>
           <a
