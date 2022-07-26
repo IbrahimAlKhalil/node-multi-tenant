@@ -55,10 +55,9 @@
         <br />
         <button
           type="submit"
-          :value="btnText"
           class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
         >
-          {{ btnText }}
+          {{ i18n.t('login.login') }}
         </button>
       </div>
     </form>
@@ -77,10 +76,10 @@
     </p>
   </div>
   <div class="loading" v-else-if="loginStage === 'loading'">
-    <p>Loading...</p>
+    <p>{{ i18n.t('common.loading') }}...</p>
   </div>
   <div class="success" v-else>
-    <p>Success</p>
+    <p>{{ i18n.t('common.success') }}</p>
   </div>
 </template>
 
@@ -148,12 +147,10 @@ const handleSubmit = async () => {
   const user = await authStore.login(values);
 
   if (user?.id) {
-    toast.success('Logged In successfully!');
+    toast.success(i18n.t("login['login-success']"));
     location.replace('/');
   } else {
-    toast.error('Something went wrong!');
+    toast.error(i18n.t("login['login-error']"));
   }
-
-  // TODO: Show success/error message
 };
 </script>

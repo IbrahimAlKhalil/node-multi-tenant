@@ -16,5 +16,7 @@
   "username": "Username",
   "password": "Password",
   "sub-title": "To access you dashboard",
-  "signup-sub-title": "Please fill-up the form, we will contact you as soon as possible."
+  "signup-sub-title": "Please fill-up the form, we will contact you as soon as possible.",
+  "login-success": "Logged In successfully!",
+  "login-error": "Something went wrong!"
 }

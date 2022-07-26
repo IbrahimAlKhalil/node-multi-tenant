@@ -7,5 +7,7 @@
   "select": "নির্বাচন করুন",
   "exit": "প্রস্থান",
   "login": "লগইন",
-  "go-to-dashboard": "ড্যাশবোর্ডে যান"
+  "go-to-dashboard": "ড্যাশবোর্ডে যান",
+  "loading": "লোডিং",
+  "success": "সফল"
 }
