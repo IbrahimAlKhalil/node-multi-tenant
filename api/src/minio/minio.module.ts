@@ -1,11 +1,16 @@
+import { PrismaModule } from '../prisma/prisma.module.js';
 import { MinioController } from './minio.controller.js';
+import { MinioService } from './minio.service.js';
 import { Config } from '../config/config.js';
 import { Module } from '@nestjs/common';
 import { Minio } from './minio.js';
 import { Client } from 'minio';
 
 @Module({
+  imports: [PrismaModule],
   providers: [
+    MinioController,
+    MinioService,
     {
       useFactory(config: Config) {
         return new Client({
@@ -19,8 +24,7 @@ import { Client } from 'minio';
       provide: Minio,
       inject: [Config],
     },
-    MinioController,
   ],
-  exports: [Minio],
+  exports: [Minio, MinioService],
 })
 export class MinioModule {}

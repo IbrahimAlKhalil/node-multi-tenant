@@ -1,4 +1,4 @@
-import { Minio } from '../minio/minio.js';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Institute } from '../types/institute';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
@@ -6,14 +6,18 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class InstituteService {
-  constructor(private readonly config: Config, private readonly minio: Minio) {
+  constructor(
+    private readonly emitter: EventEmitter2,
+    private readonly config: Config,
+  ) {
     this.logger.log('Loading institutes...');
     this.loadInstitutes()
-      .then(this.ensureMinioBuckets.bind(this))
-      .then(() => {
+      .then((institutes) => {
         this.logger.log(
           `Loaded ${Object.keys(this.institutes).length} institutes`,
         );
+
+        emitter.emitAsync('institute.loaded', institutes);
       })
       .catch((e) => {
         this.logger.error(`Failed to load institutes: ${e.message}`);
@@ -41,22 +45,6 @@ export class InstituteService {
 
     for (const institute of institutes) {
       this.institutes[institute.id] = institute;
-    }
-
-    return institutes;
-  }
-
-  private async ensureMinioBuckets(
-    institutes: Institute[],
-  ): Promise<Institute[]> {
-    for (const institute of institutes) {
-      const bucketName = `qmmsoft-${institute.id}`;
-
-      if (await this.minio.bucketExists(bucketName)) {
-        continue;
-      }
-
-      await this.minio.makeBucket(bucketName, 'ap-southeast-1');
     }
 
     return institutes;
