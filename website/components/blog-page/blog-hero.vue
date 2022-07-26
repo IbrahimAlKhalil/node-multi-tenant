@@ -1,14 +1,14 @@
 <template>
   <div class="mx-5">
     <div class="intro my-5">
-      <page-title title="Blog" />
+      <page-title title="ব্লগ সমূহ" />
       <p class="text-center text-gray-500 dark:text-gray-200">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi, nihil.
+        আমাদের সফটওয়ার বিষয়ক সকল প্রকার আপডেট পেতে চোখ রাখুন ব্লগ পেজে
       </p>
     </div>
     <div class="featured-blogs transition duration-500">
       <div class="intro flex items-center gap-5 mb-5">
-        <h3 class="font-bold text-xl uppercase">Most Popular</h3>
+        <h3 class="font-bold text-xl uppercase">সবচেয়ে প্রফুলার</h3>
         <div
           class="flex-grow h-[2px] bg-gray-300 dark:bg-white rounded relative before:w-2 before:h-2 before:absolute before:-left-2 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 dark:before:bg-white before:rounded-full"
         ></div>
@@ -35,7 +35,9 @@
                 {{ blog.title }}
               </a>
             </h3>
-            <p class="italic text-gray-500">Date: {{ blog.date_created }}</p>
+            <p class="italic text-gray-500">
+              তারিখ: {{ blog.date_created.split('T')[0] }}
+            </p>
             <p class="description my-2 text-center lg:text-justify">
               {{
                 blog.short_content.length > 50
@@ -46,7 +48,7 @@
             <a
               :href="'/blog/' + blog.slug"
               class="font-bold text-primary dark:text-secondary flex items-center justify-center lg:justify-start gap-2 uppercase transition hover:text-secondary-dark"
-              >Read More
+              >আরো পড়ুন
               <RightArrow class="text-xl" style="bottom: 0" />
             </a>
           </div>

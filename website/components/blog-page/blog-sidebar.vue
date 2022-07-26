@@ -4,7 +4,7 @@
   >
     <div class="flex flex-col gap-5">
       <div class="search">
-        <h5 class="font-bold text-xl text-primary mb-3">Search Blog</h5>
+        <h5 class="font-bold text-xl text-primary mb-3">ব্লগ সার্চ করুন</h5>
         <div
           class="search-box flex my-5 mx-auto relative shadow-md border border-gray-50 rounded overflow-hidden"
         >
@@ -12,7 +12,7 @@
             <input
               type="text"
               v-model="model.search"
-              placeholder="Search Here..."
+              placeholder="এখানে সার্চ করুন..."
               @keyup.enter="handleQuery('sq', model.search)"
               class="block w-full py-2 px-3 text-text outline-0 border-2 border-transparent focus:border-secondary"
             />
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="category">
-        <h5 class="font-bold text-xl text-primary mb-3">Category</h5>
+        <h5 class="font-bold text-xl text-primary mb-3">ক্যাটেগরী সমূহ</h5>
         <ul class="font-bold">
           <li
             :class="{
@@ -80,7 +80,7 @@
         </ul>
       </div>
       <div class="tags">
-        <h5 class="font-bold text-xl text-primary mb-3">Tags</h5>
+        <h5 class="font-bold text-xl text-primary mb-3">ট্যাগ সমূহ</h5>
         <ul class="font-bold">
           <li
             :class="{
@@ -140,7 +140,7 @@
             class="w-full p-1 border border-secondary hover:border-secondary-dark hover:bg-secondary-dark text-secondary-dark hover:text-white rounded-md font-bold text-lg flex items-center justify-center gap-2"
           >
             <TrashIcon />
-            Rest Filters
+            ফিল্টার রিসেট করুন
           </button>
         </a>
       </div>
