@@ -1,14 +1,11 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from './auth/auth.service.js';
 import { Injectable, Logger } from '@nestjs/common';
-import { MiddlewareHandler } from 'hyper-express';
 import { WsMessage } from './types/ws-message';
 import { Config } from './config/config.js';
 import { WsSub } from './uws/ws-sub.js';
 import { Uws } from './uws/uws.js';
 import he from 'hyper-express';
-import helmet from 'helmet';
-import cors from 'cors';
 import Joi from 'joi';
 
 @Injectable()
