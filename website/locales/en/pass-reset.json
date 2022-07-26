@@ -1,7 +1,21 @@
 {
+  "reset": "Password Reset",
+  "to-login": "to login dashboard",
   "verification-medium": "Verification Code Sending Method",
   "send-code": "Send Verification Code",
   "verification": "Verification",
   "password-reset": "Reset Password",
-  "sms": "SMS"
+  "username-l": "Username / Email / Mobile",
+  "sms": "SMS",
+  "email": "Email",
+  "send": "Send Code",
+  "languages": "Languages",
+  "default-lang": "Select default language",
+  "institute": "Enter you institute name",
+  "username": "Enter your username",
+  "mobile": "Enter your mobile number",
+  "password": "Enter your password",
+  "confirm-pass": "Enter confirm password",
+  "code": "Enter your verification code",
+  "update": "Update"
 }

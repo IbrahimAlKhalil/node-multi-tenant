@@ -1,5 +1,5 @@
 <template>
-  <PageTitle title="We're here to support you!" />
+  <PageTitle :title="t('contactPage.title')" />
   <br />
   <hr />
   <br />
@@ -10,7 +10,7 @@
   >
     <div class="flex flex-col md:flex-row justify-between md:gap-10">
       <InputField
-        placeholder="First Name"
+        :placeholder="t('contactPage[\'first-name\']')"
         name="fName"
         type="text"
         v-model="values.fName"
@@ -19,7 +19,7 @@
         @on-input="handleInput"
       />
       <InputField
-        placeholder="Last Name"
+        :placeholder="t('contactPage[\'last-name\']')"
         name="lName"
         type="text"
         v-model="values.lName"
@@ -30,7 +30,7 @@
     </div>
     <div class="flex flex-col md:flex-row justify-between md:gap-10">
       <InputField
-        placeholder="Institute Name"
+        :placeholder="t('contactPage.institute')"
         name="companyName"
         type="text"
         v-model="values.companyName"
@@ -39,7 +39,7 @@
         @on-input="handleInput"
       />
       <InputField
-        placeholder="Email Address"
+        :placeholder="t('contactPage.email')"
         name="emailAddress"
         type="text"
         v-model="values.emailAddress"
@@ -49,7 +49,7 @@
       />
     </div>
     <TextAreaField
-      label="Leave a message"
+      :label="t('contactPage.leave')"
       name="message"
       v-model="values.message"
       :value="values.message"
@@ -57,7 +57,7 @@
       @on-input="handleInput"
     />
     <div>
-      <primary-btn title="Send Message" />
+      <primary-btn :title="t('contactPage.send')" />
     </div>
   </form>
 </template>
@@ -69,6 +69,7 @@ import PrimaryBtn from '#components/ui/btn/primary-btn.vue';
 import PageTitle from '#components/ui/page-title.vue';
 import { defineComponent } from 'vue';
 import * as Yup from 'yup';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'hero-section',
@@ -158,7 +159,10 @@ export default defineComponent({
     },
   },
   setup() {
-    return {};
+    const i18n = useI18n();
+    return {
+      t: i18n.t,
+    };
   },
 });
 </script>

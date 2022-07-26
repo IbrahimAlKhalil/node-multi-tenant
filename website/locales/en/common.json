@@ -7,5 +7,7 @@
   "select": "Select",
   "exit": "Exit",
   "login": "Login",
-  "go-to-dashboard": "Go to Dashboard"
+  "go-to-dashboard": "Go to Dashboard",
+  "loading": "Loading",
+  "success": "Success"
 }
