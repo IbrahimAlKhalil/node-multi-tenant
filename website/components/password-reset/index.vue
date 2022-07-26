@@ -1,7 +1,7 @@
 <template>
-  <page-title title="Password Reset" />
+  <page-title :title="i18n.t('passReset.reset')" />
   <h2 class="text-lg text-center text-gray-400 lowercase">
-    To login dashboard
+    {{ i18n.t("passReset['to-login']") }}
   </h2>
   <div
     class="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-20 py-5"
@@ -14,7 +14,7 @@
           : 'text-gray-500 before:bg-gray-500 dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
-      <p>Send verification code</p>
+      <p>{{ i18n.t("passReset['send-code']") }}</p>
     </div>
     <div
       class="company font-bold cursor-pointer"
@@ -24,7 +24,7 @@
           : 'text-gray-500 before:bg-gray-500 before:text-light dark:text-light dark:before:bg-light dark:before:text-text',
       ]"
     >
-      <p>Reset Password</p>
+      <p>{{ i18n.t('passReset.reset') }}</p>
     </div>
   </div>
   <form @submit.prevent="handleEmailSubmit" v-show="selectedTab === 'email'">
@@ -32,7 +32,7 @@
       <InputField
         name="username"
         type="text"
-        placeholder="Username / Email / Mobile No"
+        :placeholder="i18n.t('passReset[\'username-l\']')"
         v-model="values.username"
         :error="errors.username"
         :value="values.username"
@@ -41,20 +41,20 @@
         @on-keypress="validateEmail"
       />
       <radio-field
-        title="Verification code sending method"
+        :title="i18n.t('passReset[\'verification-medium\']')"
         name="method"
         v-model="values.method"
         :error="errors.method"
         :value="values.method"
         @on-input="handleSelect"
         :options="[
-          { name: 'email', label: 'Email', value: 'email' },
-          { name: 'sms', label: 'SMS', value: 'sms' },
+          { name: 'email', label: i18n.t('passReset.email'), value: 'email' },
+          { name: 'sms', label: i18n.t('passReset.sms'), value: 'sms' },
         ]"
       />
       <input
         type="submit"
-        :value="btnText"
+        :value="i18n.t('passReset.send')"
         class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
@@ -65,7 +65,7 @@
   >
     <div class="md:w-1/2 mx-auto flex flex-col items-center gap-8 p-5 my-10">
       <SelectInput
-        label="Languages"
+        :label="i18n.t('passReset.languages')"
         :options="[
           { label: 'বাংলা', value: 'bn' },
           { label: 'English', value: 'en' },
@@ -80,7 +80,7 @@
         color="primary"
       />
       <SelectInput
-        label="Default Language"
+        :label="i18n.t('passReset[\'default-lang\']')"
         name="defaultLanguage"
         :options="companyInfo.languages"
         :selected-items="companyInfo.defaultLanguage"
@@ -92,7 +92,7 @@
       <InputField
         name="instituteName"
         type="text"
-        placeholder="Enter your company name"
+        :placeholder="i18n.t('passReset.institute')"
         v-model="companyInfo.instituteName"
         :error="companyInfoErrors.instituteName"
         :value="companyInfo.instituteName"
@@ -103,7 +103,7 @@
       <InputField
         name="userName"
         type="text"
-        placeholder="Enter your username"
+        :placeholder="i18n.t('passReset.username')"
         v-model="companyInfo.userName"
         :error="companyInfoErrors.userName"
         :value="companyInfo.userName"
@@ -114,7 +114,7 @@
       <InputField
         name="mobileNo"
         type="text"
-        placeholder="Enter your mobile number"
+        :placeholder="i18n.t('passReset.mobile')"
         v-model="companyInfo.mobileNo"
         :error="companyInfoErrors.mobileNo"
         :value="companyInfo.mobileNo"
@@ -125,7 +125,7 @@
       <InputField
         name="password"
         :type="showPassword ? 'text' : 'password'"
-        placeholder="Enter your password"
+        :placeholder="i18n.t('passReset.password')"
         v-model="companyInfo.password"
         :error="companyInfoErrors.password"
         :value="companyInfo.password"
@@ -139,7 +139,7 @@
       <InputField
         name="confirmPassword"
         :type="showPassword ? 'text' : 'password'"
-        placeholder="Confirm your password"
+        :placeholder="i18n.t('passReset[\'confirm-pass\']')"
         v-model="companyInfo.confirmPassword"
         :error="companyInfoErrors.confirmPassword"
         :value="companyInfo.confirmPassword"
@@ -153,7 +153,7 @@
       <InputField
         name="verificationCode"
         type="text"
-        placeholder="Enter your verification code"
+        :placeholder="i18n.t('passReset.code')"
         v-model="companyInfo.verificationCode"
         :error="companyInfoErrors.verificationCode"
         :value="companyInfo.verificationCode"
@@ -163,7 +163,7 @@
       />
       <input
         type="submit"
-        value="Update"
+        :value="i18n.t('passReset.update')"
         class="px-5 py-2 bg-primary dark:bg-secondary hover:bg-primary-dark dark:hover:bg-secondary-dark text-white text-xl font-bold uppercase rounded-md"
       />
     </div>
@@ -175,8 +175,11 @@ import SelectInput from '#components/form-components/select-input.vue';
 import RadioField from '#components/form-components/radio-field.vue';
 import InputField from '#components/form-components/input-field.vue';
 import PageTitle from '#components/ui/page-title.vue';
+import { useI18n } from 'vue-i18n';
 import * as Yup from 'yup';
 import { ref } from 'vue';
+
+const i18n = useI18n();
 
 defineProps(['search', 'category', 'categories']);
 
