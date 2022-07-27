@@ -28,23 +28,23 @@ export default defineComponent({
     const links = ref([
       {
         id: 1,
-        title: "footer['widget-2']['option-1']",
-        url: '#',
+        title: "footer['widget-2']['about-us']",
+        url: '/#about',
       },
       {
         id: 2,
-        title: "footer['widget-2']['option-2']",
-        url: '#',
+        title: "footer['widget-2']['contact']",
+        url: '/contact',
       },
       {
         id: 3,
-        title: "footer['widget-2']['option-3']",
-        url: '#',
+        title: "footer['widget-2']['blog']",
+        url: '/blog',
       },
       {
         id: 4,
-        title: "footer['widget-2']['option-4']",
-        url: '#',
+        title: "footer['widget-2']['faq']",
+        url: '/faq',
       },
     ]);
     return {

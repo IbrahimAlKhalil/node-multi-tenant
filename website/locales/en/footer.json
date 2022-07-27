@@ -4,16 +4,16 @@
   },
   "widget-2": {
     "title": "Important Links",
-    "option-1": "About Us",
-    "option-2": "Contact Us",
-    "option-3": "Privacy Policy",
-    "option-4": "Terms of Use"
+    "about-us": "About Us",
+    "contact": "Contact Us",
+    "blog": "Blogs",
+    "faq": "FAQs"
   },
   "widget-3": {
     "title": "Useful Links",
-    "option-1": "About Us",
-    "option-2": "Contact Us",
-    "option-3": "Privacy Policy",
-    "option-4": "Terms of Use"
+    "login": "Login",
+    "signup": "Signup",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use"
   }
 }

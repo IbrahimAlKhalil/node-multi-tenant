@@ -27,22 +27,22 @@ export default defineComponent({
     const links = ref([
       {
         id: 1,
-        title: "footer['widget-3']['option-1']",
-        url: '#',
+        title: "footer['widget-3']['login']",
+        url: '/login',
       },
       {
         id: 2,
-        title: "footer['widget-3']['option-2']",
-        url: '#',
+        title: "footer['widget-3']['signup']",
+        url: '/signup',
       },
       {
         id: 3,
-        title: "footer['widget-3']['option-3']",
+        title: "footer['widget-3']['privacy']",
         url: '#',
       },
       {
         id: 4,
-        title: "footer['widget-3']['option-4']",
+        title: "footer['widget-3']['terms']",
         url: '#',
       },
     ]);
