@@ -12,7 +12,13 @@ import cors from 'cors';
       provide: Uws,
       useFactory(config: Config): Promise<HyperExpress.Server> {
         return new Promise(async (resolve) => {
-          const server = new HyperExpress.Server();
+          const server = new HyperExpress.Server({
+            auto_close: true,
+            fast_abort: true,
+            fast_buffers: true,
+            max_body_length: 1e8,
+            trust_proxy: true,
+          });
 
           const allowedOrigins = new Set([
             new URL(`https://${config.app.websiteHost}`).origin,

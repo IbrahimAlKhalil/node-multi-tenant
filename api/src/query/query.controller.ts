@@ -25,7 +25,7 @@ export class QueryController {
     if (typeof req.query.query !== 'string') {
       return res.status(400).json({
         code: 'QUERY_INVALID',
-        error: 'You must provide a query',
+        message: 'You must provide a query',
       });
     }
 
@@ -34,7 +34,7 @@ export class QueryController {
     } catch (e) {
       return res.status(400).json({
         code: 'QUERY_INVALID',
-        error: e.message,
+        message: e.message,
       });
     }
 
@@ -50,7 +50,7 @@ export class QueryController {
       console.error(e);
 
       res.status(500).json({
-        error: 'Something went wrong, please try again later.',
+        message: 'Something went wrong, please try again later.',
         code: 'INTERNAL_ERROR',
       });
     }

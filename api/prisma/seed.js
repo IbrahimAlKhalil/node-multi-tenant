@@ -21,6 +21,23 @@ async function run() {
         password: await hash('demo'),
       },
     });
+
+    await prisma.mimeType.createMany({
+      data: [
+        {
+          name: 'image/jpeg',
+          extension: 'jpeg'
+        },
+        {
+          name: 'image/png',
+          extension: 'png',
+        },
+        {
+          name: 'image/webp',
+          extension: 'webp'
+        }
+      ]
+    });
   } catch (e) {
     //
   }

@@ -116,7 +116,7 @@ export class AuthService {
     if (!session || (!allowPublic && session.knd === 'PUBLIC')) {
       res.status(401).json({
         code: 'UNAUTHORIZED',
-        error: 'You are not authorized to make this request',
+        message: 'You are not authorized to make this request',
       });
     }
 

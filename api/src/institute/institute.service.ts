@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Institute } from '../types/institute';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
@@ -5,13 +6,18 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class InstituteService {
-  constructor(private readonly config: Config) {
+  constructor(
+    private readonly emitter: EventEmitter2,
+    private readonly config: Config,
+  ) {
     this.logger.log('Loading institutes...');
     this.loadInstitutes()
-      .then(() => {
+      .then((institutes) => {
         this.logger.log(
           `Loaded ${Object.keys(this.institutes).length} institutes`,
         );
+
+        emitter.emitAsync('institute.loaded', institutes);
       })
       .catch((e) => {
         this.logger.error(`Failed to load institutes: ${e.message}`);
@@ -21,7 +27,7 @@ export class InstituteService {
   private logger = new Logger(InstituteService.name);
   public institutes: { [instituteId: string]: Institute } = {};
 
-  private async loadInstitutes(): Promise<void> {
+  private async loadInstitutes(): Promise<Institute[]> {
     const { default: got } = await import('got');
 
     const host = `https://${this.config.app.websiteHost}`;
@@ -40,5 +46,7 @@ export class InstituteService {
     for (const institute of institutes) {
       this.institutes[institute.id] = institute;
     }
+
+    return institutes;
   }
 }

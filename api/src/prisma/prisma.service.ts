@@ -105,7 +105,7 @@ export class PrismaService {
   private static async getModels(): Promise<Model[]> {
     const { PrismaClient } = await import('../../prisma/client/index.js');
     const prisma = new PrismaClient({ datasources: { db: { url: `postgres://` } } });
-    const dmmf: DMMFClass = (prisma as any)._dmmf;
+    const dmmf: DMMFClass = (prisma as any)._baseDmmf;
 
     await prisma.$disconnect();
 
