@@ -184,7 +184,7 @@ export class UserController {
               },
               create: {
                 id: FolderEnum.PROFILE_PICTURE,
-                name: 'Profile Pictures',
+                name: 'Avatars',
                 internal: true,
               },
               update: {},
