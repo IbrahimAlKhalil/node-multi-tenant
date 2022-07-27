@@ -1,11 +1,8 @@
 import { PrismaService } from '../prisma/prisma.service.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Institute } from '../types/institute';
-import { FolderEnum } from './folder.enum.js';
-import { Prisma } from '../../prisma/client';
 import { Injectable } from '@nestjs/common';
 import { Minio } from './minio.js';
-import { Readable } from 'stream';
 
 @Injectable()
 export class MinioService {

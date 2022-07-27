@@ -1,13 +1,14 @@
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { MinioController } from './minio.controller.js';
 import { MinioService } from './minio.service.js';
+import { UwsModule } from '../uws/uws.module.js';
 import { Config } from '../config/config.js';
 import { Module } from '@nestjs/common';
 import { Minio } from './minio.js';
 import { Client } from 'minio';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, UwsModule],
   providers: [
     MinioController,
     MinioService,
