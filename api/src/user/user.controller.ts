@@ -2,13 +2,14 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
 import { FolderEnum } from '../minio/folder.enum.js';
 import { Request, Response } from 'hyper-express';
-import { MimeEnum } from '../minio/mime.enum.js';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { MimeIdEnum } from '../minio/mime.enum.js';
+import { Injectable } from '@nestjs/common';
 import { fileTypeStream } from 'file-type';
 import { Minio } from '../minio/minio.js';
 import { Uws } from '../uws/uws.js';
 import pick from 'lodash/pick.js';
 import sharp from 'sharp';
+import path from 'path';
 
 @Injectable()
 export class UserController {
@@ -29,10 +30,6 @@ export class UserController {
   ]);
 
   private async me(req: Request, res: Response) {
-    if (req) {
-      throw new UnauthorizedException('Hello');
-    }
-
     const session = await this.authService.authenticateReq(req, res);
 
     if (!session) {
@@ -117,7 +114,9 @@ export class UserController {
         }
 
         let size = 0;
-        const fileName = field.file.name;
+        const fileName = field.file.name
+          ? path.parse(field.file.name).name
+          : 'avatar';
         const uploadStream = field.file.stream;
 
         uploadStream
@@ -192,9 +191,9 @@ export class UserController {
             const fileInDB = await trx.file.create({
               data: {
                 folderId: folder.id,
-                name: fileName ?? 'avatar',
+                name: `${fileName}.webp`,
                 size: 0,
-                mimeTypeId: MimeEnum.WEBP,
+                mimeTypeId: MimeIdEnum.WEBP,
                 ProfilePictureUsers: {
                   connect: {
                     id: session.uid,
