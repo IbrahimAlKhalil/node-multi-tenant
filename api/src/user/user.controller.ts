@@ -161,10 +161,6 @@ export class UserController {
             alphaQuality: 30,
           });
 
-        streamWithFileType.once('close', () => {
-          transformer.destroy();
-        });
-
         try {
           await prisma.$transaction(async (trx) => {
             const bucketName = `qmmsoft-${session.iid}`;
