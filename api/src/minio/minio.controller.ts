@@ -1,9 +1,9 @@
 import { PrismaService } from '../prisma/prisma.service.js';
-import { File, PrismaClient } from '../../prisma/client';
 import { NotFound } from '../exceptions/not-found.js';
 import { Request, Response } from 'hyper-express';
 import { MimeTypeMap } from './mime.enum.js';
 import { Injectable } from '@nestjs/common';
+import { File } from '../../prisma/client';
 import { BucketItemStat } from 'minio';
 import { Uws } from '../uws/uws.js';
 import { Minio } from './minio.js';
