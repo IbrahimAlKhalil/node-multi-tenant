@@ -6,7 +6,7 @@
       {{ title }}
     </h1>
     <p class="text-gray-500 dark:text-inherit">
-      <span class="font-bold"> Author: </span>
+      <span class="font-bold"> অথর নাম: </span>
       <span>
         {{ author?.first_name || '' }}
         {{ author?.last_name || '' }}
@@ -14,7 +14,7 @@
     </p>
     <div class="flex flex-col md:flex-row justify-between items-center text-sm">
       <p class="text-gray-500 dark:text-inherit">
-        <span class="font-bold">Published at: </span>
+        <span class="font-bold">পাবলিশ সময়: </span>
         <span>
           {{ date }}
         </span>
@@ -25,7 +25,7 @@
         <a href="/">
           <HomeIcon class="px-1 hover:text-primary" />
         </a>
-        <span class="hover:text-primary"><a href="/blog">Blog /</a></span>
+        <span class="hover:text-primary"><a href="/blog">ব্লগ /</a></span>
         <span class="hover:text-primary">
           <a :href="'/' + categorySlug">{{ categoryName }} /</a></span
         >

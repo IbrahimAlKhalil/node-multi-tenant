@@ -120,7 +120,6 @@ import TabBodyUserItem from '#components/post-page/tab-body-user-item.vue';
 import PostShareSection from '#components/post-page/share-section.vue';
 import PostIntroSection from '#components/post-page/intro-section.vue';
 import { defineComponent, reactive, ref, inject, computed } from 'vue';
-import { ReactionType, PostReactionType } from '#types/reaction-type';
 import PostTagsSection from '#components/post-page/tags-section.vue';
 import PostHeroSection from '#components/post-page/hero-section.vue';
 import TabBody from '#components/ui/tab-component/tab-body.vue';
@@ -129,11 +128,12 @@ import { comment as CommentType } from '#types/comment-type';
 import TheTabs from '#components/ui/tab-component/tabs.vue';
 import { usePageContext } from '#modules/use-page-context';
 import TheTab from '#components/ui/tab-component/tab.vue';
+import { PostReactionType } from '#types/reaction-type';
 import CommentIcon from '#icons/regular/comments.svg';
 import { useAuth } from '#stores/auth.store';
 import LayoutMain from '#layouts/main.vue';
-import _ from 'lodash';
 import PostType from '#types/post-type';
+import _ from 'lodash';
 
 export default defineComponent({
   name: 'blog-post',

@@ -1,6 +1,6 @@
 <template>
   <h3 class="text-text dark:text-light text-center text-lg font-bold mb-5">
-    Was this article helpful?
+    এই প্রবন্ধটা কি সাহায্যকর ছিল?
   </h3>
   <div class="flex justify-center items-center">
     <emoji-frame :size="12" v-for="emoji of reactions" :key="emoji.id">

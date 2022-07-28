@@ -15,7 +15,7 @@
         class="action-buttons absolute bottom-2 right-5 flex items-center gap-5"
       >
         <primary-btn
-          title="submit"
+          title="সাবমিট করুন"
           size="small"
           @handle-click="handleSubmitComment"
         />

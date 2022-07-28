@@ -10,7 +10,7 @@
         <div class="grow">
           <input
             class="block w-full py-2 px-3 text-xl text-text outline-0 border-2 border-transparent focus:border-secondary"
-            placeholder="Search Here..."
+            placeholder="এখানে খুজুন..."
             @keyup.enter="doSearch"
             v-model="search"
             type="text"
