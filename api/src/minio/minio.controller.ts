@@ -1,5 +1,6 @@
 import { PrismaService } from '../prisma/prisma.service.js';
 import { File, PrismaClient } from '../../prisma/client';
+import { NotFound } from '../exceptions/not-found.js';
 import { Request, Response } from 'hyper-express';
 import { MimeTypeMap } from './mime.enum.js';
 import { Injectable } from '@nestjs/common';
@@ -18,23 +19,15 @@ export class MinioController {
   }
 
   async get(req: Request, res: Response) {
-    const bucket = `qmmsoft-${req.params.instituteId}`;
+    const prisma = await this.prismaService.getPrismaOrThrow(
+      req.params.instituteId,
+    );
 
+    const bucket = `qmmsoft-${req.params.instituteId}`;
     let stat: BucketItemStat;
-    let prisma: PrismaClient;
     let file: File;
 
     try {
-      const _prisma = await this.prismaService.getPrisma(
-        req.params.instituteId,
-      );
-
-      if (!_prisma) {
-        throw new Error('Institute Not found');
-      }
-
-      prisma = _prisma;
-
       stat = await this.minio.statObject(bucket, req.params.fileId);
       file = await prisma.file.findUniqueOrThrow({
         where: {
@@ -42,10 +35,7 @@ export class MinioController {
         },
       });
     } catch (e) {
-      return res.status(404).json({
-        code: 'NOT_FOUND',
-        message: 'The file you are looking for cannot found',
-      });
+      throw new NotFound();
     }
 
     const stream = await this.minio.getObject(bucket, req.params.fileId);

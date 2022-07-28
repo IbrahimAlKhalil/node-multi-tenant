@@ -1,5 +1,6 @@
 import { PrismaClient, RoleCrudPermission } from '../../prisma/client';
 import { InstituteService } from '../institute/institute.service.js';
+import { Unauthorized } from '../auth/exceptions/unauthorized.js';
 import { PrismaInstance } from '../types/prisma-instance';
 import { ModelNames } from '../query/types/model-names';
 import { DMMFClass } from '../../prisma/client/runtime';
@@ -97,6 +98,18 @@ export class PrismaService {
         lastUsed: Date.now(),
         prisma,
       };
+    }
+
+    return prisma;
+  }
+
+  public async getPrismaOrThrow(...args: Parameters<PrismaService['getPrisma']>): Promise<PrismaClient>  {
+    const prisma = await this.getPrisma(...args);
+
+    if (!prisma) {
+      throw new Unauthorized(
+        `Institute #${args[0]} is either not found or not active`,
+      );
     }
 
     return prisma;

@@ -1,5 +1,8 @@
+import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { HelperService } from '../helper/helper.service.js';
+import { Unauthorized } from './exceptions/unauthorized.js';
+import { NotFound } from '../exceptions/not-found.js';
 import { JwtPayload } from '../types/jwt-payload';
 import { Request, Response } from 'hyper-express';
 import { LoginInput } from './types/login-input';
@@ -52,14 +55,7 @@ export class AuthController {
 
     if (error) {
       // Validation failed
-
-      res.status(400).json({
-        code: 'INVALID_INPUT',
-        message: error.message,
-        details: error.details,
-      });
-
-      return;
+      throw new InputInvalid(error.message, error.details);
     }
 
     const identity = this.helperService.getIdentityType(value.username);
@@ -69,12 +65,7 @@ export class AuthController {
       // No prisma client found
       // Which means the instituteId is invalid
 
-      res.status(404).json({
-        code: 'INVALID_INPUT',
-        message: 'Invalid institute id',
-      });
-
-      return;
+      throw new NotFound('Institute not found');
     }
 
     const user = await prisma.user.findUnique({
@@ -89,12 +80,7 @@ export class AuthController {
       !user.password ||
       !(await argon2.verify(user.password, value.password))
     ) {
-      res.status(401).json({
-        code: 'INVALID_CREDENTIALS',
-        message: 'Username or password is incorrect',
-      });
-
-      return;
+      throw new Unauthorized('Username or password is incorrect');
     }
 
     // User is valid, so we can create a jwt token

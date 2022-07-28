@@ -1,3 +1,5 @@
+import { InternalServerError } from './exceptions/internal-server-error.js';
+import { BaseException } from './exceptions/base-exception.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from './auth/auth.service.js';
 import { Injectable, Logger } from '@nestjs/common';
@@ -54,7 +56,30 @@ export class AppService {
     data: Joi.any(),
   });
 
-  async upgrade(req: he.Request, res: he.Response) {
+  private async handleError(ws: he.Websocket, err: Error) {
+    if (err instanceof InternalServerError || !(err instanceof BaseException)) {
+      ws.send(
+        JSON.stringify({
+          status: 500,
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong, please try again later.',
+        }),
+      );
+
+      this.logger.error(err);
+    } else {
+      ws.send(
+        JSON.stringify({
+          status: err.status,
+          code: err.code,
+          message: err.message,
+          details: err.details,
+        }),
+      );
+    }
+  }
+
+  private async upgrade(req: he.Request, res: he.Response) {
     // Keep the headers before the request object is gone
     const token = req.cookies.token;
     const csrfToken = req.params.csrfToken;
@@ -71,12 +96,13 @@ export class AppService {
 
     // Not authorized and not aborted, close the connection
     res.status(401).json({
+      status: 401,
       code: 'UNAUTHORIZED',
-      message: 'Unauthorized',
+      message: 'You are not authorized to connect to the websocket api',
     });
   }
 
-  async message(ws: he.Websocket, msg: string, isBinary: boolean) {
+  private async message(ws: he.Websocket, msg: string, isBinary: boolean) {
     // Convert ArrayBuffer to string
     const msgTxt = Buffer.from(msg).toString('utf-8');
 
@@ -86,7 +112,14 @@ export class AppService {
     try {
       msgObj = JSON.parse(msgTxt);
     } catch (e) {
-      this.logger.error(`Failed to parse message as JSON: ${msgTxt}`);
+      ws.send(
+        JSON.stringify({
+          status: 400,
+          code: 'MESSAGE_INVALID',
+          message: e.message,
+        }),
+      );
+
       return;
     }
 
@@ -96,7 +129,14 @@ export class AppService {
     try {
       value = await this.schema.validateAsync(msgObj);
     } catch (e) {
-      this.logger.error(e.message);
+      ws.send(
+        JSON.stringify({
+          status: 400,
+          code: 'INPUT_INVALID',
+          message: e.message,
+          details: e.details,
+        }),
+      );
       return;
     }
 
@@ -109,7 +149,7 @@ export class AppService {
           binary: isBinary,
         })
         .catch((e) => {
-          this.logger.error(e);
+          this.handleError(ws, e);
         });
 
       return;
@@ -120,7 +160,7 @@ export class AppService {
 
       // Emit the event without listening for response
       this.eventEmitter.emitAsync(`ws.sub.${value.name}`, wsSub).catch((e) => {
-        this.logger.error(e);
+        this.handleError(ws, e);
       });
 
       return;
@@ -137,16 +177,7 @@ export class AppService {
         binary: isBinary,
       });
     } catch (e) {
-      ws.send(
-        JSON.stringify({
-          id: value.id,
-          error: {
-            message: e.message,
-            code: e.code ?? 'INTERNAL_ERROR',
-          },
-        }),
-      );
-      return;
+      return this.handleError(ws, e);
     }
 
     const data =
@@ -161,6 +192,7 @@ export class AppService {
       JSON.stringify({
         id: value.id,
         data: data ?? null,
+        status: 200,
       }),
     );
   }

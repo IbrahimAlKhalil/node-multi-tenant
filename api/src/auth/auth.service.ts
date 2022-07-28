@@ -1,3 +1,4 @@
+import { Unauthorized } from './exceptions/unauthorized.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { JwtPayload } from '../types/jwt-payload';
 import { Request, Response } from 'hyper-express';
@@ -103,7 +104,7 @@ export class AuthService {
   async authenticateReq<
     A = false,
     S = A extends true | undefined ? Session : Session<user_kind>,
-  >(req: Request, res: Response, allowPublic?: A): Promise<S | null> {
+  >(req: Request, res: Response, allowPublic?: A): Promise<S> {
     const csrfToken = req.header('x-csrf-token');
     const instituteId = req.header('x-qm-institute-id');
 
@@ -114,12 +115,9 @@ export class AuthService {
     );
 
     if (!session || (!allowPublic && session.knd === 'PUBLIC')) {
-      res.status(401).json({
-        code: 'UNAUTHORIZED',
-        message: 'You are not authorized to make this request',
-      });
+      throw new Unauthorized();
     }
 
-    return session as S | null;
+    return session as unknown as S;
   }
 }

@@ -1,6 +1,6 @@
 import { mutationSchema, MutationSchema } from './schema/mutation-schema.js';
 import { QuerySchema, querySchema } from './schema/query-schema.js';
-import { WsException } from '../exceptions/ws-exception.js';
+import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { OnWsReq } from '../decorators/on-ws-req.js';
 import { OnWsSub } from '../decorators/on-ws-sub.js';
@@ -25,9 +25,8 @@ export class QueryListener {
     try {
       query = await querySchema.validateAsync(data);
     } catch (e) {
-      this.logger.error(e);
       // Rethrow error with code and message
-      throw new WsException(e.message, 'QUERY_INVALID');
+      throw new InputInvalid(e.message, e.details);
     }
 
     if (!query.query) {
@@ -44,9 +43,8 @@ export class QueryListener {
     try {
       mutation = await mutationSchema.validateAsync(data);
     } catch (e) {
-      this.logger.error(e);
       // Rethrow error with code and message
-      throw new WsException(e.message, 'MUTATION_INVALID');
+      throw new InputInvalid(e.message, e.details);
     }
 
     return this.queryService.mutate(mutation, ws.session);
@@ -59,9 +57,8 @@ export class QueryListener {
     try {
       mutation = await mutationSchema.validateAsync(wsSub.data);
     } catch (e) {
-      this.logger.error(e);
       // Rethrow error with code and message
-      throw new WsException(e.message, 'MUTATION_INVALID');
+      throw new InputInvalid(e.message, e.details);
     }
 
     return this.queryService.mutate(mutation, wsSub.ws.session, wsSub);

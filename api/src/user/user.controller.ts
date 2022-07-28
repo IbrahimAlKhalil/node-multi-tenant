@@ -1,3 +1,6 @@
+import { InternalServerError } from '../exceptions/internal-server-error.js';
+import { PayloadTooLarge } from '../exceptions/payload-too-large.js';
+import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
 import { FolderEnum } from '../minio/folder.enum.js';
@@ -31,19 +34,7 @@ export class UserController {
 
   private async me(req: Request, res: Response) {
     const session = await this.authService.authenticateReq(req, res);
-
-    if (!session) {
-      return;
-    }
-
-    const prisma = await this.prismaService.getPrisma(session.iid);
-
-    if (!prisma) {
-      return res.status(400).json({
-        code: 'INSTITUTE_NOT_FOUND',
-        message: 'Institute not found or disabled',
-      });
-    }
+    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
 
     const user = await prisma.user.findUnique({
       where: {
@@ -81,19 +72,7 @@ export class UserController {
 
   private async uploadAvatar(req: Request, res: Response) {
     const session = await this.authService.authenticateReq(req, res);
-
-    if (!session) {
-      return;
-    }
-
-    const prisma = await this.prismaService.getPrisma(session.iid);
-
-    if (!prisma) {
-      return res.status(401).json({
-        code: 'INSTITUTE_NOT_FOUND',
-        message: 'Institute not found or disabled',
-      });
-    }
+    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
 
     let fieldCount = 0;
 
@@ -102,11 +81,7 @@ export class UserController {
         fieldCount++;
 
         if (fieldCount > 1) {
-          res.status(400).json({
-            message: 'Too many fields',
-            code: 'TOO_MANY_FIELDS',
-          });
-          throw new Error('Too many fields');
+          throw new InputInvalid('Too many fields');
         }
 
         if (!field.file || field.name !== 'file') {
@@ -122,12 +97,10 @@ export class UserController {
         uploadStream
           .on('data', (chunk) => {
             if ((size += chunk.length) > 5e6) {
-              res.status(413).json({
-                message: 'File cannot be bigger than 5mb',
-                code: 'PAYLOAD_TOO_LARGE',
-              });
-
-              return uploadStream.destroy();
+              uploadStream.destroy();
+              throw new PayloadTooLarge(
+                'File cannot be larger than 5 Megabytes',
+              );
             }
           })
           .pause();
@@ -138,15 +111,10 @@ export class UserController {
           !streamWithFileType.fileType ||
           !this.supportedMimeTypes.has(streamWithFileType.fileType.mime)
         ) {
-          res.status(400).json({
-            code: 'INPUT_INVALID',
-            message: 'File type not supported',
-          });
-
           streamWithFileType.destroy();
           uploadStream.destroy();
 
-          throw new Error('File type not supported');
+          throw new InputInvalid('File type not supported');
         }
 
         const transformer = sharp()
@@ -211,22 +179,13 @@ export class UserController {
             res.status(201).json(fileInDB);
           });
         } catch (e) {
-          console.error(e);
-
-          res.status(500).json({
-            message: 'Something went wrong, please try again later',
-            code: 'INTERNAL_SERVER_ERROR',
-          });
+          throw new InternalServerError(e.message);
         }
       })
       .then(() => {
         if (!res.completed) {
-          res.status(400).json({
-            message: 'Field "file" is required',
-            code: 'INPUT_INVALID',
-          });
+          throw new InputInvalid('Field "file" is required');
         }
-      })
-      .catch(console.error);
+      });
   }
 }

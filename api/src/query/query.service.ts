@@ -2,14 +2,18 @@ import { PermissionDefinition as UpdatePermission } from './types/update-permiss
 import { PermissionDefinition as DeletePermission } from './types/delete-permission';
 import { PermissionDefinition as CreatePermission } from './types/create-permission';
 import { PermissionDefinition as ReadPermission } from './types/read-permission';
+import { InternalServerError } from '../exceptions/internal-server-error.js';
 import { FKeyHolder, Relation, RelationAnalyzed } from './types/relation';
 import { MutationSchema, MutationType } from './schema/mutation-schema';
+import { Unauthorized } from '../auth/exceptions/unauthorized.js';
+import { BaseException } from '../exceptions/base-exception.js';
+import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { WsException } from '../exceptions/ws-exception.js';
 import { ClassifyOptions } from './types/classify-options';
 import { Prisma, PrismaClient } from '../../prisma/client';
 import { ClassifyResult } from './types/classify-result';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotFound } from '../exceptions/not-found.js';
 import { QuerySchema } from './schema/query-schema';
 import TransactionClient = Prisma.TransactionClient;
 import { Injectable, Logger } from '@nestjs/common';
@@ -100,10 +104,7 @@ export class QueryService {
     const modelFields = this.prismaService.fields[options.model];
 
     if (!modelFields) {
-      throw new WsException(
-        `Model "${options.model}" doesn't exist.`,
-        'QUERY_INVALID',
-      );
+      throw new InputInvalid(`Model "${options.model}" doesn't exist.`);
     }
 
     const fields = options.fields ?? Object.keys(modelFields);
@@ -212,9 +213,8 @@ export class QueryService {
         const permissionModel = this.models[modelName];
 
         if (!permissionModel) {
-          throw new WsException(
-            `You don't have permission to access the model "${modelName}" or it doesn't exist.`,
-            'PERMISSION_DENIED',
+          throw new Unauthorized(
+            `You don't have permission to access model "${modelName}" or it doesn't exist.`,
           );
         }
 
@@ -255,9 +255,8 @@ export class QueryService {
     const permissionModel = this.models[options.model];
 
     if (!permissionModel) {
-      throw new WsException(
-        `You don't have permission to access model "${options.model}".`,
-        'PERMISSION_DENIED',
+      throw new Unauthorized(
+        `You don't have permission to access model "${options.model}" or it doesn't exist.`,
       );
     }
 
@@ -330,9 +329,8 @@ export class QueryService {
     }
 
     if (!kind) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have permission to perform any action on model "${modelName}".`,
-        'PERMISSION_DENIED',
       );
     }
 
@@ -351,9 +349,8 @@ export class QueryService {
       };
 
       if (!session.rol.some(checker)) {
-        throw new WsException(
+        throw new Unauthorized(
           `You don't have permission to perform action "${action}" on model "${modelName}".`,
-          'PERMISSION_DENIED',
         );
       }
     }
@@ -365,9 +362,8 @@ export class QueryService {
     const actionPermission = kind[action] as unknown;
 
     if (!actionPermission) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have permission to perform action "${action}" on model "${modelName}".`,
-        'PERMISSION_DENIED',
       );
     }
 
@@ -483,9 +479,8 @@ export class QueryService {
     const modelFields = this.prismaService.fields[baseQuery.model];
 
     if (!modelFields || !permissionModel) {
-      throw new WsException(
-        `You don't have access to model ${baseQuery.model} or it doesn't exist`,
-        'PERMISSION_DENIED',
+      throw new Unauthorized(
+        `You don't have access to model "${baseQuery.model}" or it doesn't exist`,
       );
     }
 
@@ -531,20 +526,18 @@ export class QueryService {
     });
 
     if (fields.relationNotAllowed.length > 0) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have permission to count "${fields.relationNotAllowed.join(
           `, `,
         )}" on "${baseQuery.model}".`,
-        'QUERY_INVALID',
       );
     }
 
     if (fields.unknown.length > 0) {
-      throw new WsException(
-        `Relation(s) "${fields.unknown.join(`, `)}" don't exist on "${
-          baseQuery.model
-        }".`,
-        'QUERY_INVALID',
+      throw new Unauthorized(
+        `You don't have access to relation(s) "${fields.unknown.join(
+          `, `,
+        )}" or they don't exist on "${baseQuery.model}".`,
       );
     }
   }
@@ -567,9 +560,8 @@ export class QueryService {
 
       if (!permissionModel || !modelFields) {
         // Permission for this model is not defined
-        throw new WsException(
-          `Model "${where.model}" doesn't exist`,
-          'QUERY_INVALID',
+        throw new Unauthorized(
+          `You don't have access to model "${where.model}" or it doesn't exist`,
         );
       }
 
@@ -642,9 +634,8 @@ export class QueryService {
             });
           }
         } else {
-          throw new WsException(
-            `Field "${field}" doesn't exist on model "${where.model}".`,
-            'QUERY_INVALID',
+          throw new Unauthorized(
+            `You don't have access to field "${field}" on model "${where.model}" or it doesn't exist.`,
           );
         }
       }
@@ -656,20 +647,18 @@ export class QueryService {
     fields: ClassifyResult<any>,
   ): void {
     if (fields.unknown?.length) {
-      throw new WsException(
-        `Field(s) "${fields.unknown.join(
+      throw new Unauthorized(
+        `You don't have access to field(s) "${fields.unknown.join(
           `, `,
-        )}" don't exist on model "${model}".`,
-        'QUERY_INVALID',
+        )}" on model "${model}" or they don't exist.`,
       );
     }
 
     if (fields.notAllowed?.length) {
-      throw new WsException(
-        `Field(s) "${fields.notAllowed.join(
+      throw new Unauthorized(
+        `You don't have access to field(s) "${fields.notAllowed.join(
           `, `,
-        )}" are not allowed on model "${model}".`,
-        'QUERY_INVALID',
+        )}" on model "${model}".`,
       );
     }
   }
@@ -709,9 +698,8 @@ export class QueryService {
     }
 
     if (!permissionQuery) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have permission to perform "${action}" on "${baseQuery.model}".`,
-        'PERMISSION_DENIED',
       );
     }
 
@@ -798,9 +786,8 @@ export class QueryService {
           const modelFields = this.prismaService.fields[orderBy.model];
 
           if (!modelFields || !permissionModel) {
-            throw new WsException(
-              `You don't have access to "${orderBy.model}" model or it doesn't exist.`,
-              'PERMISSION_DENIED',
+            throw new Unauthorized(
+              `You don't have access to model "${orderBy.model}" or it doesn't exist.`,
             );
           }
 
@@ -852,10 +839,7 @@ export class QueryService {
           await this.checkCountSelects(baseQuery, session);
         }
       } else {
-        throw new WsException(
-          `Invalid count query "${countQuery}"`,
-          'QUERY_INVALID',
-        );
+        throw new InputInvalid(`Invalid count query "${countQuery}"`);
       }
     }
 
@@ -886,21 +870,24 @@ export class QueryService {
     const rightModel = this.prismaService.models[rightModelName];
 
     if (!rightModel) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have access to model "${rightModelName}" or it doesn't exist.`,
-        'PERMISSION_DENIED',
       );
     }
 
     if (!field.relationName) {
-      throw new Error(`Relation name is missing for field "${field.name}"`);
+      throw new InternalServerError(
+        `Relation name is missing for field "${field.name}"`,
+      );
     }
 
     const rightField =
       this.prismaService.relations[rightModelName]?.[field.relationName];
 
     if (!rightField) {
-      throw new Error('Something went wrong, please contact support.');
+      throw new InternalServerError(
+        `Right side of the relation doesn't have field`,
+      );
     }
 
     const left: RelationAnalyzed['left'] = {
@@ -961,9 +948,8 @@ export class QueryService {
     const model = this.prismaService.models[modelName];
 
     if (!model) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have access to model "${modelName}" or it doesn't exist.`,
-        'PERMISSION_DENIED',
       );
     }
 
@@ -979,9 +965,8 @@ export class QueryService {
         continue;
       }
 
-      throw new WsException(
+      throw new InputInvalid(
         `"${field}" is not a unique field in model "${modelName}" or it doesn't exist.`,
-        'QUERY_INVALID',
       );
     }
 
@@ -1074,9 +1059,8 @@ export class QueryService {
       }
 
       if (!validationQuery) {
-        throw new WsException(
+        throw new Unauthorized(
           `Validation failed for model "${mutation.target}" while creating`,
-          'VALIDATION_FAILED',
         );
       }
 
@@ -1091,9 +1075,8 @@ export class QueryService {
         });
 
         if (!item) {
-          throw new WsException(
+          throw new Unauthorized(
             `Validation failed for model "${mutation.target}" while creating`,
-            'VALIDATION_FAILED',
           );
         }
       }
@@ -1189,7 +1172,10 @@ export class QueryService {
       });
 
       if (validation.error) {
-        throw new WsException(validation.error.message, 'VALIDATION_FAILED');
+        throw new InputInvalid(
+          validation.error.message,
+          validation.error.details,
+        );
       }
     }
   }
@@ -1205,9 +1191,8 @@ export class QueryService {
     const modelFields = this.prismaService.fields[mutation.model];
 
     if (!model || !permissionModel || !modelFields) {
-      throw new WsException(
+      throw new Unauthorized(
         `You don't have access to model "${mutation.model}" or it doesn't exist.`,
-        'PERMISSION_DENIED',
       );
     }
 
@@ -1336,9 +1321,8 @@ export class QueryService {
       });
 
       if (mutation.type === 'updateMany' && fields.relation.length) {
-        throw new WsException(
+        throw new InputInvalid(
           'You can not update relations in updateMany mutation',
-          'PERMISSION_DENIED',
         );
       }
 
@@ -1355,7 +1339,9 @@ export class QueryService {
       const updateObj = dataObjs.find((obj) => obj.action === 'update');
 
       if (!createObj || !updateObj) {
-        throw new Error('Something went wrong, please contact support');
+        throw new InternalServerError(
+          `Mutation objects are not created for upsert operation`,
+        );
       }
 
       const query: Record<string, any> = {};
@@ -1498,9 +1484,8 @@ export class QueryService {
         const relPermModel = this.models[relation.right.target];
 
         if (!relPermModel) {
-          throw new WsException(
+          throw new Unauthorized(
             `You don't have access to model "${relation.right.target}" or it doesn't exist.`,
-            'PERMISSION_DENIED',
           );
         }
 
@@ -1524,17 +1509,15 @@ export class QueryService {
         }
 
         if (relation.right.type !== 'many' && creates.length > 1) {
-          throw new WsException(
+          throw new InputInvalid(
             `Invalid mutation, "${relationField}" is not a many relation.`,
-            'INVALID_MUTATION',
           );
         }
 
         for (const create of creates) {
           if (!isObject(create)) {
-            throw new WsException(
+            throw new InputInvalid(
               `Invalid create data for relation "${relationField}"`,
-              'QUERY_INVALID',
             );
           }
 
@@ -1615,9 +1598,8 @@ export class QueryService {
 
           for (const connect of connects) {
             if (!isObject(connect)) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid connect data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -1740,9 +1722,8 @@ export class QueryService {
               ).findUnique(query);
 
               if (!oneItem) {
-                throw new WsException(
+                throw new InputInvalid(
                   `Invalid connect data for relation "${relationField}"`,
-                  'QUERY_INVALID',
                 );
               }
 
@@ -1775,9 +1756,8 @@ export class QueryService {
 
           for (const connectOrCreate of connects) {
             if (!connectOrCreate || connectOrCreate.constructor !== Object) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid connect data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -1942,9 +1922,8 @@ export class QueryService {
 
             for (const disconnect of disconnects) {
               if (!disconnect || disconnect.constructor !== Object) {
-                throw new WsException(
+                throw new InputInvalid(
                   `Invalid disconnect data for relation "${relationField}"`,
-                  'QUERY_INVALID',
                 );
               }
 
@@ -2098,9 +2077,8 @@ export class QueryService {
 
             for (const set of fieldData.set) {
               if (!set || set.constructor !== Object) {
-                throw new WsException(
+                throw new InputInvalid(
                   `Invalid set data for relation "${relationField}"`,
-                  'QUERY_INVALID',
                 );
               }
 
@@ -2153,16 +2131,14 @@ export class QueryService {
               mutations.push(update as Mutation<M>);
             }
           } else if (fieldData.set !== undefined) {
-            throw new WsException(
+            throw new InputInvalid(
               `Invalid set data for relation "${relationField}"`,
-              'QUERY_INVALID',
             );
           }
           /** --- End --- */
         } else if (fieldData.disconnect || fieldData.set) {
-          throw new WsException(
+          throw new InputInvalid(
             `Cannot disconnect relation "${relationField}" because it is required`,
-            'QUERY_INVALID',
           );
         }
         /** -------- End -------- */
@@ -2175,9 +2151,8 @@ export class QueryService {
 
           for (const update of updates) {
             if (!update || update.constructor !== Object) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid update data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -2223,9 +2198,8 @@ export class QueryService {
 
           for (const upsert of upserts) {
             if (!upsert || upsert.constructor !== Object) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid upsert data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -2307,9 +2281,8 @@ export class QueryService {
 
           for (const update of updates) {
             if (!update || update.constructor !== Object) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid updateMany data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -2333,9 +2306,8 @@ export class QueryService {
             mutations.push(..._mutations.all);
           }
         } else if (fieldData.updateMany) {
-          throw new WsException(
+          throw new InputInvalid(
             `Cannot updateMany relation "${relationField}"`,
-            'QUERY_INVALID',
           );
         }
         /** -------- End -------- */
@@ -2346,9 +2318,8 @@ export class QueryService {
             relation.left === relation.fKeyHolder &&
             relation.left.field.isRequired
           ) {
-            throw new WsException(
+            throw new InputInvalid(
               `Cannot delete relation "${relationField}" because it is required`,
-              'QUERY_INVALID',
             );
           }
 
@@ -2360,9 +2331,8 @@ export class QueryService {
 
           for (const deleteData of deletes) {
             if (!deleteData || deleteData.constructor !== Object) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid delete data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -2398,9 +2368,8 @@ export class QueryService {
 
           for (const deleteData of deletes) {
             if (!deleteData || deleteData.constructor !== Object) {
-              throw new WsException(
+              throw new InputInvalid(
                 `Invalid deleteMany data for relation "${relationField}"`,
-                'QUERY_INVALID',
               );
             }
 
@@ -2426,9 +2395,8 @@ export class QueryService {
             mutations.push(..._mutations.all);
           }
         } else if (fieldData.deleteMany) {
-          throw new WsException(
+          throw new InputInvalid(
             `Cannot deleteMany relation "${relationField}"`,
-            'QUERY_INVALID',
           );
         }
         /** -------- End -------- */
@@ -2447,14 +2415,7 @@ export class QueryService {
   public async find(rootQuery: QuerySchema, session: Session): Promise<any> {
     const queue: QuerySchema[] = [rootQuery];
 
-    const prisma = await this.prismaService.getPrisma(session.iid);
-
-    if (!prisma) {
-      throw new WsException(
-        `Institute #${session.iid} is either not found or not active`,
-        'UNAUTHORIZED',
-      );
-    }
+    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
 
     for (let q = 0; q < queue.length; q++) {
       const baseQuery = queue[q];
@@ -2468,9 +2429,8 @@ export class QueryService {
 
       if (!permissionModel || !modelFields) {
         // Permission for this model is not defined
-        throw new WsException(
+        throw new Unauthorized(
           `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
-          'PERMISSION_DENIED',
         );
       }
 
@@ -2575,11 +2535,7 @@ export class QueryService {
     try {
       return await (prisma[rootQuery.model][rootQuery.type] as any)(query);
     } catch (e) {
-      this.logger.error(e);
-      throw new WsException(
-        'Something went wrong while executing query, please contact support',
-        'PRISMA_ERROR',
-      );
+      throw new InternalServerError(e.message);
     }
 
     // TODO: Add support for subscriptions
@@ -2610,9 +2566,8 @@ export class QueryService {
       }
 
       if (!filter) {
-        throw new WsException(
-          `You don't have permission to perform "create" on "${mutation.target}".`,
-          'PERMISSION_DENIED',
+        throw new Unauthorized(
+          `You don't have permission to perform action "create" on model "${mutation.target}".`,
         );
       }
 
@@ -2640,9 +2595,8 @@ export class QueryService {
       const item = await (trx[mutation.target] as any).findFirst(query);
 
       if (!item) {
-        throw new WsException(
-          `You don't have permission to perform "create" on "${mutation.target}".`,
-          'PERMISSION_DENIED',
+        throw new Unauthorized(
+          `You don't have permission to perform action "create" on model "${mutation.target}".`,
         );
       }
     }
@@ -2707,7 +2661,7 @@ export class QueryService {
           allowUnknown: true,
         });
       } catch (e) {
-        throw new WsException(e.message, 'VALIDATION_FAILED');
+        throw new InputInvalid(e.message, e.details);
       }
     }
 
@@ -2807,7 +2761,7 @@ export class QueryService {
           allowUnknown: true,
         });
       } catch (e) {
-        throw new WsException(e.message, 'VALIDATION_FAILED');
+        throw new InputInvalid(e.message, e.details);
       }
     }
 
@@ -2961,9 +2915,8 @@ export class QueryService {
 
         if (!modelFields || !permissionModel) {
           // Permission for this model is not defined
-          throw new WsException(
+          throw new Unauthorized(
             `You don't have access to model "${baseQuery.model}" or it doesn't exist.`,
-            'PERMISSION_DENIED',
           );
         }
 
@@ -2988,19 +2941,12 @@ export class QueryService {
     }
 
     // Acquire prisma client
-    const prisma = await this.prismaService.getPrisma(session.iid);
-
-    if (!prisma) {
-      throw new WsException(
-        `Institute #${session.iid} is either not found or not active`,
-        'UNAUTHORIZED',
-      );
-    }
+    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
 
     // Process mutations
     const mutations = await this.processMutation(mutation, session, prisma)
       .then((mutations) => mutations)
-      .catch((err: WsException) => {
+      .catch((err: BaseException) => {
         if (wsSub) {
           return wsSub.error(err, true);
         }
@@ -3042,10 +2988,7 @@ export class QueryService {
       );
 
       if (!item) {
-        throw new WsException(
-          `Item to delete is not found`,
-          'RECORD_NOT_FOUND',
-        );
+        throw new NotFound(`The item you are trying to delete cannot be found`);
       }
 
       if (wsSub) {
