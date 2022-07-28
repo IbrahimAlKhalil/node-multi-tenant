@@ -1,7 +1,7 @@
 import { PrismaService } from '../prisma/prisma.service.js';
 import { NotFound } from '../exceptions/not-found.js';
 import { Request, Response } from 'hyper-express';
-import { MimeTypeMap } from './mime.enum.js';
+import { MimeType } from './mime-type.enum.js';
 import { Injectable } from '@nestjs/common';
 import { File } from '../../prisma/client';
 import { BucketItemStat } from 'minio';
@@ -45,7 +45,7 @@ export class MinioController {
       'Content-Disposition': `${
         'download' in req.query ? 'attachment' : 'inline'
       }; filename=${file.name}`,
-      'Content-Type': MimeTypeMap[file.mimeTypeId],
+      'Content-Type': MimeType[file.mimeTypeId],
       'Last-Modified': `${stat.lastModified.toUTCString()}`,
       'Cache-Control': `private, max-age=2592000, immutable`,
     });

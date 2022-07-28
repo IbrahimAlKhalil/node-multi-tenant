@@ -3,10 +3,10 @@ import { PayloadTooLarge } from '../exceptions/payload-too-large.js';
 import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AuthService } from '../auth/auth.service.js';
-import { FolderEnum } from '../minio/folder.enum.js';
+import { MimeType } from '../minio/mime-type.enum.js';
 import { Request, Response } from 'hyper-express';
-import { MimeIdEnum } from '../minio/mime.enum.js';
 import { Injectable } from '@nestjs/common';
+import { Folder } from '../minio/folder.js';
 import { fileTypeStream } from 'file-type';
 import { Minio } from '../minio/minio.js';
 import { Uws } from '../uws/uws.js';
@@ -147,10 +147,10 @@ export class UserController {
 
             const folder = await trx.folder.upsert({
               where: {
-                id: FolderEnum.PROFILE_PICTURE,
+                id: Folder.PROFILE_PICTURE,
               },
               create: {
-                id: FolderEnum.PROFILE_PICTURE,
+                id: Folder.PROFILE_PICTURE,
                 name: 'Avatars',
                 internal: true,
               },
@@ -161,7 +161,7 @@ export class UserController {
                 folderId: folder.id,
                 name: `${fileName}.webp`,
                 size: 0,
-                mimeTypeId: MimeIdEnum.WEBP,
+                mimeTypeId: MimeType['image/webp'],
                 ProfilePictureUsers: {
                   connect: {
                     id: session.uid,
