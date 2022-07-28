@@ -2,8 +2,8 @@ import { InternalServerError } from '../exceptions/internal-server-error.js';
 import HyperExpress, { MiddlewareHandler } from 'hyper-express';
 import { BaseException } from '../exceptions/base-exception.js';
 import { UserRouteHandler } from 'hyper-express';
-import { Config } from '../config/config.js';
 import { Logger, Module } from '@nestjs/common';
+import { Config } from '../config/config.js';
 import { Uws } from './uws.js';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -44,7 +44,12 @@ import cors from 'cors';
             credentials: true,
             maxAge: 3600,
           }) as UserRouteHandler;
-          const helmetMiddleware = helmet() as unknown as MiddlewareHandler;
+          const helmetMiddleware = helmet({
+            crossOriginResourcePolicy: {
+              policy: 'cross-origin',
+            },
+            contentSecurityPolicy: false,
+          }) as unknown as MiddlewareHandler;
 
           server.use(helmetMiddleware);
           server.use(corsMiddleware);
