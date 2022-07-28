@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 export async function genModelTypes() {
   const { PrismaClient } = await import('../api/prisma/client/index.js');
   const prisma = new PrismaClient({ datasources: { db: { url: `postgres://` } } });
-  const dmmf = prisma._dmmf;
+  const dmmf = prisma._baseDmmf;
 
   const types = [];
 
