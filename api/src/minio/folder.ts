@@ -1,4 +1,4 @@
 export enum Folder {
-  PROFILE_PICTURE = 1,
-  CHAT_FILES,
+  'Avatars' = 1,
+  'Chat Files',
 }
