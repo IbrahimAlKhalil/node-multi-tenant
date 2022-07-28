@@ -1,7 +1,7 @@
+import { ImageMimeType, OtherMimeTypes } from './mime-type.enum.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { NotFound } from '../exceptions/not-found.js';
 import { Request, Response } from 'hyper-express';
-import { MimeType } from './mime-type.enum.js';
 import { Injectable } from '@nestjs/common';
 import { File } from '../../prisma/client';
 import { BucketItemStat } from 'minio';
@@ -40,12 +40,23 @@ export class MinioController {
 
     const stream = await this.minio.getObject(bucket, req.params.fileId);
 
+    const mimeEnums = [ImageMimeType, OtherMimeTypes];
+
+    let contentType = 'application/octet-stream';
+
+    for (const _enum of mimeEnums) {
+      if (_enum[file.mimeTypeId]) {
+        contentType = _enum[file.mimeTypeId];
+        break;
+      }
+    }
+
     res.status(200).setHeaders({
       ETag: stat.etag,
       'Content-Disposition': `${
         'download' in req.query ? 'attachment' : 'inline'
       }; filename=${file.name}`,
-      'Content-Type': MimeType[file.mimeTypeId],
+      'Content-Type': contentType,
       'Last-Modified': `${stat.lastModified.toUTCString()}`,
       'Cache-Control': `private, max-age=2592000, immutable`,
     });
