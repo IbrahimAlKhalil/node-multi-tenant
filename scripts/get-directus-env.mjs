@@ -11,9 +11,9 @@ export function getDirectusEnv() {
     // Security
     KEY: env.WEBSITE_KEY,
     SECRET: env.WEBSITE_SECRET,
-    CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC: ['* data:'],
-    CONTENT_SECURITY_POLICY_DIRECTIVES__CONNECT_SRC: ['*'],
-    CONTENT_SECURITY_POLICY_DIRECTIVES__MEDIA_SRC: ['*'],
+    CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC: ['* data: blob: https:'],
+    CONTENT_SECURITY_POLICY_DIRECTIVES__CONNECT_SRC: ['* https: wss:'],
+    CONTENT_SECURITY_POLICY_DIRECTIVES__MEDIA_SRC: ['* data: blob: https:'],
 
     // Database
     DB_CLIENT: 'postgres',
