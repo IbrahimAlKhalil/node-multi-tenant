@@ -1,12 +1,20 @@
 <template>
   <div class="flex items-center gap-2">
+    <pre>{{ data?.institute?.code }}</pre>
     <the-avatar
       :size="40"
-      :url="authorInfo?.avatar"
-      :text="authorInfo?.I18n ? authorInfo?.I18n[0]['name'] : ''"
+      :url="
+        authorInfo?.pictureId
+          ? 'https://ap1.qmmsoft.local/storage/' +
+            data?.institute?.code +
+            '/' +
+            authorInfo.pictureId
+          : undefined
+      "
+      :text="authorInfo?.I18n ? authorInfo?.I18n[0]?.name : ''"
     />
     <h5 class="font-bold text-text dark:text-light text-xl">
-      {{ authorInfo?.I18n ? authorInfo?.I18n[0]['name'] : '' }}
+      {{ authorInfo?.I18n ? authorInfo?.I18n[0]?.name : '' }}
     </h5>
     <p class="text-sm text-gray-500 dark:text-gray-200">
       {{ data.date.split('T')[0] }}
@@ -33,7 +41,7 @@ export default defineComponent({
   },
   methods: {
     async findAuthor() {
-      this.authorInfo = await (
+      const response = await (
         await fetch(
           `https://${
             this.data?.institute.cluster.host
@@ -55,6 +63,8 @@ export default defineComponent({
           },
         )
       ).json();
+      console.log(response);
+      this.authorInfo = response;
     },
   },
   mounted() {
