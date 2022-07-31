@@ -59,14 +59,7 @@ export class AuthController {
     }
 
     const identity = this.helperService.getIdentityType(value.username);
-    const prisma = await this.prismaService.getPrisma(value.code);
-
-    if (!prisma) {
-      // No prisma client found
-      // Which means the instituteId is invalid
-
-      throw new NotFound('Institute not found');
-    }
+    const prisma = await this.prismaService.getPrismaOrThrow(value.code);
 
     const user = await prisma.user.findUnique({
       where: {
