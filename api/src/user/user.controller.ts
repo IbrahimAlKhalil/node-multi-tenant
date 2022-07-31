@@ -1,4 +1,4 @@
-import { PasswordChangeInput } from './types/password-change-input.js';
+import { changePasswordSchema } from './schema/change-password.js';
 import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ImageMimeType } from '../minio/mime-type.enum.js';
@@ -15,7 +15,6 @@ import pick from 'lodash/pick.js';
 import argon2 from 'argon2';
 import sharp from 'sharp';
 import path from 'path';
-import joi from 'joi';
 
 @Injectable()
 export class UserController {
@@ -74,23 +73,14 @@ export class UserController {
     res.status(200).json(userDecorated);
   }
 
-  private readonly changePasswordSchema = joi.object<PasswordChangeInput>({
-    userId: joi.number().optional(),
-    oldPassword: joi.string().required(),
-    newPassword: joi.string().required(),
-  });
-
   private async changePassword(req: Request, res: Response) {
     const session = await this.authService.authenticateReq(req, res);
     const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
 
     // Validate user input
-    const { error, value } = this.changePasswordSchema.validate(
-      await req.json(),
-      {
-        convert: true,
-      },
-    );
+    const { error, value } = changePasswordSchema.validate(await req.json(), {
+      convert: true,
+    });
 
     if (error) {
       // Validation failed
@@ -106,7 +96,7 @@ export class UserController {
       !user.password ||
       !(await argon2.verify(user.password, value.oldPassword))
     ) {
-      throw new InputInvalid('Old password is not correct!');
+      throw new InputInvalid('Incorrect password');
     }
 
     const hash = await argon2.hash(value.newPassword);
@@ -129,7 +119,7 @@ export class UserController {
           session,
         );
       } catch (error) {
-        throw new InputInvalid('User not found!');
+        throw new InputInvalid('User not found');
       }
     } else {
       await prisma.user.update({
