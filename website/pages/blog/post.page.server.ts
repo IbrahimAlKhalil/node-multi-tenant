@@ -135,7 +135,6 @@ const onBeforeRender: OnBeforeRender = async (pageContext) => {
       ],
     },
   });
-  console.log('post[0]', post[0]);
   return {
     pageContext: {
       pageProps: {

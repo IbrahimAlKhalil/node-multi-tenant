@@ -1,12 +1,12 @@
 <template>
   <div class="comment-group container my-14">
     <single-comment
-      :singleCommentData="singleCommentData"
       :commentsReactions="
         commentsReactions.filter(
           (react) => react.comment.id === singleCommentData.id,
         )
       "
+      :singleCommentData="singleCommentData"
       :updateComment="updateComment"
       :submitComment="submitComment"
       :commentValue="commentValue"
@@ -14,17 +14,17 @@
     />
     <div class="ml-5 mt-8" v-if="singleCommentData.comments">
       <single-comment
-        v-for="subCommentData of singleCommentData.comments"
-        :key="subCommentData.id"
-        :singleCommentData="subCommentData"
         :commentsReactions="
           commentsReactions.filter(
             (reaction) => reaction.comment.id === subCommentData.id,
           )
         "
+        v-for="subCommentData of singleCommentData.comments"
+        :singleCommentData="subCommentData"
         :updateComment="updateComment"
         :submitComment="submitComment"
         :commentValue="commentValue"
+        :key="subCommentData.id"
         :reactions="reactions"
       />
     </div>

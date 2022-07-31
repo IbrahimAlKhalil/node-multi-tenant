@@ -94,11 +94,6 @@ export default defineComponent({
           '&' + key + '=' + encodeURIComponent(val),
         )
         .replace(/^([^?&]+)&/, '$1?');
-      console.log({
-        url: uri,
-        key,
-        val,
-      });
       window.location.href = uri;
     },
   },

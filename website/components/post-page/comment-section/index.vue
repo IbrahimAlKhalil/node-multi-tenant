@@ -1,22 +1,22 @@
 <template>
   <leave-comment
-    :commentValue="commentValue"
-    @update:comment="updateComment"
     :submit-comment="submitComment"
+    @update:comment="updateComment"
+    :commentValue="commentValue"
   />
   <comment-suggestion
-    :suggestions="suggestions"
     @select-suggestion="selectSuggestion"
+    :suggestions="suggestions"
   />
   <comment-group
-    v-for="singleCommentData in data"
-    :reactions="reactions"
-    :commentsReactions="commentsReactions"
-    :key="singleCommentData.id"
     :singleCommentData="singleCommentData"
-    :commentValue="commentValue"
-    :updateComment="updateComment"
+    :commentsReactions="commentsReactions"
+    v-for="singleCommentData in data"
     :submitComment="submitComment"
+    :updateComment="updateComment"
+    :commentValue="commentValue"
+    :key="singleCommentData.id"
+    :reactions="reactions"
   />
 </template>
 

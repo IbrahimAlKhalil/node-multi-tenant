@@ -1,9 +1,9 @@
 <template>
   <comment-author
     :data="{
+      institute: singleCommentData.institute,
       date: singleCommentData.date_created,
       authorId: singleCommentData.user,
-      institute: singleCommentData.institute,
     }"
   />
   <p class="p-2 text-justify text-text dark:text-light">
@@ -11,18 +11,18 @@
   </p>
   <!-- <pre>{{ singleCommentData }}</pre> -->
   <comment-reaction
-    @handle-reply="handleReply"
-    :reactions="reactions"
     :commentsReactions="commentsReactions"
     :commentId="singleCommentData.id"
+    @handle-reply="handleReply"
+    :reactions="reactions"
   />
   <leave-comment
-    :submitComment="submitComment"
+    :mention="singleCommentData.user"
     @update:comment="updateComment"
+    :submitComment="submitComment"
+    :parent="singleCommentData.id"
     :commentValue="commentValue"
     v-show="isReplying"
-    :parent="singleCommentData.id"
-    :mention="singleCommentData.user"
     :fluid="true"
   />
 </template>

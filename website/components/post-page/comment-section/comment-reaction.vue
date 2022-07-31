@@ -173,7 +173,6 @@ export default defineComponent({
         commentId: props?.commentId,
         cluster: cluster,
       };
-      console.log(data);
       const res = await fetch('/api/comment-reaction', {
         method: 'POST',
         body: JSON.stringify(data),

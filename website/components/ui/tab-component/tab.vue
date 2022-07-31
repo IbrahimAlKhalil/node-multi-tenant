@@ -1,9 +1,10 @@
 <template>
   <li
-    class="flex items-center md:gap-2 p-2 cursor-pointer hover:text-primary dark:hover:text-secondary dark:text-light"
+    class="flex items-center md:gap-2 p-2 cursor-pointer hover:text-primary dark:hover:text-secondary dark:text-light border-b-2"
     :class="{
-      'border-b-2 border-b-primary dark:border-b-secondary text-primary dark:text-secondary':
+      'border-b-primary dark:border-b-secondary text-primary dark:text-secondary':
         isActive,
+      'border-b-transparent': !isActive,
     }"
     @click="$emit('handle-change', title)"
     v-if="count > 0"

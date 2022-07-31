@@ -1,6 +1,5 @@
 <template>
   <div class="flex items-center gap-2">
-    <pre>{{ data?.institute?.code }}</pre>
     <the-avatar
       :size="40"
       :url="
@@ -63,6 +62,7 @@ export default defineComponent({
           },
         )
       ).json();
+      console.log(response);
       this.authorInfo = response;
     },
   },

@@ -1,75 +1,75 @@
 <template>
   <layout-main>
     <post-hero-section
-      :image="post.featured_image"
       :categoryName="primaryCategory.name"
+      :image="post.featured_image"
       :title="post.title"
     />
-    <pre>{{ postReactionGroup }}</pre>
     <post-intro-section
-      :author="post.user_created"
-      :date="post.date_created.split('T')[0]"
-      :title="post.title"
-      :slug="post.slug"
       :categoryName="primaryCategory.name"
       :categorySlug="primaryCategory.slug"
+      :author="post.user_created"
+      :date="post.date_created"
+      :title="post.title"
+      :slug="post.slug"
     />
     <post-page-meta-description-section :short_content="post.short_content" />
 
     <post-description-section :content="post.content" />
 
     <post-reactions-section
-      :reactions="reactions"
       :handleClickReaction="handleClickReaction"
+      :reactions="reactions"
     />
     <div class="py-5 bg-gray-100 dark:bg-dark my-10">
       <post-tags-section :tags="post.tags" />
       <post-share-section
-        :title="post.title"
         :shortDetails="post.short_content.slice(0, 50)"
+        :title="post.title"
       />
     </div>
     <!-- Start Tab Section -->
     <the-tabs>
       <the-tab
+        :isActive="'comments' === activeTab"
         @handle-change="handleTabChange"
         title="comments"
         :count="10"
-        :isActive="'comments' === activeTab"
       >
         <CommentIcon class="text-xl" />
       </the-tab>
 
       <the-tab
+        :isActive="name.toLowerCase() === activeTab"
+        v-for="(count, name) in countReaction"
         @handle-change="handleTabChange"
         :active-tab="activeTab"
-        v-for="(count, name) in countReaction"
+        :count="count"
+        :title="name"
         :key="name"
         :id="name"
-        :title="name"
-        :count="count"
-        :isActive="name.toLowerCase() === activeTab"
       >
         <tab-button
-          :title="name"
-          :activeTab="activeTab"
           :reactionsCount="count"
+          :activeTab="activeTab"
+          :title="name"
         />
       </the-tab>
     </the-tabs>
     <tab-body v-if="activeTab === 'comments'">
       <comment-section
-        :data="commentsData"
+        :commentsReactions="commentsReactions"
+        :selectSuggestion="selectSuggestion"
+        :submitComment="submitComment"
+        :groupComments="groupComments"
+        :updateComment="updateComment"
         :commentValue="commentValue"
         :suggestions="suggestions"
-        :submitComment="submitComment"
         :reactions="reactions"
-        :commentsReactions="commentsReactions"
-        :updateComment="updateComment"
-        :selectSuggestion="selectSuggestion"
-        :groupComments="groupComments"
+        :data="commentsData"
       />
     </tab-body>
+
     <tab-body v-else-if="activeTab === 'like'">
       <tab-body-users-container>
         <tab-body-user-item
@@ -159,9 +159,9 @@ export default defineComponent({
     // Toast
     const toast: any = inject('$toast');
     // Context
-    const { urlPathname, pageProps } = usePageContext();
-    const auth = useAuth();
+    const { urlPathname, pageProps, lang } = usePageContext();
     const slug = urlPathname.split('/').pop();
+    const auth = useAuth();
     // Type
     type ReactionCountType = {
       Like: number;
@@ -255,7 +255,6 @@ export default defineComponent({
     countReactions(postReactionsData.postReactions);
 
     const selectSuggestion = (value: string) => {
-      console.log('Select Suggestion called: ', value);
       commentValue.value = commentValue.value + ' ' + value;
     };
     /**
@@ -377,6 +376,17 @@ export default defineComponent({
         });
       }
     };
+
+    if (import.meta.env.SSR && pageProps?.post?.date_created) {
+      const formatter = new Intl.DateTimeFormat(lang, {
+        timeStyle: 'short',
+        dateStyle: 'full',
+      });
+
+      const date = new Date(pageProps.post.date_created);
+      pageProps.post.date_created = formatter.format(date);
+    }
+
     return {
       ...pageProps,
       postReactionsData: postReactionsData.postReactions,
