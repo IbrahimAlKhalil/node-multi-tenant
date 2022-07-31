@@ -5,6 +5,7 @@ import { ImageMimeType } from '../minio/mime-type.enum.js';
 import { SaveOptions } from '../minio/types/save-options';
 import { MinioService } from '../minio/minio.service.js';
 import { QueryService } from '../query/query.service.js';
+import { NotFound } from '../exceptions/not-found.js';
 import { AuthService } from '../auth/auth.service.js';
 import { Request, Response } from 'hyper-express';
 import { Injectable } from '@nestjs/common';
@@ -119,7 +120,7 @@ export class UserController {
           session,
         );
       } catch (error) {
-        throw new InputInvalid('User not found');
+        throw new NotFound('User not found');
       }
     } else {
       await prisma.user.update({
