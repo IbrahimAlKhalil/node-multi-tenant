@@ -63,7 +63,6 @@ export default defineComponent({
           },
         )
       ).json();
-      console.log(response);
       this.authorInfo = response;
     },
   },
