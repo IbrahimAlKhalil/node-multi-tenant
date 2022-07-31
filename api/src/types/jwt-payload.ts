@@ -1,9 +1,9 @@
-import { user_kind } from '../../prisma/client';
+import { UserKind } from '../../prisma/client';
 
 export interface JwtPayload {
   uid: number;
   iid: string;
-  knd: user_kind;
+  knd: UserKind;
   rol: number[];
   jti: number;
   exp: number;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { user_kind } from '../../prisma/client';
+import { UserKind } from '../../prisma/client';
 import { Session } from './session';
 
 /**
@@ -9,7 +9,7 @@ import { Session } from './session';
 
 declare module 'hyper-express' {
   export interface Websocket {
-    get context(): Session<user_kind>;
-    session: Session<user_kind>;
+    get context(): Session<UserKind>;
+    session: Session<UserKind>;
   }
 }

@@ -1,5 +1,5 @@
 import { PermissionReference } from './permission-reference';
-import { Session, UserKind } from '../../types/session';
+import { Session, UserKindExtra } from '../../types/session';
 import { PermissionReturn } from './permission-return';
 import { PrismaClient } from '../../../prisma/client';
 import { FieldReference } from './field-reference';
@@ -11,7 +11,7 @@ import { ModuleRef } from '@nestjs/core';
 export interface PermissionDefinition<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  K extends UserKind = UserKind,
+  K extends UserKindExtra = UserKindExtra,
   I = Partial<ModelTypes[N]['whereInput']>,
   Model = Partial<ModelTypes[N]['model']>,
   SessionK = Session<K>,
@@ -33,5 +33,5 @@ export interface PermissionDefinition<
 export type ReadPermission<
   N extends ModelNames,
   S extends ModelState = 'processed',
-  K extends UserKind = UserKind,
+  K extends UserKindExtra = UserKindExtra,
 > = boolean | PermissionDefinition<N, S, K>;

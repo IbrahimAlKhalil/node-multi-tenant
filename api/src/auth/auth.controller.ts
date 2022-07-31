@@ -2,7 +2,6 @@ import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { HelperService } from '../helper/helper.service.js';
 import { Unauthorized } from './exceptions/unauthorized.js';
-import { NotFound } from '../exceptions/not-found.js';
 import { JwtPayload } from '../types/jwt-payload';
 import { Request, Response } from 'hyper-express';
 import { LoginInput } from './types/login-input';

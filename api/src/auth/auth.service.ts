@@ -2,7 +2,7 @@ import { Unauthorized } from './exceptions/unauthorized.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { JwtPayload } from '../types/jwt-payload';
 import { Request, Response } from 'hyper-express';
-import { user_kind } from '../../prisma/client';
+import { UserKind } from '../../prisma/client';
 import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { Session } from '../types/session';
@@ -103,7 +103,7 @@ export class AuthService {
 
   async authenticateReq<
     A = false,
-    S = A extends true | undefined ? Session : Session<user_kind>,
+    S = A extends true | undefined ? Session : Session<UserKind>,
   >(req: Request, res: Response, allowPublic?: A): Promise<S> {
     const csrfToken = req.header('x-csrf-token');
     const instituteId = req.header('x-qm-institute-id');

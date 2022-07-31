@@ -9,6 +9,106 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ContentStatus {
+  LOCKED
+  ARCHIVED
+  TRASHED
+
+  @@map("content_status")
+}
+
+enum ActivityAction {
+  CREATE
+  UPDATE
+  DELETE
+
+  @@map("activity_action")
+}
+
+enum AddressType {
+  PRESENT
+  PERMANENT
+
+  @@map("address_type")
+}
+
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+
+  B_POSITIVE
+  B_NEGATIVE
+
+  AB_POSITIVE
+  AB_NEGATIVE
+
+  O_POSITIVE
+  O_NEGATIVE
+
+  @@map("blood_type")
+}
+
+enum ExamCalcMethod {
+  AVERAGE
+  POINT
+
+  @@map("exam_calc_method")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+
+  @@map("gender")
+}
+
+enum GuardianRelationType {
+  FA
+  MO
+
+  BRO
+  SIS
+  COU
+
+  UN
+  AU
+
+  GRF
+  GRM
+
+  SON
+  DAU
+
+  @@map("guardian_relation_type")
+}
+
+enum NotificationLinkType {
+  INTERNAL
+  EXTERNAL
+
+  @@map("notification_link_type")
+}
+
+enum SmsStatus {
+  PENDING
+  FAILED
+  SUCCESS
+
+  @@map("sms_status")
+}
+
+enum UserKind {
+  STUDENT
+  GUARDIAN
+  STAFF
+  ADMIN
+  SUPPORTER
+  GENERAL
+
+  @@map("user_kind")
+}
+
 model AccessToken {
   id     Int @id @default(autoincrement())
   userId Int
@@ -29,10 +129,10 @@ model Activity {
   id     Int @id @default(autoincrement())
   userId Int
 
-  action    activity_action
-  table     String          @db.VarChar(100)
+  action    ActivityAction
+  table     String         @db.VarChar(100)
   recordId  String?
-  timestamp DateTime        @default(now()) @db.Timestamptz(6)
+  timestamp DateTime       @default(now()) @db.Timestamptz(6)
 
   ip        String @db.VarChar(50)
   userAgent String @db.VarChar(255)
@@ -48,7 +148,7 @@ model Address {
   id     Int  @id @default(autoincrement())
   userId Int?
 
-  addressType address_type
+  addressType AddressType
 
   subDistrictId Int
   SubDistrict   SubDistrict @relation(fields: [subDistrictId], references: [id], onUpdate: Restrict)
@@ -78,7 +178,7 @@ model Admission {
   sessionId Int
   userId    Int
 
-  status content_status?
+  status ContentStatus?
 
   roll    Int?
   closed  Boolean? @default(false)
@@ -96,7 +196,7 @@ model Admission {
 model Area {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   order     Int?       @unique
   I18n      AreaI18n[]
@@ -119,7 +219,7 @@ model Bench {
   id           Int @id
   benchGroupId Int
 
-  status content_status?
+  status ContentStatus?
 
   order Int
 
@@ -147,7 +247,7 @@ model Book {
   groupId    Int?
   categoryId Int?
 
-  status content_status?
+  status ContentStatus?
 
   Class     Class      @relation(fields: [classId], references: [id], onDelete: Cascade)
   BookGroup BookGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -166,7 +266,7 @@ model Book {
 model BookCategory {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   I18n BookCategoryI18n[]
 }
@@ -186,7 +286,7 @@ model BookCategoryI18n {
 model BookGroup {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   Book               Book[]
   I18n               BookGroupI18n[]
@@ -221,7 +321,7 @@ model Building {
   id     Int  @id @default(autoincrement())
   areaId Int?
 
-  status content_status?
+  status ContentStatus?
 
   order Int?
 
@@ -247,7 +347,7 @@ model BuildingI18n {
 model Class {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   order Int
 
@@ -262,7 +362,7 @@ model ClassGroup {
   id      Int @id @default(autoincrement())
   classId Int
 
-  status content_status?
+  status ContentStatus?
 
   Class           Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
   Admissions      Admission[]
@@ -300,7 +400,7 @@ model ClassI18n {
 model Country {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   I18n   CountryI18n[]
   States State[]
@@ -321,7 +421,7 @@ model CountryI18n {
 model Designation {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   order Int?
 
@@ -345,7 +445,7 @@ model District {
   id         Int @id @default(autoincrement())
   divisionId Int
 
-  status content_status?
+  status ContentStatus?
 
   Division     Division       @relation(fields: [divisionId], references: [id], onDelete: Cascade)
   I18n         DistrictI18n[]
@@ -370,7 +470,7 @@ model Division {
   id      Int @id @default(autoincrement())
   stateId Int
 
-  status content_status?
+  status ContentStatus?
 
   State     State          @relation(fields: [stateId], references: [id], onDelete: Cascade)
   Districts District[]
@@ -397,7 +497,7 @@ model Exam {
   sessionId Int
   classId   Int
 
-  status content_status?
+  status ContentStatus?
 
   published Boolean? @default(false)
 
@@ -500,7 +600,7 @@ model ExamGrade {
 model ExamHall {
   id Int @id
 
-  status content_status?
+  status ContentStatus?
 
   columns Int @db.SmallInt
   benches Int @db.SmallInt
@@ -514,7 +614,7 @@ model ExamHall {
 model ExamMethod {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   ExamBookMethods ExamBookMethod[]
   I18n            ExamMethodI18n[]
@@ -538,14 +638,14 @@ model ExamMethodI18n {
 model ExamPreset {
   id Int @id @default(autoincrement())
 
-  calcMethod       exam_calc_method
-  markFormula      Json             @default(dbgenerated("json_build_object()")) @db.Json
-  gradeFormula     Json             @default(dbgenerated("json_build_object()")) @db.Json
-  customGroups     Json             @default(dbgenerated("json_build_array()")) @db.Json
-  averageCondition Json             @default(dbgenerated("json_build_array()")) @db.Json
+  calcMethod       ExamCalcMethod
+  markFormula      Json           @default(dbgenerated("json_build_object()")) @db.Json
+  gradeFormula     Json           @default(dbgenerated("json_build_object()")) @db.Json
+  customGroups     Json           @default(dbgenerated("json_build_array()")) @db.Json
+  averageCondition Json           @default(dbgenerated("json_build_array()")) @db.Json
   failGradeId      Int
 
-  status content_status?
+  status ContentStatus?
 
   Grade           Grade            @relation(fields: [failGradeId], references: [id], onDelete: Cascade)
   ExamBooks       ExamBook[]
@@ -633,7 +733,7 @@ model ExamRoutine {
   bookId   Int
   methodId Int?
 
-  status content_status?
+  status ContentStatus?
 
   start DateTime @db.Timestamptz(6)
   end   DateTime @db.Timestamptz(6)
@@ -667,7 +767,7 @@ model File {
   folderId   Int?
   mimeTypeId Int
 
-  status content_status?
+  status ContentStatus?
 
   name String @db.VarChar(255)
   size BigInt
@@ -688,7 +788,7 @@ model Floor {
   id         Int  @id @default(autoincrement())
   buildingId Int?
 
-  status content_status?
+  status ContentStatus?
 
   order Int?
 
@@ -715,7 +815,7 @@ model Folder {
   id       Int  @id @default(autoincrement())
   parentId Int?
 
-  status content_status?
+  status ContentStatus?
 
   name     String  @db.VarChar(255)
   internal Boolean @default(false)
@@ -730,7 +830,7 @@ model Folder {
 model Grade {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   point Float? @db.Real
 
@@ -832,7 +932,7 @@ model InstituteI18n {
 model Language {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   name                String                @db.VarChar(100)
   AddressI18n         AddressI18n[]
@@ -897,12 +997,12 @@ model Notification {
 model NotificationBase {
   id Int @id @default(autoincrement())
 
-  imageId  String?                 @db.Uuid
-  link     String?                 @db.VarChar(600)
-  linkType notification_link_type?
-  internal Boolean                 @default(false)
+  imageId  String?               @db.Uuid
+  link     String?               @db.VarChar(600)
+  linkType NotificationLinkType?
+  internal Boolean               @default(false)
 
-  status content_status?
+  status ContentStatus?
 
   Image                File?                 @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Notifications        Notification[]
@@ -954,7 +1054,7 @@ model Room {
   id      Int  @id @default(autoincrement())
   floorId Int?
 
-  status content_status?
+  status ContentStatus?
 
   order Int?
 
@@ -992,7 +1092,7 @@ model Seat {
 model Session {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   active     Boolean?      @default(false)
   Admissions Admission[]
@@ -1015,15 +1115,15 @@ model SessionI18n {
 model Sms {
   id Int @id @default(autoincrement())
 
-  mobile String     @db.VarChar(16)
-  text   String     @db.VarChar(1000)
-  status sms_status @default(PENDING)
+  mobile String    @db.VarChar(16)
+  text   String    @db.VarChar(1000)
+  status SmsStatus @default(PENDING)
 }
 
 model SmsTemplate {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   name String @db.VarChar(100)
 
@@ -1046,7 +1146,7 @@ model Staff {
   id            Int @id @default(autoincrement())
   designationId Int
 
-  status content_status?
+  status ContentStatus?
 
   joiningDate DateTime? @db.Date
   order       Int?
@@ -1061,7 +1161,7 @@ model Staff {
 model StaffGroup {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   I18n             GroupI18n[]
   StaffGroupPivots StaffGroupPivot[]
@@ -1093,7 +1193,7 @@ model State {
   id        Int @id @default(autoincrement())
   countryId Int
 
-  status content_status?
+  status ContentStatus?
 
   Country   Country     @relation(fields: [countryId], references: [id], onDelete: Cascade)
   Divisions Division[]
@@ -1118,7 +1218,7 @@ model StudentGuardian {
   guardianUserId Int
   studentUserId  Int
 
-  relation guardian_relation_type?
+  relation GuardianRelationType?
 
   GuardianUser User @relation("StudentGuardian_guardianUserIdToUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
   StudentUser  User @relation("StudentGuardian_studentUserIdToUser", fields: [studentUserId], references: [id], onDelete: Cascade)
@@ -1131,7 +1231,7 @@ model SubDistrict {
   id         Int @id @default(autoincrement())
   districtId Int
 
-  status content_status?
+  status ContentStatus?
 
   District District          @relation(fields: [districtId], references: [id], onDelete: Cascade)
   Addresss Address[]
@@ -1155,22 +1255,22 @@ model SubDistrictI18n {
 model User {
   id Int @id @default(autoincrement())
 
-  type      user_kind
-  mobile    String?   @unique @db.VarChar(16)
-  email     String?   @unique @db.VarChar(320)
-  pictureId String?   @db.Uuid
+  type      UserKind
+  mobile    String?  @unique @db.VarChar(16)
+  email     String?  @unique @db.VarChar(320)
+  pictureId String?  @db.Uuid
 
-  status content_status?
+  status ContentStatus?
 
-  dateOfBirth DateTime?   @db.Date
-  nid         String?     @db.VarChar(40)
-  gender      gender
-  bloodType   blood_type?
-  username    String?     @unique @db.VarChar(100)
+  dateOfBirth DateTime?  @db.Date
+  nid         String?    @db.VarChar(40)
+  gender      Gender
+  bloodType   BloodType?
+  username    String?    @unique @db.VarChar(100)
   password    String?
-  disabled    Boolean?    @default(false)
+  disabled    Boolean?   @default(false)
 
-  Picture                     File?                @relation(fields: [pictureId], references: [id])
+  Picture                     File?                @relation(fields: [pictureId], references: [id], onDelete: SetNull)
   AccessTokens                AccessToken[]
   Activitys                   Activity[]
   Addresss                    Address[]
@@ -1241,7 +1341,7 @@ model ChatFile {
 model Conversation {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   name        String  @db.VarChar(100)
   description String  @db.VarChar(600)
@@ -1267,7 +1367,7 @@ model ConversationMember {
 model Role {
   id Int @id @default(autoincrement())
 
-  status content_status?
+  status ContentStatus?
 
   I18n            RoleI18n[]
   RolePermissions RoleCrudPermission[]
@@ -1309,84 +1409,4 @@ model RoleUser {
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, roleId])
-}
-
-enum content_status {
-  LOCKED
-  ARCHIVED
-  TRASHED
-}
-
-enum activity_action {
-  CREATE
-  UPDATE
-  DELETE
-}
-
-enum address_type {
-  PRESENT
-  PERMANENT
-}
-
-enum blood_type {
-  A_POSITIVE
-  A_NEGATIVE
-
-  B_POSITIVE
-  B_NEGATIVE
-
-  AB_POSITIVE
-  AB_NEGATIVE
-
-  O_POSITIVE
-  O_NEGATIVE
-}
-
-enum exam_calc_method {
-  AVERAGE
-  POINT
-}
-
-enum gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
-enum guardian_relation_type {
-  FA
-  MO
-
-  BRO
-  SIS
-  COU
-
-  UN
-  AU
-
-  GRF
-  GRM
-
-  SON
-  DAU
-}
-
-enum notification_link_type {
-  INTERNAL
-  EXTERNAL
-}
-
-enum sms_status {
-  PENDING
-  FAILED
-  SUCCESS
-}
-
-enum user_kind {
-  STUDENT
-  GUARDIAN
-  STAFF
-  ADMIN
-  SUPPORTER
-  GENERAL
 }

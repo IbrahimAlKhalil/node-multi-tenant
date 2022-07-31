@@ -1,18 +1,18 @@
-import { user_kind } from '../../prisma/client';
+import { UserKind } from '../../prisma/client';
 
-export type UserKind = user_kind | 'PUBLIC';
+export type UserKindExtra = UserKind | 'PUBLIC';
 
-interface SessionBase<K extends UserKind = UserKind> {
+interface SessionBase<K extends UserKindExtra = UserKindExtra> {
   iid: string;
   knd: K;
 }
 
-interface SessionAuthenticated extends SessionBase<user_kind> {
+interface SessionAuthenticated extends SessionBase<UserKind> {
   uid: number;
   rol: number[];
   jti: number;
 }
 
-export type Session<K extends UserKind = UserKind> = K extends 'PUBLIC'
+export type Session<K extends UserKindExtra = UserKindExtra> = K extends 'PUBLIC'
   ? SessionBase<K>
   : SessionAuthenticated;
