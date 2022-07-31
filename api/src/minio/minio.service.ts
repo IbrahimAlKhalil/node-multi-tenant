@@ -2,12 +2,15 @@ import { PayloadTooLarge } from '../exceptions/payload-too-large.js';
 import { ImageMimeType, OtherMimeTypes } from './mime-type.enum.js';
 import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { GetFileResult } from './types/get-file-result';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotFound } from '../exceptions/not-found.js';
 import { SaveOptions } from './types/save-options';
 import { File, Prisma } from '../../prisma/client';
 import { Institute } from '../types/institute';
 import { Injectable } from '@nestjs/common';
 import { fileTypeStream } from 'file-type';
+import { BucketItemStat } from 'minio';
 import { Folder } from './folder.js';
 import { Minio } from './minio.js';
 import { Readable } from 'stream';
@@ -139,5 +142,26 @@ export class MinioService {
 
       return fileInDB;
     });
+  }
+
+  async get(id: string, instituteId: string): Promise<GetFileResult> {
+    const prisma = await this.prismaService.getPrismaOrThrow(instituteId);
+
+    const bucket = `qmmsoft-${instituteId}`;
+    let stat: BucketItemStat;
+    let fileInDB: File;
+
+    try {
+      stat = await this.minio.statObject(bucket, id);
+      fileInDB = await prisma.file.findUniqueOrThrow({ where: { id } });
+    } catch (e) {
+      throw new NotFound();
+    }
+
+    return {
+      stat,
+      fileInDB,
+      stream: await this.minio.getObject(bucket, id),
+    };
   }
 }

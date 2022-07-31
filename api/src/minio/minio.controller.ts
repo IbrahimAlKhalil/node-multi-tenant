@@ -1,10 +1,8 @@
 import { ImageMimeType, OtherMimeTypes } from './mime-type.enum.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { NotFound } from '../exceptions/not-found.js';
 import { Request, Response } from 'hyper-express';
+import { MinioService } from './minio.service.js';
 import { Injectable } from '@nestjs/common';
-import { File } from '../../prisma/client';
-import { BucketItemStat } from 'minio';
 import { Uws } from '../uws/uws.js';
 import { Minio } from './minio.js';
 
@@ -12,6 +10,7 @@ import { Minio } from './minio.js';
 export class MinioController {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly minioService: MinioService,
     private readonly minio: Minio,
     private readonly uws: Uws,
   ) {
@@ -19,50 +18,34 @@ export class MinioController {
   }
 
   async get(req: Request, res: Response) {
-    const prisma = await this.prismaService.getPrismaOrThrow(
+    const file = await this.minioService.get(
+      req.params.fileId,
       req.params.instituteId,
     );
-
-    const bucket = `qmmsoft-${req.params.instituteId}`;
-    let stat: BucketItemStat;
-    let file: File;
-
-    try {
-      stat = await this.minio.statObject(bucket, req.params.fileId);
-      file = await prisma.file.findUniqueOrThrow({
-        where: {
-          id: req.params.fileId,
-        },
-      });
-    } catch (e) {
-      throw new NotFound();
-    }
-
-    const stream = await this.minio.getObject(bucket, req.params.fileId);
 
     const mimeEnums = [ImageMimeType, OtherMimeTypes];
 
     let contentType = 'application/octet-stream';
 
     for (const _enum of mimeEnums) {
-      if (_enum[file.mimeTypeId]) {
-        contentType = _enum[file.mimeTypeId];
+      if (_enum[file.fileInDB.mimeTypeId]) {
+        contentType = _enum[file.fileInDB.mimeTypeId];
         break;
       }
     }
 
     res.status(200).setHeaders({
-      ETag: stat.etag,
+      ETag: file.stat.etag,
       'Content-Disposition': `${
         'download' in req.query ? 'attachment' : 'inline'
-      }; filename=${file.name}`,
+      }; filename=${file.fileInDB.name}`,
       'Content-Type': contentType,
-      'Last-Modified': `${stat.lastModified.toUTCString()}`,
+      'Last-Modified': `${file.stat.lastModified.toUTCString()}`,
       'Cache-Control': `private, max-age=2592000, immutable`,
     });
 
     // TODO: Support range header
 
-    res.stream(stream, stat.size);
+    res.stream(file.stream, file.stat.size);
   }
 }
