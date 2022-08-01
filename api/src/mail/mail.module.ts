@@ -23,4 +23,6 @@ import { Module } from '@nestjs/common';
   ],
   exports: [MailService],
 })
-export class MailModule {}
+export class MailModule {
+  constructor(private readonly mailService: MailService) {}
+}
