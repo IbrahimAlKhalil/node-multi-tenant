@@ -23,12 +23,4 @@ import { Module } from '@nestjs/common';
   ],
   exports: [MailService],
 })
-export class MailModule {
-  constructor(private readonly mailService: MailService) {
-    mailService.sendMail({
-      from: 'test@saharait.com',
-      to: 'whatever@customer.com',
-      text: 'Hello',
-    });
-  }
-}
+export class MailModule {}
