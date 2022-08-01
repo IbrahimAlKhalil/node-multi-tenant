@@ -1,9 +1,18 @@
+import { AssetModule } from '../asset/asset.module.js';
+import { MailProcessor } from './mail.processor.js';
 import { MailService } from './mail.service.js';
 import { Config } from '../config/config.js';
 import { createTransport } from 'nodemailer';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 @Module({
+  imports: [
+    BullModule.registerQueue({
+      name: 'mail',
+    }),
+    AssetModule,
+  ],
   providers: [
     {
       useFactory({ mail }: Config) {
@@ -20,7 +29,8 @@ import { Module } from '@nestjs/common';
       provide: MailService,
       inject: [Config],
     },
+    MailProcessor,
   ],
-  exports: [MailService],
+  exports: [MailService, BullModule],
 })
 export class MailModule {}
