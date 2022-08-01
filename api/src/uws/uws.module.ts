@@ -22,13 +22,8 @@ import cors from 'cors';
             trust_proxy: true,
           });
 
-          const allowedOrigins = new Set([
-            new URL(`https://${config.app.websiteHost}`).origin,
-            new URL(`https://${config.app.clusterHost}`).origin,
-          ]);
-
           const corsMiddleware = cors({
-            origin: Array.from(allowedOrigins),
+            origin: [config.app.websiteOrigin, config.app.clusterOrigin],
             methods: ['GET', 'POST', 'UPDATE', 'DELETE', 'OPTIONS', 'HEAD'],
             allowedHeaders: [
               'Content-Type',
