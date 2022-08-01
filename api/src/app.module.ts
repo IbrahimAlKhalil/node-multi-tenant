@@ -9,6 +9,7 @@ import { QueryModule } from './query/query.module.js';
 import { MinioModule } from './minio/minio.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UserModule } from './user/user.module.js';
+import { MailModule } from './mail/mail.module.js';
 import { UwsModule } from './uws/uws.module.js';
 import { AppService } from './app.service.js';
 import { Module } from '@nestjs/common';
@@ -29,6 +30,7 @@ import { Module } from '@nestjs/common';
     AuthModule,
     UserModule,
     UwsModule,
+    MailModule,
   ],
   providers: [AppService],
 })
