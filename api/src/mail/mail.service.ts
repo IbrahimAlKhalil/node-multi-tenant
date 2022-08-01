@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import Transport from 'nodemailer/lib/smtp-transport/index.js';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import Mail from 'nodemailer/lib/mailer/index.js';
+import SMTPPool from 'nodemailer/lib/smtp-pool';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class MailService extends (Transport as typeof SMTPTransport) {}
+export class MailService extends Mail<SMTPPool.SentMessageInfo> {}
