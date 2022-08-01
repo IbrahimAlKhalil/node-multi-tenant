@@ -28,33 +28,34 @@ export class AssetService {
     });
   }
 
-  private readonly getMjmlCompiled = memoize(
-    async (name: string, options?: MJMLParsingOptions) => {
-      const filePath = path.join(__dirname, '../../assets', name);
-      const mjml = await fs.promises.readFile(filePath, 'utf-8');
+  private readonly getMjmlCompiled = memoize(async (filePath: string) => {
+    const mjml = await fs.promises.readFile(filePath, 'utf-8');
 
-      const result = mjml2html(mjml, {
-        ...options,
-        filePath,
-        actualPath: filePath,
-      });
-
-      if (result.errors.length !== 0) {
-        this.logger.error(result.errors);
-      }
-
-      return template(result.html, {
-        sourceURL: filePath,
-      });
-    },
-  );
+    return template(mjml, {
+      sourceURL: filePath,
+      interpolate: /{{([\s\S]+?)}}/g,
+    });
+  });
 
   public async getMjml(
     name: string,
     options?: MJMLParsingOptions,
   ): Promise<string> {
-    const compiled = await this.getMjmlCompiled(name, options);
+    const filePath = path.join(__dirname, '../../assets', name);
+    const compiled = await this.getMjmlCompiled(filePath);
 
-    return compiled(options?.variables);
+    const result = mjml2html(compiled(options?.variables), {
+      ...options,
+      filePath,
+      actualPath: filePath,
+    });
+
+    if (result.errors.length !== 0) {
+      for (const err of result.errors) {
+        this.logger.error(err.formattedMessage);
+      }
+    }
+
+    return result.html;
   }
 }

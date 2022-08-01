@@ -1,6 +1,10 @@
 import mjml2html from 'mjml';
 
-export interface MJMLParsingOptions
-  extends Omit<Parameters<typeof mjml2html>[1], 'filePath' | 'actualPath'> {
+type BaseOptions = Omit<
+  Exclude<Parameters<typeof mjml2html>[1], undefined>,
+  'filePath' | 'actualPath'
+>;
+
+export interface MJMLParsingOptions extends BaseOptions {
   variables: Record<string, any>;
 }
