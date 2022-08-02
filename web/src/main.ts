@@ -1,15 +1,13 @@
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
-
-import App from './App.vue';
 import router from './router';
+import App from './App.vue';
 
 const app = createApp(App);
 
 const i18n = createI18n({
   legacy: false,
-  locale: 'en',
 });
 
 app.use(createPinia());
