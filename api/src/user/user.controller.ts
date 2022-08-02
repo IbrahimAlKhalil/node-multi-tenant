@@ -1,16 +1,20 @@
 import { changePasswordSchema } from './schema/change-password.js';
+import { requestResetPasswordSchema } from './schema/password-reset.js';
 import { InputInvalid } from '../exceptions/input-invalid.js';
+import { HelperService } from '../helper/helper.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ImageMimeType } from '../minio/mime-type.enum.js';
 import { SaveOptions } from '../minio/types/save-options';
 import { MinioService } from '../minio/minio.service.js';
 import { QueryService } from '../query/query.service.js';
+import { AssetService } from '../asset/asset.service.js';
 import { NotFound } from '../exceptions/not-found.js';
+import { MailService } from '../mail/mail.service.js';
 import { AuthService } from '../auth/auth.service.js';
 import { Request, Response } from 'hyper-express';
+import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { Folder } from '../minio/folder.js';
-import { Minio } from '../minio/minio.js';
 import { Uws } from '../uws/uws.js';
 import pick from 'lodash/pick.js';
 import argon2 from 'argon2';
@@ -21,14 +25,21 @@ import path from 'path';
 export class UserController {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly helperService: HelperService,
     private readonly minioService: MinioService,
     private readonly queryService: QueryService,
+    private readonly assetService: AssetService,
     private readonly authService: AuthService,
-    private readonly minio: Minio,
+    private readonly mailService: MailService,
+    private readonly config: Config,
     private readonly uws: Uws,
   ) {
     uws.get('/user/me', this.me.bind(this));
     uws.post('/user/avatar', this.uploadAvatar.bind(this));
+    uws.post(
+      '/user/request-password-reset',
+      this.requestResetPassword.bind(this),
+    );
     uws.post('/user/change-password', this.changePassword.bind(this));
   }
 
@@ -72,6 +83,65 @@ export class UserController {
     userDecorated.name = user?.I18n?.[0]?.name;
 
     res.status(200).json(userDecorated);
+  }
+
+  private async requestResetPassword(req: Request, res: Response) {
+    // Validate user input
+    const { error, value } = requestResetPasswordSchema.validate(
+      await req.json(),
+      {
+        convert: true,
+      },
+    );
+
+    if (error) {
+      // Validation failed
+      throw new InputInvalid(error.message, error.details);
+    }
+
+    const identity = this.helperService.getIdentityType(value.username);
+    const prisma = await this.prismaService.getPrismaOrThrow(value.code);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        [identity.type]: identity.value,
+      },
+    });
+
+    if (!user || user.disabled) {
+      throw new InputInvalid('Username or institute id invalid!');
+    }
+
+    const token = await this.helperService.generateRandomNumber(6);
+
+    const key = await this.helperService.generateRandomString(
+      this.config.auth.csrfTokenLength,
+    );
+
+    try {
+      const passwordReset = await prisma.passwordReset.create({
+        data: {
+          userId: user.id,
+          key,
+          token,
+        },
+      });
+
+      res.status(200).json({ key, id: passwordReset.id, success: true });
+
+      await this.mailService.queue.add({
+        from: this.config.mail.passwordResetFrom,
+        to: user?.email ?? '',
+        subject: 'Password reset - QmmSoft',
+        template: 'templates/reset-password.mjml',
+        variables: {
+          code: token,
+        },
+      });
+    } catch (error) {
+      // TODO Error handling
+      res.status(500).json({ error: true });
+    }
   }
 
   private async changePassword(req: Request, res: Response) {

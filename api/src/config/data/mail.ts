@@ -6,5 +6,6 @@ export default function () {
     port: getEnvNum('MAIL_PORT'),
     user: getEnv('MAIL_USER'),
     password: getEnv('MAIL_PASSWORD'),
+    passwordResetFrom: 'test@example.com',
   };
 }
