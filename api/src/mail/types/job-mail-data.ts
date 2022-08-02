@@ -3,5 +3,5 @@ export interface JobMailData {
   from: string;
   to: string;
   template: string;
-  variables: Record<string, any>;
+  variables?: Record<string, any>;
 }

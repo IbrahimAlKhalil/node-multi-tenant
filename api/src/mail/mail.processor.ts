@@ -28,6 +28,7 @@ export class MailProcessor {
         html,
       });
     } catch (e) {
+      this.logger.error(e);
       await job.takeLock();
       await job.progress(0);
       await job.moveToFailed(e.message);
@@ -50,9 +51,9 @@ export class MailProcessor {
   @OnQueueFailed()
   private onFailed(job: Job<JobMailData>, err: any) {
     this.logger.error(
-      `${err.message}\nSending ${job.data.template} to ${
-        job.data.to
-      } using ${job.data.from} with ${JSON.stringify(job.data.variables)}`,
+      `${err.message}\nSending ${job.data.template} to ${job.data.to} using ${
+        job.data.from
+      } with ${JSON.stringify(job.data.variables)}`,
     );
   }
 }
