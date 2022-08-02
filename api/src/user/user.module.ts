@@ -7,6 +7,7 @@ import { UserController } from './user.controller.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { MailModule } from '../mail/mail.module.js';
 import { UwsModule } from '../uws/uws.module.js';
+import { SmsModule } from '../sms/sms.module.js';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -19,6 +20,7 @@ import { Module } from '@nestjs/common';
     HelperModule,
     AssetModule,
     MailModule,
+    SmsModule,
   ],
   providers: [UserController],
 })
