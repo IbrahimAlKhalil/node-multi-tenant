@@ -6,5 +6,5 @@ type BaseOptions = Omit<
 >;
 
 export interface MJMLParsingOptions extends BaseOptions {
-  variables: Record<string, any>;
+  variables?: Record<string, any>;
 }
