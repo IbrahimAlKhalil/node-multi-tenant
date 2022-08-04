@@ -13,6 +13,5 @@ interface SessionAuthenticated extends SessionBase<UserKind> {
   jti: number;
 }
 
-export type Session<K extends UserKindExtra = UserKindExtra> = K extends 'PUBLIC'
-  ? SessionBase<K>
-  : SessionAuthenticated;
+export type Session<K extends UserKindExtra = UserKindExtra> =
+  K extends 'PUBLIC' ? SessionBase<K> : SessionAuthenticated;
