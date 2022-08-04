@@ -10,15 +10,13 @@ import 'element-plus/theme-chalk/base.css';
 
 import 'element-plus/theme-chalk/el-loading.css';
 
-const app = createApp(App);
-
 const i18n = createI18n({
   legacy: false,
 });
 
-app.directive('loading', vLoading);
-app.use(createPinia());
-app.use(router);
-app.use(i18n);
-
-app.mount('#app');
+createApp(App)
+  .directive('loading', vLoading)
+  .use(createPinia())
+  .use(router)
+  .use(i18n)
+  .mount('#app');
