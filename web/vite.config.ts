@@ -18,19 +18,11 @@ export default defineConfig({
       include: path.resolve(__dirname, './src/i18n/**'),
     }),
     AutoImport({
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
+      resolvers: [ElementPlusResolver()],
       sourceMap: true,
     }),
     Components({
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
+      resolvers: [ElementPlusResolver()],
       deep: true,
       types: [
         {
