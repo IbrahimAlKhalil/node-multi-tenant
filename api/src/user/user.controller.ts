@@ -1,19 +1,20 @@
-import { changePasswordSchema } from './schema/change-password.js';
 import { InputInvalid } from '../exceptions/input-invalid.js';
+import { HelperService } from '../helper/helper.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ImageMimeType } from '../minio/mime-type.enum.js';
 import { SaveOptions } from '../minio/types/save-options';
 import { MinioService } from '../minio/minio.service.js';
 import { QueryService } from '../query/query.service.js';
-import { NotFound } from '../exceptions/not-found.js';
+import { AssetService } from '../asset/asset.service.js';
+import { MailService } from '../mail/mail.service.js';
 import { AuthService } from '../auth/auth.service.js';
+import { SmsService } from '../sms/sms.service.js';
 import { Request, Response } from 'hyper-express';
+import { Config } from '../config/config.js';
 import { Injectable } from '@nestjs/common';
 import { Folder } from '../minio/folder.js';
-import { Minio } from '../minio/minio.js';
 import { Uws } from '../uws/uws.js';
 import pick from 'lodash/pick.js';
-import argon2 from 'argon2';
 import sharp from 'sharp';
 import path from 'path';
 
@@ -21,15 +22,18 @@ import path from 'path';
 export class UserController {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly helperService: HelperService,
     private readonly minioService: MinioService,
     private readonly queryService: QueryService,
+    private readonly assetService: AssetService,
     private readonly authService: AuthService,
-    private readonly minio: Minio,
+    private readonly mailService: MailService,
+    private readonly smsService: SmsService,
+    private readonly config: Config,
     private readonly uws: Uws,
   ) {
     uws.get('/user/me', this.me.bind(this));
     uws.post('/user/avatar', this.uploadAvatar.bind(this));
-    uws.post('/user/change-password', this.changePassword.bind(this));
   }
 
   private readonly supportedMimeTypes = new Set<ImageMimeType>(
@@ -72,68 +76,6 @@ export class UserController {
     userDecorated.name = user?.I18n?.[0]?.name;
 
     res.status(200).json(userDecorated);
-  }
-
-  private async changePassword(req: Request, res: Response) {
-    const session = await this.authService.authenticateReq(req, res);
-    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
-
-    // Validate user input
-    const { error, value } = changePasswordSchema.validate(await req.json(), {
-      convert: true,
-    });
-
-    if (error) {
-      // Validation failed
-      throw new InputInvalid(error.message, error.details);
-    }
-
-    // Find user
-    const user = await prisma.user.findUnique({ where: { id: session.uid } });
-
-    if (
-      !user ||
-      user.disabled ||
-      !user.password ||
-      !(await argon2.verify(user.password, value.oldPassword))
-    ) {
-      throw new InputInvalid('Incorrect password');
-    }
-
-    const hash = await argon2.hash(value.newPassword);
-
-    if (value.userId) {
-      try {
-        await this.queryService.mutate(
-          {
-            type: 'update',
-            model: 'user',
-            query: {
-              where: {
-                id: value.userId,
-              },
-              data: {
-                password: hash,
-              },
-            },
-          },
-          session,
-        );
-      } catch (error) {
-        throw new NotFound('User not found');
-      }
-    } else {
-      await prisma.user.update({
-        where: {
-          id: session.uid,
-        },
-        data: {
-          password: hash,
-        },
-      });
-    }
-
-    res.status(200).json({ success: true });
   }
 
   private async uploadAvatar(req: Request, res: Response) {

@@ -109,6 +109,14 @@ enum UserKind {
   @@map("user_kind")
 }
 
+enum VerificationType {
+  PASSWORD_RESET
+  MOBILE
+  EMAIL
+
+  @@map("verification_type")
+}
+
 model AccessToken {
   id     Int @id @default(autoincrement())
   userId Int
@@ -1290,6 +1298,7 @@ model User {
   StudentGuardianByGuardians  StudentGuardian[]    @relation("StudentGuardian_guardianUserIdToUser")
   StudentGuardianByStudents   StudentGuardian[]    @relation("StudentGuardian_studentUserIdToUser")
   I18n                        UserI18n[]
+  Varification                Verification[]
 }
 
 model UserI18n {
@@ -1409,4 +1418,23 @@ model RoleUser {
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, roleId])
+}
+
+model Verification {
+  id Int @id @default(autoincrement())
+
+  userId Int
+
+  type VerificationType
+
+  target String @db.VarChar(400) //email OR mobile no
+  token  Int
+  key    String @db.VarChar(32)
+
+  sentAt    DateTime @db.Timestamptz(6)
+  sentCount Int      @default(0)
+  expireAt  DateTime @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
