@@ -1431,10 +1431,10 @@ model Verification {
   token  Int
   key    String @db.VarChar(32)
 
-  sentAt    DateTime @db.Timestamptz(6)
-  sentCount Int      @default(0)
-  expireAt  DateTime @db.Timestamptz(6)
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  sentAt    DateTime? @db.Timestamptz(6)
+  sentCount Int       @default(0)
+  expireAt  DateTime  @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
 
   User User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
