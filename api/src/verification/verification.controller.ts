@@ -1,50 +1,66 @@
-import { changePasswordSchema } from './types/change-password.js';
-import { passwordResetSchema } from './types/password-reset.js';
+import { verificationSchema } from './schema/verification.js';
 import { InputInvalid } from '../exceptions/input-invalid.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { HelperService } from '../helper/helper.service.js';
 import { QueryService } from '../query/query.service.js';
 import { MailService } from '../mail/mail.service.js';
 import { AuthService } from '../auth/auth.service.js';
-import { NotFound } from '../exceptions/not-found.js';
 import { SmsService } from '../sms/sms.service.js';
 import { Request, Response } from 'hyper-express';
 import { Config } from '../config/config.js';
+import { Session } from '../types/session.js';
 import { Injectable } from '@nestjs/common';
+import { UserKind } from 'prisma/client';
 import { Uws } from '../uws/uws.js';
-import argon2 from 'argon2';
 
 @Injectable()
-export class VarificationController {
+export class VerificationController {
   constructor(
-    private readonly uws: Uws,
     private readonly helperService: HelperService,
     private readonly prismaService: PrismaService,
-    private readonly config: Config,
-    private readonly smsService: SmsService,
+    private readonly queryService: QueryService,
     private readonly mailService: MailService,
     private readonly authService: AuthService,
-    private readonly queryService: QueryService,
+    private readonly smsService: SmsService,
+    private readonly config: Config,
+    private readonly uws: Uws,
   ) {
-    uws.get('/verification/request', this.verification.bind(this));
+    uws.post('/verification/request', this.request.bind(this));
   }
 
-  private async verification(req: Request, res: Response) {
-    const { error, value } = passwordResetSchema.validate(await req.json(), {
+  private async request(req: Request, res: Response) {
+    const { error, value } = verificationSchema.validate(await req.json(), {
       convert: true,
     });
 
-    if (error) {
+    if (error || !value) {
       // Validation failed
       throw new InputInvalid(error.message, error.details);
     }
 
-    const identity = this.helperService.getIdentityType(value.username);
-    const prisma = await this.prismaService.getPrismaOrThrow(value.code);
+    const session = await this.authService.authenticateReq(
+      req,
+      res,
+      value.type === 'PASSWORD_RESET',
+    );
+
+    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
+    const identity = this.helperService.getIdentityType(
+      value.type === 'PASSWORD_RESET' ? value.emailOrMobile : value.target,
+    );
+
+    if (value.type === 'PASSWORD_RESET' && identity.type === 'username') {
+      throw new InputInvalid(
+        'Username is not allowed, you have to provide either email or mobile number',
+      );
+    }
 
     const user = await prisma.user.findUnique({
       where: {
-        [identity.type]: identity.value,
+        [value.type === 'PASSWORD_RESET' ? identity.type : 'id']:
+          value.type === 'PASSWORD_RESET'
+            ? identity.value
+            : (session as Session<UserKind>).uid,
       },
     });
 
@@ -58,100 +74,66 @@ export class VarificationController {
       this.config.auth.csrfTokenLength,
     );
 
-    try {
-      const passwordReset = await prisma.verification.create({
-        data: {
-          userId: user.id,
-          type: value.type,
-          key,
-          token,
-        },
-      });
-
-      if (value.type === 'sms') {
-        await this.smsService.send({
-          payload: 'Message controller setup success.',
-        });
-      }
-
-      if (value.type === 'email') {
-        await this.mailService.queue.add({
-          from: this.config.mail.passwordResetFrom,
-          to: user?.email ?? '',
-          subject: 'Password reset - QmmSoft',
-          template: 'templates/reset-password.mjml',
-          variables: {
-            code: token,
-          },
-        });
-      }
-
-      res.status(200).json({ key, id: passwordReset.id, success: true });
-    } catch (error) {
-      // TODO Error handling
-      res.status(500).json({ error: true });
-    }
-  }
-
-  private async changePassword(req: Request, res: Response) {
-    const session = await this.authService.authenticateReq(req, res);
-    const prisma = await this.prismaService.getPrismaOrThrow(session.iid);
-
-    // Validate user input
-    const { error, value } = changePasswordSchema.validate(await req.json(), {
-      convert: true,
+    const verification = await prisma.verification.create({
+      data: {
+        userId: user.id,
+        key,
+        token,
+        type: value.type,
+        expireAt: new Date(Date.now() + this.config.verification.expireAt),
+        target:
+          value.type === 'PASSWORD_RESET' ? value.emailOrMobile : value.target,
+      },
     });
 
-    if (error) {
-      // Validation failed
-      throw new InputInvalid(error.message, error.details);
-    }
+    console.log(identity);
 
-    // Find user
-    const user = await prisma.user.findUnique({ where: { id: session.uid } });
+    if (identity.type === 'mobile') {
+      console.log('in sms section');
+      await this.smsService.send(
+        `Your verification code is ${token}. Do not share with others.`,
+        identity.value,
+      );
+    } else if (identity.type === 'email') {
+      let subject = 'Email Verification - QmmSoft';
+      let template = 'templates/email-verification.mjml';
 
-    if (
-      !user ||
-      user.disabled ||
-      !user.password ||
-      !(await argon2.verify(user.password, value.oldPassword))
-    ) {
-      throw new InputInvalid('Incorrect password');
-    }
-
-    const hash = await argon2.hash(value.newPassword);
-
-    if (value.userId) {
-      try {
-        await this.queryService.mutate(
-          {
-            type: 'update',
-            model: 'user',
-            query: {
-              where: {
-                id: value.userId,
-              },
-              data: {
-                password: hash,
-              },
-            },
-          },
-          session,
-        );
-      } catch (error) {
-        throw new NotFound('User not found');
+      if (value.type === 'PASSWORD_RESET') {
+        subject = 'Password Reset - QmmSoft';
+        template = 'templates/reset-password.mjml';
       }
-    } else {
-      await prisma.user.update({
-        where: {
-          id: session.uid,
+
+      const job = await this.mailService.queue.add(
+        {
+          from: this.config.mail.passwordResetFrom,
+          to: identity.value,
+          subject,
+          template,
+          variables: {
+            code: token,
+            url: `${this.config.app.websiteOrigin}/verification?&id=${verification.id}&key=${key}&token=${token}&userId=${user.id}`,
+          },
         },
-        data: {
-          password: hash,
+        {
+          jobId: verification.id,
         },
+      );
+
+      job.finished().then(async () => {
+        await prisma.verification.update({
+          where: {
+            id: verification.id,
+          },
+          data: {
+            sentAt: new Date(),
+            sentCount: verification.sentCount + 1,
+          },
+        });
       });
     }
 
-    res.status(200).json({ success: true });
+    res
+      .status(200)
+      .json({ key, id: verification.id, userId: user.id, success: true });
   }
 }
