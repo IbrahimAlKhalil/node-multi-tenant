@@ -21,7 +21,6 @@ export default defineConfig({
       resolvers: [
         ElementPlusResolver({
           importStyle: 'sass',
-          directives: true,
         }),
       ],
       sourceMap: true,
@@ -30,7 +29,6 @@ export default defineConfig({
       resolvers: [
         ElementPlusResolver({
           importStyle: 'sass',
-          directives: true,
         }),
       ],
       deep: true,
