@@ -1,3 +1,4 @@
+import { VerificationModule } from './verification/verification.module.js';
 import { InstituteModule } from './institute/institute.module.js';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HelperModule } from './helper/helper.module.js';
@@ -38,6 +39,7 @@ import { Module } from '@nestjs/common';
       },
       inject: [Config],
     }),
+    VerificationModule,
     InstituteModule,
     ConfigModule,
     PrismaModule,
