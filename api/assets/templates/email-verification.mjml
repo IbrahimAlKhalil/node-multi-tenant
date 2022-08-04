@@ -1,0 +1,46 @@
+<mjml>
+  <mj-body background-color="#fff">
+    <!-- Topbar Section -->
+    <mj-section background-color="#0079F7" padding="8px 0"></mj-section>
+    <!-- Logo Section -->
+    <mj-section>
+      <mj-column width="600px">
+        <mj-text font-size="32px" align="center" color="#F45E43" font-family="helvetica">LOGO</mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- Main content Section -->
+    <mj-section>
+      <mj-column width="85%" background-color="#EEF6FF" border-radius="16px">
+        <mj-text padding="25px 5px" align="center" font-weight="bold" font-size="22px" color="#0079F7">Email Confirmation</mj-text>
+        <mj-divider border-width="1px" border-style="dashed" border-color="lightgrey" padding="0 20px" />
+        <mj-text padding="15px" align="center" color="#333333" font-size="14px" font-family="Open Sans" line-height="1.8">You’re just one click away from getting started with Qmmsfot. All you need to do is verify your email address to activate your Qmmsoft account.</mj-text>
+        <mj-button href="{{ url }}" font-family="Open Sans" font-size="18px" font-weight="500" background-color="#0079F7" color="white" padding="0">
+          Confirm My Email
+        </mj-button>
+        <mj-text padding="15px 0 25px" align="center" color="#333333" font-size="14px" font-family="Open Sans" line-height="1.8">Once your account is activated, you can start using all of Qmmsoft features.</mj-text>
+        <mj-text padding="8px 15px 35px" align="center" color="#333333" font-family="Open Sans" font-size="14px" font-style="italic" line-height="1.8">You’re receiving this email because you recently created a new Qmmsoft account or added a new email address. If this wasn’t you, please ignore this email.</mj-text>
+
+      </mj-column>
+    </mj-section>
+    <!-- Footer -->
+    <mj-section>
+      <mj-column width="600px">
+        <mj-text padding="15px 25px" align="center" color="#777" font-size="14px" font-family="Open Sans" line-height="1.6">In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.</mj-text>
+        <mj-social>
+          <mj-social-element name="web"></mj-social-element>
+          <mj-social-element name="facebook"></mj-social-element>
+          <mj-social-element name="twitter"></mj-social-element>
+          <mj-social-element name="instagram"></mj-social-element>
+        </mj-social>
+        <mj-text padding="15px 25px" align="center" color="#777" font-size="14px" font-family="Open Sans" line-height="1.6">In publishing and graphic design, Dhaka, Bangladesh.</mj-text>
+      </mj-column>
+    </mj-section>
+
+
+    <!-- Botombar -->
+    <mj-section>
+      <mj-column background-color="#C4C4C4" padding="15px"></mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>
