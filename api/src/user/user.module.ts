@@ -11,17 +11,7 @@ import { SmsModule } from '../sms/sms.module.js';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [
-    UwsModule,
-    AuthModule,
-    PrismaModule,
-    MinioModule,
-    QueryModule,
-    HelperModule,
-    AssetModule,
-    MailModule,
-    SmsModule,
-  ],
+  imports: [UwsModule, AuthModule, PrismaModule, MinioModule, QueryModule],
   providers: [UserController],
 })
 export class UserModule {}
