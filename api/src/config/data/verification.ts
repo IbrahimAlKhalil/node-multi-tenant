@@ -5,5 +5,6 @@ export default function () {
     maxResend: getEnvNum('VERIFICATION_MAX_RESEND', 6),
     resendDelay: getEnvNum('VERIFICATION_RESEND_DELAY', 1.2e5), // 2 minutes
     maxItems: getEnvNum('VERIFICATION_MAX_ITEMS', 8),
+    expireAt: getEnvNum('VERIFICATION_EXPIRE_AGE', 1000 * 60 * 60),
   };
 }

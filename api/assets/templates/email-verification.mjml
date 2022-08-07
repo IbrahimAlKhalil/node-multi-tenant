@@ -11,19 +11,14 @@
     <!-- Main content Section -->
     <mj-section>
       <mj-column width="85%" background-color="#EEF6FF" border-radius="16px">
-        <mj-text padding="25px 5px" align="center" font-weight="bold" font-size="22px" color="#0079F7">Reset Password</mj-text>
+        <mj-text padding="25px 5px" align="center" font-weight="bold" font-size="22px" color="#0079F7">Email Confirmation</mj-text>
         <mj-divider border-width="1px" border-style="dashed" border-color="lightgrey" padding="0 20px" />
-        <mj-text padding="15px" align="center" color="#333333" font-size="14px" font-family="Open Sans" line-height="1.8">Seems like you forgot your password for Qmmsoft.com. If this is tru, click below to reset your password.</mj-text>
+        <mj-text padding="15px" align="center" color="#333333" font-size="14px" font-family="Open Sans" line-height="1.8">You’re just one click away from getting started with Qmmsfot. All you need to do is verify your email address to activate your Qmmsoft account.</mj-text>
         <mj-button href="{{ url }}" font-family="Open Sans" font-size="18px" font-weight="500" background-color="#0079F7" color="white" padding="0">
-          Change Password
+          Confirm My Email
         </mj-button>
-        <mj-text padding="15px 0 5px" align="center" color="#333333" font-size="14px" font-family="Open Sans" line-height="1.8">The verification code to reset password is:</mj-text>
-        <mj-text align="center" color="#333333" font-family="Open Sans" font-size="22px" font-weight="700" line-height="1.8">
-          <mj-raw>
-            <span style="background: #fff; padding: 5px 0 5px 12px; border-radius: 6px; letter-spacing: 12px;">{{ code }}</span>
-          </mj-raw>
-        </mj-text>
-        <mj-text padding="8px 15px 35px" align="center" color="#333333" font-family="Open Sans" font-size="14px" font-style="italic" line-height="1.8">If you did not forgot your password you can safely ignore this email.</mj-text>
+        <mj-text padding="15px 0 25px" align="center" color="#333333" font-size="14px" font-family="Open Sans" line-height="1.8">Once your account is activated, you can start using all of Qmmsoft features.</mj-text>
+        <mj-text padding="8px 15px 35px" align="center" color="#333333" font-family="Open Sans" font-size="14px" font-style="italic" line-height="1.8">You’re receiving this email because you recently created a new Qmmsoft account or added a new email address. If this wasn’t you, please ignore this email.</mj-text>
 
       </mj-column>
     </mj-section>

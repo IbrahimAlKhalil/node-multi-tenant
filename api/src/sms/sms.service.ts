@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { SmsDataType } from './types/sms-data-type.js';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class SmsService {
   //   constructor() {}
-  public async send(data: SmsDataType) {
-    console.log('SMS service: ', data);
+
+  private logger = new Logger(SmsService.name);
+
+  public async send(message: string, ...contact: string[]) {
+    this.logger.log({ message, contact });
   }
 }
