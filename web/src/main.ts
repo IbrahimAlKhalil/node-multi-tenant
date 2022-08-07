@@ -5,10 +5,7 @@ import { createApp } from 'vue';
 import router from './router';
 import App from './App.vue';
 
-import 'element-plus/theme-chalk/dark/css-vars.css';
-import 'element-plus/theme-chalk/base.css';
-
-import 'element-plus/theme-chalk/el-loading.css';
+import './index.css';
 
 const i18n = createI18n({
   legacy: false,

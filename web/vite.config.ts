@@ -35,14 +35,15 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '#icons': path.resolve(__dirname, '/resources/icons'),
-      '#images': path.resolve(__dirname, '/resources/images'),
-      '#videos': path.resolve(__dirname, '/resources/videos'),
-      '#components': path.resolve(__dirname, '/components'),
-      '#modules': path.resolve(__dirname, '/modules'),
-      '#layouts': path.resolve(__dirname, '/layouts'),
-      '#stores': path.resolve(__dirname, '/stores'),
-      '#styles': path.resolve(__dirname, '/styles'),
+      '#icons': path.resolve(__dirname, './src/resources/icons'),
+      '#images': path.resolve(__dirname, './src/resources/images'),
+      '#videos': path.resolve(__dirname, './src/resources/videos'),
+      '#components': path.resolve(__dirname, './src/components'),
+      '#pages': path.resolve(__dirname, './src/pages'),
+      '#modules': path.resolve(__dirname, './src/modules'),
+      '#layouts': path.resolve(__dirname, './src/layouts'),
+      '#stores': path.resolve(__dirname, './src/stores'),
+      '#styles': path.resolve(__dirname, './src/styles'),
     },
   },
   server: {

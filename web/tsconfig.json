@@ -4,17 +4,19 @@
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "baseUrl": ".",
+    "types": ["element-plus/global"],
     "paths": {
       "@/*": ["./src/*"],
-      "#icons/*": ["./assets/icons/*"],
-      "#images/*": ["./assets/images/*"],
-      "#videos/*": ["./assets/videos/*"],
-      "#components/*": ["./components/*"],
-      "#modules/*": ["./modules/*"],
-      "#layouts/*": ["./layouts/*"],
-      "#types/*": ["./types/*"],
-      "#stores/*": ["./stores/*"],
-      "#styles/*": ["./styles/*"]
+      "#icons/*": ["./src/assets/icons/*"],
+      "#images/*": ["./src/assets/images/*"],
+      "#videos/*": ["./src/assets/videos/*"],
+      "#components/*": ["./src/components/*"],
+      "#pages/*": ["./src/pages/*"],
+      "#modules/*": ["./src/modules/*"],
+      "#layouts/*": ["./src/layouts/*"],
+      "#types/*": ["./src/types/*"],
+      "#stores/*": ["./src/stores/*"],
+      "#styles/*": ["./src/styles/*"]
     }
   },
 
