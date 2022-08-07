@@ -3,6 +3,7 @@ import { vueI18n } from '@intlify/vite-plugin-vue-i18n';
 import Components from 'unplugin-vue-components/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import { svgLoader } from './svg-loader';
 import { fileURLToPath, URL } from 'url';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
@@ -31,6 +32,7 @@ export default defineConfig({
         },
       ],
     }),
+    svgLoader(),
   ],
   resolve: {
     alias: {
