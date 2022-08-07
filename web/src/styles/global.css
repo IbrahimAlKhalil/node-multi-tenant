@@ -1,0 +1,25 @@
+@import '../../node_modules/element-plus/theme-chalk/dark/css-vars.css';
+@import '../../node_modules/element-plus/theme-chalk/el-loading.css';
+@import '../../node_modules/element-plus/theme-chalk/base.css';
+@import './fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: SolaimanLipi, Amiri, 'Open Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.fa-icon {
+    height: 1em;
+    fill: currentColor;
+    bottom: 0.125em;
+    position: relative;
+}

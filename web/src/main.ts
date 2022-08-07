@@ -5,7 +5,7 @@ import { createApp } from 'vue';
 import router from './router';
 import App from './App.vue';
 
-import './index.css';
+import '#styles/global.css';
 
 const i18n = createI18n({
   legacy: false,
