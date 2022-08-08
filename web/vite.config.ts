@@ -14,12 +14,6 @@ import path from 'path';
 export default defineConfig({
   plugins: [
     DevTools,
-    vue(),
-    vueJsx(),
-    vueI18n({
-      compositionOnly: true,
-      include: path.resolve(__dirname, './src/i18n/**'),
-    }),
     AutoImport({
       include: [
         /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
@@ -36,7 +30,13 @@ export default defineConfig({
       ],
       dts: 'types/auto-imports.d.ts',
       vueTemplate: true,
-      dirs: ['./src/modules/**', './src/composables/**', './src/stores'],
+      dirs: [
+        './src/stores',
+        './src/modules/**',
+        './src/mixins/**',
+        './src/components/**/modules/*',
+        './src/components/**/mixins/*',
+      ],
       resolvers: [ElementPlusResolver()],
       eslintrc: {
         enabled: true,
@@ -44,8 +44,16 @@ export default defineConfig({
       },
     }),
     Components({
+      extensions: ['vue', 'tsx', 'jsx'],
+      dirs: './src/resources/icons',
+      dts: 'types/icons.d.ts',
+      types: [],
+      directive: false,
+    }),
+    Components({
       resolvers: [ElementPlusResolver()],
       extensions: ['vue', 'tsx', 'jsx'],
+      dirs: ['./src/components'],
       dts: 'types/components.d.ts',
       types: [
         {
@@ -54,6 +62,12 @@ export default defineConfig({
         },
       ],
     }),
+    vueI18n({
+      compositionOnly: true,
+      include: path.resolve(__dirname, './src/i18n/**'),
+    }),
+    vueJsx(),
+    vue(),
     svgLoader(),
   ],
   resolve: {

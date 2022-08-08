@@ -1,0 +1,1 @@
+<template><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fa"><path d="M12.1 216H314v80H12.1a12 12 0 0 1-12-12v-56a12 12 0 0 1 12-12z" style="opacity:.4"/><path d="m355 153 86.06 86.09a24 24 0 0 1 0 33.94L355 359.05c-15.12 15.12-41 4.41-41-17V170c0-21.42 25.89-32.13 41-17z" class="fa-primary"/></svg></template>
