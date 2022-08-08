@@ -17,5 +17,6 @@ declare module '@vue/runtime-core' {
     ElMain: typeof import('element-plus/es')['ElMain']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TheSvgIcon: typeof import('./../src/components/the-svg-icon.vue')['default']
   }
 }
