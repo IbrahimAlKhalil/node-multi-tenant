@@ -18,8 +18,5 @@ html {
 }
 
 .fa {
-    height: 1em;
     fill: currentColor;
-    bottom: 0.125em;
-    position: relative;
 }

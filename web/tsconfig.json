@@ -5,7 +5,6 @@
     "types/svg.d.ts",
     "types/auto-imports.d.ts",
     "types/components.d.ts",
-    "types/icons.d.ts",
     "src/**/*",
     "src/**/*.vue"
   ],
