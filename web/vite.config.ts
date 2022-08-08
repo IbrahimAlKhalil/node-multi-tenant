@@ -4,6 +4,7 @@ import Components from 'unplugin-vue-components/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { svgLoader } from './vite/svg-loader';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import { DevTools } from './vite/dev-tools';
 import { fileURLToPath, URL } from 'url';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
@@ -12,6 +13,7 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    DevTools,
     vue(),
     vueJsx(),
     vueI18n({
@@ -34,6 +36,7 @@ export default defineConfig({
       ],
       dts: 'types/auto-imports.d.ts',
       vueTemplate: true,
+      dirs: ['./src/modules/**', './src/composables/**', './src/stores'],
       resolvers: [ElementPlusResolver()],
       eslintrc: {
         enabled: true,
@@ -42,6 +45,7 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()],
+      extensions: ['vue', 'tsx', 'jsx'],
       dts: 'types/components.d.ts',
       types: [
         {
