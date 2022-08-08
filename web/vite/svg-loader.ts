@@ -1,5 +1,5 @@
+import { optimize as optimizeSvg, type OptimizedSvg } from 'svgo';
 import { compileTemplate } from '@vue/compiler-sfc';
-import { optimize as optimizeSvg } from 'svgo';
 import fs from 'fs/promises';
 
 export function svgLoader() {
@@ -22,35 +22,21 @@ export function svgLoader() {
 
       const [path, query] = id.split('?', 2);
 
-      let svg = await fs.readFile(path, 'utf-8');
+      const svg = await fs.readFile(path, 'utf-8');
 
       if (query === 'raw') {
         return `export default ${JSON.stringify(svg)}`;
       }
 
-      if (query === 'plain') {
-        svg = (optimizeSvg(svg) as any).data;
-      } else {
-        const optimized = optimizeSvg(svg, {
-          plugins: [
-            {
-              name: 'preset-default',
-            },
-            {
-              name: 'addClassesToSVGElement',
-              params: {
-                classNames: ['fa-icon'],
-              },
-            } as any,
-          ],
-        });
+      const optimizeResult = optimizeSvg(svg);
 
-        svg = (optimized as any).data;
+      if (optimizeResult.error) {
+        throw new Error(optimizeResult.error);
       }
 
       const { code } = compileTemplate({
         id: JSON.stringify(id),
-        source: svg,
+        source: (optimizeResult as OptimizedSvg).data,
         filename: path,
         transformAssetUrls: false,
       });

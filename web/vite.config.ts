@@ -2,8 +2,8 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import { vueI18n } from '@intlify/vite-plugin-vue-i18n';
 import Components from 'unplugin-vue-components/vite';
 import AutoImport from 'unplugin-auto-import/vite';
+import { svgLoader } from './vite/svg-loader';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import { svgLoader } from './svg-loader';
 import { fileURLToPath, URL } from 'url';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
@@ -19,12 +19,30 @@ export default defineConfig({
       include: path.resolve(__dirname, './src/i18n/**'),
     }),
     AutoImport({
+      include: [
+        /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+        /\.vue$/,
+        /\.vue\?vue/, // .vue
+      ],
+      imports: [
+        'vue',
+        'vue-router',
+        'pinia',
+        {
+          'vue-i18n': ['createI18n', 'useI18n'],
+        },
+      ],
+      dts: 'types/auto-imports.d.ts',
+      vueTemplate: true,
       resolvers: [ElementPlusResolver()],
-      sourceMap: true,
+      eslintrc: {
+        enabled: true,
+        globalsPropValue: true,
+      },
     }),
     Components({
       resolvers: [ElementPlusResolver()],
-      deep: true,
+      dts: 'types/components.d.ts',
       types: [
         {
           from: 'vue-router',
