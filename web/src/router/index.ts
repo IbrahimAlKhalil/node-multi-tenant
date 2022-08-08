@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import App from '@/entries/app.vue';
+import App from '@/apps/qmmsoft.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,11 +9,14 @@ const router = createRouter({
       component: App,
       children: [],
     },
-    {
-      path: '/qm-dev-tool',
-      component: () => import('@/entries/dev-tools.vue'),
-    },
   ],
 });
+
+if (import.meta.env.DEV) {
+  router.addRoute({
+    path: '/dev-tools',
+    component: () => import('@/apps/dev-tools.vue'),
+  });
+}
 
 export default router;

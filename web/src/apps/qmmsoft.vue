@@ -14,7 +14,7 @@
 import LayoutDefault from '#layouts/layout-default.vue';
 
 export default defineComponent({
-  name: 'the-dev-tool',
+  name: 'the-qmmsoft-app',
   components: { LayoutDefault },
 });
 </script>
