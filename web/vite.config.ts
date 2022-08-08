@@ -43,13 +43,13 @@ export default defineConfig({
         globalsPropValue: true,
       },
     }),
-    // Components({
-    //   extensions: ['vue', 'tsx', 'jsx'],
-    //   dirs: './src/resources/icons',
-    //   dts: 'types/icons.d.ts',
-    //   types: [],
-    //   directive: false,
-    // }),
+    Components({
+      extensions: ['vue', 'tsx', 'jsx'],
+      dirs: './src/resources/icons',
+      dts: false /*'types/icons.d.ts'*/,
+      types: [],
+      directive: false,
+    }),
     Components({
       resolvers: [ElementPlusResolver()],
       extensions: ['vue', 'tsx', 'jsx'],
