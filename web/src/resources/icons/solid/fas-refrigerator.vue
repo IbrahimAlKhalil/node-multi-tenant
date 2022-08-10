@@ -1,1 +1,0 @@
-<template><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="fa"><path d="M0 160V48A48 48 0 0 1 48 0h288a48 48 0 0 1 48 48v112h-64V72a8 8 0 0 0-8-8h-16a8 8 0 0 0-8 8v88Zm320 32v184a8 8 0 0 1-8 8h-16a8 8 0 0 1-8-8V192H0v272a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V192Z"/></svg></template>

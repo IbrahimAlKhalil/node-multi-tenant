@@ -26,9 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxMenuHost } from './composables/use-ctx-menu-host';
 import type { CtxMenuContext } from './types/ctx-menu-context';
-import { computed, ref, watch } from 'vue';
 import type { PropType } from 'vue';
 
 const props = defineProps({

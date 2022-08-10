@@ -46,7 +46,7 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
       extensions: ['vue', 'tsx', 'jsx'],
-      dirs: ['./src/components', './src/resources/icons'],
+      dirs: ['./src/components'],
       dts: 'types/components.d.ts',
       types: [
         {
