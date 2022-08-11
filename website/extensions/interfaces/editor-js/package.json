@@ -7,7 +7,7 @@
     "type": "interface",
     "path": "../../../dist/extensions/interfaces/editor-js/index.js",
     "source": "src/index.ts",
-    "host": "^v9.13.0",
+    "host": "^v9.15.1",
     "hidden": false
   },
   "scripts": {
@@ -15,7 +15,7 @@
     "dev": "directus-extension build -w --no-minify"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "^9.14.1",
+    "@directus/extensions-sdk": "^9.15.1",
     "@editorjs/attaches": "^1.2.2",
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.7.0",
@@ -32,7 +32,7 @@
     "@editorjs/quote": "^2.4.0",
     "@editorjs/raw": "^2.3.0",
     "@editorjs/simple-image": "^1.4.1",
-    "@editorjs/table": "^2.0.1",
+    "@editorjs/table": "^2.0.3",
     "@editorjs/underline": "^1.0.0",
     "@editorjs/warning": "^1.2.0",
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
