@@ -64,6 +64,7 @@
     "useI18n": true,
     "useRoute": true,
     "useRouter": true,
+    "useSettingsStore": true,
     "useSlots": true,
     "watch": true,
     "watchEffect": true,

@@ -1,0 +1,2 @@
+export const LOCAL_STORAGE_KEY = 'settings';
+export const SETTINGS_STATE_GLOBAL_KEY = 'QM_PINIA_SETTINGS_INITIALIZED';
