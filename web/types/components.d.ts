@@ -7,10 +7,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    CtxItem: typeof import('./../src/components/ctx-menu/ctx-item.vue')['default']
     CtxMenu: typeof import('./../src/components/ctx-menu/ctx-menu.vue')['default']
     CtxMenuHost: typeof import('./../src/components/ctx-menu/ctx-menu-host.vue')['default']
-    CtxSubMenu: typeof import('./../src/components/ctx-menu/ctx-sub-menu.vue')['default']
+    ElDropdown: typeof import('element-plus/es')['ElDropdown']
+    ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
+    ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
