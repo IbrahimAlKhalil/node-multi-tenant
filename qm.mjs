@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { bootstrap, restore, snapshot, migrate } from './scripts/directus.mjs';
+import { getDirectusEnv } from './scripts/get-directus-env.mjs';
 import { Command, program } from 'commander';
 import { build } from './scripts/build.mjs';
 import { start } from './scripts/start.mjs';
@@ -40,13 +40,12 @@ function init() {
     return env;
   }
 
-  async function runInsideProjects(binPath, projectsToUse, env, extraArgs, excludedArgs = []) {
-    const args = process.argv.slice(3).filter(arg => !excludedArgs.includes(arg));
+  async function runInsideProjects(binPath, projectsToUse, env, args) {
 
     for (const projectToUse of projectsToUse) {
       // Execute the binary inside the project
       try {
-        await execa(typeof binPath === 'function' ? binPath(projectToUse) : binPath, args.concat(extraArgs), {
+        await execa(typeof binPath === 'function' ? binPath(projectToUse) : binPath, args, {
           stdio: 'inherit',
           shell: true,
           cwd: path.resolve(__dirname, `./${projectToUse}`),
@@ -64,10 +63,14 @@ function init() {
   const args = process.argv.slice(2);
 
   if (args[0] === 'prisma') {
+    if (!['w', 'a'].includes(args[1])) {
+      return console.error('Incorrect command format, e.g: "prisma w" or "prisma a"');
+    }
+
     // Create a wrapper for prisma CLI
     return runInsideProjects(
       (project) => path.resolve(__dirname, `./${project}/node_modules/.bin/prisma`),
-      ['api'],
+      [args[1] === 'w' ? 'website' : 'api'],
       (project) => {
         const prefix = project === 'api' ? '' : 'WEBSITE_';
 
@@ -76,7 +79,7 @@ function init() {
           DATABASE_URL: `postgres://${getEnv('POSTGRES_USER', prefix)}:${getEnv('POSTGRES_PASSWORD', prefix)}@${getEnv('POSTGRES_HOST', prefix)}:${getEnv('POSTGRES_PORT', prefix)}/${getEnv('POSTGRES_DATABASE', prefix)}`,
         };
       },
-      args.slice(1),
+      args.slice(2),
     );
   }
 
@@ -86,6 +89,20 @@ function init() {
       (project) => path.resolve(__dirname, `./${project}/node_modules/.bin/nest`),
       ['api'],
       process.env,
+      args.slice(1),
+    );
+  }
+
+  if (args[0] === 'directus') {
+    // Create a wrapper for NestJS CLI
+    return runInsideProjects(
+      (project) => path.resolve(__dirname, `./${project}/node_modules/.bin/directus`),
+      ['website'],
+      {
+        ...process.env,
+        ...getDirectusEnv(),
+        FORCE_COLOR: true,
+      },
       args.slice(1),
     );
   }
@@ -209,37 +226,6 @@ function init() {
 
     test.addCommand(testCommand);
   });
-
-  // Create directus command wrapper
-  const directusCommand = new Command('directus');
-  const snapshotCommand = new Command('snapshot');
-  const restoreCommand = new Command('restore');
-  const bootstrapCommand = new Command('bootstrap');
-  const migrateCommand = new Command('migrate');
-
-  snapshotCommand.action(snapshot);
-  restoreCommand.action(restore);
-  bootstrapCommand.action(bootstrap);
-
-  migrateCommand.addCommand(
-    new Command('latest')
-      .action(() => migrate('latest'))
-  );
-
-  migrateCommand.addCommand(
-    new Command('up')
-      .action(() => migrate('up'))
-  );
-
-  migrateCommand.addCommand(
-    new Command('down')
-      .action(() => migrate('down'))
-  );
-
-  directusCommand.addCommand(snapshotCommand);
-  directusCommand.addCommand(restoreCommand);
-  directusCommand.addCommand(bootstrapCommand);
-  directusCommand.addCommand(migrateCommand);
 
   program.addCommand(new Command('nest'));
   program.addCommand(new Command('prisma'));
