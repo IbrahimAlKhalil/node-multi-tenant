@@ -38,6 +38,7 @@ import cors from 'cors';
             exposedHeaders: ['Content-Type'],
             credentials: true,
             maxAge: 3600,
+            preflightContinue: true,
           }) as UserRouteHandler;
           const helmetMiddleware = helmet({
             crossOriginResourcePolicy: {
@@ -49,7 +50,15 @@ import cors from 'cors';
           server.use(helmetMiddleware);
           server.use(corsMiddleware);
 
-          server.options('/*', corsMiddleware);
+          server.options(
+            '/*',
+            {
+              middlewares: [corsMiddleware],
+            },
+            (req: HyperExpress.Request, res: HyperExpress.Response) => {
+              res.send();
+            },
+          );
 
           const logger = new Logger(UwsModule.name);
 
