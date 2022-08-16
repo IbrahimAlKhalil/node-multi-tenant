@@ -183,6 +183,7 @@ async function startPostgres() {
   const postgres = await docker.createContainer({
     name: containerNames.postgres,
     Image: images.postgres,
+    Cmd: [ "postgres", "-c", "wal_level=logical" ],
     Env: [
       `POSTGRES_DB=${process.env.WEBSITE_POSTGRES_DATABASE}`,
       `POSTGRES_USER=${process.env.POSTGRES_USER}`,
