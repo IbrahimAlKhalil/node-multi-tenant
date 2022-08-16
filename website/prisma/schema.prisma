@@ -1,0 +1,701 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "./client"
+  previewFeatures = ["interactiveTransactions", "fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cluster {
+  id          String  @id @db.Uuid
+  host        String
+  name        String
+  description String?
+
+  Institutes Institute[]
+}
+
+model Comment {
+  id          Int     @id @default(autoincrement())
+  parentId    Int?
+  userId      String? @db.VarChar(255)
+  instituteId String? @db.Uuid
+
+  sort   Int?
+  status String @default("draft") @db.VarChar(255)
+
+  content String?
+  mention String? @db.VarChar(255)
+  post    Int?
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  Institute Institute?        @relation(fields: [instituteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Parent    Comment?          @relation("replies", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Post      Post?             @relation(fields: [post], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Replies   Comment[]         @relation("replies")
+  Reactions CommentReaction[]
+}
+
+model CommentReaction {
+  id          Int     @id @default(autoincrement())
+  instituteId String?
+  commentId   Int?
+  userId      String? @db.VarChar(255)
+  reaction    Int?
+
+  sort      Int?
+  createdAt DateTime? @db.Timestamptz(6)
+
+  Comment  Comment?   @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Reaction Rreaction? @relation(fields: [reaction], references: [id], onUpdate: Cascade)
+}
+
+model Contact {
+  id            Int       @id @default(autoincrement())
+  sort          Int?
+  email         String?   @db.VarChar(255)
+  firstName     String?   @db.VarChar(255)
+  lastName      String?   @db.VarChar(255)
+  instituteName String?   @db.VarChar(255)
+  message       String?
+  createdAt     DateTime? @db.Timestamptz(6)
+}
+
+model Institute {
+  id        String  @id @db.Uuid
+  clusterId String? @db.Uuid
+
+  code     String
+  database String
+  disabled Boolean? @default(false)
+  email    String
+  mobile   String
+  name     String
+  slug     String
+
+  Cluster       Cluster?       @relation(fields: [clusterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Comments      Comment[]
+  PostReactions PostReaction[]
+}
+
+model Newsletter {
+  id        Int     @id @default(autoincrement())
+  sort      Int?
+  email     String  @unique() @db.VarChar(255)
+  firstName String? @db.VarChar(255)
+  lastName  String? @db.VarChar(255)
+}
+
+model Post {
+  id         Int     @id @default(autoincrement())
+  authorId   String? @db.Uuid
+  editorId   String? @db.Uuid
+  imageId    String? @db.Uuid
+  categoryId Int?
+
+  status String @default("draft") @db.VarChar(255)
+  sort   Int?
+
+  title   String? @db.VarChar(255)
+  slug    String  @unique() @db.VarChar(255)
+  excerpt String?
+  content Json?   @db.Json
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  Image         File?          @relation(fields: [imageId], references: [id], onUpdate: Cascade)
+  Category      PostCategory?  @relation("primary_category", fields: [categoryId], references: [id], onUpdate: Cascade)
+  Author        User?          @relation("post_author", fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Editor        User?          @relation("post_editor", fields: [editorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Comments      Comment[]
+  Categories    PostCategory[] @relation("secondary_category")
+  PostReactions PostReaction[]
+  Suggestion    Suggestion[]
+  Tags          Tag[]
+}
+
+model PostCategory {
+  id       Int     @id @default(autoincrement())
+  authorId String? @db.Uuid
+  editorId String? @db.Uuid
+  parentId Int?
+
+  status String @default("draft") @db.VarChar(255)
+  sort   Int?
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  name String? @db.VarChar(255)
+  slug String? @db.VarChar(255)
+
+  Parent         PostCategory?  @relation("sub_category", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Author         User?          @relation("post_category_author", fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Editor         User?          @relation("post_category_editor", fields: [editorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  PostsPrimary   Post[]         @relation("primary_category")
+  PostsSecondary Post[]         @relation("secondary_category")
+  Children       PostCategory[] @relation("sub_category")
+}
+
+model PostReaction {
+  id          Int     @id @default(autoincrement())
+  instituteId String? @db.Uuid
+  postId      Int?
+  reactionId  Int?
+  userId      String? @db.VarChar(255)
+
+  sort      Int?
+  createdAt DateTime? @db.Timestamptz(6)
+
+  Institute Institute? @relation(fields: [instituteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Post      Post?      @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Reaction  Rreaction? @relation(fields: [reactionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Suggestion {
+  id     Int  @id @default(autoincrement())
+  sort   Int?
+  postId Int?
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  content String? @db.VarChar(255)
+
+  Post Post? @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Tag {
+  id   Int     @id @default(autoincrement())
+  sort Int?
+  name String? @db.VarChar(255)
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  Posts Post[]
+}
+
+model Rreaction {
+  id    Int     @id @default(autoincrement())
+  type  String? @db.VarChar(255)
+  value String? @db.VarChar(255)
+
+  CommentReactions CommentReaction[]
+  PostReactions    PostReaction[]
+}
+
+model Question {
+  id       Int     @id @default(autoincrement())
+  authorId String? @db.Uuid
+  editorId String? @db.Uuid
+
+  status    String    @default("draft") @db.VarChar(255)
+  sort      Int?
+  title     String?   @db.VarChar(255)
+  slug      String?   @db.VarChar(255)
+  content   String?
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  Author     User?              @relation("question_author", fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Editor     User?              @relation("question_editor", fields: [editorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Categories QuestionCategory[]
+}
+
+model QuestionCategory {
+  id     Int     @id @default(autoincrement())
+  status String  @default("draft") @db.VarChar(255)
+  sort   Int?
+  slug   String? @db.VarChar(255)
+  name   String? @db.VarChar(255)
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  Questions Question[]
+}
+
+model Registration {
+  id Int @id @default(autoincrement())
+
+  email         String    @unique() @db.VarChar(255)
+  instituteName String?   @db.VarChar(255)
+  mobile        String    @unique() @db.VarChar(255)
+  createdAt     DateTime? @db.Timestamptz(6)
+}
+
+model Tutorial {
+  id       Int     @id @default(autoincrement())
+  authorId String? @db.Uuid
+  editorId String? @db.Uuid
+  parentId Int?
+
+  status  String  @default("draft") @db.VarChar(255)
+  sort    Int?
+  title   String? @db.VarChar(255)
+  slug    String? @db.VarChar(255)
+  content Json?   @db.Json
+
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  Parent   Tutorial?  @relation("parent_children", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Children Tutorial[] @relation("parent_children")
+  Author   User?      @relation("tutorial_author", fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Editor   User?      @relation("tutorial_editor", fields: [editorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+// ------------------------------------------ Internal ----------------------------------------
+
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
+// ------------------------------------------ Directus ----------------------------------------
+
+model Activity {
+  id         Int      @id @default(autoincrement())
+  action     String   @db.VarChar(45)
+  user       String?  @db.Uuid
+  timestamp  DateTime @default(now()) @db.Timestamptz(6)
+  ip         String?  @db.VarChar(50)
+  userAgent  String?  @map("user_agent") @db.VarChar(255)
+  collection String   @db.VarChar(64)
+  item       String   @db.VarChar(255)
+  comment    String?
+
+  Revisions Revision[]
+
+  @@map("directus_activity")
+}
+
+model Collection {
+  collection            String  @id @db.VarChar(64)
+  icon                  String? @db.VarChar(30)
+  note                  String?
+  displayTemplate       String? @map("display_template") @db.VarChar(255)
+  hidden                Boolean @default(false)
+  singleton             Boolean @default(false)
+  translations          Json?   @db.Json
+  archiveField          String? @map("archive_field") @db.VarChar(64)
+  archiveAppFilter      Boolean @default(true) @map("archive_app_filter")
+  archiveValue          String? @map("archive_value") @db.VarChar(255)
+  unarchiveValue        String? @map("unarchive_value") @db.VarChar(255)
+  sortField             String? @map("sort_field") @db.VarChar(64)
+  accountability        String? @default("all") @db.VarChar(255)
+  color                 String? @db.VarChar(255)
+  itemDuplicationFields Json?   @map("item_duplication_fields") @db.Json
+  sort                  Int?
+  group                 String? @db.VarChar(64)
+  collapse              String  @default("open") @db.VarChar(255)
+
+  Group       Collection?  @relation("group", fields: [group], references: [collection], onDelete: NoAction, onUpdate: NoAction, map: "directus_collections_group_foreign")
+  Collections Collection[] @relation("group")
+  Shares      Share[]
+
+  @@map("directus_collections")
+}
+
+model Dashboard {
+  id        String    @id @db.Uuid
+  authorId  String?   @map("user_created") @db.Uuid
+  name      String    @db.VarChar(255)
+  icon      String    @default("dashboard") @db.VarChar(30)
+  note      String?
+  createdAt DateTime? @default(now()) @map("date_created") @db.Timestamptz(6)
+  color     String?   @db.VarChar(255)
+
+  Author User?   @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "directus_dashboards_user_created_foreign")
+  Panel  Panel[]
+
+  @@map("directus_dashboards")
+}
+
+model Field {
+  id                Int      @id @default(autoincrement())
+  collection        String   @db.VarChar(64)
+  field             String   @db.VarChar(64)
+  special           String?  @db.VarChar(64)
+  interface         String?  @db.VarChar(64)
+  options           Json?    @db.Json
+  display           String?  @db.VarChar(64)
+  displayOptions    Json?    @map("display_options") @db.Json
+  readonly          Boolean  @default(false)
+  hidden            Boolean  @default(false)
+  sort              Int?
+  width             String?  @default("full") @db.VarChar(30)
+  translations      Json?    @db.Json
+  note              String?
+  conditions        Json?    @db.Json
+  required          Boolean? @default(false)
+  group             String?  @db.VarChar(64)
+  validation        Json?    @db.Json
+  validationMessage String?  @map("validation_message")
+
+  @@map("directus_fields")
+}
+
+model File {
+  id               String   @id @db.Uuid
+  storage          String   @db.VarChar(255)
+  filenameDisk     String?  @map("filename_disk") @db.VarChar(255)
+  filenameDownload String   @map("filename_download") @db.VarChar(255)
+  title            String?  @db.VarChar(255)
+  type             String?  @db.VarChar(255)
+  folder           String?  @db.Uuid
+  uploadedBy       String?  @map("uploaded_by") @db.Uuid
+  uploadedOn       DateTime @default(now()) @map("uploaded_on") @db.Timestamptz(6)
+  modifiedBy       String?  @map("modified_by") @db.Uuid
+  modifiedOn       DateTime @default(now()) @map("modified_on") @db.Timestamptz(6)
+  charset          String?  @db.VarChar(50)
+  filesize         BigInt?
+  width            Int?
+  height           Int?
+  duration         Int?
+  embed            String?  @db.VarChar(200)
+  description      String?
+  location         String?
+  tags             String?
+  metadata         Json?    @db.Json
+
+  Folder               Folder?    @relation(fields: [folder], references: [id], onUpdate: NoAction, map: "directus_files_folder_foreign")
+  Editor               User?      @relation("directus_files_modified_byTodirectus_users", fields: [modifiedBy], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "directus_files_modified_by_foreign")
+  Uploader             User?      @relation("directus_files_uploaded_byTodirectus_users", fields: [uploadedBy], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "directus_files_uploaded_by_foreign")
+  SettingsByLogo       Settings[] @relation("directus_filesTodirectus_settings_project_logo")
+  SettingsByBackground Settings[] @relation("directus_filesTodirectus_settings_public_background")
+  SettingsByForground  Settings[] @relation("directus_filesTodirectus_settings_public_foreground")
+
+  Posts Post[]
+
+  @@map("directus_files")
+}
+
+model Flow {
+  id             String    @id @db.Uuid
+  name           String    @db.VarChar(255)
+  icon           String?   @db.VarChar(30)
+  color          String?   @db.VarChar(255)
+  description    String?
+  status         String    @default("active") @db.VarChar(255)
+  trigger        String?   @db.VarChar(255)
+  accountability String?   @default("all") @db.VarChar(255)
+  options        Json?     @db.Json
+  operation      String?   @unique(map: "directus_flows_operation_unique") @db.Uuid
+  createdAt      DateTime? @default(now()) @map("date_created") @db.Timestamptz(6)
+  authorId       String?   @map("user_created") @db.Uuid
+
+  User       User?       @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "directus_flows_user_created_foreign")
+  Operations Operation[]
+
+  @@map("directus_flows")
+}
+
+model Folder {
+  id     String  @id @db.Uuid
+  name   String  @db.VarChar(255)
+  parent String? @db.Uuid
+
+  Parent   Folder?    @relation("directus_foldersTodirectus_folders", fields: [parent], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_folders_parent_foreign")
+  Files    File[]
+  Children Folder[]   @relation("directus_foldersTodirectus_folders")
+  Settings Settings[]
+
+  @@map("directus_folders")
+}
+
+model Migration {
+  version   String    @id @db.VarChar(255)
+  name      String    @db.VarChar(255)
+  timestamp DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@map("directus_migrations")
+}
+
+model Notification {
+  id         Int       @id @default(autoincrement())
+  timestamp  DateTime? @default(now()) @db.Timestamptz(6)
+  status     String?   @default("inbox") @db.VarChar(255)
+  recipient  String    @db.Uuid
+  sender     String?   @db.Uuid
+  subject    String    @db.VarChar(255)
+  message    String?
+  collection String?   @db.VarChar(64)
+  item       String?   @db.VarChar(255)
+
+  Recipient User  @relation("directus_notifications_recipientTodirectus_users", fields: [recipient], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_notifications_recipient_foreign")
+  Sender    User? @relation("directus_notifications_senderTodirectus_users", fields: [sender], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_notifications_sender_foreign")
+
+  @@map("directus_notifications")
+}
+
+model Operation {
+  id        String    @id @db.Uuid
+  name      String?   @db.VarChar(255)
+  key       String    @db.VarChar(255)
+  type      String    @db.VarChar(255)
+  positionX Int       @map("position_x")
+  positionY Int       @map("position_y")
+  options   Json?     @db.Json
+  resolve   String?   @unique(map: "directus_operations_resolve_unique") @db.Uuid
+  reject    String?   @unique(map: "directus_operations_reject_unique") @db.Uuid
+  flow      String    @db.Uuid
+  createdAt DateTime? @default(now()) @map("date_created") @db.Timestamptz(6)
+  authorId  String?   @map("user_created") @db.Uuid
+
+  Flow                  Flow       @relation(fields: [flow], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_operations_flow_foreign")
+  OperationReject       Operation? @relation("directus_operationsTodirectus_operations_reject", fields: [reject], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_operations_reject_foreign")
+  OeprationResolve      Operation? @relation("directus_operationsTodirectus_operations_resolve", fields: [resolve], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_operations_resolve_foreign")
+  Author                User?      @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "directus_operations_user_created_foreign")
+  OperationRejectChild  Operation? @relation("directus_operationsTodirectus_operations_reject")
+  OeprationResolveChild Operation? @relation("directus_operationsTodirectus_operations_resolve")
+
+  @@map("directus_operations")
+}
+
+model Panel {
+  id         String    @id @db.Uuid
+  dashboard  String    @db.Uuid
+  name       String?   @db.VarChar(255)
+  icon       String?   @db.VarChar(30)
+  color      String?   @db.VarChar(10)
+  showHeader Boolean   @default(false) @map("show_header")
+  note       String?
+  type       String    @db.VarChar(255)
+  positionX  Int       @map("position_x")
+  positionY  Int       @map("position_y")
+  width      Int
+  height     Int
+  options    Json?     @db.Json
+  createdAt  DateTime? @default(now()) @map("date_created") @db.Timestamptz(6)
+  authorId   String?   @map("user_created") @db.Uuid
+
+  Dashboard Dashboard @relation(fields: [dashboard], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_panels_dashboard_foreign")
+  Author    User?     @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "directus_panels_user_created_foreign")
+
+  @@map("directus_panels")
+}
+
+model Permission {
+  id          Int     @id @default(autoincrement())
+  role        String? @db.Uuid
+  collection  String  @db.VarChar(64)
+  action      String  @db.VarChar(10)
+  permissions Json?   @db.Json
+  validation  Json?   @db.Json
+  presets     Json?   @db.Json
+  fields      String?
+
+  Role Role? @relation(fields: [role], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_permissions_role_foreign")
+
+  @@map("directus_permissions")
+}
+
+model Preset {
+  id              Int     @id @default(autoincrement())
+  bookmark        String? @db.VarChar(255)
+  user            String? @db.Uuid
+  role            String? @db.Uuid
+  collection      String? @db.VarChar(64)
+  search          String? @db.VarChar(100)
+  layout          String? @default("tabular") @db.VarChar(100)
+  layoutQuery     Json?   @map("layout_query") @db.Json
+  layoutOptions   Json?   @map("layout_options") @db.Json
+  refreshInterval Int?    @map("refresh_interval")
+  filter          Json?   @db.Json
+  icon            String  @default("bookmark_outline") @db.VarChar(30)
+  color           String? @db.VarChar(255)
+
+  Role Role? @relation(fields: [role], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_presets_role_foreign")
+  User User? @relation(fields: [user], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_presets_user_foreign")
+
+  @@map("directus_presets")
+}
+
+model Relation {
+  id                    Int     @id @default(autoincrement())
+  manyCollection        String  @map("many_collection") @db.VarChar(64)
+  manyField             String  @map("many_field") @db.VarChar(64)
+  oneCollection         String? @map("one_collection") @db.VarChar(64)
+  oneField              String? @map("one_field") @db.VarChar(64)
+  oneCollectionField    String? @map("one_collection_field") @db.VarChar(64)
+  oneAllowedCollections String? @map("one_allowed_collections")
+  junctionField         String? @map("junction_field") @db.VarChar(64)
+  sortField             String? @map("sort_field") @db.VarChar(64)
+  oneDeselectAction     String  @default("nullify") @map("one_deselect_action") @db.VarChar(255)
+
+  @@map("directus_relations")
+}
+
+model Revision {
+  id         Int    @id @default(autoincrement())
+  activity   Int
+  collection String @db.VarChar(64)
+  item       String @db.VarChar(255)
+  data       Json?  @db.Json
+  delta      Json?  @db.Json
+  parent     Int?
+
+  Activity Activity   @relation(fields: [activity], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_revisions_activity_foreign")
+  Parent   Revision?  @relation("directus_revisionsTodirectus_revisions", fields: [parent], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_revisions_parent_foreign")
+  Children Revision[] @relation("directus_revisionsTodirectus_revisions")
+
+  @@map("directus_revisions")
+}
+
+model Role {
+  id          String  @id @db.Uuid
+  name        String  @db.VarChar(100)
+  icon        String  @default("supervised_user_circle") @db.VarChar(30)
+  description String?
+  ipAccess    String? @map("ip_access")
+  enforceTfa  Boolean @default(false) @map("enforce_tfa")
+  adminAccess Boolean @default(false) @map("admin_access")
+  appAccess   Boolean @default(true) @map("app_access")
+
+  Permissions Permission[]
+  Presets     Preset[]
+  Shares      Share[]
+  Users       User[]
+
+  @@map("directus_roles")
+}
+
+model Session {
+  token     String   @id @db.VarChar(64)
+  user      String?  @db.Uuid
+  expires   DateTime @db.Timestamptz(6)
+  ip        String?  @db.VarChar(255)
+  userAgent String?  @map("user_agent") @db.VarChar(255)
+  share     String?  @db.Uuid
+
+  Share Share? @relation(fields: [share], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_sessions_share_foreign")
+  User  User?  @relation(fields: [user], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_sessions_user_foreign")
+
+  @@map("directus_sessions")
+}
+
+model Settings {
+  id                    Int     @id @default(autoincrement())
+  projectName           String  @default("Directus") @map("project_name") @db.VarChar(100)
+  projectUrl            String? @map("project_url") @db.VarChar(255)
+  projectColor          String? @map("project_color") @db.VarChar(50)
+  projectLogo           String? @map("project_logo") @db.Uuid
+  publicForeground      String? @map("public_foreground") @db.Uuid
+  publicBackground      String? @map("public_background") @db.Uuid
+  publicNote            String? @map("public_note")
+  authLoginAttempts     Int?    @default(25) @map("auth_login_attempts")
+  authPasswordPolicy    String? @map("auth_password_policy") @db.VarChar(100)
+  storageAssetTransform String? @default("all") @map("storage_asset_transform") @db.VarChar(7)
+  storageAssetPresets   Json?   @map("storage_asset_presets") @db.Json
+  customCss             String? @map("custom_css")
+  storageDefaultFolder  String? @map("storage_default_folder") @db.Uuid
+  basemaps              Json?   @db.Json
+  mapboxKey             String? @map("mapbox_key") @db.VarChar(255)
+  moduleBar             Json?   @map("module_bar") @db.Json
+  projectDescriptor     String? @map("project_descriptor") @db.VarChar(100)
+  translationStrings    Json?   @map("translation_strings") @db.Json
+  defaultLanguage       String  @default("en-US") @map("default_language") @db.VarChar(255)
+  customAspectRatios    Json?   @map("custom_aspect_ratios") @db.Json
+
+  Logo                 File?   @relation("directus_filesTodirectus_settings_project_logo", fields: [projectLogo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_settings_project_logo_foreign")
+  Background           File?   @relation("directus_filesTodirectus_settings_public_background", fields: [publicBackground], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_settings_public_background_foreign")
+  Forground            File?   @relation("directus_filesTodirectus_settings_public_foreground", fields: [publicForeground], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "directus_settings_public_foreground_foreign")
+  StorageDefaultFolder Folder? @relation(fields: [storageDefaultFolder], references: [id], onUpdate: NoAction, map: "directus_settings_storage_default_folder_foreign")
+
+  @@map("directus_settings")
+}
+
+model Share {
+  id                   String      @id @db.Uuid
+  name                 String?     @db.VarChar(255)
+  collection           String?     @db.VarChar(64)
+  item                 String?     @db.VarChar(255)
+  role                 String?     @db.Uuid
+  password             String?     @db.VarChar(255)
+  user_created         String?     @db.Uuid
+  date_created         DateTime?   @default(now()) @db.Timestamptz(6)
+  date_start           DateTime?   @db.Timestamptz(6)
+  date_end             DateTime?   @db.Timestamptz(6)
+  times_used           Int?        @default(0)
+  max_uses             Int?
+  directus_collections Collection? @relation(fields: [collection], references: [collection], onDelete: Cascade, onUpdate: NoAction, map: "directus_shares_collection_foreign")
+  directus_roles       Role?       @relation(fields: [role], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "directus_shares_role_foreign")
+  directus_users       User?       @relation(fields: [user_created], references: [id], onUpdate: NoAction, map: "directus_shares_user_created_foreign")
+  directus_sessions    Session[]
+
+  @@map("directus_shares")
+}
+
+model User {
+  id                 String    @id @db.Uuid
+  firstName          String?   @map("first_name") @db.VarChar(50)
+  lastName           String?   @map("last_name") @db.VarChar(50)
+  email              String?   @unique(map: "directus_users_email_unique") @db.VarChar(128)
+  password           String?   @db.VarChar(255)
+  location           String?   @db.VarChar(255)
+  title              String?   @db.VarChar(50)
+  description        String?
+  tags               Json?     @db.Json
+  avatar             String?   @db.Uuid
+  language           String?   @db.VarChar(255)
+  theme              String?   @default("auto") @db.VarChar(20)
+  tfaSecret          String?   @map("tfa_secret") @db.VarChar(255)
+  status             String    @default("active") @db.VarChar(16)
+  role               String?   @db.Uuid
+  token              String?   @unique(map: "directus_users_token_unique") @db.VarChar(255)
+  lastAccess         DateTime? @map("last_access") @db.Timestamptz(6)
+  lastPage           String?   @map("last_page") @db.VarChar(255)
+  provider           String    @default("default") @db.VarChar(128)
+  externalIdentifier String?   @unique(map: "directus_users_external_identifier_unique") @map("external_identifier") @db.VarChar(255)
+  authData           Json?     @map("auth_data") @db.Json
+  emailNotifications Boolean?  @default(true) @map("email_notifications")
+
+  Role                    Role?          @relation(fields: [role], references: [id], onUpdate: NoAction, map: "directus_users_role_foreign")
+  Dashboards              Dashboard[]
+  FilesModified           File[]         @relation("directus_files_modified_byTodirectus_users")
+  FilesUploaded           File[]         @relation("directus_files_uploaded_byTodirectus_users")
+  Flows                   Flow[]
+  NotificationsReciepient Notification[] @relation("directus_notifications_recipientTodirectus_users")
+  NotificationsSender     Notification[] @relation("directus_notifications_senderTodirectus_users")
+  Operations              Operation[]
+  Panels                  Panel[]
+  Presets                 Preset[]
+  Sessions                Session[]
+  Shares                  Share[]
+
+  PostsCreated          Post[]         @relation("post_author")
+  PostsEdited           Post[]         @relation("post_editor")
+  PostCategoriesCreated PostCategory[] @relation("post_category_author")
+  PostCategoriesEdited  PostCategory[] @relation("post_category_editor")
+  QuestionsCreated      Question[]     @relation("question_author")
+  QuestionsEdited       Question[]     @relation("question_editor")
+  TutorialsCreated      Tutorial[]     @relation("tutorial_author")
+  TutorialsEdited       Tutorial[]     @relation("tutorial_editor")
+
+  @@map("directus_users")
+}
+
+model Webhook {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  method      String  @default("POST") @db.VarChar(10)
+  url         String  @db.VarChar(255)
+  status      String  @default("active") @db.VarChar(10)
+  data        Boolean @default(true)
+  actions     String  @db.VarChar(100)
+  collections String  @db.VarChar(255)
+  headers     Json?   @db.Json
+
+  @@map("directus_webhooks")
+}
