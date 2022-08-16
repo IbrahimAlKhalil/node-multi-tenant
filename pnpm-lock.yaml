@@ -75,6 +75,7 @@ importers:
       minio: ^7.0.30
       mjml: ^4.13.0
       nodemailer: ^6.7.7
+      postgres: ^3.2.4
       prettier: ^2.7.1
       prisma: ^4.2.1
       reflect-metadata: ^0.1.13
@@ -108,6 +109,7 @@ importers:
       minio: 7.0.30
       mjml: 4.13.0
       nodemailer: 6.7.7
+      postgres: 3.2.4
       reflect-metadata: 0.1.13
       rimraf: 3.0.2
       rxjs: 7.5.6
@@ -156,6 +158,7 @@ importers:
       '@vue/test-utils': 2.0.0-rc.21
       '@vue/tsconfig': ^0.1.3
       autoprefixer: ^10.4.7
+      axios: ^0.27.2
       cypress: ^9.6.1
       element-plus: ^2.2.12
       eslint: ^8.21.0
@@ -179,6 +182,7 @@ importers:
       vue-router: ^4.1.3
       vue-tsc: ^0.34.13
     dependencies:
+      axios: 0.27.2
       element-plus: 2.2.12_vue@3.2.37
       lodash: 4.17.21
       pinia: 2.0.18_j6bzmzd4ujpabbp5objtwxyjp4
@@ -13414,6 +13418,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       xtend: 4.0.2
+    dev: false
+
+  /postgres/3.2.4:
+    resolution: {integrity: sha512-iscysD+ZlM4A9zj0RS2zo3f4Us4yuov94Yx+p3dE1rEARaBHC8R3/gRq40KEnWp1lxjuFq9EjuAenIUsPaTaDA==}
     dev: false
 
   /prebuild-install/7.1.1:
